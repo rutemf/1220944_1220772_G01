@@ -4,11 +4,15 @@ skinparam classAttributeIconSize 0
 hide circle
 hide methods
 
-class Librarian {
-    - name
-    - email
+class User{
     - password
-    /'falta saber como é feita a autenticação'/
+}
+
+class Username{
+    - username
+}
+
+class Librarian extends User{
 }
 
 class ISBN{
@@ -33,11 +37,6 @@ class Description{
 }
 
 class Book {
-    - isbn: isbn
-    - title: title
-    - genre: genre
-    - description: description
-    - authors: authors
 }
 
 class Author {
@@ -48,11 +47,13 @@ class Author {
     /'perguntar '/
    }
 
-class Reader {
+class Reader extends User{
     - name /'regras?'/
     - birthDate /'limite inferior/superior? '/
     - gdprConsent /'que implicações tem?'/
-    - readerId
+}
+
+class ReaderNumber {
 }
 
 class Lending {
@@ -62,9 +63,11 @@ class Lending {
     - returned
 }
 
+class Fine {
+}
+
 class PhoneNr {
 /'como fazer a validação?'/
-    - countryCode
     - number
 }
 
@@ -75,17 +78,26 @@ class Email {
     - domain
 }
 
+class Name {
+    - name : String
+}
+
 Librarian "1" -- "0..*" Author : registers/updates >
 Librarian "1" -- "0..*" Book : registers/updates >
-Book "1..*" -- "1..*"  Author
+Book "1..*" -up- "1..*"  Author
 Reader "1" -- "1*" PhoneNr  /'mais que um?'/
 Reader "1" -- "1*" Email   /'mais que um?'/
-Reader "1" - Lending
-Lending "0..*" -  "0..*"Book
-Book "1" -- "1" ISBN
-Book "1" -- "1" Title
-Book  "1" -- "1*"  Genre
-Book  "1" -- "1"  Description
+ReaderNumber "1" -o Lending
+Reader "1" *- ReaderNumber
+Lending "1" o-up- "0..*" ISBN
+Book "1" *- "1" ISBN
+Book "1" *-left- "1" Title
+Book  "1" o-- "1..*"  Genre
+Book  "1" *-- "1"  Description
+Lending "1" *-- "0..1" Fine
+Reader "1" *- "1" Name
+Author "1" *-down- "1" Name
+User "1" *- "1" Username
 
 @enduml
 

@@ -1,6 +1,6 @@
 # User
 
-Represents a registered account in the system. For now, it can be a [Librarian](Librarian.md) or a [Reader](Reader.md).
+Represents a registered account in the system. For now, it can be a [Librarian](Librarian.md) or a [Reader](../Aggregates/Reader.md).
 
 > [Attributes](#attributes)
 >

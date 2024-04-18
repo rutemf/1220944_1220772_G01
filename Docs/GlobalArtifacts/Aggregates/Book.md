@@ -11,9 +11,9 @@ Is an item stored in the library, and is lent to readers, by librarians.
 ### Attributes
 - [ISBN](../ValueObjects/ISBN.md)
 - Title
-- Genre
+- [Genre](../Entities/Genre.md)
 - Description
-- Author(s)
+- [Author](Author.md)(s)
 
 ### Relevant Use Cases
 - #### Phase 1

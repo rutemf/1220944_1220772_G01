@@ -1,6 +1,6 @@
 # Reader
 
-Can request books for lending, and _should_ return them. Is a registered [user](User.md) of the library. 
+Can request books for lending, and _should_ return them. Is a registered [user](../Entities/User.md) of the library. 
 
 > [Attributes](#attributes)
 > 
@@ -11,10 +11,10 @@ Can request books for lending, and _should_ return them. Is a registered [user](
 ### Attributes
 - [Name](../ValueObjects/Name.md)
 - [Email address](../ValueObjects/EmailAddress.md)
-- Birthdate
+- [Birthdate](../ValueObjects/BirthDate.md)
 - [Phone number](../ValueObjects/PhoneNumber.md)
 - GDPR consent
-- Reader Number
+- [Reader Number](../ValueObjects/ReaderNumber.md)
 - [Username](../ValueObjects/Username.md)
 - [Password](../ValueObjects/Password.md)
 
@@ -49,26 +49,3 @@ Can request books for lending, and _should_ return them. Is a registered [user](
   - WP#5B.18 : As Librarian I want to know the Monthly lending per reader of a certain period
 
 ### Customer Clarifications
->Q: É requisitado apenas o 1º e ultimo nome? 3, 4, 5 nomes?
-> 
->A: Não necessitamos distinguir quantos nomes a pessoa tem
-
->Q: São permitidos títulos? (Sr., Dr., …)
-> 
->A: Nao há necessidade de capturar esta informação
-
->Q: Apenas devem ser permitidas letras?
-> 
->A: Qualquer caracter alfanumérico
-
->Q: Deve ser apenas permitido o alfabeto latino? Devem ser permitido outros alfabetos (cirilico, grego, ...) ou sistemas de escrita (árabe, hebraico, ...)?
->
->A: Basta considerar o alfabeto Latino
-
->Q: São permitidos títulos? (Sr., Dr., …)
->
->A: Nao há necessidade de capturar esta informação
-
->[Q: Gostaria de saber quais são as caracteristicas necessários para um User fazer autenticação no sistema?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28878#p36474)
->
->A: Os utilizadores autenticam-se usando um par username/password. [...] Quer os bibliotecários, quer os leitores são utilizadores do sistema 
