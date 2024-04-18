@@ -1,6 +1,6 @@
 # Reader
 
-Is a registered user of the library. 
+Can request books for lending, and _should_ return them. Is a registered [user](User.md) of the library. 
 
 > [Attributes](#attributes)
 > 
@@ -9,10 +9,14 @@ Is a registered user of the library.
 > [Customer Clarifications](#Customer-Clarifications)
 
 ### Attributes
-- Name
-- Birth date
+- [Name](../ValueObjects/Name.md)
+- [Email address](../ValueObjects/EmailAddress.md)
+- Birthdate
+- [Phone number](../ValueObjects/PhoneNumber.md)
 - GDPR consent
-- Reader ID
+- Reader Number
+- [Username](../ValueObjects/Username.md)
+- [Password](../ValueObjects/Password.md)
 
 ### Relevant Use Cases
 - #### Phase 1
@@ -64,3 +68,7 @@ Is a registered user of the library.
 >Q: São permitidos títulos? (Sr., Dr., …)
 >
 >A: Nao há necessidade de capturar esta informação
+
+>[Q: Gostaria de saber quais são as caracteristicas necessários para um User fazer autenticação no sistema?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28878#p36474)
+>
+>A: Os utilizadores autenticam-se usando um par username/password. [...] Quer os bibliotecários, quer os leitores são utilizadores do sistema 
