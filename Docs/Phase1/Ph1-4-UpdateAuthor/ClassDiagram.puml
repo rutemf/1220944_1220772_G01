@@ -1,0 +1,40 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+hide circle
+skinparam classAttributeIconSize 0
+
+
+class CreateAuthorController {
+    +createAuthor(name, short bio): void
+    +saveCreatedAuthor(): Result
+}
+
+class Librarian {
+    - name
+    -EmailAddress
+    -Password
+    -Username
+    +getCategoriesContainer(): AuthorContainer
+}
+
+class AuthorContainer {
++ create(string code, string description): Author
++ save(Author obj): Result
+}
+
+class Author {
+    - code
+    - description
+    Author(string code, string description)
+}
+
+Person "1" -right-> "1" AuthorContainer:  maintains
+AuthorContainer "1" -right-> "0..*" Author:  records
+
+CreateAuthorView ..> CreateAuthorController
+CreateAuthorController ..> Person
+CreateAuthorController ..> AuthorContainer
+CreateAuthorController ..> Author
+
+@enduml
