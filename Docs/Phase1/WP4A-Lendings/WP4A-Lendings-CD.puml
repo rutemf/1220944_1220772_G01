@@ -1,0 +1,76 @@
+@startuml
+
+'hide circle
+skinparam classAttributeIconSize 0
+
+class LendBookController {
+    + createLending(isbn, readerNumber)
+    + returnBook(isbn, readerNumber)
+    + getLending(lendingNumber)
+}
+
+/'class LendingFactory {
+    + create() : Lending
+}'/
+
+interface LendingRepository {
+    + findById(lendingNumber)
+    + save(lending)
+}
+
+interface LendingService {
+    + create(isbn, readerNumber) :Lending
+    + findById(lendingNumber)
+    + findByReader(readerNumber)
+    + findByBook(Isbn)
+    + update(lendingNumber)
+}
+
+class LendingServiceImpl implements LendingService{
+}
+
+interface ReaderRepository {
+    + findById(readerNumber)
+}
+
+interface BookRepository {
+    + findById(isbn)
+}
+
+class Lending <<entity>>{
+    - startDate
+    - limitDate
+    - returnDate
+    - returned
+}
+
+class Isbn <<value>>{
+    - isbn: string
+}
+
+class ReaderNumber <<value>>{
+    - registryYear :int
+    - number :int
+}
+
+class Fine <<entity>>{
+    - centsValue : int
+    - paid :bool
+}
+
+
+
+Lending o- Isbn
+Lending o-left- ReaderNumber
+Lending *-down- Fine
+/'
+LendingFactory ..> Lending
+'/
+LendingServiceImpl ..> Lending
+
+LendBookController ..> LendingService
+LendingServiceImpl .left.> LendingRepository
+LendingServiceImpl ..> ReaderRepository
+LendingServiceImpl .right.> BookRepository
+
+@enduml

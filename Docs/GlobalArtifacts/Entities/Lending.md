@@ -39,7 +39,7 @@ Is a transaction, managed by a Librarian, relating a Book loan to a Reader.
 Pode especificar quais são os detalhes que devem ser facultados? Existe alguma diferença nos detalhes a serem facultados, caso seja um leitor ou um bibliotecário a solicitar?
 ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28894#p36490)
 >
->A:a ambos deve ser facultado:
+>A: a ambos deve ser facultado:
 >- lending number
 >- book title
 >- lending date

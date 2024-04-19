@@ -1,6 +1,6 @@
 # Fine
 
-Appears when a Lending is overdue.
+Applied when a Lending is overdue.
 
 > [Attributes](#attributes)
 >
@@ -9,8 +9,8 @@ Appears when a Lending is overdue.
 > [Customer Clarifications](#Customer-Clarifications)
 
 ### Attributes
-- [Lending](Lending.md)
-- 
+- value
+- paid
 
 
 ### Relevant Use Cases
