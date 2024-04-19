@@ -48,9 +48,9 @@ class Author {
    }
 
 class Reader extends User{
-    - name /'regras?'/
     - birthDate /'limite inferior/superior? '/
     - gdprConsent /'que implicações tem?'/
+    - booksOutstanding : int /'TODO: Perguntar se faz sentido contar no Reader'/
 }
 
 class ReaderNumber {
