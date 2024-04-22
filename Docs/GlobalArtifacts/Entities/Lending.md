@@ -15,7 +15,6 @@ Is a transaction, managed by a Librarian, relating a Book loan to a Reader.
 - Start date
 - Limit date
 - Returned date
-- Returned : bool
 - [Fine](Fine.md)
 
 ### Relevant Use Cases

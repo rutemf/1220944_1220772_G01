@@ -41,7 +41,6 @@ class Lending <<entity>>{
     - startDate
     - limitDate
     - returnDate
-    - returned
 }
 
 class Isbn <<value>>{
