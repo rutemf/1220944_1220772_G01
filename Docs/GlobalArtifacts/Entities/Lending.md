@@ -9,17 +9,25 @@ Is a transaction, managed by a Librarian, relating a Book loan to a Reader.
 > [Customer Clarifications](#Customer-Clarifications)
 
 ### Attributes
-- Lending Number
+- [LendingNumber](../ValueObjects/LendingNumber.md)
 - [Book](../Aggregates/Book.md)
 - [Reader](../Aggregates/Reader.md)
 - Start date
 - Limit date
 - Returned date
-- [Fine](Fine.md)
 
 ### Relevant Use Cases
 - #### Phase 1
-    - WP#2A.7 : As Librarian, I want to register a book (isbn, title, genre, description, author(s))
+  - WP#2A.15 : As Librarian I want to lend a book to a reader. The lending can only be done if the reader has no
+    overdue books and the reader can have at most 3 books lent. The return date must be presented
+    to the Librarian
+  - WP#2A.16 : As Reader I want to return a book. If the return is overdue I’m fined by the library.
+  - WP#2A.17 : As Reader or Librarian I want to know the details of a lending given its lending number
+- #### Phase 2
+  - WP#4B.23 : As Librarian I want to list overdue lending sorted by their tardiness
+  - WP#4B.14 : As Librarian I want to know the average number of lending per genre of a certain month
+  - WP#4B.15 : As Librarian I want to know the Average lending duration
+
 
 ### Customer Clarifications
 >[Q: O tempo limite de entrega de um livro é expectável que mude? ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28903#p36499)

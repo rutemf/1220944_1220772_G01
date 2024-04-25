@@ -15,6 +15,18 @@ to the Librarian.
 - 
 ### 1.4. Found out Dependencies
 ### 1.5 Input and Output Data
+
+**Input Data:**
+
+* Typed data:
+  * Reader Number
+  * ISBN
+
+**Output Data:**
+
+* (In)success of the operation
+
+
 ### 1.6. System Sequence Diagram (SSD)
 ### 1.7. Functionality
 ### 1.8 Other Relevant Remarks

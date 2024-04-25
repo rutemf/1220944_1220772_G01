@@ -3,15 +3,11 @@
 'hide circle
 skinparam classAttributeIconSize 0
 
-class LendBookController {
+class LendingController {
     + createLending(isbn, readerNumber)
     + returnBook(isbn, readerNumber)
     + getLending(lendingNumber)
 }
-
-/'class LendingFactory {
-    + create() : Lending
-}'/
 
 interface LendingRepository {
     + findById(lendingNumber)
@@ -19,7 +15,7 @@ interface LendingRepository {
 }
 
 interface LendingService {
-    + create(isbn, readerNumber) :Lending
+    + create(isbn, readerNumber) : Lending
     + findById(lendingNumber)
     + findByReader(readerNumber)
     + findByBook(Isbn)
@@ -38,36 +34,51 @@ interface BookRepository {
 }
 
 class Lending <<entity>>{
-    - startDate
-    - limitDate
-    - returnDate
+    - startDate : Date
+    - limitDate : Date
+    - returnDate : Date
+    + getNumber() : Lending
+    + getOverdueDays() : int
+    + isOverdue() : bool
+    + isReturned() : bool
+    + hasFine() : bool
+}
+
+class LendingNumber <<value>> {
+    - registryYear :int
+    - number :int
+    + toString() : String
 }
 
 class Isbn <<value>>{
     - isbn: string
+    + toString() : String
 }
 
 class ReaderNumber <<value>>{
     - registryYear :int
     - number :int
+    + toString() : String
 }
 
 class Fine <<entity>>{
     - centsValue : int
     - paid :bool
+    + updateValue(int daysOverdue) : void
+    + getValue() : int
+    + isPaid() : bool
 }
 
 
 
 Lending o- Isbn
 Lending o-left- ReaderNumber
-Lending *-down- Fine
-/'
-LendingFactory ..> Lending
-'/
+Lending *-down- LendingNumber
+LendingNumber -right-o Fine
+
 LendingServiceImpl ..> Lending
 
-LendBookController ..> LendingService
+LendingController ..> LendingService
 LendingServiceImpl .left.> LendingRepository
 LendingServiceImpl ..> ReaderRepository
 LendingServiceImpl .right.> BookRepository

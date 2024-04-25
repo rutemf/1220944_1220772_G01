@@ -9,8 +9,9 @@ Applied when a Lending is overdue.
 > [Customer Clarifications](#Customer-Clarifications)
 
 ### Attributes
-- value
-- paid
+- [LendingNumber](../ValueObjects/LendingNumber.md)
+- Value
+- Paid
 
 
 ### Relevant Use Cases

@@ -4,12 +4,21 @@ skinparam classAttributeIconSize 0
 hide circle
 hide methods
 
-class Lending {
-    - startDate
-    - limitDate
-    - returnDate
-    - returned
+package Lending as PLending <<Frame>> {
+    class Lending {
+        - startDate
+        - limitDate
+        - returnDate
+        - returned
+    }
+    class LendingNumber {
+    }
+    class Fine{
+        - value
+    }
 }
+
+
 
 class User {
     - username
@@ -18,9 +27,9 @@ class User {
 
 class Librarian
 
-class Fine{
-    - value
-}
+
+
+
 
 package Book as PBook <<Frame>> {
     class Book
@@ -44,7 +53,8 @@ ReaderNumber "1" -up- "1" Lending : uses
 Book "1" -up- "1" ISBN : identifies
 Reader "1" -up- "1" ReaderNumber : identifies
 Lending "1" -right- "0..1" Fine : may lead to
-Librarian "1" - "*" Lending : registers
-Librarian "1" -- "1" User : is
+Librarian "1" -down- "*" Lending : registers
+Librarian "1" -right- "1" User : is
+Lending -left- LendingNumber : identifies
 
 @enduml

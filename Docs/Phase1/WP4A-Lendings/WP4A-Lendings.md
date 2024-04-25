@@ -66,9 +66,12 @@ Pode especificar quais são os detalhes que devem ser facultados? Existe alguma 
 >
 >A: o lending number é um número criado pelo sistema e composto pelo ano de registo e um número sequencial, ex., 2023/1, 2024/19876
 
+>[Q: Como é que a fine é aplicada?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28911#p36509)
+>
+>A: a aplicação da multa é tratada fora do sistema. o sistema deve calcular o valor da multa com base no numero de dias de atraso e num valor por dia. esse valor por dia deve ser facilmente parametrizavel nos sistema (ex., bootstrap ou ficheiro de propriedades)
+
 ### 1.4. Found out Dependencies
 
-### 1.5. Input and Output Data
 ### 1.7. Functionality
 ### 1.8. Other Relevant Remarks
 ## 2. OO Analysis
