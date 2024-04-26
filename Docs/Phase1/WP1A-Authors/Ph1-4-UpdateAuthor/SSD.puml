@@ -9,8 +9,8 @@ participant ":System" as System
 
 activate Librarian
 
-Librarian -> System: asks to create a new category
-System --> Librarian: requests data (name, short bio)
+Librarian -> System: asks to update an author
+System --> Librarian: requests data (short bio)
 
 Librarian -> System: types requested data
 System --> Librarian: shows all data and requests confirmation

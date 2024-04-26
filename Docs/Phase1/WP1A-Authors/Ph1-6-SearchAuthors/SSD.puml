@@ -4,17 +4,17 @@
 autoactivate on
 autonumber
 
-actor "Librarian" as Librarian
+actor "LibrarianOrReader" as LibrarianOrReader
 participant ":System" as System
 
-activate Librarian
+activate LibrarianOrReader
 
-Librarian -> System: asks to create a new category
-System --> Librarian: requests data (name, short bio)
+LibrarianOrReader -> System: asks to search author
+System --> LibrarianOrReader: requests data (name)
 
-Librarian -> System: types requested data
-System --> Librarian: shows all data and requests confirmation
+LibrarianOrReader -> System: types requested data
+System --> LibrarianOrReader: shows all data and requests confirmation
 
-Librarian -> System: confirms the data
-System --> Librarian: informs operation success
+LibrarianOrReader -> System: confirms the data
+System --> LibrarianOrReader: informs operation success
 @enduml
