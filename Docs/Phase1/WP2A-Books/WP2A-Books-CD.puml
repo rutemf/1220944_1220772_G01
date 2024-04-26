@@ -1,0 +1,65 @@
+@startuml
+
+'hide circle
+skinparam classAttributeIconSize 0
+
+class BookController {
+    + registerBook(isbn,  title, genre, description, author(s))
+    + updateBook(title, genre, description, author(s))
+    + getDetails(ISBN)
+    + searchBookByGenre(Genre)
+}
+
+interface BookRepository {
+    + findById(lendingNumber)
+    + save(book)
+}
+
+interface BookService {
+    + register(isbn, title, genre, description, author(s))
+    + findBook(isbn)
+    + update(title, genre, description, author(s))
+}
+
+class BookServiceImpl implements BookService{
+}
+
+class Book <<entity>>{
+    - ISBN : ISBN
+    - Title : Title
+    - Description : Description
+    - Genre : Genre
+}
+
+class Title <<value>>{
+    - Title: string
+    + toString() : String
+}
+
+class Isbn <<value>>{
+    - isbn: string
+    + toString() : String
+}
+
+class Description <<value>>{
+    - Description: string
+    + toString() : String
+}
+
+class Genre <<entity>>{
+   - Genre: genre
+}
+
+Book o--> Isbn
+Book o--> Title
+Book o--> Description
+Book o-> Genre
+
+BookServiceImpl ..> Book
+
+BookController ..> BookService
+BookServiceImpl .left.> BookRepository
+BookServiceImpl ..> BookRepository
+BookServiceImpl .right.> BookRepository
+
+@enduml
