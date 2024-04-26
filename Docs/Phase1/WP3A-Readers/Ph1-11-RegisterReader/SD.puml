@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+title Register a new reader as anonymous
+
+actor "Anonymous" as User
+participant ":System" as System
+participant "Ctrl:RegisterReaderController" as Ctrl
+participant "service:ReaderService" as Service
+participant "repo:ReaderRepository" as Repo
+participant "reader:Reader" as Reader
+
+activate User
+
+User -> System: requests reader registration based on given data
+
+System -> Ctrl: registerReader(requestBody);
+
+Ctrl -> Service: create(name, dateOfBirth, ...)
+Service -> Reader: Reader(name, dateOfBirth, ...)
+Service -> Repo: addOrUpdate(name, dateOfBirth, ...)
+Repo --> Service: reader or error
+Service --> Ctrl: reader or error
+Ctrl --> System: reader or error
+System --> User: registered reader or error
+
+@enduml

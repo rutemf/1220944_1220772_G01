@@ -1,0 +1,20 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+class ReaderRepository {
+}
+
+class ReaderFactory {
+}
+
+class ReaderService {
+}
+
+class RegisterReaderController {
+}
+
+ReaderFactory "1" -> "1" ReaderRepository
+ReaderService "1" -up-> "1" ReaderRepository
+RegisterReaderController "1" -right-> "1" ReaderService
+
+@enduml
