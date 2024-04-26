@@ -11,7 +11,7 @@ class BookController {
 }
 
 interface BookRepository {
-    + findById(lendingNumber)
+    + findById(ISBN)
     + save(book)
 }
 
@@ -25,10 +25,7 @@ class BookServiceImpl implements BookService{
 }
 
 class Book <<entity>>{
-    - ISBN : ISBN
-    - Title : Title
-    - Description : Description
-    - Genre : Genre
+
 }
 
 class Title <<value>>{
@@ -48,6 +45,7 @@ class Description <<value>>{
 
 class Genre <<entity>>{
    - Genre: genre
+   + getGenreList(): list(genre)
 }
 
 Book o--> Isbn
