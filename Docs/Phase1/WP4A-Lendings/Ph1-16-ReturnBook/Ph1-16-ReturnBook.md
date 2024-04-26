@@ -1,10 +1,9 @@
-# WP#4A.15 Lend Book
+# WP#4A.16 Return Book
 ## 1. Requirements Engineering
 ### 1.1. User Story Description
 
-As Librarian, I want to lend a book to a reader. The lending can only be done if the reader has no
-overdue books and the reader can have at most 3 books lent. The return date must be presented
-to the Librarian.
+
+As Reader, I want to return a book. If the return is overdue I’m fined by the library.
 
 ### 1.2. Customer Specifications and Clarifications
 
@@ -12,15 +11,16 @@ to the Librarian.
 
 ### 1.3. Acceptance Criteria
 - AC
-- 
+-
 ### 1.4. Found out Dependencies
+- The Reader must be authenticated in the system.
+- The Reader must have borrowed a book which he/she hasn't returned.
 ### 1.5 Input and Output Data
 
 **Input Data:**
 
 * Typed data:
-  * Reader Number
-  * ISBN
+    * ISBN
 
 **Output Data:**
 

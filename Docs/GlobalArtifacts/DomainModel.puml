@@ -6,11 +6,10 @@ hide methods
 
 class User{
     - password
+    - username
+
 }
 
-class Username{
-    - username
-}
 
 class Librarian extends User{
 }
@@ -92,7 +91,7 @@ Librarian "1" -- "0..*" Book : registers/updates >
 Book "1..*" -up- "1..*"  Author
 Reader "1" -- "1*" PhoneNr  /'mais que um?'/
 Reader "1" -- "1*" Email   /'mais que um?'/
-ReaderNumber "1" -o Lending
+ReaderNumber "1" - Lending
 Reader "1" - ReaderNumber
 Lending "1" -up- "0..*" ISBN
 Book "1" - "1" ISBN
@@ -103,7 +102,6 @@ Lending "1" -- "1" LendingNumber
 LendingNumber -- Fine
 Reader "1" - "1" Name
 Author "1" -down- "1" Name
-User "1" - "1" Username
 
 @enduml
 

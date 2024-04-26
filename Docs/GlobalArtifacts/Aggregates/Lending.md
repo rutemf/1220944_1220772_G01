@@ -10,8 +10,8 @@ Is a transaction, managed by a Librarian, relating a Book loan to a Reader.
 
 ### Attributes
 - [LendingNumber](../ValueObjects/LendingNumber.md)
-- [Book](../Aggregates/Book.md)
-- [Reader](../Aggregates/Reader.md)
+- [Book](Book.md)
+- [Reader](Reader.md)
 - Start date
 - Limit date
 - Returned date

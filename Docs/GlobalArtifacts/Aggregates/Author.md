@@ -28,3 +28,7 @@ Wrote books that are present in the library. Can be main author, or co-author.
 > [Q: Aproveito e pergunto sobre o número do autor, se este é apenas um numero e como este é formado?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28907#p36504)
 >
 >A: o numero do autor é um número sequencial gerado pelo sistema
+
+> [Q: Que informações do autor é que o bibliotecário pode alterar?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28948#p36577)
+>
+>A: à exceção do "author number" pode alterar qualquer informação

@@ -10,8 +10,8 @@ class LendingController {
 }
 
 interface LendingRepository {
-    + findById(lendingNumber)
-    + save(lending)
+    + findById(lendingNumber) : Lending
+    + save(lending) : Lending
 }
 
 interface LendingService {
@@ -69,6 +69,15 @@ class Fine <<entity>>{
     + isPaid() : bool
 }
 
+class LendingDTO{
+
+}
+
+class LendingMapper{
+    - create(lendingDTO) : Lending
+    -
+
+}
 
 
 Lending o- Isbn
@@ -82,5 +91,8 @@ LendingController ..> LendingService
 LendingServiceImpl .left.> LendingRepository
 LendingServiceImpl ..> ReaderRepository
 LendingServiceImpl .right.> BookRepository
+
+LendingServiceImpl <.up. LendingMapper
+LendingMapper .left.> LendingDTO
 
 @enduml
