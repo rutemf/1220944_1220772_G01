@@ -10,9 +10,9 @@ Is an item stored in the library, and is lent to readers, by librarians.
 
 ### Attributes
 - [ISBN](../ValueObjects/ISBN.md)
-- Title
+- [Title](../ValueObjects/Title.md)
 - [Genre](../Entities/Genre.md)
-- Description
+- [Description](../ValueObjects/Description.md)
 - [Author](Author.md)(s)
 
 ### Relevant Use Cases
