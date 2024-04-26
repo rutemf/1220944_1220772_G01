@@ -48,9 +48,9 @@ class Author {
    }
 
 class Reader extends User{
-    - name /'regras?'/
     - birthDate /'limite inferior/superior? '/
     - gdprConsent /'que implicações tem?'/
+    - booksOutstanding : int /'TODO: Perguntar se faz sentido contar no Reader'/
 }
 
 class ReaderNumber {
@@ -64,7 +64,12 @@ class Lending {
 }
 
 class Fine {
+    - value
+    - paid
 }
+
+class LendingNumber
+
 
 class PhoneNr {
 /'como fazer a validação?'/
@@ -88,16 +93,17 @@ Book "1..*" -up- "1..*"  Author
 Reader "1" -- "1*" PhoneNr  /'mais que um?'/
 Reader "1" -- "1*" Email   /'mais que um?'/
 ReaderNumber "1" -o Lending
-Reader "1" *- ReaderNumber
-Lending "1" o-up- "0..*" ISBN
-Book "1" *- "1" ISBN
-Book "1" *-left- "1" Title
-Book  "1" o-- "1..*"  Genre
-Book  "1" *-- "1"  Description
-Lending "1" *-- "0..1" Fine
-Reader "1" *- "1" Name
-Author "1" *-down- "1" Name
-User "1" *- "1" Username
+Reader "1" - ReaderNumber
+Lending "1" -up- "0..*" ISBN
+Book "1" - "1" ISBN
+Book "1" -left- "1" Title
+Book  "1" -- "1..*"  Genre
+Book  "1" -- "1"  Description
+Lending "1" -- "1" LendingNumber
+LendingNumber -- Fine
+Reader "1" - "1" Name
+Author "1" -down- "1" Name
+User "1" - "1" Username
 
 @enduml
 

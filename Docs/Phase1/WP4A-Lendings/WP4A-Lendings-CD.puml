@@ -1,0 +1,86 @@
+@startuml
+
+'hide circle
+skinparam classAttributeIconSize 0
+
+class LendingController {
+    + createLending(isbn, readerNumber)
+    + returnBook(isbn, readerNumber)
+    + getLending(lendingNumber)
+}
+
+interface LendingRepository {
+    + findById(lendingNumber)
+    + save(lending)
+}
+
+interface LendingService {
+    + create(isbn, readerNumber) : Lending
+    + findById(lendingNumber)
+    + findByReader(readerNumber)
+    + findByBook(Isbn)
+    + update(lendingNumber)
+}
+
+class LendingServiceImpl implements LendingService{
+}
+
+interface ReaderRepository {
+    + findById(readerNumber)
+}
+
+interface BookRepository {
+    + findById(isbn)
+}
+
+class Lending <<entity>>{
+    - startDate : Date
+    - limitDate : Date
+    - returnDate : Date
+    + getNumber() : Lending
+    + getOverdueDays() : int
+    + isOverdue() : bool
+    + isReturned() : bool
+    + hasFine() : bool
+}
+
+class LendingNumber <<value>> {
+    - registryYear :int
+    - number :int
+    + toString() : String
+}
+
+class Isbn <<value>>{
+    - isbn: string
+    + toString() : String
+}
+
+class ReaderNumber <<value>>{
+    - registryYear :int
+    - number :int
+    + toString() : String
+}
+
+class Fine <<entity>>{
+    - centsValue : int
+    - paid :bool
+    + updateValue(int daysOverdue) : void
+    + getValue() : int
+    + isPaid() : bool
+}
+
+
+
+Lending o- Isbn
+Lending o-left- ReaderNumber
+Lending *-down- LendingNumber
+LendingNumber -right-o Fine
+
+LendingServiceImpl ..> Lending
+
+LendingController ..> LendingService
+LendingServiceImpl .left.> LendingRepository
+LendingServiceImpl ..> ReaderRepository
+LendingServiceImpl .right.> BookRepository
+
+@enduml
