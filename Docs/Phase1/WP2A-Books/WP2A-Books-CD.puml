@@ -62,10 +62,15 @@ interface AuthorsRepository {
     + getAuthors(): list(authors)
 }
 
-Book o--> Isbn
-Book o--> Title
-Book o--> Description
-Book o--> Genre
+class BookAuthor{
+    - authorNumber :int
+}
+
+Book *-- Isbn
+Book *-- Title
+Book *-right- Description
+Book o-- Genre
+BookAuthor o- Isbn
 
 BookServiceImpl .down.> Book
 
@@ -73,7 +78,8 @@ BookServiceImpl..>GenreRepository
 BookServiceImpl .left.>AuthorsRepository
 GenreServiceImpl ..> Genre
 BookController ..> BookService
+
 BookServiceImpl .right.> BookRepository
 GenreServiceImpl ..> GenreRepository
-GenreServiceImpl ..> GenreService
+GenreServiceImpl .up.|> GenreService
 @enduml

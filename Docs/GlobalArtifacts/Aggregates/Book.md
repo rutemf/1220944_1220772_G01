@@ -46,3 +46,11 @@ Is an item stored in the library, and is lent to readers, by librarians.
 >[Q: Qual o dado que precisamos de introduzir para proceder à atualização dos dados de um livro?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28929#p36537)
 >
 >A: À execção do ISBN todos os dados sao alteraveis
+
+>[Q: um livro pode ter mais que um género?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29071#p36760)
+>
+>A: (Ricardo - respondido abaixo)
+
+>[Q: Sobre a pergunta 3, creio que ainda não ficou claro se os 'genre's são escolhidos pelo 'librarian' (na hora de registar um livro) de uma lista existente (e eventualmente mutável), ou se são escritos manualmente pelo 'librarian'.](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28911#p36699)
+>
+>A: Quando o Librarian regista um novo livro vai indicar **em que genéro** esse livro se classifica. só poderá indicar um dos géneros previamente registados no sistema
