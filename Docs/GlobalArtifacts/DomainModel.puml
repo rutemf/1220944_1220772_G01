@@ -40,6 +40,9 @@ class Reader extends User{
     - phoneNumber
     - birthDate /'limite inferior/superior? '/
     - gdprConsent /'que implicações tem?'/
+    - marketingConsent
+    - thirdPartySharing
+    - booksOutstanding : int /'TODO: Perguntar se faz sentido contar no Reader'/
 }
 
 
