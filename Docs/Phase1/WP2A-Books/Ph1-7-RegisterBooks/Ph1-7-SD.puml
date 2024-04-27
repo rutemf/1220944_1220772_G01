@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+title Register a new reader as librarian
+
+actor "Librarian" as User
+participant ":Rest" as Rest
+participant "Ctrl:BookController" as Ctrl
+participant "service:BookService" as Service
+participant "repo:BookRepository" as Repo
+participant "book:Book" as Book
+
+activate User
+
+User -> Rest: requests reader registration based on given data
+
+Rest -> Ctrl: updateBook(requestBody);
+
+Ctrl -> Service: update(title, genre, description, author(s))
+Service -> Book: Book(isbn, title, genre, description, author(s))
+Service -> Repo: update(book)
+Repo --> Service: book or error
+Service --> Ctrl: book or error
+Ctrl --> Rest: book or error
+Rest --> User: updated book or error
+
+@enduml

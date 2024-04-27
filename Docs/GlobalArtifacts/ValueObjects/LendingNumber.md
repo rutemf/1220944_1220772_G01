@@ -1,6 +1,6 @@
 # Lending Number
 
-A code that uniquely identifies a [Lending](../Entities/Lending.md).
+A code that uniquely identifies a [Lending](../Aggregates/Lending.md).
 
 > [Attributes](#attributes)
 >

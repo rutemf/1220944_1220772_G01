@@ -1,9 +1,9 @@
-# WP#3A.11 Lend Book
+# WP#4A.16 Return Book
 ## 1. Requirements Engineering
 ### 1.1. User Story Description
 
-As anonymous I want to register as a reader (name, email, date of birth, phone number, GDPR
-consent). A Reader Number is assigned to me by the library
+
+As Reader, I want to return a book. If the return is overdue I’m fined by the library.
 
 ### 1.2. Customer Specifications and Clarifications
 
@@ -13,32 +13,28 @@ consent). A Reader Number is assigned to me by the library
 - AC
 -
 ### 1.4. Found out Dependencies
+- The Reader must be authenticated in the system.
+- The Reader must have borrowed a book which he/she hasn't returned.
 ### 1.5 Input and Output Data
 
 **Input Data:**
 
 * Typed data:
-    * Name
-    * Email
-    * Date of Birth
-    * Phone Number
-    * GDPR Consent
-    * Username
-    * Password
+    * ISBN
 
 **Output Data:**
 
 * (In)success of the operation
 
+
+### 1.6. System Sequence Diagram (SSD)
 ### 1.7. Functionality
 ### 1.8 Other Relevant Remarks
+## 2. OO Analysis
+### 2.1. Relevant Domain Model Excerpt
+### 2.2. Other Remarks
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
-
-![SD](SD.svg)
 ### 3.2. Class Diagram (CD)
-
-![CD](../WP3A-Readers-CD.svg)
-
 ## 4. Tests
 ## 5. Observations

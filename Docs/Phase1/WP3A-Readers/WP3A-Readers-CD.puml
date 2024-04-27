@@ -1,0 +1,37 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+class ReaderRepository {
+    + add: void
+    + remove: void
+    + update: void
+    + getAll: List<Reader>;
+}
+
+/'class ReaderFactory {
+    + create: Reader
+}'/
+
+class ReaderService {
+    + create: Reader
+    + remove: void
+    + update: Reader
+    + add: void
+}
+
+class ReaderController {
+}
+
+class Reader {
+}
+
+
+'ReaderFactory "1" -> "1" ReaderRepository
+ReaderService "1" -up-> "1" ReaderRepository
+'ReaderService "1" -up-> "1" ReaderFactory
+ReaderService "1" -up-> "0..*" Reader
+ReaderRepository "1" -down-> "0..*" Reader
+ReaderController "1" -left-> "1" ReaderService
+
+
+@enduml

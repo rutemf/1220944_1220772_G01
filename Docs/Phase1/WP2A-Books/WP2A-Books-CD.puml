@@ -11,8 +11,9 @@ class BookController {
 }
 
 interface BookRepository {
-    + findById(lendingNumber)
+    + findById(ISBN)
     + save(book)
+    + searchBookByGenre(Genre)
 }
 
 interface BookService {
@@ -25,10 +26,7 @@ class BookServiceImpl implements BookService{
 }
 
 class Book <<entity>>{
-    - ISBN : ISBN
-    - Title : Title
-    - Description : Description
-    - Genre : Genre
+
 }
 
 class Title <<value>>{
@@ -50,16 +48,38 @@ class Genre <<entity>>{
    - Genre: genre
 }
 
-Book o--> Isbn
-Book o--> Title
-Book o--> Description
-Book o-> Genre
+interface GenreRepository {
+    + listAll(): list(genre)
+    + listByName(Name): list(genre)
+}
 
-BookServiceImpl ..> Book
+interface GenreService {
+    + register(genre)
+    + findGenre(genre)
+}
 
+interface AuthorsRepository {
+    + getAuthors(): list(authors)
+}
+
+class BookAuthor{
+    - authorNumber :int
+}
+
+Book *-- Isbn
+Book *-- Title
+Book *-right- Description
+Book o-- Genre
+BookAuthor o- Isbn
+
+BookServiceImpl .down.> Book
+
+BookServiceImpl..>GenreRepository
+BookServiceImpl .left.>AuthorsRepository
+GenreServiceImpl ..> Genre
 BookController ..> BookService
-BookServiceImpl .left.> BookRepository
-BookServiceImpl ..> BookRepository
-BookServiceImpl .right.> BookRepository
 
+BookServiceImpl .right.> BookRepository
+GenreServiceImpl ..> GenreRepository
+GenreServiceImpl .up.|> GenreService
 @enduml

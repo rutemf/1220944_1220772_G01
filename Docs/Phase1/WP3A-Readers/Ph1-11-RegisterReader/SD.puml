@@ -7,7 +7,7 @@ title Register a new reader as anonymous
 
 actor "Anonymous" as User
 participant ":System" as System
-participant "Ctrl:RegisterReaderController" as Ctrl
+participant "Ctrl:ReaderController" as Ctrl
 participant "service:ReaderService" as Service
 participant "repo:ReaderRepository" as Repo
 participant "reader:Reader" as Reader
@@ -16,11 +16,11 @@ activate User
 
 User -> System: requests reader registration based on given data
 
-System -> Ctrl: registerReader(requestBody);
+System -> Ctrl: registerReader(RegisterReaderRequest);
 
 Ctrl -> Service: create(name, dateOfBirth, ...)
 Service -> Reader: Reader(name, dateOfBirth, ...)
-Service -> Repo: addOrUpdate(name, dateOfBirth, ...)
+Service -> Repo: add(reader)
 Repo --> Service: reader or error
 Service --> Ctrl: reader or error
 Ctrl --> System: reader or error
