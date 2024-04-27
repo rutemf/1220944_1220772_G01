@@ -9,18 +9,24 @@ actor "Librarian" as User
 participant ":Rest" as Rest
 participant "Ctrl:BookController" as Ctrl
 participant "service:BookService" as Service
+participant "repo:AuthorsRepository" as RepoAuthors
+participant "repo:GenreRepository" as RepoGenre
 participant "repo:BookRepository" as Repo
 participant "book:Book" as Book
 
 activate User
 
-User -> Rest: requests reader registration based on given data
+User -> Rest: requests to update  on given data
 
 Rest -> Ctrl: registerBook(requestBody);
 
-Ctrl -> Service: create(isbn, title, genre, description, author(s))
+Ctrl -> Service: update(isbn, title, genre, description, author(s))
+Service -> RepoAuthors: getAuthors(authors)
+RepoAuthors --> Service: authors or error
+Service -> RepoGenre: getGenre(genre)
+RepoGenre --> Service: genre or error
 Service -> Book: Book(isbn, title, genre, description, author(s))
-Service -> Repo: add(book)
+Service -> Repo: update(book)
 Repo --> Service: book or error
 Service --> Ctrl: book or error
 Ctrl --> Rest: book or error
