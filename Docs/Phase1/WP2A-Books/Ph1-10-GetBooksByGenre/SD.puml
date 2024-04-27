@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+title Get books by genre as Librarian or Reader
+
+actor "Librarian or Reader" as User
+participant "Ctrl:BooksController" as Ctrl
+participant "service:BooksService" as Service
+participant "repo:BooksRepository" as Repo
+activate User
+
+User -> Ctrl: SearchBooksByGenre(Genre)
+activate Ctrl
+Ctrl -> Service: FindByGenre(Genre)
+activate Service
+Service -> Repo: findByGenre(Genre)
+activate Repo
+Repo --> Service: books
+deactivate Repo
+Service --> Ctrl: books
+deactivate Service
+Ctrl --> User: books
+deactivate Ctrl
+
+@enduml

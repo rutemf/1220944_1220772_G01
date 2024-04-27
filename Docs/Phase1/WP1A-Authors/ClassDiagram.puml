@@ -4,16 +4,28 @@
 skinparam classAttributeIconSize 0
 hide circle
 class Authors <<entity>>{
-    - Name : String
-    - Short Bio : String
-    - AuthorId : int
-    - Photo : ??
+    - (AuthorsNumber) : int
+
+}
+class Name <<entity>>{
+    - Name: string
+    + toString() : String
+}
+
+class AuthorBio <<value>>{
+    - Short Bio: string
+    + toString() : String
+}
+
+class Photo <<Entity>>{
+    - Photo: Byte
 }
 
 class AuthorsController {
     +createAuthor(name, short bio): void
-    +saveCreatedAuthor(): Result
     +UpdateAuthors(short bio): data
+    + findByName(AuthorsName)
+    + findById(AuthorsNumber)
 }
 
 class AuthorsServiceImpl implements AuthorsService{
@@ -22,16 +34,19 @@ class AuthorsServiceImpl implements AuthorsService{
 interface AuthorsService {
     + create(name, short bio) : Authors
     + findByName(AuthorsName)
-    + findById(AuthorsData)
+    + findById(AuthorsNumber)
     + update(AuthorsData)
 }
 
 interface AuthorsRepository {
-    + create(name, short bio) : Authors
-    + update(AuthorsData)
+    +saveCreatedAuthor(): Authors
 }
 
 AuthorsServiceImpl ..> Authors
 AuthorsController ..> AuthorsService
 AuthorsServiceImpl .left.> AuthorsRepository
+
+Authors o-- Name
+Authors o-- Photo
+Authors o-- AuthorBio
 @enduml

@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+title Search Readers by name as Librarian
+
+actor "Librarian" as User
+participant "Ctrl:ReadersController" as Ctrl
+participant "service:ReadersService" as Service
+participant "repo:ReadersRepository" as Repo
+activate User
+
+User -> Ctrl: SearchReadersByName(name)
+activate Ctrl
+Ctrl -> Service: FindByName(name)
+activate Service
+Service -> Repo: findByName(name)
+activate Repo
+Repo --> Service: Reader
+deactivate Repo
+Service --> Ctrl: Reader
+deactivate Service
+Ctrl --> User: Reader
+deactivate Ctrl
+
+@enduml

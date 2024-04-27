@@ -1,7 +1,6 @@
 @startuml
 
 actor Librarian
-
 participant "AuthorsController" as Controller
 participant "AuthorsService" as Service
 participant "AuthorsRepository" as Repository
@@ -20,73 +19,5 @@ Controller -> Controller: saveCreatedAuthor()
 activate Controller
 Controller --> Librarian: Result
 deactivate Controller
-@startuml
-'https://plantuml.com/sequence-diagram
-
-autoactivate on
-autonumber
-
-actor "Librarian" as User
-participant ":CreateAuthorController" as Ctrl
-participant ":Librarian" as Librarian
-participant "container:AuthorContainer" as Container
-participant "author:Authors" as Author
-
-activate User
-
-User -> Ctrl: createAuthor(name, short bio)
-activate Ctrl
-Ctrl -> Container: createAuthor(name, short bio)
-activate Container
-Container -> Author: create(name, short bio)
-activate Author
-Author --> Container: created author instance
-deactivate Author
-Container --> Ctrl: author instance
-deactivate Container
-Ctrl --> User: ok
-deactivate Ctrl
-
-User -> Ctrl: setData(name, short bio)
-activate Ctrl
-Ctrl -> Author: setName(name)
-activate Author
-Author --> Ctrl: ok
-deactivate Author
-Ctrl -> Author: setShortBio(short bio)
-activate Author
-Author --> Ctrl: ok
-deactivate Author
-Ctrl -> Container: validateAuthor()
-activate Container
-Container -> Author: isValid()
-activate Author
-Author --> Container: ok
-deactivate Author
-Container --> Container: checkDupliauthores()
-deactivate Container
-Container --> Ctrl: ok
-deactivate Container
-Ctrl --> User: ok
-deactivate Ctrl
-
-User -> Ctrl: saveCreatedAuthor()
-activate Ctrl
-Ctrl -> Container: saveAuthor()
-activate Container
-Container -> Container : validateAuthor()
-activate Container
-Container --> Container : ok
-deactivate Container
-Container -> Container: addAuthor()
-activate Container
-Container --> Container : ok
-deactivate Container
-Container --> Ctrl: ok
-deactivate Container
-Ctrl --> User: ok
-deactivate Ctrl
-
-@enduml
 
 @enduml
