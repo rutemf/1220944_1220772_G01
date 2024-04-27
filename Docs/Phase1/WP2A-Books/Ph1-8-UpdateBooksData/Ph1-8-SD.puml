@@ -12,20 +12,18 @@ participant "service:BookService" as Service
 participant "repo:AuthorsRepository" as RepoAuthors
 participant "repo:GenreRepository" as RepoGenre
 participant "repo:BookRepository" as Repo
-participant "book:Book" as Book
 
 activate User
 
 User -> Rest: requests to update  on given data
 
-Rest -> Ctrl: registerBook(requestBody);
+Rest -> Ctrl: updateBook(requestBody);
 
-Ctrl -> Service: update(isbn, title, genre, description, author(s))
-Service -> RepoAuthors: getAuthors(authors)
+Ctrl -> Service: update(Book)
+Service -> RepoAuthors: getAuthors()
 RepoAuthors --> Service: authors or error
-Service -> RepoGenre: getGenre(genre)
+Service -> RepoGenre: getGenre()
 RepoGenre --> Service: genre or error
-Service -> Book: Book(isbn, title, genre, description, author(s))
 Service -> Repo: update(book)
 Repo --> Service: book or error
 Service --> Ctrl: book or error

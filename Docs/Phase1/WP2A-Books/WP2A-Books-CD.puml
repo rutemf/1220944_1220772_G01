@@ -30,12 +30,10 @@ class Book <<entity>>{
 
 class Title <<value>>{
     - Title: string
-    + toString() : String
 }
 
 class Isbn <<value>>{
     - isbn: string
-    + toString() : String
 }
 
 class Description <<value>>{

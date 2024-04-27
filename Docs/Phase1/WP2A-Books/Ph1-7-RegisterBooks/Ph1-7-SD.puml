@@ -19,9 +19,9 @@ activate User
 
 User -> Rest: requests to create on given data
 
-Rest -> Ctrl: registerBook(requestBody);
+Rest -> Ctrl: createBook(requestBody);
 
-Ctrl -> Service: create(ISBN,title, genre, description, author(s))
+Ctrl -> Service: registerBook(ISBN,title, genre, description, author(s))
 Service -> RepoAuthors: getAuthors(authors)
 RepoAuthors --> Service: authors or error
 Service -> RepoGenre: getGenre(genre)
