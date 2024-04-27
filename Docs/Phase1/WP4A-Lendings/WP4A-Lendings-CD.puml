@@ -52,7 +52,6 @@ class LendingNumber <<value>> {
 
 class Isbn <<value>>{
     - isbn: string
-    + toString() : String
 }
 
 class ReaderNumber <<value>>{

@@ -25,14 +25,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -110,7 +103,8 @@ public class User implements UserDetails {
 
 	@Getter
 	@Setter
-	private String fullName;
+	@Embedded
+	private Name name;
 
 	@ElementCollection
 	@Getter
@@ -142,7 +136,7 @@ public class User implements UserDetails {
 	 */
 	public static User newUser(final String username, final String password, final String fullName) {
 		final var u = new User(username, password);
-		u.setFullName(fullName);
+		u.setName(new Name(fullName));
 		return u;
 	}
 
@@ -159,7 +153,7 @@ public class User implements UserDetails {
 	 */
 	public static User newUser(final String username, final String password, final String fullName, final String role) {
 		final var u = new User(username, password);
-		u.setFullName(fullName);
+		u.setName(new Name(fullName));
 		u.addAuthority(new Role(role));
 		return u;
 	}

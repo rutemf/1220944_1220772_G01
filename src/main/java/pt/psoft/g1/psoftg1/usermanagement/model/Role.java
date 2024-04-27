@@ -25,6 +25,8 @@ import org.springframework.security.core.GrantedAuthority;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
+import java.io.Serial;
+
 /**
  * Based on https://github.com/Yoh0xFF/java-spring-security-example
  *
@@ -33,14 +35,13 @@ import lombok.Value;
 @AllArgsConstructor
 public class Role implements GrantedAuthority {
 
-	/**
-	 *
-	 */
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	//TODO: Modify this to our needs
-	public static final String USER_ADMIN = "USER_ADMIN";
-	public static final String FOO_ADMIN = "FOO_ADMIN";
+	public static final String ADMIN = "ADMIN";
+	public static final String LIBRARIAN = "LIBRARIAN";
+	public static final String READER = "READER";
 
-	private String authority;
+	String authority;
 }

@@ -4,8 +4,7 @@
 skinparam classAttributeIconSize 0
 hide circle
 class Authors <<entity>>{
-    - (AuthorsNumber) : int
-
+    - authorsNumber : int
 }
 class Name <<entity>>{
     - Name: string
@@ -18,7 +17,7 @@ class AuthorBio <<value>>{
 }
 
 class Photo <<Entity>>{
-    - Photo: Byte
+    - photo: Byte[]
 }
 
 class AuthorsController {
