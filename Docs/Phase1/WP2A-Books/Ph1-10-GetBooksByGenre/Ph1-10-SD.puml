@@ -1,0 +1,27 @@
+startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+title Get the books details as a librarian or Reader
+
+actor "Librarian/Reader" as User
+participant ":Rest" as Rest
+participant "Ctrl:BookController" as Ctrl
+participant "service:BookService" as Service
+participant "repo:BookRepository" as Repo
+
+activate User
+
+User -> Rest: requests to get a list of book on given genre
+
+Rest -> Ctrl: getBook(requestBody);
+
+Ctrl -> Service: get(Book)
+Service -> Repo: get(Book)
+Repo --> Service: list of books or error
+Service --> Ctrl: list of books or error
+Ctrl --> Rest: book or error
+Rest --> User: get book or error
+
+@enduml
