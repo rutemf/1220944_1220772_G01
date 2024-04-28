@@ -14,4 +14,11 @@ public class ReaderNumber implements Serializable {
     public String toString(){
         return this.year + "/" + this.number;
     };
+
+    public ReaderNumber(int year, int number) {
+        this.year = year;
+        this.number = number;
+    }
+
+    protected ReaderNumber() {}
 }

@@ -63,9 +63,9 @@ class Name {
 }
 
 class ReaderNumber {
-    - number: string
-    - setNumber(string): void;
-    + getNumber(): string;
+    - registryYear: int
+    - number: int
+    + toString(): string;
 }
 
 class Email {
@@ -144,10 +144,10 @@ class UserMapper {
 UserServiceImpl "1" ---> "1" UserRepository
 ReaderDTO "1" ---> "1" ReaderMapper
 
-ReaderMapper "1" ---> "1" ReaderServiceImpl
+ReaderMapper "1" ---> "1" ReaderController
 
 UserDTO "1" ---> "1" UserMapper
-UserMapper "1" ---> "1" UserServiceImpl
+UserMapper "1" ---> "1" ReaderController
 
 ReaderController "1" ---> "1" ReaderService
 ReaderController "1" ---> "1" UserService
