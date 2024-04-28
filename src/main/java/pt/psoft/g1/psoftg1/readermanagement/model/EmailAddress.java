@@ -7,4 +7,10 @@ import jakarta.validation.constraints.Email;
 public class EmailAddress {
     @Email
     String address;
+
+    public EmailAddress(String emailAddress) {
+        this.address = emailAddress;
+    }
+
+    protected EmailAddress() {}
 }
