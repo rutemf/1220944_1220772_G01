@@ -7,7 +7,7 @@ class Authors <<entity>>{
     - authorsNumber : int
 }
 class Name <<entity>>{
-    - Name: string
+    - name: string
     + toString() : String
 }
 
@@ -21,10 +21,10 @@ class Photo <<Entity>>{
 }
 
 class AuthorsController {
-    +createAuthor(name, short bio): void
-    +UpdateAuthors(short bio): data
-    + findByName(AuthorsName)
-    + findById(AuthorsNumber)
+    +createAuthor(name,short bio,photo): void
+    +UpdateAuthors(name,short bio,photo): data
+    + getDetailsByNumber(AuthorsNumber)
+    + searchAuthorsByName(name)
 }
 
 class AuthorsServiceImpl implements AuthorsService{
@@ -39,6 +39,10 @@ interface AuthorsService {
 
 interface AuthorsRepository {
     +saveCreatedAuthor(): Authors
+    + findByName(AuthorsName)
+    + findById(AuthorsNumber)
+    + searchAuthorsByName(Name)
+
 }
 
 AuthorsServiceImpl ..> Authors
