@@ -1,13 +1,20 @@
-package pt.psoft.g1.psoftg1.book;
+package pt.psoft.g1.psoftg1.bookmanagement.services;
 
 import java.util.Optional;
 
 import jakarta.validation.ValidationException;
 
+import org.hibernate.validator.constraints.ISBN;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import pt.psoft.g1.psoftg1.BookRepository;
+import pt.psoft.g1.psoftg1.CreateBookRequest;
+import pt.psoft.g1.psoftg1.EditBookRequest;
+import pt.psoft.g1.psoftg1.GenreRepository;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
+import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,13 +26,19 @@ public class BookServiceImpl implements BookService {
 	public Iterable<Book> findAll() {
 		return bookRepository.findAll();
 	}
+
 	@Override
-	public Optional<Book> findOne(final ISBN ISBN) {
-		return bookRepository.findByISBN(ISBN);
+	public Optional<Book> findOne(ISBN isbn) {
+		return Optional.empty();
 	}
 
 	@Override
-	public Book create(final createBookRequest resource) {
+	public Optional<Book> findOne(final Isbn isbn) {
+		return bookRepository.findByISBN(isbn);
+	}
+
+	@Override
+	public Book create(final CreateBookRequest resource) {
 		// construct a new object based on data received by the service
 		final Book book = EditBookMapper.create(resource);
 

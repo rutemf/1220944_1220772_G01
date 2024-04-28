@@ -7,37 +7,20 @@ import pt.psoft.g1.psoftg1.readermanagement.model.ReaderNumber;
 import pt.psoft.g1.psoftg1.readermanagement.services.CreateReaderRequest;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReaderRepositoryImpl implements ReaderRepository{
-
-    @Override
-    public Reader create(CreateReaderRequest request) throws Exception {
-        Reader newReader = null;
-
-        //This should be wrapped on a try catch to avoid any domain exceptions, this way we make sure we catch everything
-        try {
-            if(findByReaderNumber(new ReaderNumber(LocalDate.now().getYear(), request.getNumber())) != null) {
-                throw new Exception("A reader with provided reader number is already registered");
-            }
-
-            if(findByEmail(new EmailAddress(request.getEmailAddress())) != null) {
-                throw new Exception("A reader with provided email address is already registered");
-            }
-
-            if(findByPhoneNumber(new PhoneNumber(request.getPhoneNumber())) != null) {
-                throw new Exception("A reader with provided phone number is already registered");
-            }
-
-            newReader = new Reader(request.getNumber(), request.getUser().getUsername(), request.getUser().getPassword(), request.getFullName(), request.getEmailAddress(), request.getBirthDate(), request.getPhoneNumber(), request.getGdpr(), request.getMarketing(), request.getThirdParty());
-        } catch(Exception e) {
-            throw new Exception("One of the provided data does not match domain criteria: " + e.getMessage());
-        }
-
-        return newReader;
-    }
+    private List<Reader> readerList = new ArrayList<>();
 
     @Override
     public Reader findByEmail(EmailAddress emailAddress) {
+        for(int i = 0; i < readerList.size(); i++) {
+            Reader reader = readerList.get(i);
+            if(reader.getEmailAddress().toString().equals(emailAddress.toString())) {
+
+            }
+        }
         return null;
     }
 
@@ -49,5 +32,28 @@ public class ReaderRepositoryImpl implements ReaderRepository{
     @Override
     public Reader findByReaderNumber(ReaderNumber readerNumber) {
         return null;
+    }
+
+    @Override
+    public Reader save(Reader reader) throws Exception {
+        try {
+            if(findByReaderNumber(reader.getReaderNumber()) != null) {
+                throw new Exception("A reader with provided reader number is already registered");
+            }
+
+            if(findByEmail(reader.getEmailAddress()) != null) {
+                throw new Exception("A reader with provided email address is already registered");
+            }
+
+            if(findByPhoneNumber(reader.getPhoneNumber()) != null) {
+                throw new Exception("A reader with provided phone number is already registered");
+            }
+
+            readerList.add(reader);
+        } catch(Exception e) {
+            throw new Exception("Unable to save given Reader: " + e.getMessage());
+        }
+
+        return reader;
     }
 }

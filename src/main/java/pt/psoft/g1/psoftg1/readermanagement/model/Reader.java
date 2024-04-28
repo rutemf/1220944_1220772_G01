@@ -4,6 +4,7 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import lombok.Getter;
 import pt.psoft.g1.psoftg1.usermanagement.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
@@ -12,29 +13,32 @@ import java.time.LocalDate;
 
 @Entity
 public class Reader extends User {
+    @Getter
     @EmbeddedId
-    ReaderNumber readerNumber;
+    private ReaderNumber readerNumber;
 
     @Embedded
-    Name fullName;
+    private Name fullName;
+
+    @Getter
+    @Embedded
+    private EmailAddress emailAddress;
 
     @Embedded
-    EmailAddress emailAddress;
+    private BirthDate birthDate;
 
+    @Getter
     @Embedded
-    BirthDate birthDate;
-
-    @Embedded
-    PhoneNumber phoneNumber;
+    private PhoneNumber phoneNumber;
 
     @Basic
-    boolean gdprConsent;
+    private boolean gdprConsent;
 
     @Basic
-    boolean marketingConsent;
+    private boolean marketingConsent;
 
     @Basic
-    boolean thirdPartySharingConsent;
+    private boolean thirdPartySharingConsent;
 
     /**
      * factory method. since mapstruct does not handle protected/private setters
@@ -117,6 +121,7 @@ public class Reader extends User {
     }
 
     //TODO: Apply Patch method to update the properties we want
+
 
     protected Reader() {
         // for ORM only

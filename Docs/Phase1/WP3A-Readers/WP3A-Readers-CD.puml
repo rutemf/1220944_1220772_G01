@@ -26,7 +26,7 @@ interface ReaderService {
     + findByReaderNumber(ReaderNumber): Reader
 }
 
-class ReaderServiceImpl implements ReaderRepository {
+class ReaderServiceImpl implements ReaderService {
     + create(reader_data): Reader
     + remove(Reader): void
     + update(Reader): Reader
@@ -159,7 +159,6 @@ Reader "1" o-down- "1" BirthDate
 'ReaderFactory "1" -> "1" ReaderRepository
 'ReaderService "1" -up-> "1" ReaderFactory
 ReaderServiceImpl "1" --> "0..*" Reader
-ReaderServiceImpl "1" --> "1" ReaderService
 
 
 @enduml
