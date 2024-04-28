@@ -20,13 +20,13 @@ public class BirthDate {
     //TODO: Colocar este valor a partir do application.properties ou de outro ficheiro de configuração
     private int minimumAge = 12;
 
-    public BirthDate(int year, int month, int day){
+    public BirthDate(int year, int month, int day) throws Exception {
         setDate(year, month, day);
     }
 
-    public BirthDate(String date) {
+    public BirthDate(String date) throws Exception {
         if(!date.matches(dateFormatPatternRegex)) {
-            throw new IllegalArgumentException("Provided birth date is not in a valid format");
+            throw new Exception("Provided birth date is not in a valid format");
         }
 
         String[] dateParts = date.split("/");
@@ -38,11 +38,11 @@ public class BirthDate {
         setDate(year, month, day);
     }
 
-    private void setDate(int year, int month, int day) {
+    private void setDate(int year, int month, int day) throws Exception {
         LocalDate minimumAgeDate = LocalDate.now().minusYears(minimumAge);
         LocalDate userDate = LocalDate.of(year, month, day);
         if(userDate.isAfter(minimumAgeDate)) {
-            throw new IllegalArgumentException("User age must be, at least, " + minimumAge);
+            throw new Exception("User age must be, at least, " + minimumAge);
         }
 
         this.date = LocalDateTime.of(userDate, LocalTime.of(0,0));

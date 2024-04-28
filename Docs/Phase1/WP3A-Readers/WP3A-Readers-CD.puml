@@ -24,7 +24,6 @@ interface ReaderService {
     + findByEmail(Email): Reader
     + findByPhoneNumber(PhoneNumber): Reader
     + findByReaderNumber(ReaderNumber): Reader
-    + isReaderUnique(Reader): bool
 }
 
 class ReaderServiceImpl implements ReaderRepository {
