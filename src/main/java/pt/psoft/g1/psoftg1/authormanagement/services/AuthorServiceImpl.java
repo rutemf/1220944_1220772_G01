@@ -1,13 +1,15 @@
-package pt.psoft.g1.psoftg1.author;
+package pt.psoft.g1.psoftg1.authormanagement.services;
 
 import java.util.Optional;
 
 import jakarta.validation.ValidationException;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import pt.psoft.g1.psoftg1.AuthorRepository;
+import pt.psoft.g1.psoftg1.AuthorService;
+import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +20,27 @@ public class AuthorServiceImpl implements AuthorService {
 	public Iterable<Author> findAll() {
 		return authorRepository.findAll();
 	}
+
+	@Override
+	public Optional<Author> findOne(Name name) {
+		return Optional.empty();
+	}
+
+	@Override
+	public Author create(CreateAuthorRequest resource) {
+		return null;
+	}
+
+	@Override
+	public Author partialUpdate(Autors authornumber, EditAuthorRequest resource, long parseLong) {
+		return null;
+	}
+
+	@Override
+	public Author update(Autors authornumber, EditAuthorRequest resource, long desiredVersion) {
+		return null;
+	}
+
 	@Override
 	public Optional<Author> findOne(final AuthorNumber AuthorNumber) {
 		return authorRepository.findByAuthorNumber(AuthorNumber);

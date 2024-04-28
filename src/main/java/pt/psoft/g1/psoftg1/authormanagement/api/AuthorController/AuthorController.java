@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1;
+package pt.psoft.g1.psoftg1.authormanagement.api.AuthorController;
 
 import java.net.URISyntaxException;
 
@@ -30,6 +30,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import pt.psoft.g1.psoftg1.AuthorService;
+import pt.psoft.g1.psoftg1.CreateAuthorRequest;
+import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 
 @Tag(name = "Authors", description = "Endpoints for managing authors")
 @RestController
@@ -66,7 +69,7 @@ class AuthorController {
 
     @Operation(summary = "Gets a specific Author by name")
     @GetMapping(value = "/{Authorname}")
-    public ResponseEntity<AuthorView> findByAuthorname(
+    public ResponseEntity<AuthorView> findByName(
             @PathVariable("Authorname") @Parameter(description = "The Authorname of the Author to find") final string Authorname) {
         final var Author = service.findOne(Authorname).orElseThrow(() -> new NotFoundException(Author.class, Authorname));
 
@@ -75,7 +78,7 @@ class AuthorController {
 
     @Operation(summary = "Gets a specific Author's Details by AuthorsNumber")
     @GetMapping(value = "/{AuthorNumber}")
-    public ResponseEntity<AuthorView> findByAuthorname(
+    public ResponseEntity<AuthorView> findByAuthorNumber(
             @PathVariable("AuthorNumber") @Parameter(description = "The AuthorNumber of the Author to find") final string AuthorNumber) {
         final var Author = service.findOne(AuthorNumber).orElseThrow(() -> new NotFoundException(Author.class, AuthorNumber));
 
@@ -98,7 +101,7 @@ class AuthorController {
 
     /* DÚVIDAS - isto é "real" ate que ponto? eu nao vou querer/puder dar update no autor number. Apago?
     @Operation(summary = "Fully replaces an existing bar. If the specified AuthorNumber does not exist does nothing and returns 400.")
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "/{id}")*/
     public ResponseEntity<BarView> upsert(final WebRequest request,
                                           @PathVariable("id") @Parameter(description = "The id of the bar to replace/create") final Long id,
                                           @Valid @RequestBody final EditBarRequest resource) {
