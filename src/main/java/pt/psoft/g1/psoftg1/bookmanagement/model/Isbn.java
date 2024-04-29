@@ -11,4 +11,7 @@ public class Isbn implements Serializable {
     @Size(min = 1, max = 16)
     String isbn;
 
+    public Isbn(String isbn) {
+        this.isbn = isbn;
+    }
 }

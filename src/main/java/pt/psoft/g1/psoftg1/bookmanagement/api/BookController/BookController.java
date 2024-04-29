@@ -31,13 +31,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "books", description = "Endpoints for managing books")
+/*@Tag(name = "books", description = "Endpoints for managing books")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/book")
+@RequestMapping("/api/book")*/
 class BarController {
 
-    private static final String IF_MATCH = "If-Match";
+    /*private static final String IF_MATCH = "If-Match";
 
     private static final Logger logger = LoggerFactory.getLogger(BarController.class);
 
@@ -98,7 +98,7 @@ class BarController {
      * @throws URISyntaxException
      */
     //
-    @Operation(summary = "Fully replaces an existing bar. If the specified id does not exist does nothing and returns 400.")
+    /*@Operation(summary = "Fully replaces an existing bar. If the specified id does not exist does nothing and returns 400.")
     @PutMapping(value = "/{id}")
     public ResponseEntity<BarView> upsert(final WebRequest request,
                                           @PathVariable("id") @Parameter(description = "The id of the bar to replace/create") final Long id,
@@ -141,5 +141,5 @@ class BarController {
 
         // TODO check if we can distinguish between a 404 and a 409
         return count == 1 ? ResponseEntity.noContent().build() : ResponseEntity.status(409).build();
-    }
+    }*/
 }

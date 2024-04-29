@@ -11,10 +11,12 @@ import java.util.List;
 
 @Entity
 public class Book {
+    @Getter
     @EmbeddedId
     @Column(name="ISBN")
     Isbn isbn;
 
+    @Getter
     @Embedded
     Title title;
 
@@ -29,6 +31,18 @@ public class Book {
     @Embedded
     Description description;
 
+    public Book(String isbn, String title) {
+        setIsbn(isbn);
+        setTitle(title);
+    }
+
+    public void setTitle(String title) {
+        this.title = new Title(title);
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = new Isbn(isbn);
+    }
 
     protected Book() {
         // got ORM only
