@@ -1,14 +1,11 @@
-package pt.psoft.g1.psoftg1;
+package pt.psoft.g1.psoftg1.authormanagement.repositories;
+import pt.psoft.g1.psoftg1.usermanagement.model.Name;
+import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.example.demo.Authormanagement.model.Author;
-
 public interface AuthorRepository {
-
-    Optional<Author> findByName(Name name);
-
     List<Author> findByName(Name name);
 
     Author save(Author author);

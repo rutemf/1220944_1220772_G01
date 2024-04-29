@@ -30,10 +30,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import pt.psoft.g1.psoftg1.AuthorService;
 import pt.psoft.g1.psoftg1.CreateAuthorRequest;
+import pt.psoft.g1.psoftg1.authormanagement.services.AuthorService;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
-
+/*
 @Tag(name = "Authors", description = "Endpoints for managing authors")
 @RestController
 @RequiredArgsConstructor
@@ -97,12 +97,12 @@ class AuthorController {
 
         final var bar = service.partialUpdate(AuthorNumber, resource, getVersionFromIfMatchHeader(ifMatchValue));
         return ResponseEntity.ok().eTag(Long.toString(bar.getVersion())).body(barViewMapper.toBarView(bar));
-    }
+    }*/
 
     /* DÚVIDAS - isto é "real" ate que ponto? eu nao vou querer/puder dar update no autor number. Apago?
     @Operation(summary = "Fully replaces an existing bar. If the specified AuthorNumber does not exist does nothing and returns 400.")
     @PutMapping(value = "/{id}")*/
-    public ResponseEntity<BarView> upsert(final WebRequest request,
+    /*public ResponseEntity<BarView> upsert(final WebRequest request,
                                           @PathVariable("id") @Parameter(description = "The id of the bar to replace/create") final Long id,
                                           @Valid @RequestBody final EditBarRequest resource) {
         final String ifMatchValue = request.getHeader(IF_MATCH);
@@ -129,4 +129,4 @@ class AuthorController {
 */
 
 
-}
+//}

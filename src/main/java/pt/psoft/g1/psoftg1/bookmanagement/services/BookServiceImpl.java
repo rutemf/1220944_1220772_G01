@@ -8,20 +8,20 @@ import org.hibernate.validator.constraints.ISBN;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import pt.psoft.g1.psoftg1.BookRepository;
 import pt.psoft.g1.psoftg1.CreateBookRequest;
 import pt.psoft.g1.psoftg1.EditBookRequest;
-import pt.psoft.g1.psoftg1.GenreRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
+import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
+import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
-	private final BookRepository bookRepository;
-	private final GenreRepository genreRepository;
+	private BookRepository bookRepository;
+	private GenreRepository genreRepository;
 	@Override
 	public Iterable<Book> findAll() {
 		return bookRepository.findAll();

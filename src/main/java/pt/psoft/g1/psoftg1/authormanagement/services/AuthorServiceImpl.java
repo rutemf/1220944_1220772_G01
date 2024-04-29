@@ -2,23 +2,24 @@ package pt.psoft.g1.psoftg1.authormanagement.services;
 
 import java.util.Optional;
 
-import jakarta.validation.ValidationException;
-
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import pt.psoft.g1.psoftg1.AuthorRepository;
-import pt.psoft.g1.psoftg1.AuthorService;
+import pt.psoft.g1.psoftg1.CreateAuthorRequest;
+import pt.psoft.g1.psoftg1.EditAuthorRequest;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
+import pt.psoft.g1.psoftg1.usermanagement.model.Name;
+import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 
 @Service
 @RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
 
-	private final AuthorRepository authorRepository;
+	private AuthorRepository authorRepository;
 	@Override
 	public Iterable<Author> findAll() {
-		return authorRepository.findAll();
+		//return authorRepository.findAll();
+		return null;
 	}
 
 	@Override
@@ -27,43 +28,26 @@ public class AuthorServiceImpl implements AuthorService {
 	}
 
 	@Override
-	public Author create(CreateAuthorRequest resource) {
+	public Author partialUpdate(Long authornumber, EditAuthorRequest resource, long parseLong) {
 		return null;
 	}
 
 	@Override
-	public Author partialUpdate(Autors authornumber, EditAuthorRequest resource, long parseLong) {
+	public Author update(Long authornumber, EditAuthorRequest resource, long desiredVersion) {
 		return null;
 	}
 
 	@Override
-	public Author update(Autors authornumber, EditAuthorRequest resource, long desiredVersion) {
+	public Optional<Author> findOne(final Long authorNumber) {
+		//return authorRepository.findByAuthorNumber(authorNumber);
 		return null;
 	}
 
 	@Override
-	public Optional<Author> findOne(final AuthorNumber AuthorNumber) {
-		return authorRepository.findByAuthorNumber(AuthorNumber);
-	}
-
-	@Override
-	public Author create(final createAuthorRequest resource) {
-		final Author author = EditAuthorMapper.create(resource);
-		return authorRepository.save(author);
-	}
-
-	@Override
-	public Author partialUpdate(final AuthorNumber authorNumber, final EditAuthorRequest resource, final long desiredVersion) {
-
-		final Author author = barRepository.findByAuthorNumber(authorNumber)
-				.orElseThrow(() -> new NotFoundException("Cannot update an object that does not yet exist"));
-
-		final Author author = authorRepository.findByName(resource.getAuthor())
-				.orElseThrow(() -> new ValidationException("Select an existing foo"));
-
-		author.applyPatch(desiredVersion, resource.getShortNote(), resource.getDescription(), author);
-
-		return authorRepository.save(author);
+	public Author create(final CreateAuthorRequest resource) {
+		//final Author author = EditAuthorMapper.create(resource);
+		//return authorRepository.save(author);
+		return null;
 	}
 
 	/*DUVIDAS, FICA OU NAO?
@@ -84,4 +68,3 @@ public class AuthorServiceImpl implements AuthorService {
 
 		return authorRepository.save(author);*/
 	}
-}
