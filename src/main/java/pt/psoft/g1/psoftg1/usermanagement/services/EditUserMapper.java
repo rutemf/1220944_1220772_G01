@@ -43,7 +43,6 @@ import pt.psoft.g1.psoftg1.usermanagement.model.User;
 @Mapper(componentModel = "spring")
 public abstract class EditUserMapper {
 
-	@Mapping(source = "authorities", target = "authorities", qualifiedByName = "stringToRole")
 	public abstract User create(CreateUserRequest request);
 
 	@BeanMapping(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

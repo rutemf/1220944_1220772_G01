@@ -4,7 +4,6 @@ import jakarta.validation.ValidationException;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
-import pt.psoft.g1.psoftg1.CreateAuthorRequest;
 import pt.psoft.g1.psoftg1.EditAuthorRequest;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;

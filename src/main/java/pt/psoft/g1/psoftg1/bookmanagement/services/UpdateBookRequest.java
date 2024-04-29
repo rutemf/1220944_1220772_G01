@@ -13,24 +13,24 @@ public class UpdateBookRequest {
 
     @Getter
     @Setter
-    private Description description;
+    private String description;
 
     @Getter
-    @NonNull
     @NotBlank
-    private Title title;
+    private String title;
 
     @Getter
-    @NonNull
     @NotBlank
-    private Genre genre;
+    private String genre;
+
+    //TODO: Fix this authorName list
 
     @Getter
     private String authorName;
 
-    public UpdateBookRequest(Title title, Genre genre, String authorName, Description description) {
+    public UpdateBookRequest(String title, String genre, String authorName, String description) {
         this.genre = genre;
-        this.authorName = authorName;
+        this.title = title;
         this.description = description;
         this.authorName = authorName;
     }

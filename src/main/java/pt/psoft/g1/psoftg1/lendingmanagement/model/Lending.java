@@ -19,13 +19,13 @@ public class Lending {
     @NotNull
     @NotBlank
     @ManyToOne
-    @Column(nullable = false, updatable = false)
+    @JoinColumn(nullable = false, updatable = false)
     Book book;
 
     @NotNull
     @NotBlank
     @ManyToOne
-    @Column(nullable = false, updatable = false)
+    @JoinColumn(nullable = false, updatable = false)
     Reader reader;
 
     @NotNull

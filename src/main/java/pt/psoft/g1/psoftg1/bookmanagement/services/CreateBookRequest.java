@@ -13,29 +13,29 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Title;
 public class CreateBookRequest {
     @Setter
     @Getter
-    private Isbn isbn;
+    private String isbn;
 
     @Getter
     @Setter
-    private Description description;
+    private String description;
 
     @Getter
     @NonNull
     @NotBlank
-    private Title title;
+    private String title;
 
     @Getter
     @NonNull
     @NotBlank
-    private Genre genre;
+    private String genre;
 
     @Getter
     private String authorName;
 
-    public CreateBookRequest(Isbn isbn, Title title, Genre genre, String authorName, Description description) {
+    public CreateBookRequest(String isbn, String title, String genre, String authorName, String description) {
         this.isbn = isbn;
         this.genre = genre;
-        this.authorName = authorName;
+        this.title = title;
         this.description = description;
         this.authorName = authorName;
     }

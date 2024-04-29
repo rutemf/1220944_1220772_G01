@@ -9,6 +9,10 @@ public class Title {
     @Size(min = 2, max = 50)
     String title;
 
+    protected Title() {
+
+    }
+
     public int size() {
         return title.length();
     }
@@ -19,5 +23,9 @@ public class Title {
 
     private void setTitle(String title) {
         this.title = title;
+    }
+
+    public String toString() {
+        return this.title;
     }
 }

@@ -29,7 +29,13 @@ public class Author {
             inverseJoinColumns=@JoinColumn(name="BOOK_ID", referencedColumnName="ISBN"))
     private List<Book> books;
 
-    protected Author() {
+    //TODO: Changed this constructor from protected to public because of errors from alvarenga's code on the mapper
+    public Author() {
         // for ORM only
+    }
+
+    //TODO: A constructor with data has to be created for services
+    public Author(String tempFix) {
+
     }
 }

@@ -9,6 +9,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Title;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -19,6 +20,9 @@ public interface BookRepository {
 
     int deleteByISBNIfMatch(Long id, long desiredVersion);
     Iterable<Book> findAll();
+
+    List<Book> findByGenre(Genre genre);
+
     Book findByIsbn(Isbn isbn);
 
     Book save(Book book) throws Exception;

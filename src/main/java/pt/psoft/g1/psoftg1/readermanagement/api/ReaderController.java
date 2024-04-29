@@ -44,6 +44,7 @@ class ReaderController {
     @PutMapping
     public ResponseEntity<Object> createReader(@RequestBody CreateReaderRequest readerRequest) {
         CreateUserRequest userRequest = new CreateUserRequest();
+
         userRequest.setUsername(readerRequest.getUsername());
         userRequest.setPassword(readerRequest.getPassword());
         userRequest.setRole(Role.READER);

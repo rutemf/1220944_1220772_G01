@@ -11,9 +11,12 @@ public class Genre {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     int id;
+
+    //TODO: verify domain rules to genre
     @Column(unique=true)
     String genre;
 
+    //TODO: This will imply having the objects always up to date when a book is updated
     @OneToMany(mappedBy = "genre")
     List<Book> bookList;
 
@@ -26,4 +29,16 @@ public class Genre {
     }
 
     protected Genre(){}
+
+    public Genre(String genre) {
+        setGenre(genre);
+    }
+
+    private void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String toString() {
+        return genre;
+    }
 }

@@ -1,7 +1,8 @@
-package pt.psoft.g1.psoftg1;
+package pt.psoft.g1.psoftg1.authormanagement.services;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import pt.psoft.g1.psoftg1.EditAuthorRequest;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

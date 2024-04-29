@@ -14,4 +14,10 @@ public class Isbn implements Serializable {
     public Isbn(String isbn) {
         this.isbn = isbn;
     }
+
+    protected Isbn() {};
+
+    public String toString() {
+        return this.isbn;
+    }
 }
