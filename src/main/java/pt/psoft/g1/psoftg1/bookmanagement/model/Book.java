@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 
 
@@ -31,6 +32,9 @@ public class Book {
     //TODO: Fix the many to many with either array of AuthorNumbers or store the whole objects (not good)
     @ManyToMany(mappedBy="books")
     private List<Author> authors;
+
+    @OneToMany(mappedBy = "book")
+    private List<Lending> lendings;
 
     @Embedded
     Description description;

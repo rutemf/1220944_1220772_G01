@@ -7,13 +7,25 @@ import java.io.Serializable;
 
 @Embeddable
 public class LendingNumber implements Serializable {
-    @Column(name = "YEAR")
-    private int year;
-    @Column(name = "NUMBER")
-    private int number;
+    @Column(name = "LENDING_NUMBER")
+    private String lendingNumber;
 
-    @Override
-    public String toString(){
-        return this.year + "/" + this.number;
-    };
+    public LendingNumber(int year, int number) {
+        this.lendingNumber = year + "/" + number;
+    }
+
+    public LendingNumber(String lendingNumber){
+        int a, b;
+        try { //TODO: Ricardo: Should this logic be here?
+            a = Integer.parseInt(lendingNumber, 0, 3, 1);
+            b = Integer.parseInt(lendingNumber, 5, lendingNumber.length(), 1);
+        }catch (NumberFormatException | IndexOutOfBoundsException e){
+            return;
+        }
+        this.lendingNumber = a + "/" + b;
+    }
+
+    public LendingNumber() {
+        // for ORM only
+    }
 }

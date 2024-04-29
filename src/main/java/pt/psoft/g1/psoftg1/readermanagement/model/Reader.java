@@ -1,16 +1,15 @@
 package pt.psoft.g1.psoftg1.readermanagement.model;
 
-import jakarta.persistence.Basic;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.usermanagement.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class Reader extends User {
@@ -42,6 +41,9 @@ public class Reader extends User {
     @Setter
     @Basic
     private boolean thirdPartySharingConsent;
+
+    @OneToMany(mappedBy = "reader")
+    private List<Lending> lendings;
 
     /**
      * factory method. since mapstruct does not handle protected/private setters
@@ -104,7 +106,7 @@ public class Reader extends User {
         }
     }
 
-    //TODO: Apply Patch method to update the properties we want
+    //TODO: Edu: Apply Patch method to update the properties we want
     public void applyPatch() {
 
     }

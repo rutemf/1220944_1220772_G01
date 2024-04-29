@@ -18,7 +18,7 @@ public class BirthDate {
     private final String dateFormatPatternRegex = "\\d{4}/\\d{2}/\\d{2}";
 
     //TODO: Colocar este valor a partir do application.properties ou de outro ficheiro de configuração
-    private int minimumAge = 12;
+    private int minimumAge = 12; //TODO: Ricardo : colocar static/final?
 
     public BirthDate(int year, int month, int day) throws Exception {
         setDate(year, month, day);
