@@ -14,7 +14,11 @@ public class CreateReaderRequest {
 
     @Getter
     @NonNull
-    private User user;
+    private String username;
+
+    @Getter
+    @Setter
+    private String password;
 
     @Getter
     @NonNull
@@ -46,16 +50,16 @@ public class CreateReaderRequest {
     @NonNull
     private boolean thirdParty;
 
-    public CreateReaderRequest(User user, String fullName, String emailAddress, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) {
-        this.user = user;
-        this.fullName = fullName;
-        this.emailAddress = emailAddress;
-        this.birthDate = birthDate;
-        this.phoneNumber = phoneNumber;
-        this.gdpr = gdpr;
-        this.marketing = marketing;
-        this.thirdParty = thirdParty;
-    }
+    /*public CreateReaderRequest(String username, String password, String fullName, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) {
+        setUsername(username);
+        setPassword(password);
+        setFullName(fullName);
+        setBirthDate(birthDate);
+        setPhoneNumber(phoneNumber);
+        setGdpr(gdpr);
+        setMarketing(marketing);
+        setThirdParty(thirdParty);
+    }*/
 
     public boolean getThirdParty() {
         return thirdParty;
