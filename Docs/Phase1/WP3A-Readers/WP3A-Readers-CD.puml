@@ -153,12 +153,13 @@ ReaderController "1" ---> "1" UserService
 Reader "1" o-down- "1" User
 Reader "1" o- "1" Name
 Reader "1" o-down- "1" ReaderNumber
-Reader "1" o-up- "1" Email
+User "1" o-up- "1" Email
 Reader "1" o-down- "1" PhoneNumber
 Reader "1" o-down- "1" BirthDate
 'ReaderFactory "1" -> "1" ReaderRepository
 'ReaderService "1" -up-> "1" ReaderFactory
 ReaderServiceImpl "1" --> "0..*" Reader
+ReaderServiceImpl "1" --> "1" ReaderRepository
 
 
 @enduml
