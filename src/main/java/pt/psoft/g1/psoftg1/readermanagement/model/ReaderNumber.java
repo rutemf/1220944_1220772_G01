@@ -1,13 +1,16 @@
 package pt.psoft.g1.psoftg1.readermanagement.model;
 
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
 
 import java.io.Serializable;
 
 
 @Embeddable
 public class ReaderNumber implements Serializable {
+    @Getter
     private int year;
+    @Getter
     private int number;
 
     @Override

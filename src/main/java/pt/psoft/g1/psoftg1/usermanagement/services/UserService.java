@@ -56,9 +56,6 @@ public class UserService implements UserDetailsService {
 		if (userRepo.findByUsername(request.getUsername()).isPresent()) {
 			throw new ConflictException("Username already exists!");
 		}
-		if (!request.getPassword().equals(request.getRePassword())) {
-			throw new ValidationException("Passwords don't match!");
-		}
 
 		final User user = userEditMapper.create(request);
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -72,17 +69,6 @@ public class UserService implements UserDetailsService {
 		userEditMapper.update(request, user);
 
 		return userRepo.save(user);
-	}
-
-	@Transactional
-	public User upsert(final CreateUserRequest request) {
-		final Optional<User> optionalUser = userRepo.findByUsername(request.getUsername());
-
-		if (optionalUser.isEmpty()) {
-			return create(request);
-		}
-		final EditUserRequest updateUserRequest = new EditUserRequest(request.getFullName(), request.getAuthorities());
-		return update(optionalUser.get().getId(), updateUserRequest);
 	}
 
 	@Transactional

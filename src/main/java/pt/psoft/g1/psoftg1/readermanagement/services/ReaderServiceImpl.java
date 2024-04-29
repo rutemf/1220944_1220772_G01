@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.readermanagement.services;
 
+import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.readermanagement.model.EmailAddress;
 import pt.psoft.g1.psoftg1.readermanagement.model.PhoneNumber;
 import pt.psoft.g1.psoftg1.readermanagement.model.Reader;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ReaderServiceImpl implements ReaderService {
     private ReaderRepository readerRepo;
     private int readerID = 0;
@@ -26,16 +28,12 @@ public class ReaderServiceImpl implements ReaderService {
                 throw new Exception("A reader with provided reader number is already registered");
             }
 
-            if(findByEmail(new EmailAddress(request.getEmailAddress())) != null) {
-                throw new Exception("A reader with provided email address is already registered");
-            }
-
             if(findByPhoneNumber(new PhoneNumber(request.getPhoneNumber())) != null) {
                 throw new Exception("A reader with provided phone number is already registered");
             }
 
             request.setNumber(++readerID);
-            newReader = new Reader(request.getNumber(), request.getUser().getUsername(), request.getUser().getPassword(), request.getFullName(), request.getEmailAddress(), request.getBirthDate(), request.getPhoneNumber(), request.getGdpr(), request.getMarketing(), request.getThirdParty());
+            newReader = new Reader(request.getNumber(), request.getUsername(), request.getPassword(), request.getFullName(), request.getBirthDate(), request.getPhoneNumber(), request.getGdpr(), request.getMarketing(), request.getThirdParty());
         } catch(Exception e) {
             throw new Exception("One of the provided data does not match domain criteria: " + e.getMessage());
         }
@@ -49,17 +47,17 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public Reader findByEmail(EmailAddress emailAddress) {
-        return null;
-    }
-
-    @Override
     public Reader findByPhoneNumber(PhoneNumber phoneNumber) {
-        return null;
+        return this.readerRepo.findByPhoneNumber(phoneNumber);
     }
 
     @Override
     public Reader findByReaderNumber(ReaderNumber readerNumber) {
-        return null;
+        return this.readerRepo.findByReaderNumber(readerNumber);
+    }
+
+    @Override
+    public List<Reader> findAll() {
+        return this.readerRepo.findAll();
     }
 }

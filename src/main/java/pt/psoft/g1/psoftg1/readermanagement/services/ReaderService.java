@@ -17,8 +17,7 @@ import pt.psoft.g1.psoftg1.usermanagement.services.CreateUserRequest;
 public interface ReaderService {
     Reader create(CreateReaderRequest request) throws Exception;
     Reader save(Reader reader) throws Exception;
-
-    Reader findByEmail(EmailAddress emailAddress);
     Reader findByPhoneNumber(PhoneNumber phoneNumber);
     Reader findByReaderNumber(ReaderNumber readerNumber);
+    List<Reader> findAll();
 }

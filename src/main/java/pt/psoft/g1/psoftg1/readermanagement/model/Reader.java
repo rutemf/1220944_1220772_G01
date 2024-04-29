@@ -5,6 +5,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import lombok.Getter;
+import lombok.Setter;
 import pt.psoft.g1.psoftg1.usermanagement.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
@@ -20,10 +21,6 @@ public class Reader extends User {
     @Embedded
     private Name fullName;
 
-    @Getter
-    @Embedded
-    private EmailAddress emailAddress;
-
     @Embedded
     private BirthDate birthDate;
 
@@ -31,12 +28,18 @@ public class Reader extends User {
     @Embedded
     private PhoneNumber phoneNumber;
 
+    @Getter
+    @Setter
     @Basic
     private boolean gdprConsent;
 
+    @Getter
+    @Setter
     @Basic
     private boolean marketingConsent;
 
+    @Getter
+    @Setter
     @Basic
     private boolean thirdPartySharingConsent;
 
@@ -58,17 +61,16 @@ public class Reader extends User {
         return u;
     }*/
 
-    public Reader(int readerNumber, String username, String password, String fullName, String emailAddress, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) throws Exception {
+    public Reader(int readerNumber, String username, String password, String fullName, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) throws Exception {
         super(username, password);
 
-        if(fullName == null || emailAddress == null || phoneNumber == null) {
+        if(fullName == null || phoneNumber == null) {
             throw new Exception("Provided argument resolves to null object");
         }
 
         setReaderNumber(new ReaderNumber(LocalDate.now().getYear(), readerNumber));
         setFullName(new Name(fullName));
         setPhoneNumber(new PhoneNumber(phoneNumber));
-        setEmailAddress(new EmailAddress(emailAddress));
         setBirthDate(new BirthDate(birthDate));
         setPhoneNumber(new PhoneNumber(phoneNumber));
         //By the client specifications, gdpr can only have the value of true. A setter will be created anyways in case we have accept no gdpr consent later on the project
@@ -96,32 +98,16 @@ public class Reader extends User {
         }
     }
 
-    private void setEmailAddress(EmailAddress email) {
-        if(email != null) {
-            this.emailAddress = email;
-        }
-    }
-
     private void setBirthDate(BirthDate date) {
         if(date != null) {
             this.birthDate = date;
         }
     }
 
-    private void setGdprConsent(boolean gdpr) {
-        this.gdprConsent = gdpr;
-    }
-
-    private void setMarketingConsent(boolean marketing) {
-        this.marketingConsent = marketing;
-    }
-
-    private void setThirdPartySharingConsent(boolean third) {
-        this.thirdPartySharingConsent = third;
-    }
-
     //TODO: Apply Patch method to update the properties we want
+    public void applyPatch() {
 
+    }
 
     protected Reader() {
         // for ORM only
