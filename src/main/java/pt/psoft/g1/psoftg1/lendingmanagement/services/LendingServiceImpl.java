@@ -1,17 +1,13 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.services;
 
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -43,7 +39,7 @@ public class LendingServiceImpl implements LendingService{
 
     //TODO
     @Override
-    public Lending update(final String lendingNumber, EditLendingRequest resource) {
+    public Lending update(final String lendingNumber, SetLendingReturnedDto resource) {
         // first let's check if the object exists so we don't create a new object with
         // save
         final var l = lendingRepository.findByLendingNumber(new LendingNumber(lendingNumber))
