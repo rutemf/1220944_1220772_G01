@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.nio.file.Files.exists;
+
 public class GenreRepositoryImpl implements GenreRepository{
     private List<Genre> genreList = new ArrayList<>();
 
@@ -23,23 +25,31 @@ public class GenreRepositoryImpl implements GenreRepository{
         return genreList;
     }
 
-    @Override
-    public Genre save(Genre genre) {
-        return null;
+    private boolean exists(Genre genre) {
+        for (Genre g : genreList) {
+            if (g.toString().equals(genre.toString())) {
+                return true;
+            }
+        }
+        return false;
     }
-    /*
+
     @Override
     public Genre save(Genre genre) throws Exception {
-        try {
-            if(findByIsbn(genre.get()) != null) {
-                throw new Exception("A book with provided isbn is already registered");
-            }
+        if (genre == null) {
+            throw new IllegalArgumentException("Genre cannot be null.");
+        }
 
-            bookList.add(book);
-        } catch(Exception e) {
-            throw new Exception("Unable to save given Reader: " + e.getMessage());
+        if (exists(genre)) {
+            throw new Exception("A genre with the name '" + genre.toString() + "' is already registered.");
+        }
+
+        try {
+            genreList.add(genre);
+        } catch (Exception e) {
+            throw new Exception("Unable to save the genre: " + e.getMessage(), e);
         }
 
         return genre;
-    }*/
+    }
 }

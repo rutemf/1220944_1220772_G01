@@ -1,27 +1,15 @@
 package pt.psoft.g1.psoftg1.bookmanagement.services;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import jakarta.validation.ValidationException;
-
-import org.hibernate.validator.constraints.ISBN;
 import org.springframework.stereotype.Service;
 
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
-import pt.psoft.g1.psoftg1.EditBookRequest;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Title;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Description;
-import pt.psoft.g1.psoftg1.bookmanagement.services.CreateBookRequest;
+
 
 @Service
 @RequiredArgsConstructor

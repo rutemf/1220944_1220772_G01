@@ -11,5 +11,5 @@ public interface GenreRepository {
 
     Iterable<Genre> findAll();
 
-    Genre save(Genre genre);
+    Genre save(Genre genre) throws Exception;
 }

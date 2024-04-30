@@ -22,10 +22,6 @@ public class BookRepositoryImpl implements BookRepository{
 //        return null;
 //    }
 
-    @Override
-    public int deleteByISBNIfMatch(Long id, long desiredVersion) {
-        return 0;
-    }
 
     @Override
     public Iterable<Book> findAll() {
@@ -37,10 +33,9 @@ public class BookRepositoryImpl implements BookRepository{
         String filterGenre = genre.toString();
         List<Book> filteredList = new ArrayList<>();
 
-        for(int i = 0; i < bookList.size(); i++) {
-            Book book = bookList.get(i);
+        for (Book book : bookList) {
             String bookGenre = book.getGenre().toString();
-            if(bookGenre.equals(filterGenre) || bookGenre.contains(filterGenre)) {
+            if (bookGenre.equals(filterGenre) || bookGenre.contains(filterGenre)) {
                 filteredList.add(book);
             }
         }
@@ -50,9 +45,8 @@ public class BookRepositoryImpl implements BookRepository{
 
     @Override
     public Book findByIsbn(Isbn isbn) {
-        for(int i = 0; i < bookList.size(); i++) {
-            Book book = bookList.get(i);
-            if(book.getIsbn().equals(isbn)) {
+        for (Book book : bookList) {
+            if (book.getIsbn().equals(isbn)) {
                 return book;
             }
         }
@@ -65,6 +59,12 @@ public class BookRepositoryImpl implements BookRepository{
         try {
             if(findByIsbn(book.getIsbn()) != null) {
                 throw new Exception("A book with provided isbn is already registered");
+            }
+            if(book.getGenre() != null) {
+                throw new Exception("A book cannot be created without a genre");
+            }
+            if(book.getTitle() != null) {
+                throw new Exception("A book cannot be created without a title");
             }
 
             bookList.add(book);
