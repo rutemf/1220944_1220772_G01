@@ -19,14 +19,20 @@ public class Lending {
     @Getter
     private LendingNumber lendingNumber;
 
-    @NotNull
-    @NotBlank
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "ISBN", nullable = false, updatable = false)
-    private Book book;
+    @Embedded
+    private Fine fine;
 
     @NotNull
     @NotBlank
+    @Getter
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "ISBN", nullable = false, updatable = false)
+    private Book book;
+
+
+    @NotNull
+    @NotBlank
+    @Getter
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "READER_NUMBER", nullable = false, updatable = false)
     private Reader reader;
@@ -54,9 +60,6 @@ public class Lending {
     @Size(min = 0, max = 2048) //TODO Ricardo: confirm with client answer
     private String commentary;
 
-    @OneToOne(mappedBy = "lending", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Fine fine;
-
     public Lending(Book book, Reader reader, LendingNumber lendingNumber){
         this.lendingNumber = lendingNumber;
         this.book = book;
@@ -77,7 +80,7 @@ public class Lending {
         this.commentary = commentary;
         setReturnDate();
         if(returnDate.isAfter(limitDate)){
-            this.fine = new Fine(this);
+            this.fine = new Fine(getDaysDelayed());
         }
     }
 

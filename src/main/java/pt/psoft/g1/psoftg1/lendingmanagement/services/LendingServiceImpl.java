@@ -2,11 +2,14 @@ package pt.psoft.g1.psoftg1.lendingmanagement.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
+import pt.psoft.g1.psoftg1.readermanagement.model.Reader;
+import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 
 import java.util.Optional;
 
@@ -15,7 +18,7 @@ import java.util.Optional;
 public class LendingServiceImpl implements LendingService{
     private final LendingRepository lendingRepository;
     private final BookRepository bookRepository;
-    //private final AuthorRepository authorRepository;
+    private final ReaderRepository readerRepository;
     private final LendingMapper lendingMapper;
 
     @Override
@@ -30,11 +33,12 @@ public class LendingServiceImpl implements LendingService{
 
     @Override
     public Lending create(final CreateLendingDto resource) {
-/*
-        final Lending lending = lendingMapper.create(resource);
-*/
+        Book b = bookRepository.findByIsbn(resource.getIsbn());
+        Reader r = readerRepository.findByReaderNumber(resource.getReaderNumber());
+        int seq = lendingRepository.getCountFromCurrentYear();
+        LendingNumber ln = new LendingNumber(seq);
 
-        return null;
+        return new Lending(b,r,ln);
     }
 
     //TODO

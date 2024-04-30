@@ -28,5 +28,9 @@ public interface SpringDataLendingRepository extends LendingRepository, CrudRepo
             "WHERE r.readerNumber = :readerNumber")
     List<Lending> searchByReaderNumber(@Param("readerNumber") String readerNumber);
 
-
+    @Override
+    @Query("SELECT COUNT (l) " +
+            "FROM Lending l " +
+            "WHERE l.lendingNumber.year = YEAR(CURRENT_DATE)")
+    int getCountFromCurrentYear();
 }

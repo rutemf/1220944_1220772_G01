@@ -2,15 +2,25 @@ package pt.psoft.g1.psoftg1.lendingmanagement.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Id;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Embeddable
 public class LendingNumber implements Serializable {
     @Column(name = "LENDING_NUMBER")
+    @Id
     private String lendingNumber;
 
+    @Column(name = "YEAR")
+    private int year;
+    @Column(name = "SEQUENCIAL")
+    private int sequencial;
+
     public LendingNumber(int year, int number) {
+        this.year = year;
+        this.sequencial = number;
         this.lendingNumber = year + "/" + number;
     }
 
@@ -22,7 +32,15 @@ public class LendingNumber implements Serializable {
         }catch (NumberFormatException | IndexOutOfBoundsException e){
             return;
         }
+        this.year = a;
+        this.sequencial = b;
         this.lendingNumber = a + "/" + b;
+    }
+
+    public LendingNumber(int number) {
+        this.year = LocalDate.now().getYear();
+        this.sequencial = number;
+        this.lendingNumber = year + "/" + number;
     }
 
     public LendingNumber() {

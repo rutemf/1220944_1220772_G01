@@ -17,4 +17,6 @@ public interface LendingRepository {
 
     Iterable<Lending> findAll();
 
+    int getCountFromCurrentYear();
+
 }
