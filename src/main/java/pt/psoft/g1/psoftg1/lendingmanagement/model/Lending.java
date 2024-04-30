@@ -12,10 +12,15 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 @Entity
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames={"LENDING_NUMBER", "YEAR", "SEQUENCIAL"})})
 public class Lending {
     private static final int MAX_DAYS_PER_LENDING = 15;    //TODO: Move this to a properties file
 
-    @EmbeddedId
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long pk;
+
     @Getter
     private LendingNumber lendingNumber;
 

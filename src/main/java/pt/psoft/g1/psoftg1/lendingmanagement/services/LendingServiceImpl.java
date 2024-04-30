@@ -2,13 +2,11 @@ package pt.psoft.g1.psoftg1.lendingmanagement.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
-import pt.psoft.g1.psoftg1.readermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 
 import java.util.Optional;
@@ -27,29 +25,35 @@ public class LendingServiceImpl implements LendingService{
     }
 
     @Override
-    public Optional<Lending> findByLendingNumber(final String lendingNumber) {
-        return lendingRepository.findByLendingNumber(new LendingNumber(lendingNumber));
-    }
-
-    @Override
     public Lending create(final CreateLendingDto resource) {
-        Book b = bookRepository.findByIsbn(resource.getIsbn());
-        Reader r = readerRepository.findByReaderNumber(resource.getReaderNumber());
+        final var b = bookRepository.findByIsbn(resource.getIsbn())
+                .orElseThrow(() -> new NotFoundException("Book not found"));
+        final var r = readerRepository.findByReaderNumber(resource.getReaderNumber())
+                .orElseThrow(() -> new NotFoundException("Reader not found"));
         int seq = lendingRepository.getCountFromCurrentYear();
         LendingNumber ln = new LendingNumber(seq);
+        final Lending l = new Lending(b,r,ln);
 
-        return new Lending(b,r,ln);
+        return lendingRepository.save(l);
     }
 
-    //TODO
     @Override
-    public Lending update(final String lendingNumber, SetLendingReturnedDto resource) {
-        // first let's check if the object exists so we don't create a new object with
-        // save
-        final var l = lendingRepository.findByLendingNumber(new LendingNumber(lendingNumber))
-                .orElseThrow(() -> new NotFoundException("Cannot update an object that does not yet exist"));
-        //TODO
+    public Lending setReturned(final String lendingNumber, final SetLendingReturnedDto resource, final long desiredVersion) {
 
-        return null;
+        Optional<Lending> l;
+
+        try{
+            l = Optional.ofNullable(lendingRepository.findOpenByReaderNumberAndIsbn(resource.getReaderNumber(), resource.getIsbn())
+                    .orElseThrow(() -> new NotFoundException("Cannot find lending with this book")));
+        }catch (NotFoundException e){
+            l = Optional.ofNullable(lendingRepository.findByLendingNumber(new LendingNumber(lendingNumber))
+                    .orElseThrow(() -> new NotFoundException("Cannot update lending with this lending number")));
+        }
+
+        //there is no way to get to this point with an empty optional
+        assert l.isPresent() : "Optional<Lending> should not be empty";
+        l.get().setReturned(desiredVersion, resource.getCommentary());
+
+        return lendingRepository.save(l.get());
     }
 }

@@ -1,6 +1,5 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.repositories;
 
-import org.springframework.data.repository.query.Param;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
 
@@ -11,12 +10,16 @@ public interface LendingRepository {
 
     Optional<Lending> findByLendingNumber(LendingNumber lendingNumber);
 
-    List<Lending> searchByIsbn(@Param("isbn") String isbn);
+    Optional<Lending> findOpenByReaderNumberAndIsbn(String readerNumber, String isbn);
 
-    List<Lending> searchByReaderNumber(@Param("readerNumber") String readerNumber);
+    List<Lending> listAllByIsbn(String isbn);
+
+    List<Lending> listAllByReaderNumber(String readerNumber);
 
     Iterable<Lending> findAll();
 
     int getCountFromCurrentYear();
+
+    Lending save(Lending lending);
 
 }

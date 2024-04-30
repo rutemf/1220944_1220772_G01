@@ -2,7 +2,6 @@ package pt.psoft.g1.psoftg1.lendingmanagement.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Id;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -10,7 +9,6 @@ import java.time.LocalDate;
 @Embeddable
 public class LendingNumber implements Serializable {
     @Column(name = "LENDING_NUMBER")
-    @Id
     private String lendingNumber;
 
     @Column(name = "YEAR")

@@ -22,7 +22,7 @@ public interface BookRepository {
 
     List<Book> findByGenre(@Param("genre") Genre genre);
 
-    Book findByIsbn(@Param("isbn") String isbn);
+    Optional<Book> findByIsbn(@Param("isbn") String isbn);
 
     Book save(Book book);
     Book update(@Param("isbn") @NotNull String isbn, @Param("title") String title, @Param("description") String description, @Param("genre") Genre genre);

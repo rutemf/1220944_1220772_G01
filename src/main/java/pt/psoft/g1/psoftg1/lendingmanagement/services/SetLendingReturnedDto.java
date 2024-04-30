@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Schema(description = "A DTO for setting a Lending as returned")
 public class SetLendingReturnedDto {
+    private String readerNumber;
     private String lendingNumber;
     private String isbn;
     private String commentary;
