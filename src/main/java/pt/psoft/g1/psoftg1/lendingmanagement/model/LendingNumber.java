@@ -28,4 +28,9 @@ public class LendingNumber implements Serializable {
     public LendingNumber() {
         // for ORM only
     }
+
+    public String toString() {
+        return this.lendingNumber;
+    }
+
 }

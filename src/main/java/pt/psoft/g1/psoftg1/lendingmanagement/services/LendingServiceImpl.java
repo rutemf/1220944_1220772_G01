@@ -29,7 +29,7 @@ public class LendingServiceImpl implements LendingService{
     }
 
     @Override
-    public Lending create(final CreateLendingRequest resource) {
+    public Lending create(final CreateLendingDto resource) {
 /*
         final Lending lending = lendingMapper.create(resource);
 */

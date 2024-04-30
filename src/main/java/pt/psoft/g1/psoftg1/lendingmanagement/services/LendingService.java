@@ -9,7 +9,7 @@ public interface LendingService {
 
     Optional<Lending> findByLendingNumber(String lendingNumber);
 
-    Lending create(CreateLendingRequest resource); //No ID passed, as it is auto generated
+    Lending create(CreateLendingDto resource); //No ID passed, as it is auto generated
 
     Lending update(String id, SetLendingReturnedDto resource);
 

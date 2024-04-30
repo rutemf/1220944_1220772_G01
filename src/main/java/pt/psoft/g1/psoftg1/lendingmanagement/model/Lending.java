@@ -51,7 +51,6 @@ public class Lending {
     @Getter
     private long version;
 
-    @Column()
     @Size(min = 0, max = 2048) //TODO Ricardo: confirm with client answer
     private String commentary;
 
