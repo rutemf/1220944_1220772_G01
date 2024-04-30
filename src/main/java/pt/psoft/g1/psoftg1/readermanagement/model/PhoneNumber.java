@@ -21,5 +21,7 @@ public class PhoneNumber {
         this.number = number;
     }
 
-
+    public String toString() {
+        return this.number;
+    }
 }

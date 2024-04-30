@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.readermanagement.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.readermanagement.model.EmailAddress;
 import pt.psoft.g1.psoftg1.readermanagement.model.PhoneNumber;
@@ -13,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReaderServiceImpl implements ReaderService {
-    private ReaderRepository readerRepo;
+    private final ReaderRepository readerRepo;
     private int readerID = 0;
     private List<Reader> readerList = new ArrayList<>();
-
     @Override
     public Reader create(CreateReaderRequest request) throws Exception {
         Reader newReader = null;
@@ -48,12 +49,12 @@ public class ReaderServiceImpl implements ReaderService {
 
     @Override
     public Reader findByPhoneNumber(PhoneNumber phoneNumber) {
-        return this.readerRepo.findByPhoneNumber(phoneNumber);
+        return this.readerRepo.findByPhoneNumber(phoneNumber.toString());
     }
 
     @Override
     public Reader findByReaderNumber(ReaderNumber readerNumber) {
-        return this.readerRepo.findByReaderNumber(readerNumber);
+        return this.readerRepo.findByReaderNumber(readerNumber.toString());
     }
 
     @Override
