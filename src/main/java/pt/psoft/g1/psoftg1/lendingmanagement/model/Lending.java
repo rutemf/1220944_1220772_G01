@@ -55,6 +55,7 @@ public class Lending {
     private LocalDate limitDate;
 
     @Temporal(TemporalType.DATE)
+    @Getter
     private LocalDate returnDate;
 
     // optimistic-lock
@@ -81,16 +82,38 @@ public class Lending {
         this.returnDate = LocalDate.now();
     }
 
+    /**
+     * <p>Sets commentary</p>
+     * <p>Sets return date</p>
+     * <p>If return date is after limite date, fine is applied with corresponding value</p>
+     *
+     * @param desiredVersion to prevent editing a stale object
+     * @param commentary written by a reader
+     * @return
+     */
     public void setReturned(final long desiredVersion, final String commentary){
         this.commentary = commentary;
         setReturnDate();
-        if(returnDate.isAfter(limitDate)){
+        if(returnDate.isAfter(limitDate) && this.fine == null){
             this.fine = new Fine(getDaysDelayed());
         }
     }
 
-    int getDaysDelayed(){
-        return (int) ChronoUnit.DAYS.between(this.returnDate, this.limitDate);
+    public int getDaysDelayed(){
+        if(this.returnDate != null) {
+            return (int) ChronoUnit.DAYS.between(this.limitDate, this.returnDate);
+        }else{
+            return (int) ChronoUnit.DAYS.between(this.limitDate, LocalDate.now());
+        }
+    }
+
+    //TODO: apply and fix Fine updating/creation logic
+
+    public void updateFine(){
+        if(this.fine != null){
+            this.fine.setValue(getDaysDelayed());
+
+        }
     }
 
     protected Lending() {

@@ -20,6 +20,10 @@ public interface LendingRepository {
 
     int getCountFromCurrentYear();
 
+    int getOutstandingCountFromReader(String readerNumber);
+
+    List<Lending> listOutstandingByReaderNumber(String readerNumber);
+
     Lending save(Lending lending);
 
 }

@@ -3,6 +3,7 @@ package pt.psoft.g1.psoftg1.lendingmanagement.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
+import pt.psoft.g1.psoftg1.exceptions.LendingForbiddenException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
@@ -17,7 +18,6 @@ public class LendingServiceImpl implements LendingService{
     private final LendingRepository lendingRepository;
     private final BookRepository bookRepository;
     private final ReaderRepository readerRepository;
-    private final LendingMapper lendingMapper;
 
     @Override
     public Iterable<Lending> findAll() {
@@ -26,6 +26,18 @@ public class LendingServiceImpl implements LendingService{
 
     @Override
     public Lending create(final CreateLendingDto resource) {
+        int count = 0;
+
+        for (Lending lending : lendingRepository.listOutstandingByReaderNumber(resource.getReaderNumber())) {
+            if (lending.getDaysDelayed() > 0) {
+                throw new LendingForbiddenException("Reader has book(s) past their due date");
+            }
+            count++;
+            if (count >= 3) {
+                throw new LendingForbiddenException("Reader has three books outstanding already");
+            }
+        }
+
         final var b = bookRepository.findByIsbn(resource.getIsbn())
                 .orElseThrow(() -> new NotFoundException("Book not found"));
         final var r = readerRepository.findByReaderNumber(resource.getReaderNumber())

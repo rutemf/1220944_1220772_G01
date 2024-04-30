@@ -14,6 +14,8 @@ public interface SpringDataLendingRepository extends LendingRepository, CrudRepo
     @Override
     Optional<Lending> findByLendingNumber(LendingNumber lendingNumber);
 
+    //http://www.h2database.com/html/commands.html
+
     @Override
     @Query("SELECT l " +
             "FROM Lending l " +
@@ -41,4 +43,20 @@ public interface SpringDataLendingRepository extends LendingRepository, CrudRepo
             "FROM Lending l " +
             "WHERE l.lendingNumber.year = YEAR(CURRENT_DATE)")
     int getCountFromCurrentYear();
+
+    @Override
+    @Query("SELECT COUNT (l) " +
+            "FROM Lending l " +
+            "JOIN Reader r ON l.reader.readerNumber = r.readerNumber " +
+            "WHERE r.readerNumber = :readerNumber AND CURRENT_DATE > l.limitDate")
+    int getOutstandingCountFromReader(String readerNumber);
+
+    @Override
+    @Query("SELECT l " +
+            "FROM Lending l " +
+            "JOIN Reader r ON l.reader.readerNumber = r.readerNumber " +
+            "WHERE r.readerNumber = :readerNumber AND CURRENT_DATE > l.limitDate")
+    List<Lending> listOutstandingByReaderNumber(String readerNumber);
+
+
 }

@@ -7,19 +7,30 @@ public class Fine {
     private final int FINE_VALUE_PER_DAY_IN_CENTS = 300;
 
     @Basic
-    int centsValue; // Fine value in euro cents
+    int centsValue = 0; // Fine value in euro cents
 
     @Basic
-    boolean paid;
+    boolean paid = false;
 
     protected Fine() {
         // for ORM only
     }
 
-    public Fine(int daysDelayed){
+    public Fine(int daysDelayed) {
         paid = false;
-        if(daysDelayed > 0){
+        setValue(daysDelayed);
+    }
+
+    public void setValue(int daysDelayed) {
+        if (paid){
+            return;
+        }
+        if (daysDelayed > 0) {
             this.centsValue = daysDelayed * FINE_VALUE_PER_DAY_IN_CENTS;
         }
+    }
+
+    public void setPaid() {
+        this.paid = true;
     }
 }
