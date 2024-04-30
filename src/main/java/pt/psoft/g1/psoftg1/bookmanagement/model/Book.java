@@ -31,7 +31,12 @@ public class Book {
     Genre genre;
 
     //TODO: Fix the many to many with either array of AuthorNumbers or store the whole objects (not good)
-    @ManyToMany(mappedBy="books")
+    //Ricardo: https://en.wikibooks.org/wiki/Java_Persistence/ManyToMany
+    @ManyToMany
+    @JoinTable(
+            name="BOOK_AUTHOR",
+            inverseJoinColumns=@JoinColumn(name="AUTHOR_ID", referencedColumnName="AUTHOR_NUMBER"),
+            joinColumns=@JoinColumn(name="BOOK_ID", referencedColumnName="ISBN"))
     private List<Author> authors = new ArrayList<Author>();
 
     @OneToMany(mappedBy = "book")
