@@ -1,5 +1,7 @@
 package pt.psoft.g1.psoftg1.bookmanagement.repositories;
 
+import jakarta.validation.constraints.NotNull;
+import org.springframework.data.repository.query.Param;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
 
@@ -18,12 +20,10 @@ import java.util.Optional;
  */
 public interface BookRepository {
 
-    Iterable<Book> findAll();
+    List<Book> findByGenre(@Param("genre") Genre genre);
 
-    List<Book> findByGenre(Genre genre);
+    Book findByIsbn(@Param("isbn") String isbn);
 
-    Book findByIsbn(Isbn isbn);
-
-    Book save(Book book) throws Exception;
-    Book update(Isbn isbn, UpdateBookRequest updateBookRequest);
+    Book save(Book book);
+    Book update(@Param("isbn") @NotNull String isbn, @Param("title") String title, @Param("description") String description, @Param("genre") Genre genre);
 }

@@ -15,13 +15,12 @@ import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
-	private BookRepository bookRepository;
-	private GenreRepository genreRepository;
+	private final BookRepository bookRepository;
+	private final GenreRepository genreRepository;
 	@Override
 	public Book create(CreateBookRequest request) throws Exception {
 		Book newBook = null;
 
-		//This should be wrapped on a try catch to avoid any domain exceptions, this way we make sure we catch everything
 		try {
 			if(findByIsbn(new Isbn(request.getIsbn())) != null) {
 				throw new Exception("A reader with provided Isbn is already registered");
@@ -42,12 +41,12 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public Book save(Book book) throws Exception {
+	public Book save(Book book) {
 		return this.bookRepository.save(book);
 	}
 
 	@Override
 	public Book findByIsbn(Isbn isbn) {
-		return null;
+		return this.bookRepository.findByIsbn(isbn.toString());
 	}
 }
