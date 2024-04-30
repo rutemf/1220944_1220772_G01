@@ -11,7 +11,7 @@ public interface LendingService {
 
     Lending create(CreateLendingRequest resource); //No ID passed, as it is auto generated
 
-    Lending update(String id, EditLendingRequest resource);
+    Lending update(String id, SetLendingReturnedDto resource);
 
 
 

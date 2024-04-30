@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "A DTO for editing or creating a Lending")
+@Schema(description = "A DTO for creating a Lending")
 public class CreateLendingRequest {
 
     @Size(min = 8, max = 16)

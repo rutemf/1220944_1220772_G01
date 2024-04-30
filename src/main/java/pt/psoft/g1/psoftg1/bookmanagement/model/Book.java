@@ -9,6 +9,7 @@ import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springdoc.core.service.GenericResponseService.setDescription;
@@ -31,10 +32,10 @@ public class Book {
 
     //TODO: Fix the many to many with either array of AuthorNumbers or store the whole objects (not good)
     @ManyToMany(mappedBy="books")
-    private List<Author> authors;
+    private List<Author> authors = new ArrayList<Author>();
 
     @OneToMany(mappedBy = "book")
-    private List<Lending> lendings;
+    private List<Lending> lendings = new ArrayList<Lending>();
 
     @Embedded
     Description description;
