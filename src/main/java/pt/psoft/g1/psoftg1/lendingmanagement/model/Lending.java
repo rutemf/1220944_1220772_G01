@@ -22,15 +22,13 @@ public class Lending {
     @NotNull
     @NotBlank
     @ManyToOne(fetch=FetchType.LAZY)
-    @Column(nullable = false, updatable = false)
-    @JoinColumn(name = "ISBN")
+    @JoinColumn(name = "ISBN", nullable = false, updatable = false)
     private Book book;
 
     @NotNull
     @NotBlank
     @ManyToOne(fetch=FetchType.LAZY)
-    @Column(nullable = false, updatable = false)
-    @JoinColumn(name = "READER_NUMBER")
+    @JoinColumn(name = "READER_NUMBER", nullable = false, updatable = false)
     private Reader reader;
 
     @NotNull
@@ -57,7 +55,7 @@ public class Lending {
     @Size(min = 0, max = 2048) //TODO Ricardo: confirm with client answer
     private String commentary;
 
-    @OneToOne(fetch=FetchType.LAZY, mappedBy = "lending", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "lending", cascade = CascadeType.ALL, orphanRemoval = true)
     private Fine fine;
 
     public Lending(Book book, Reader reader, LendingNumber lendingNumber){
