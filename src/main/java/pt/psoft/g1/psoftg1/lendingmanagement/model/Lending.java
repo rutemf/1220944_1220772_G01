@@ -16,6 +16,7 @@ public class Lending {
     private static final int MAX_DAYS_PER_LENDING = 15;    //TODO: Move this to a properties file
 
     @EmbeddedId
+    @Getter
     private LendingNumber lendingNumber;
 
     @NotNull
@@ -35,13 +36,16 @@ public class Lending {
     @NotNull
     @NotBlank
     @Column(nullable = false, updatable = false)
+    @Temporal(TemporalType.DATE)
     private LocalDate startDate;
 
     @NotNull
     @NotBlank
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private LocalDate limitDate;
 
+    @Temporal(TemporalType.DATE)
     private LocalDate returnDate;
 
     // optimistic-lock
@@ -49,7 +53,7 @@ public class Lending {
     @Getter
     private long version;
 
-    @Column(nullable = true)
+    @Column()
     @Size(min = 0, max = 2048) //TODO Ricardo: confirm with client answer
     private String commentary;
 

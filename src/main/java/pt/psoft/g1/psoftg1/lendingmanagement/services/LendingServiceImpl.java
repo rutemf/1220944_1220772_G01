@@ -2,6 +2,7 @@ package pt.psoft.g1.psoftg1.lendingmanagement.services;
 
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
@@ -16,10 +17,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class LendingServiceImpl implements LendingService{
-
     private final LendingRepository lendingRepository;
-    //private final BookRepository bookRepository;
+    private final BookRepository bookRepository;
     //private final AuthorRepository authorRepository;
+    private final LendingMapper lendingMapper;
+
     @Override
     public Iterable<Lending> findAll() {
         return lendingRepository.findAll();
@@ -32,6 +34,10 @@ public class LendingServiceImpl implements LendingService{
 
     @Override
     public Lending create(final CreateLendingRequest resource) {
+/*
+        final Lending lending = lendingMapper.create(resource);
+*/
+
         return null;
     }
 
