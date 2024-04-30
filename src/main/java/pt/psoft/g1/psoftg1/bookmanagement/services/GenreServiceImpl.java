@@ -1,6 +1,6 @@
 package pt.psoft.g1.psoftg1.bookmanagement.services;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -12,17 +12,11 @@ import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 @RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService {
 
-    private GenreRepository genreRepository;
+    private final GenreRepository genreRepository;
 
     @Override
-    public Iterable<Genre> findAll() {
-        return genreRepository.findAll();
-    }
-
-    @Override
-    public Optional<Genre> findOne(final Genre genre) {
-        //return genreRepository.findById(id);
-        return null;
+    public List<Genre> findAllGenres() {
+        return genreRepository.findAllGenre();
     }
 
     /*@Override
@@ -33,4 +27,9 @@ public class GenreServiceImpl implements GenreService {
         // TODO ensure domain invariants or does the Mapper runs validations?
         return genreRepository.save(genre);
     }*/
+
+    @Override
+    public Genre save(Genre genre) {
+        return this.genreRepository.save(genre);
+    }
 }

@@ -12,4 +12,9 @@ public class Photo {
 
     @OneToOne(fetch=FetchType.LAZY, mappedBy="photo")
     private Author author;
+    protected Photo (){}
+    public Photo (byte[] photoBytes){
+        this.photo= photoBytes;
+    }
 }
+

@@ -16,4 +16,8 @@ public class ReaderNumber implements Serializable {
     }
 
     protected ReaderNumber() {}
+
+    public String toString() {
+        return this.readerNumber;
+    }
 }
