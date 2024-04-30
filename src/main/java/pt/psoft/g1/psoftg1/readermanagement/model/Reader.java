@@ -12,9 +12,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-public class Reader extends User {
+public class Reader {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long pk;
+
     @Getter
-    @EmbeddedId
     private ReaderNumber readerNumber;
 
     @Embedded
@@ -42,6 +45,12 @@ public class Reader extends User {
     @Basic
     private boolean thirdPartySharingConsent;
 
+    @Getter
+    @Setter
+    @OneToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
+
     @OneToMany(mappedBy = "reader")
     private List<Lending> lendings;
 
@@ -63,13 +72,13 @@ public class Reader extends User {
         return u;
     }*/
 
-    public Reader(int readerNumber, String username, String password, String fullName, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) throws Exception {
-        super(username, password);
-
+    public Reader(int readerNumber, User user, String fullName, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) throws Exception {
         if(fullName == null || phoneNumber == null) {
             throw new Exception("Provided argument resolves to null object");
         }
 
+        //TODO: Aplicar regras de password ao user
+        setUser(user);
         setReaderNumber(new ReaderNumber(LocalDate.now().getYear(), readerNumber));
         setFullName(new Name(fullName));
         setPhoneNumber(new PhoneNumber(phoneNumber));

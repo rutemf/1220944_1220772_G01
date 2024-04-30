@@ -11,13 +11,14 @@ import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SpringDataBookRepository  extends BookRepository, CrudRepository<Book, Isbn> {
 
     @Query("SELECT b " +
             "FROM Book b " +
             "WHERE b.isbn = :isbn")
-    Book findByIsbn(@Param("isbn") String isbn);
+    Optional<Book> findByIsbn(@Param("isbn") String isbn);
 
     @Query("UPDATE Book b " +
         "SET " +

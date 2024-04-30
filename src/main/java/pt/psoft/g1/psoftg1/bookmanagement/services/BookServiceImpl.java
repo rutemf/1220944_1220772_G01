@@ -10,6 +10,8 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public Book findByIsbn(Isbn isbn) {
+	public Optional<Book> findByIsbn(Isbn isbn) {
 		return this.bookRepository.findByIsbn(isbn.toString());
 	}
 }

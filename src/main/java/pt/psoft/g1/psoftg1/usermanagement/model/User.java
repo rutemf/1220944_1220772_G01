@@ -55,6 +55,7 @@ public class User implements UserDetails {
 	@Id
 	@GeneratedValue
 	@Getter
+	@Column(name="USER_ID")
 	private Long id;
 
 	// optimistic lock concurrency control

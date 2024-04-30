@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @Embeddable
 @NoArgsConstructor
 public class BirthDate {
-    LocalDateTime date;
+    LocalDate date;
 
     private final String dateFormatPatternRegex = "\\d{4}/\\d{2}/\\d{2}";
 
@@ -45,6 +45,10 @@ public class BirthDate {
             throw new Exception("User age must be, at least, " + minimumAge);
         }
 
-        this.date = LocalDateTime.of(userDate, LocalTime.of(0,0));
+        this.date = userDate;
+    }
+
+    public String toString() {
+        return String.format("%d/%d/%d", this.date.getYear(), this.date.getMonthValue(), this.date.getDayOfMonth());
     }
 }

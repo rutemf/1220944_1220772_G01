@@ -13,5 +13,5 @@ import java.util.Optional;
 public interface BookService {
     Book create(CreateBookRequest request) throws Exception;
     Book save(Book book);
-    Book findByIsbn(Isbn isbn);
+    Optional<Book> findByIsbn(Isbn isbn);
 }

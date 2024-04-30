@@ -1,53 +1,46 @@
 package pt.psoft.g1.psoftg1.readermanagement.services;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
 @Data
 @NoArgsConstructor
-public class CreateReaderRequest {
+public class UpdateReaderRequest {
     @Setter
     @Getter
     private String number;
 
     @Getter
-    @NonNull
+    @Setter
+    @Nullable
     private String username;
 
     @Getter
     @Setter
+    @Nullable
     private String password;
 
     @Getter
-    @NonNull
     @NotBlank
+    @Nullable
     private String fullName;
 
     @Getter
-    @NonNull
     @NotBlank
-    @Email
-    private String emailAddress;
-
-    @Getter
-    @NonNull
-    @NotBlank
+    @Nullable
     private String birthDate;
 
     @Getter
-    @NonNull
     @NotBlank
+    @Nullable
     private String phoneNumber;
 
-    @NonNull
-    private boolean gdpr;
-
-    @NonNull
+    @Nullable
     private boolean marketing;
 
-    @NonNull
+    @Nullable
     private boolean thirdParty;
 
     /*public CreateReaderRequest(String username, String password, String fullName, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) {
@@ -67,9 +60,5 @@ public class CreateReaderRequest {
 
     public boolean getMarketing() {
         return marketing;
-    }
-
-    public boolean getGdpr() {
-        return gdpr;
     }
 }
