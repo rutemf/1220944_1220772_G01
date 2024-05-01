@@ -1,6 +1,7 @@
 package pt.psoft.g1.psoftg1.bookmanagement.infrastructure.repositories.impl;
 
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +21,7 @@ public interface SpringDataBookRepository  extends BookRepository, CrudRepositor
             "WHERE b.isbn = :isbn")
     Optional<Book> findByIsbn(@Param("isbn") String isbn);
 
+    @Modifying
     @Query("UPDATE Book b " +
         "SET " +
         "b.title = COALESCE(:title, b.title), " +
