@@ -20,10 +20,14 @@ import java.util.Optional;
  */
 public interface BookRepository {
 
+/*
     List<Book> findByGenre(@Param("genre") Genre genre);
+*/
 
     Optional<Book> findByIsbn(@Param("isbn") String isbn);
 
     Book save(Book book);
+/*
     Book update(@Param("isbn") @NotNull String isbn, @Param("title") String title, @Param("description") String description, @Param("genre") Genre genre);
+*/
 }

@@ -29,6 +29,7 @@ public interface SpringDataReaderRepositoryImpl extends ReaderRepository, CrudRe
     @Query("SELECT r FROM Reader r")
     public List<Reader> findAll();
 
+/*
     @Override
     @Modifying
     @Query("UPDATE Reader r SET "+
@@ -39,6 +40,7 @@ public interface SpringDataReaderRepositoryImpl extends ReaderRepository, CrudRe
             "r.thirdPartySharingConsent = COALESCE(:thirdParty, r.thirdPartySharingConsent) " +
             "WHERE r.readerNumber = :readerNumber")
     public Optional<Reader> updateReader(@Param("readerNumber") @NotNull String readerNumber, @Param("readerName") String name, @Param("readerPhoneNumber") String phoneNumber, @Param("birthDate") LocalDate birthDate, @Param("marketing") boolean marketing, @Param("thirdParty") boolean thirdParty);
+*/
 
     @Override
     @Query("UPDATE User u SET " +

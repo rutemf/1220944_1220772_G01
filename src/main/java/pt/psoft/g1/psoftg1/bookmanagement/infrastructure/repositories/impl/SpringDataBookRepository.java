@@ -21,6 +21,7 @@ public interface SpringDataBookRepository  extends BookRepository, CrudRepositor
             "WHERE b.isbn = :isbn")
     Optional<Book> findByIsbn(@Param("isbn") String isbn);
 
+/*
     @Modifying
     @Query("UPDATE Book b " +
         "SET " +
@@ -29,12 +30,15 @@ public interface SpringDataBookRepository  extends BookRepository, CrudRepositor
         "b.description = COALESCE(:description, b.description) " +
         "WHERE b.isbn = :isbn")
     Book update(@Param("isbn") @NotNull String isbn, @Param("title") String title, @Param("description") String description, @Param("genre") Genre genre);
+*/
 
+/*
     @Override
     @Query("SELECT b " +
             "FROM Book b " +
             "JOIN Genre g ON b.genre.genre LIKE %:genre%" +
             "WHERE b.isbn = :isbn")
     List<Book> findByGenre(@Param("genre") Genre genre);
+*/
 
 }

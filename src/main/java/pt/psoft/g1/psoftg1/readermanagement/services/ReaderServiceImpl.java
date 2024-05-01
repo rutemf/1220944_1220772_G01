@@ -73,6 +73,7 @@ public class ReaderServiceImpl implements ReaderService {
         return this.readerRepo.findAll();
     }
 
+/*
     @Override
     public Optional<Reader> update(UpdateReaderRequest request) throws Exception {
         String[] dateParts = request.getBirthDate().split("/");
@@ -104,4 +105,5 @@ public class ReaderServiceImpl implements ReaderService {
         this.readerRepo.updateUser(reader.getUser().getId(), request.getUsername(), request.getPassword());
         return this.readerRepo.updateReader(request.getNumber(), request.getFullName(), request.getPhoneNumber(), date, request.getMarketing(), request.getThirdParty());
     }
+*/
 }

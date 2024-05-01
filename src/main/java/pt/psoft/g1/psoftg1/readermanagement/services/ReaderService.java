@@ -21,5 +21,7 @@ public interface ReaderService {
     Optional<Reader> findByReaderNumber(ReaderNumber readerNumber);
     List<Reader> findAll();
 
+/*
     Optional<Reader> update(UpdateReaderRequest request) throws Exception;
+*/
 }
