@@ -2,6 +2,7 @@ package pt.psoft.g1.psoftg1.bookmanagement.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
@@ -23,11 +24,13 @@ public class Book {
 
     @Getter
     @Embedded
+    @NotNull
     Title title;
 
     @Setter
     @Getter
     @ManyToOne
+    @NotNull
     Genre genre;
 
     //TODO: Fix the many to many with either array of AuthorNumbers or store the whole objects (not good)
@@ -37,12 +40,13 @@ public class Book {
             name="BOOK_AUTHOR",
             inverseJoinColumns=@JoinColumn(name="AUTHOR_ID", referencedColumnName="AUTHOR_NUMBER"),
             joinColumns=@JoinColumn(name="BOOK_ID", referencedColumnName="ISBN"))
-    private List<Author> authors = new ArrayList<Author>();
+    private List<Author> authors = new ArrayList<>();
 
     @OneToMany(mappedBy = "book")
-    private List<Lending> lendings = new ArrayList<Lending>();
+    private List<Lending> lendings = new ArrayList<>();
 
     @Embedded
+    @NotNull
     Description description;
 
     public Book(String isbn, String title) {

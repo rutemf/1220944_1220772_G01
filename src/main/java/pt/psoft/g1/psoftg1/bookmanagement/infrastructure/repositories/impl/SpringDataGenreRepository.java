@@ -7,7 +7,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 
 import java.util.List;
 
-public interface SpringDataGenreRepository extends GenreRepository, CrudRepository<Genre, String> {
+public interface SpringDataGenreRepository extends GenreRepository, CrudRepository<Genre, Integer> {
 
     @Query("SELECT DISTINCT g FROM Genre g")
     List<Genre> findAllGenres();
