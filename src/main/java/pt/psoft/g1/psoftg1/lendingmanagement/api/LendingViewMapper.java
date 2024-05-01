@@ -7,8 +7,10 @@ import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
 
 /**
- * Brief guide:
+ * Brief guides:
  * <a href="https://www.baeldung.com/mapstruct">https://www.baeldung.com/mapstruct</a>
+ * <p>
+ * <a href="https://medium.com/@susantamon/mapstruct-a-comprehensive-guide-in-spring-boot-context-1e7202da033e">https://medium.com/@susantamon/mapstruct-a-comprehensive-guide-in-spring-boot-context-1e7202da033e</a>
  * */
 @Mapper(componentModel = "spring")
 public abstract class LendingViewMapper {
