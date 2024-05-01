@@ -1,21 +1,21 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 /**
  * The {@code Fine} class models a fine applied when a lending is past its due date.
  * <p>It stores its current value, and if it has been paid.
  * @author  rmfranca*/
+@Getter
 @Embeddable
 public class Fine {
     @Transient
     private static final int FINE_VALUE_PER_DAY_IN_CENTS = 300;    //TODO: Move this to a properties file
 
     /**Fine value in Euro cents*/
-    @Basic
-    int centsValue = 0;
+    int centsValue;
 
-    @Basic
     boolean paid = false;
 
     /**Protected empty constructor for ORM only.*/

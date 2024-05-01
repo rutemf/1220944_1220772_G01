@@ -20,6 +20,12 @@ public class LendingServiceImpl implements LendingService{
     private final ReaderRepository readerRepository;
 
     @Override
+
+    public Optional<Lending> findByLendingNumber(String lendingNumber){
+        return lendingRepository.findByLendingNumber(new LendingNumber(lendingNumber));
+    }
+
+    @Override
     public Iterable<Lending> findAll() {
         return lendingRepository.findAll();
     }
