@@ -29,10 +29,12 @@ public class LendingServiceImpl implements LendingService{
         int count = 0;
 
         for (Lending lending : lendingRepository.listOutstandingByReaderNumber(resource.getReaderNumber())) {
+            //Business rule: cannot create a lending if user has late outstanding books to return.
             if (lending.getDaysDelayed() > 0) {
                 throw new LendingForbiddenException("Reader has book(s) past their due date");
             }
             count++;
+            //Business rule: cannot create a lending if user already has 3 outstanding books to return.
             if (count >= 3) {
                 throw new LendingForbiddenException("Reader has three books outstanding already");
             }
@@ -42,7 +44,7 @@ public class LendingServiceImpl implements LendingService{
                 .orElseThrow(() -> new NotFoundException("Book not found"));
         final var r = readerRepository.findByReaderNumber(resource.getReaderNumber())
                 .orElseThrow(() -> new NotFoundException("Reader not found"));
-        int seq = lendingRepository.getCountFromCurrentYear();
+        int seq = lendingRepository.getCountFromCurrentYear()+1;
         LendingNumber ln = new LendingNumber(seq);
         final Lending l = new Lending(b,r,ln);
 

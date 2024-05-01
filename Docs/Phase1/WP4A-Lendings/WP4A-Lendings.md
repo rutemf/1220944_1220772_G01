@@ -70,6 +70,10 @@ Pode especificar quais são os detalhes que devem ser facultados? Existe alguma 
 >
 >A: a aplicação da multa é tratada fora do sistema. o sistema deve calcular o valor da multa com base no numero de dias de atraso e num valor por dia. esse valor por dia deve ser facilmente parametrizavel nos sistema (ex., bootstrap ou ficheiro de propriedades)
 
+>[Q: Qual é o comprimento máximo do comentário?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29057#p37088)
+>
+>A: 1024 caracteres
+
 ### 1.4. Found out Dependencies
 
 ### 1.7. Functionality

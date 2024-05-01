@@ -59,3 +59,8 @@ Pode especificar quais são os detalhes que devem ser facultados? Existe alguma 
 ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28882#p36478)
 >
 >A: [...] O sistema nao necessita controlar o numero de exemplares de cada livro nem a sua disponibilidade
+
+> [Q: Qual é o comprimento máximo do comentário?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29057#p37088)
+>
+>A: 1024 caracteres
+
