@@ -9,8 +9,7 @@ import java.io.Serializable;
 
 @Embeddable
 public class Isbn implements Serializable {
-    @Size(min = 1, max = 16)
-    @Pattern(regexp = "\\d{13}", message = "ISBN must be exactly 13 digits")
+    @Size(min = 10, max = 13)
     String isbn;
 
     public Isbn(String isbn) {
