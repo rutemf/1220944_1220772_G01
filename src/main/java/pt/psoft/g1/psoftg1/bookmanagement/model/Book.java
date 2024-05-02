@@ -47,9 +47,7 @@ public class Book {
     @NotNull
     Description description;
 
-    private void setTitle(String title) {
-        this.title = new Title(title);
-    }
+    private void setTitle(String title) {this.title = new Title(title);}
 
     private void setIsbn(String isbn) {
         this.isbn = new Isbn(isbn);

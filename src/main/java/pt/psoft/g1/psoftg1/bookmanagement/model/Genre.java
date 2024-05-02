@@ -13,12 +13,10 @@ public class Genre {
     @GeneratedValue(strategy= GenerationType.AUTO)
     int id;
 
-    //TODO: verify domain rules to genre
     @Size(min = 1, max = 100, message = "Genre name must be between 1 and 100 characters")
     @Column(unique=true, nullable=false)
     String genre;
 
-    //TODO: This will imply having the objects always up to date when a book is updated
     @OneToMany(mappedBy = "genre")
     List<Book> bookList;
 

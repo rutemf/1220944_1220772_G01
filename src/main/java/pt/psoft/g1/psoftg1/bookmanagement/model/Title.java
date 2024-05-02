@@ -19,12 +19,16 @@ public class Title {
 
     public Title(String title) {
         setTitle(title);
-        if (this.title.isEmpty() || this.title.length() < 2 || this.title.length() > 64) {
-            throw new IllegalArgumentException("Invalid title length. Title must be between 2 and 64 characters and cannot be blank.");
-        }
+    }
+
+    private boolean verifierSpaces(String title) {
+        return !title.startsWith(" ") && !title.endsWith(" ");
     }
 
     private void setTitle(String title) {
+        if (!verifierSpaces(title)) {
+            throw new IllegalArgumentException("Invalid title: " + title);
+        }
         this.title = title;
     }
 

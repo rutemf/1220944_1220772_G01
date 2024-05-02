@@ -29,5 +29,4 @@ public interface BookRepository {
 
     Book save(Book book);
 
-    //Book update(@Param("isbn") @NotNull String isbn, @Param("title") String title, @Param("description") String description, @Param("genre") String genre, @Param("authorNumbers") List<Author> authors);
 }
