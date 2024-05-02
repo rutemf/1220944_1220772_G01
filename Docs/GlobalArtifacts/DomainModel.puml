@@ -10,7 +10,7 @@ class User{
 }
 
 
-class Librarian extends User{
+class Librarian{
 }
 
 
@@ -33,7 +33,7 @@ class Author {
     /'perguntar '/
    }
 
-class Reader extends User{
+class Reader{
     - readerNumber
     - name
     - email
@@ -63,10 +63,12 @@ class Fine {
 Librarian "1" - "0..*" Author : registers/updates
 Librarian "1" -- "0..*" Book : registers/updates
 Book "1..*" -up- "1..*"  Author
-Book  "1" - "1..*"  Genre
+Book  "1..*" -- "1"  Genre
 Lending "1" -- "0..1" Fine
 Lending "0..*" -up- "1" Reader
 Lending "0..*" - "1" Book
+Reader "1" -up- "1" User : > is
+Librarian "1" -up- "1" User : > is
 
 
 @enduml

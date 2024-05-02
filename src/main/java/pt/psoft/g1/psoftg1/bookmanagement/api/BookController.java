@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1.bookmanagement.api.BookController;
+package pt.psoft.g1.psoftg1.bookmanagement.api;
 
 import java.net.URISyntaxException;
 
