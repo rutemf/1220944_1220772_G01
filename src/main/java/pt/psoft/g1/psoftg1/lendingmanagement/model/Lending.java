@@ -118,6 +118,12 @@ public class Lending {
     @Size(min = 0, max = 1024)
     private String commentary = null;
 
+    @Transient
+    private Integer daysUntilReturn;
+
+    @Transient
+    private Integer daysOverdue;
+
     /**
      * Constructs a new {@code Lending} object to be persisted in the database.
      * <p>
@@ -134,6 +140,8 @@ public class Lending {
         this.reader = reader;
         this.startDate = LocalDate.now();
         this.limitDate = LocalDate.now().plusDays(MAX_DAYS_PER_LENDING);
+        setDaysUntilReturn();
+        setDaysOverdue();
     }
 
     /**
@@ -186,11 +194,27 @@ public class Lending {
     }
 
     //TODO: apply and fix Fine updating/creation logic
-
     public void updateFine(){
         if(this.fine != null){
             this.fine.setValue(getDaysDelayed());
 
+        }
+    }
+
+    public void setDaysUntilReturn(){
+        if(returnedDate == null){
+            this.daysUntilReturn = (int) ChronoUnit.DAYS.between(LocalDate.now(), this.limitDate);
+        }else{
+            this.daysUntilReturn = null;
+        }
+    }
+
+    public void setDaysOverdue(){
+        int days = getDaysDelayed();
+        if(days > 0){
+            this.daysOverdue = days;
+        }else{
+            this.daysOverdue = null;
         }
     }
 

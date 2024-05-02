@@ -19,6 +19,8 @@ public interface ReaderRepository {
     Optional<Reader> findByReaderNumber(@Param("readerNumber") @NotNull String readerNumber);
     Reader save(Reader reader);
     List<Reader> findAll();
+/*
     public Optional<Reader> updateReader(@Param("readerNumber") @NotNull String readerNumber, @Param("readerName") String name, @Param("readerPhoneNumber") String phoneNumber, @Param("birthDate") LocalDate birthDate, @Param("marketing") boolean marketing, @Param("thirdParty") boolean thirdParty);
+*/
     public void updateUser(@Param("userNumber") @NotNull Long userNumber, @Param("username") String username, @Param("password") String password);
 }
