@@ -2,9 +2,12 @@ package pt.psoft.g1.psoftg1.bookmanagement.services;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Description;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Title;
+
+import java.util.List;
 
 
 @Getter
@@ -23,18 +26,18 @@ public class UpdateBookRequest {
     @Setter
     private Genre genreObj;
 
-    @NotBlank
     private String genre;
 
-    //TODO: Fix this authorName list
+    @NonNull
+    private List<Long> authors;
 
-    private String authorName;
+    private List<Author> authorObjList;
 
-    public UpdateBookRequest(String isbn, String title, String genre, String authorName, String description) {
+    public UpdateBookRequest(String isbn, String title, String genre, @NonNull List<Long> authors, String description) {
         this.isbn = isbn;
         this.genre = genre;
         this.title = title;
         this.description = description;
-        this.authorName = authorName;
+        this.authors = authors;
     }
 }

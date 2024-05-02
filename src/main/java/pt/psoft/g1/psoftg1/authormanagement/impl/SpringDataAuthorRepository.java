@@ -23,7 +23,7 @@ public interface SpringDataAuthorRepository extends AuthorRepository, CrudReposi
     @Query("SELECT a " +
             "FROM Author a " +
             "WHERE a.authorNumber = :authorNumber")
-    List<Author> searchByAuthorNumber(@Param("authorNumber") Long authorNumber);
+    Author searchByAuthorNumber(@Param("authorNumber") Long authorNumber);
 
 
 }

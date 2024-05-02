@@ -32,8 +32,7 @@ public class Book {
     @NotNull
     Genre genre;
 
-    //TODO: Fix the many to many with either array of AuthorNumbers or store the whole objects (not good)
-    //Ricardo: https://en.wikibooks.org/wiki/Java_Persistence/ManyToMany
+    @Getter
     @ManyToMany
     @JoinTable(
             name="BOOK_AUTHOR",
@@ -60,19 +59,21 @@ public class Book {
 
     private void setGenre(Genre genre) {this.genre = genre; }
 
-    public Book(String isbn, String title, Genre genre) {
+    private void setAuthors(List<Author> authors) {this.authors = authors; }
+
+    public Book(String isbn, String title, Genre genre,List<Author> authors) {
         setTitle(title);
         setIsbn(isbn);
         setGenre(genre);
-        //TODO: Set Author List
+        setAuthors(authors);
     }
 
-    public Book(String isbn, String title, String description, Genre genre) {
+    public Book(String isbn, String title, String description, Genre genre, List<Author> authors) {
         setTitle(title);
         setIsbn(isbn);
         setDescription(description);
         setGenre(genre);
-        //TODO: Set Author List
+        setAuthors(authors);
     }
 
     protected Book() {
@@ -83,8 +84,8 @@ public class Book {
         String title = request.getTitle();
         String description = request.getDescription();
         Genre genre = request.getGenreObj();
+        List<Author> authors = request.getAuthorObjList();
 
-        //TODO: Get the authors and set it on the object
         if(title != null) {
             setTitle(title);
         }
@@ -95,6 +96,10 @@ public class Book {
 
         if(genre != null) {
             setGenre(genre);
+        }
+
+        if(authors != null) {
+            setAuthors(authors);
         }
     }
 }
