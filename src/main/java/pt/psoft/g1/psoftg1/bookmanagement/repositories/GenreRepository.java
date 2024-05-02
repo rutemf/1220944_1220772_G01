@@ -8,6 +8,6 @@ import java.util.Optional;
 public interface GenreRepository {
 
     Iterable<Genre> findAll();
-
+    Optional<Genre> findByString(String genreName);
     Genre save(Genre genre);
 }

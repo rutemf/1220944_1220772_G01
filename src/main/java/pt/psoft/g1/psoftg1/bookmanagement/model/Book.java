@@ -27,7 +27,6 @@ public class Book {
     @NotNull
     Title title;
 
-    @Setter
     @Getter
     @ManyToOne
     @NotNull
@@ -49,11 +48,6 @@ public class Book {
     @NotNull
     Description description;
 
-    public Book(String isbn, String title) {
-        setIsbn(isbn);
-        setTitle(title);
-    }
-
     private void setTitle(String title) {
         this.title = new Title(title);
     }
@@ -64,9 +58,16 @@ public class Book {
 
     private void setDescription(String description) {this.description = new Description(description); }
 
-    private void setGenre(String genre) {this.genre = new Genre(genre); }
+    private void setGenre(Genre genre) {this.genre = genre; }
 
-    public Book(String isbn, String title, String description, String genre) {
+    public Book(String isbn, String title, Genre genre) {
+        setTitle(title);
+        setIsbn(isbn);
+        setGenre(genre);
+        //TODO: Set Author List
+    }
+
+    public Book(String isbn, String title, String description, Genre genre) {
         setTitle(title);
         setIsbn(isbn);
         setDescription(description);
@@ -81,7 +82,7 @@ public class Book {
     public void applyPatch(UpdateBookRequest request) {
         String title = request.getTitle();
         String description = request.getDescription();
-        String genre = request.getGenre();
+        Genre genre = request.getGenreObj();
 
         //TODO: Get the authors and set it on the object
         if(title != null) {
