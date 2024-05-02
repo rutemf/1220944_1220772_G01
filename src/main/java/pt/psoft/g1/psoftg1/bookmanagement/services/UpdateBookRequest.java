@@ -11,12 +11,17 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Title;
 @Data
 @NoArgsConstructor
 public class UpdateBookRequest {
+    @Setter
+    private String isbn;
 
     @Setter
     private String description;
 
     @NotBlank
     private String title;
+
+    @Setter
+    private Genre genreObj;
 
     @NotBlank
     private String genre;
@@ -25,7 +30,8 @@ public class UpdateBookRequest {
 
     private String authorName;
 
-    public UpdateBookRequest(String title, String genre, String authorName, String description) {
+    public UpdateBookRequest(String isbn, String title, String genre, String authorName, String description) {
+        this.isbn = isbn;
         this.genre = genre;
         this.title = title;
         this.description = description;
