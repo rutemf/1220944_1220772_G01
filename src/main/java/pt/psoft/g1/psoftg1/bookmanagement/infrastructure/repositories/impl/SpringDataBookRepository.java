@@ -24,7 +24,7 @@ public interface SpringDataBookRepository  extends BookRepository, CrudRepositor
 
     //TODO: Só reclama que o ultimo argumento é do tipo Author... Não lhe podemos passar uma lista???
 
-    @Modifying
+    /*@Modifying
     @Query("UPDATE Book b " +
         "SET " +
         "b.title.title = COALESCE(:title, b.title.title), " +
@@ -32,7 +32,7 @@ public interface SpringDataBookRepository  extends BookRepository, CrudRepositor
         "b.description.description = COALESCE(:description, b.description.description), " +
         "b.authors = COALESCE(:authors, b.authors) " +
         "WHERE b.isbn = :isbn")
-    Book update(@Param("isbn") @NotNull String isbn, @Param("title") String title, @Param("description") String description, @Param("genre") String genre, @Param("authors") List<Author> authors);
+    Book update(@Param("isbn") @NotNull String isbn, @Param("title") String title, @Param("description") String description, @Param("genre") String genre, @Param("authors") List<Author> authors);*/
 
 
     @Override

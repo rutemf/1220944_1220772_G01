@@ -86,8 +86,8 @@ public class BookServiceImpl implements BookService {
 				throw new Exception("Genre not found");
 			}
 			request.setGenreObj(genre.get());
-			bookRepository.update(request.getIsbn(), request.getTitle(), request.getDescription(), request.getGenre(), authors);
 			book.applyPatch(request);
+			bookRepository.save(book);
 		} catch(Exception e) {
 			throw new Exception("One of the provided data does not match domain criteria: " + e.getMessage());
 		}
