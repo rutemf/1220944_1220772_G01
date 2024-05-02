@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1.authormanagement.api.AuthorController;
+package pt.psoft.g1.psoftg1.authormanagement.api;
 
 import java.net.URISyntaxException;
 
