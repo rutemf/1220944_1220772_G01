@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/book")*/
-class BarController {
+class BookController {
 
     /*private static final String IF_MATCH = "If-Match";
 

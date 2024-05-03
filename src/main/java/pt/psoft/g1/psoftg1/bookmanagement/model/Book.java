@@ -16,6 +16,8 @@ import java.util.List;
 import static org.springdoc.core.service.GenericResponseService.setDescription;
 
 @Entity
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames={"ISBN"})})
 public class Book {
     @Getter
     @EmbeddedId
@@ -33,15 +35,8 @@ public class Book {
     Genre genre;
 
     @Getter
-    @ManyToMany
-    @JoinTable(
-            name="BOOK_AUTHOR",
-            inverseJoinColumns=@JoinColumn(name="AUTHOR_ID", referencedColumnName="AUTHOR_NUMBER"),
-            joinColumns=@JoinColumn(name="BOOK_ID", referencedColumnName="ISBN"))
+    @OneToMany
     private List<Author> authors = new ArrayList<>();
-
-    @OneToMany(mappedBy = "book")
-    private List<Lending> lendings = new ArrayList<>();
 
     @Embedded
     @NotNull

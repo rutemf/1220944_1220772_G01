@@ -15,6 +15,7 @@ import java.util.List;
 public class Reader {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="READER_PK")
     private Long pk;
 
     @Getter
@@ -51,9 +52,12 @@ public class Reader {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @OneToMany(mappedBy = "reader")
+/*
+    @OneToMany
     private List<Lending> lendings;
+*/
 
+/*
     /**
      * factory method. since mapstruct does not handle protected/private setters
      * neither more than one public constructor, we use these factory methods for

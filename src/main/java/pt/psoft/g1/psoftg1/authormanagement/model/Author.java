@@ -18,23 +18,23 @@ public class Author {
     @Setter
     @Embedded
     @Getter
-    Name name;
+    private Name name;
 
     @OneToOne(fetch = FetchType.LAZY)
-    Photo photo;
+    private Photo photo;
 
     @Embedded
-    Bio bio;
+    private Bio bio;
 
-    private void setName(String name) {
+    public void setName(String name) {
         this.name = new Name(name);
     }
 
-    private void setBio(String bio) {
+    public void setBio(String bio) {
         this.bio = new Bio(bio);
     }
 
-    private void setPhoto(byte[] photo) {
+    public void setPhoto(byte[] photo) {
         this.photo = new Photo(photo);
     }
     public Author(String name, String bio, byte[] photo) {

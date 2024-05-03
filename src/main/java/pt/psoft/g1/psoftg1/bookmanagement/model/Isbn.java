@@ -1,13 +1,14 @@
 package pt.psoft.g1.psoftg1.bookmanagement.model;
 
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
 
 @Embeddable
+@EqualsAndHashCode
 public class Isbn implements Serializable {
     @Size(min = 10, max = 13)
     String isbn;
