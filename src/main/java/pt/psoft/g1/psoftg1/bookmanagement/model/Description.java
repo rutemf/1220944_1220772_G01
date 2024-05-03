@@ -25,4 +25,8 @@ public class Description {
             this.description = null;
         }
     }
+
+    public String toString() {
+        return this.description;
+    }
 }

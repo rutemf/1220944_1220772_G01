@@ -19,8 +19,11 @@ import static org.springdoc.core.service.GenericResponseService.setDescription;
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames={"ISBN"})})
 public class Book {
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    long pk;
     @Getter
-    @EmbeddedId
+    @Embedded
     @Column(name="ISBN")
     Isbn isbn;
 

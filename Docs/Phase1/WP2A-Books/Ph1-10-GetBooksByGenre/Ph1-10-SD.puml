@@ -3,7 +3,7 @@
 autoactivate on
 autonumber
 
-title Update a books data as librarian
+title Get books by genre as librarian
 
 actor "Librarian" as User
 participant ":Rest" as Rest

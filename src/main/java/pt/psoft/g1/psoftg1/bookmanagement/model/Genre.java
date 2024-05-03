@@ -11,22 +11,11 @@ import java.util.List;
 public class Genre {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    int id;
+    long pk;
 
     @Size(min = 1, max = 100, message = "Genre name must be between 1 and 100 characters")
     @Column(unique=true, nullable=false)
     String genre;
-
-    @OneToMany(mappedBy = "genre")
-    List<Book> bookList;
-
-    public Collection<Book> getBookList() {
-        return bookList;
-    }
-
-    public void setBookList(Collection<Book> bookList) {
-        this.bookList = (List<Book>) bookList;
-    }
 
     protected Genre(){}
 

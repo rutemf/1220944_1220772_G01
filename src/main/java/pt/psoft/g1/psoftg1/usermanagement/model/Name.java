@@ -33,6 +33,9 @@ public class Name {
         }
         this.fullName = fullName;
     }
+    public String toString() {
+        return this.fullName;
+    }
 
     protected Name() {
         // for ORM only
