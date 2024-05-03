@@ -3,10 +3,10 @@ package pt.psoft.g1.psoftg1.authormanagement.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.StaleObjectStateException;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
 import pt.psoft.g1.psoftg1.usermanagement.model.Name;
 
-import java.util.List;
 
 @Entity
 public class Author {
@@ -14,6 +14,10 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "AUTHOR_NUMBER")
     private Long authorNumber;
+
+
+    @Version
+    private long version;
 
     @Setter
     @Embedded
@@ -37,22 +41,29 @@ public class Author {
     public void setPhoto(byte[] photo) {
         this.photo = new Photo(photo);
     }
-    public Author(String name, String bio, byte[] photo) {
+
+    public Long getVersion() { return version;}
+
+    public Long getId() { return authorNumber;}
+
+    public Author(String name, String bio) {
         setName(name);
         setBio(bio);
-        setPhoto(photo);
-
     }
 
     protected Author() {
         // got ORM only
     }
 
-    public void applyPatch(UpdateAuthorRequest request) {
+
+    public void applyPatch(final long desiredVersion, UpdateAuthorRequest request) {
         String name = request.getName();
         String bio = request.getBio();
         byte[] photo = request.getPhoto();
 
+        if (this.version != desiredVersion) {
+            throw new StaleObjectStateException("Object was already modified by another user", this.authorNumber);
+        }
         if (name != null) {
             setName(name);
         }

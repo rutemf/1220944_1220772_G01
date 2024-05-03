@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
+import pt.psoft.g1.psoftg1.usermanagement.model.Name;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +13,8 @@ import java.util.Optional;
 public interface SpringDataAuthorRepository extends AuthorRepository, CrudRepository<Author, Long> {
     @Override
     Optional<Author> findByAuthorNumber(Long authorNumber);
-
+    @Override
+    Optional<Author> findByName(Name name);
     @Override
     @Query("SELECT a " +
             "FROM Author a " +
