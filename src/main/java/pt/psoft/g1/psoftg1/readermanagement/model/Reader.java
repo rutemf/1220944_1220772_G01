@@ -15,7 +15,6 @@ import java.util.List;
 public class Reader {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="READER_PK")
     private Long pk;
 
     @Getter
@@ -49,7 +48,6 @@ public class Reader {
     @Getter
     @Setter
     @OneToOne
-    @JoinColumn(name = "USER_ID")
     private User user;
 
 /*

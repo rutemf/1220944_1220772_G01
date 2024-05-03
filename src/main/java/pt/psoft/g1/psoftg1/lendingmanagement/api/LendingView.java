@@ -9,8 +9,6 @@ import java.time.LocalDate;
 @Data
 @Schema(description = "A Lending")
 public class LendingView {
-    private Long pk;
-
     private String lendingNumber;
 
     private int fineCentsValue;

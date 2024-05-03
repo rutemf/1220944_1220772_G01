@@ -2,7 +2,6 @@ package pt.psoft.g1.psoftg1.authormanagement.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.StaleObjectStateException;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
 import pt.psoft.g1.psoftg1.usermanagement.model.Name;
@@ -19,7 +18,6 @@ public class Author {
     @Version
     private long version;
 
-    @Setter
     @Embedded
     @Getter
     private Name name;

@@ -38,27 +38,29 @@ public class Bootstrapper implements CommandLineRunner {
     @Override
     @Transactional
     public void run(final String... args) throws Exception {
+        Optional<Author> author = authorRepository.findByName(new Name("Manuel Antonio Pina"));
         createAuthors();
         createBookGenres();
-        createUsers();
+        //createUsers();
         createBooks();
-        createReaders();
+        //createReaders();
     }
 
     private void createAuthors() {
-        if (authorRepository.searchByName("Manuel Antonio Pina").isEmpty()) {
-            final Author a1 = new Author("Manuel Antonio Pina", "Manuel António Pina foi um jornalista e escritor português, premiado em 2011 com o Prémio Camões");
+        if (authorRepository.findByName(new Name("Manuel Antonio Pina")).isEmpty()) {
+            final Author a1 = new Author("Manuel Antonio Pina",
+                    "Manuel António Pina foi um jornalista e escritor português, premiado em 2011 com o Prémio Camões");
             authorRepository.save(a1);
         }
-        if (authorRepository.searchByName("Author2").isEmpty()) {
+        if (authorRepository.findByName(new Name("Author2")).isEmpty()) {
             final Author a2 = new Author("Author2", "Bio do Author 2");
             authorRepository.save(a2);
         }
-        if (authorRepository.searchByName("Author3").isEmpty()) {
+        if (authorRepository.findByName(new Name("Author3")).isEmpty()) {
             final Author a3 = new Author("Author3", "Bio do Author 3");
             authorRepository.save(a3);
         }
-        if (authorRepository.searchByName("Author4").isEmpty()) {
+        if (authorRepository.findByName(new Name("Author4")).isEmpty()) {
             final Author a4 = new Author("Author4", "Bio do Author 4");
             authorRepository.save(a4);
         }
@@ -153,7 +155,7 @@ public class Bootstrapper implements CommandLineRunner {
         // O Inspetor Max
         if (genre.isPresent() && author.isPresent()) {
             authors.add(author.get());
-            Book b1 = new Book("978985644704",
+            Book b1 = new Book("9782826012092",
                     "O Inspetor Max",
                     "conhecido pastor-alemão que trabalha para a Judiciária, vai ser fundamental para resolver um importante caso de uma rede de malfeitores que quer colocar uma bomba num megaconcerto de uma ilustre cantora",
                     genre.get(),
@@ -170,7 +172,7 @@ public class Bootstrapper implements CommandLineRunner {
                 .orElseThrow(() -> new NotFoundException("Cannot find author"));
         if (genre.isPresent() && author.isPresent()) {
             authors.add(author.get());
-            Book b2 = new Book("9789895612864",
+            Book b2 = new Book("9782608153111",
                     "C e Algoritmos",
                     "O C é uma linguagem de programação incontornável no estudo e aprendizagem das linguagens de programação",
                     genre.get(),
@@ -187,7 +189,7 @@ public class Bootstrapper implements CommandLineRunner {
                 .orElseThrow(() -> new NotFoundException("Cannot find author"));
         if (genre.isPresent() && author.isPresent()) {
             authors.add(author.get());
-            Book b3 = new Book("978989534704",
+            Book b3 = new Book("9782722203402",
                     "Vemo-nos em Agosto",
                     "Através das sensuais noites caribenhas repletas de salsa e boleros, homens sedutores e vigaristas, a cada agosto que passa Ana viaja mais longe para o interior do seu desejo e do medo escondido no seu coração.",
                     genre.get(),
@@ -197,7 +199,8 @@ public class Bootstrapper implements CommandLineRunner {
 
         authors.clear();
 
-        // O Principezinho
+        // O Principezinho    Ricardo: está a dar erro
+/*
         genre = Optional.ofNullable(genreRepository.findByString("Infantil"))
                 .orElseThrow(() -> new NotFoundException("Cannot find genre"));
         author = Optional.ofNullable(authorRepository.findByName(new Name("Author4")))
@@ -207,12 +210,13 @@ public class Bootstrapper implements CommandLineRunner {
         if (genre.isPresent() && author.isPresent() && author2.isPresent()) {
             authors.add(author.get());
             authors.add(author2.get());
-            Book b4 = new Book("9789895644704",
+            Book b4 = new Book("9782722203426",
                     "O Principezinho", "Depois de deixar o seu asteroide e embarcar numa viagem pelo espaço, o principezinho chega, finalmente, à Terra. No deserto, o menino de cabelos da cor do ouro conhece um aviador, a quem conta todas as aventuras que viveu e tudo o que viu ao longo da sua jornada.",
                     genre.get(),
                     authors);
             bookRepository.save(b4);
         }
+*/
 
         authors.clear();
 

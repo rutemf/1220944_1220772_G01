@@ -51,8 +51,7 @@ public class LendingServiceImpl implements LendingService{
         final var r = readerRepository.findByReaderNumber(resource.getReaderNumber())
                 .orElseThrow(() -> new NotFoundException("Reader not found"));
         int seq = lendingRepository.getCountFromCurrentYear()+1;
-        LendingNumber ln = new LendingNumber(seq);
-        final Lending l = new Lending(b,r,ln);
+        final Lending l = new Lending(b,r,seq);
 
         return lendingRepository.save(l);
     }

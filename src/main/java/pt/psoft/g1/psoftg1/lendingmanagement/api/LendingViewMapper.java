@@ -6,6 +6,8 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Title;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
 
+import java.util.Optional;
+
 /**
  * Brief guides:
  * <a href="https://www.baeldung.com/mapstruct">https://www.baeldung.com/mapstruct</a>
@@ -19,8 +21,13 @@ public abstract class LendingViewMapper {
 
     public abstract Iterable<LendingView> toLendingView(Iterable<Lending> lendings);
 
-    public String map(LendingNumber value) {return value.toString();}
+    public String map(final LendingNumber value) {return value.toString();}
 
-    public String map(Title value) {return value.toString();}
+    public String map(final Title value) {return value.toString();}
+
+    public Integer map(final Optional<Integer> i) {
+        return i.orElse(null);
+    }
+
 
 }

@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1.authormanagement.impl;
+package pt.psoft.g1.psoftg1.authormanagement.infrastructure.repositories.impl;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

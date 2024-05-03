@@ -11,6 +11,8 @@ import pt.psoft.g1.psoftg1.readermanagement.model.Reader;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * The {@code Lending} class associates a {@code Reader} and a {@code Book}.
@@ -23,8 +25,13 @@ import java.time.temporal.ChronoUnit;
  * @author  rmfranca*/
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames={"LENDING_NUMBER",  "\"YEAR\"", "SEQUENCIAL"})})
+        @UniqueConstraint(columnNames={"LENDING_NUMBER",  "\"YEAR\"", "SEQUENCIAL"}),
+        @UniqueConstraint(columnNames={"\"YEAR\"", "SEQUENCIAL"}),
+        @UniqueConstraint(columnNames={"LENDING_NUMBER"})})
 public class Lending {
+    @Transient
+    public static final int FINE_VALUE_PER_DAY_IN_CENTS = 300;    //TODO: Move this to a properties file
+
     @Transient
     private static final int MAX_DAYS_PER_LENDING = 15;    //TODO: Move this to a properties file
 
@@ -50,11 +57,18 @@ public class Lending {
     @Getter
     private LendingNumber lendingNumber;
 
+
+/*
+
     /**
      * Stores information and logic regarding the eventual fine to be associated with this {@code Lending}.
-     * */
-    @Embedded
+     * **/
+/*
+
+    @OneToOne(mappedBy="lending")
     private Fine fine;
+*/
+
 
     /**
      * {@code Book} associated with this {@code Lending}.
@@ -62,18 +76,16 @@ public class Lending {
     @NotNull
     @NotBlank
     @Getter
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "ISBN", nullable = false, updatable = false)
+    @ManyToOne(fetch=FetchType.EAGER, optional = false)
     private Book book;
 
     /**
      * {@code Reader} associated with this {@code Lending}.
-     * */
+     **/
     @NotNull
     @NotBlank
     @Getter
     @ManyToOne(fetch=FetchType.EAGER, optional = false)
-    @JoinColumn(name = "reader_pk", nullable = false, updatable = false)
     private Reader reader;
 
     /**
@@ -124,6 +136,9 @@ public class Lending {
     @Transient
     private Integer daysOverdue;
 
+    @Transient
+    private Integer fineValueInCents;
+
     /**
      * Constructs a new {@code Lending} object to be persisted in the database.
      * <p>
@@ -132,12 +147,13 @@ public class Lending {
      *
      * @param       book {@code Book} object, which should be retrieved from the database.
      * @param       reader {@code Reader} object, which should be retrieved from the database.
-     * @param       lendingNumber {@code LendingNumber} object, which should be created respecting business rules.
+     * @param       seq sequential number, which should be obtained from the year's count on the database.
+     * @throws      NullPointerException if any of the arguments is {@code null}
      * */
-    public Lending(Book book, Reader reader, LendingNumber lendingNumber){
-        this.lendingNumber = lendingNumber;
-        this.book = book;
-        this.reader = reader;
+    public Lending(Book book, Reader reader, int seq){
+        this.lendingNumber = new LendingNumber(seq);
+        this.book = Objects.requireNonNull(book);
+        this.reader = Objects.requireNonNull(reader);
         this.startDate = LocalDate.now();
         this.limitDate = LocalDate.now().plusDays(MAX_DAYS_PER_LENDING);
         setDaysUntilReturn();
@@ -166,16 +182,16 @@ public class Lending {
      */
     public void setReturned(final long desiredVersion, final String commentary){
         // check current version
-        if (this.version != desiredVersion) {
+        if (this.version != desiredVersion)
             throw new StaleObjectStateException("Object was already modified by another user", this.pk);
-        }
-        if(commentary != null){
+
+        if(commentary != null)
             this.commentary = commentary;
-        }
+
+        if(getDaysDelayed() > 0)
+            this.fineValueInCents = FINE_VALUE_PER_DAY_IN_CENTS * getDaysDelayed();
+
         setReturnedDate();
-        if(returnedDate.isAfter(limitDate) && this.fine == null){
-            this.fine = new Fine(getDaysDelayed());
-        }
     }
 
     /**
@@ -193,15 +209,7 @@ public class Lending {
         }
     }
 
-    //TODO: apply and fix Fine updating/creation logic
-    public void updateFine(){
-        if(this.fine != null){
-            this.fine.setValue(getDaysDelayed());
-
-        }
-    }
-
-    public void setDaysUntilReturn(){
+    private void setDaysUntilReturn(){
         if(returnedDate == null){
             this.daysUntilReturn = (int) ChronoUnit.DAYS.between(LocalDate.now(), this.limitDate);
         }else{
@@ -209,7 +217,7 @@ public class Lending {
         }
     }
 
-    public void setDaysOverdue(){
+    private void setDaysOverdue(){
         int days = getDaysDelayed();
         if(days > 0){
             this.daysOverdue = days;
@@ -217,6 +225,32 @@ public class Lending {
             this.daysOverdue = null;
         }
     }
+
+    private void setFineValueInCents(){
+        int days = getDaysDelayed();
+        if(days > 0){
+            this.fineValueInCents = FINE_VALUE_PER_DAY_IN_CENTS * days;
+        }else{
+            this.fineValueInCents = null;
+        }
+    }
+
+    public Optional<Integer> getDaysUntilReturn() {
+        setDaysUntilReturn();
+        return Optional.ofNullable(daysUntilReturn);
+    }
+
+    public Optional<Integer> getDaysOverdue() {
+        setDaysOverdue();
+        return Optional.ofNullable(daysOverdue);
+    }
+
+    public Optional<Integer> getFineValueInCents() {
+        setFineValueInCents();
+        return Optional.ofNullable(fineValueInCents);
+    }
+
+
 
     /**Protected empty constructor for ORM only.*/
     protected Lending() {}
