@@ -54,7 +54,6 @@ public class Lending {
      * Composed of {@code int year}, {@code int sequencial} and {@code String lendingNumber}. The string is
      * constructed based on the values of {@code year} and {@code sequencial}.
      */
-    @Getter
     private LendingNumber lendingNumber;
 
     /**
@@ -82,6 +81,7 @@ public class Lending {
     @NotBlank
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.DATE)
+    @Getter
     private LocalDate startDate;
 
     /**
@@ -91,6 +91,7 @@ public class Lending {
     @NotBlank
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
+    @Getter
     private LocalDate limitDate;
 
     /**
@@ -238,6 +239,13 @@ public class Lending {
         return Optional.ofNullable(fineValueInCents);
     }
 
+    public String getTitle(){
+        return this.book.getTitle().toString();
+    }
+
+    public String getLendingNumber() {
+        return this.lendingNumber.toString();
+    }
 
 
     /**Protected empty constructor for ORM only.*/

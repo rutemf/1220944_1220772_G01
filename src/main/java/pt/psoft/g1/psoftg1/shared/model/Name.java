@@ -1,12 +1,10 @@
-package pt.psoft.g1.psoftg1.usermanagement.model;
+package pt.psoft.g1.psoftg1.shared.model;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 

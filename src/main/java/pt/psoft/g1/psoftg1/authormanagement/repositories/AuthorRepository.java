@@ -1,6 +1,5 @@
 package pt.psoft.g1.psoftg1.authormanagement.repositories;
 import org.springframework.data.repository.query.Param;
-import pt.psoft.g1.psoftg1.usermanagement.model.Name;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 
 import java.util.List;

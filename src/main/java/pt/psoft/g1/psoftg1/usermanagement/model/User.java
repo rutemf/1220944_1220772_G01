@@ -36,6 +36,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.userdetails.UserDetails;
+import pt.psoft.g1.psoftg1.shared.model.Name;
 
 import lombok.Getter;
 import lombok.Setter;

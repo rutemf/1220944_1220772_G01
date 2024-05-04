@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1.authormanagement.model;
+package pt.psoft.g1.psoftg1.shared.model;
 
 import jakarta.persistence.*;
 

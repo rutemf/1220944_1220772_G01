@@ -3,10 +3,11 @@ package pt.psoft.g1.psoftg1.lendingmanagement.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The {@code Fine} class models a fine applied when a lending is past its due date.
- * <p>It stores its current value, and if it has been paid.
+ * <p>It stores its current value, and the associated {@code Lending}.
  * @author  rmfranca*/
 @Getter
 @Entity
@@ -23,20 +24,21 @@ public class Fine {
     @PositiveOrZero
     int centsValue;
 
-    @OneToOne
+    @Setter
+    @OneToOne(optional = false, orphanRemoval = true)
+    @JoinColumn(name = "lending_pk", nullable = false, unique = true)
     private Lending lending;
 
-
     /**
-     * Constructs a new {@code Fine} object and sets the current value of the fine,
+     * Constructs a new {@code Fine} object. Sets the current value of the fine,
      * as well as the fine value per day at the time of creation.
-     * @param   daysDelayed number of days which have passed since the limit date on the associated {@code Lending}
+     * @param   lending transaction which generates this fine.
      * */
-    public Fine(int daysDelayed) {
-        if(daysDelayed <= 0)
-            return;
+    public Fine(Lending lending) {
+        if(lending.getDaysDelayed() <= 0)
+            throw new IllegalArgumentException("Lending is not overdue");
         fineValuePerDayInCents = Lending.FINE_VALUE_PER_DAY_IN_CENTS;
-        centsValue = fineValuePerDayInCents * daysDelayed;
+        centsValue = fineValuePerDayInCents * lending.getDaysDelayed();
     }
 
     /**Protected empty constructor for ORM only.*/

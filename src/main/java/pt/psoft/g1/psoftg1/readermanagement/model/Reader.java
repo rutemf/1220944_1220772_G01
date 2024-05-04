@@ -2,14 +2,11 @@ package pt.psoft.g1.psoftg1.readermanagement.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.usermanagement.model.Name;
-import pt.psoft.g1.psoftg1.usermanagement.model.Role;
+import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 public class Reader {
@@ -49,11 +46,6 @@ public class Reader {
     @Setter
     @OneToOne
     private User user;
-
-/*
-    @OneToMany
-    private List<Lending> lendings;
-*/
 
 /*
     /**

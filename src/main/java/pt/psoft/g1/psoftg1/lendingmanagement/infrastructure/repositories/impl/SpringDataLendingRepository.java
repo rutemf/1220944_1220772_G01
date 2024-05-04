@@ -4,13 +4,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface SpringDataLendingRepository extends LendingRepository, CrudRepository<Lending, LendingNumber> {
+public interface SpringDataLendingRepository extends LendingRepository, CrudRepository<Lending, Long> {
     @Override
     @Query("SELECT l " +
             "FROM Lending l " +
@@ -19,7 +18,6 @@ public interface SpringDataLendingRepository extends LendingRepository, CrudRepo
 
     //http://www.h2database.com/html/commands.html
 
-/*
     @Override
     @Query("SELECT l " +
             "FROM Lending l " +
@@ -30,7 +28,6 @@ public interface SpringDataLendingRepository extends LendingRepository, CrudRepo
                 "AND l.returnedDate IS NULL")
     Optional<Lending> findOpenByReaderNumberAndIsbn(@Param("readerNumber") String readerNumber,
                                                     @Param("isbn") String isbn);
-*/
 
     @Override
     @Query("SELECT l " +

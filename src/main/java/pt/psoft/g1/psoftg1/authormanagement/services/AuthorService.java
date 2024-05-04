@@ -1,8 +1,7 @@
 package pt.psoft.g1.psoftg1.authormanagement.services;
 
-import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
-import pt.psoft.g1.psoftg1.usermanagement.model.Name;
+import pt.psoft.g1.psoftg1.shared.model.Name;
 
 import java.util.Optional;
 

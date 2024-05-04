@@ -6,7 +6,6 @@ import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.exceptions.LendingForbiddenException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 
@@ -65,7 +64,7 @@ public class LendingServiceImpl implements LendingService{
             l = Optional.ofNullable(lendingRepository.findOpenByReaderNumberAndIsbn(resource.getReaderNumber(), resource.getIsbn())
                     .orElseThrow(() -> new NotFoundException("Cannot find lending with this book")));
         }catch (NotFoundException e){
-            l = Optional.ofNullable(lendingRepository.findByLendingNumber(new LendingNumber(lendingNumber))
+            l = Optional.ofNullable(lendingRepository.findByLendingNumber(lendingNumber)
                     .orElseThrow(() -> new NotFoundException("Cannot update lending with this lending number")));
         }
 

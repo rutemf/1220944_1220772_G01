@@ -9,9 +9,9 @@ import java.time.LocalDate;
 @Data
 @Schema(description = "A Lending")
 public class LendingView {
-    private String lendingNumber;
 
-    private int fineCentsValue;
+    @NotNull
+    private String lendingNumber;
 
     @NotNull
     private String bookTitle;
@@ -25,4 +25,18 @@ public class LendingView {
     private Integer daysUntilReturn;
 
     private Integer daysOverdue;
+
+    private Integer fineValueInCents;
+
 }
+
+/*>
+A: a ambos deve ser facultado:
+>- lending number
+>- book title
+>- lending date
+>- return date
+>- number of days till return date (if applicable)
+>- number of days in overdue (if applicable)
+>- fine amount (if applicable)
+*/
