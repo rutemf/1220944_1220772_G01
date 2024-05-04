@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Schema(description = "A Book")
 public class BookView {
@@ -20,5 +22,5 @@ public class BookView {
     private String title;
 
     @NotNull
-    private String[] authors;
+    private List<String> authors;
 }

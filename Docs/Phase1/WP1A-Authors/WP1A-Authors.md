@@ -14,29 +14,46 @@ days). When a reader doesn’t return a book on time a fine will be applied per 
 
 >[Q: Boa tarde, quais são os critério de aceitação (acceptance criteria) da us03?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29067)
 >
->A:
+>A: Ao introduzir todos os dados obrigatórios no formato correto, o autor deve ficar registado no sistema
+>
+>Ao introduzir algum dado no formato incorreto ou não introduzir um dado obrigatório deve ser dada indicação de erro
+>
+>Apenas os utilizadores com permissões de librarian podem executar esta opção
 
 >[Q: Boa tarde, quais são os critério de aceitação (acceptance criteria) da us04?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29068)
 >
->A:
+>A: Podem alterar qualquer dado do autor excepto o número de autor
+>
+>Os dados introduzidos devem respeitar o formato correto
+>
+>Deve ser possível “limpar” os dados opcionais
 
 >[Q: Boa tarde, quais são os critério de aceitação (acceptance criteria) da us05?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29069)
 >
->A: 
-
->[Q:Boa tarde, quais são os critério de aceitação (acceptance criteria) da us06?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29070)
+>A: Se o utilizador introduzir um número de autor existente devem ser mostrados todos os dados do autor
 >
->A:
+>Se o utilizador introduzir um número de autor inexistente deve ser indicado erro
 
->[Q:Boa tarde, na US05 é pedido que através do author number se obtenha todos os dados do autor, ou seja, nome e short bio?
+>[Q: Boa tarde, quais são os critério de aceitação (acceptance criteria) da us06?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29070)
+>
+>A:  O utilizador introduz alguns caracteres e o sistema devolve a lista de todos os autores cujo nome começa pelas letras introduzidas
+
+>[Q: Boa tarde, na US05 é pedido que através do author number se obtenha todos os dados do autor, ou seja, nome e short bio?
 ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29089)
 >
->A:Que tipo de dados podem ser alterados? Apenas a "short bio"?
+>A:sim
 
->[Q:Que tipo de dados podem ser alterados? Apenas a "short bio"?
-](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29230)
+>[Q:Pode haver nomes repetidos entre autores?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29337#p37151)
 >
->A:
+>A:sim
+
+>[Q:é obrigatório preencher as caracteristicas do autor (name, short_bio), ou apenas uma delas?
+Qual o minimo e o maximo de caracteres para um nome de um autor?
+?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29333#p37137)
+>
+>A: sao ambas obrigatórias
+>
+>um nome de author tem um máximo de 150 caracteres
 
 
 
