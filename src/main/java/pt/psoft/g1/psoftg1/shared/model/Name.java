@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.shared.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ import java.util.List;
 public class Name {
     @NotNull
     @NotBlank
+    @Column(name="NAME", length = 150)
     String fullName;
 
     //TODO: Move this to a properties file
@@ -24,6 +26,13 @@ public class Name {
     }
 
     public void setFullName(String fullName){
+        if(fullName.isBlank())
+        {
+            throw new IllegalArgumentException("Name can only contain alphanumeric characters");
+        }else if(!StringUtils.isAlphanumeric(fullName))
+        {
+            throw new IllegalArgumentException("Name cannot be blank, nor only white spaces");
+        }
         for(String forbidden : FORBIDDEN_NAMES){
             if(fullName.contains(forbidden)){
                 throw new IllegalArgumentException("Name contains forbidden word");

@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.Size;
+import pt.psoft.g1.psoftg1.shared.model.StringUtils;
 
 @Embeddable
 public class Description {
@@ -19,7 +20,7 @@ public class Description {
 
     private void setDescription(@Nullable String description) {
         if (description != null && !description.isEmpty()) {
-            this.description = description;
+            this.description = StringUtils.sanitizeHtml(description);
         } else {
             this.description = null;
         }

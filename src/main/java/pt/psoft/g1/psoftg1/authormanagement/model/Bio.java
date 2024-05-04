@@ -4,7 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
+import pt.psoft.g1.psoftg1.shared.model.StringUtils;
 
 @Embeddable
 public class Bio {
@@ -13,15 +13,15 @@ public class Bio {
     @Size(min = 1, max = 4096)
     String Bio;
 
-    public Bio(String Bio) {
-        setBio(Bio);
+    public Bio(String bio) {
+        setBio(bio);
     }
 
     protected Bio() {
     }
 
-    private void setBio(String Bio) {
-        this.Bio = Bio;
+    private void setBio(String bio) {
+        this.Bio = StringUtils.sanitizeHtml(bio);
     }
 }
 
