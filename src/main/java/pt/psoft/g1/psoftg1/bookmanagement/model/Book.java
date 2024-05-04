@@ -9,6 +9,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "Book", uniqueConstraints = {
@@ -51,6 +52,8 @@ public class Book {
     private void setGenre(Genre genre) {this.genre = genre; }
 
     private void setAuthors(List<Author> authors) {this.authors = authors; }
+
+    public Optional<Description> getDescription(){ return Optional.ofNullable(description); }
 
     public Book(String isbn, String title, Genre genre,List<Author> authors) {
         setTitle(title);
