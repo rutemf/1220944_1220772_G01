@@ -57,19 +57,6 @@ public class Lending {
     @Getter
     private LendingNumber lendingNumber;
 
-
-/*
-
-    /**
-     * Stores information and logic regarding the eventual fine to be associated with this {@code Lending}.
-     * **/
-/*
-
-    @OneToOne(mappedBy="lending")
-    private Fine fine;
-*/
-
-
     /**
      * {@code Book} associated with this {@code Lending}.
      * */
@@ -128,6 +115,7 @@ public class Lending {
      * This field is initialized as null as the lending can never begin with the book already returned
      * */
     @Size(min = 0, max = 1024)
+    @Column(length = 1024)
     private String commentary = null;
 
     @Transient

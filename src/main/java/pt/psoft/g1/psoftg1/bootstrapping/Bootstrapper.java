@@ -38,7 +38,7 @@ public class Bootstrapper implements CommandLineRunner {
     @Override
     @Transactional
     public void run(final String... args) throws Exception {
-        Optional<Author> author = authorRepository.findByName(new Name("Manuel Antonio Pina"));
+        Optional<Author> author = authorRepository.findByName("Manuel Antonio Pina");
         createAuthors();
         createBookGenres();
         //createUsers();
@@ -47,20 +47,20 @@ public class Bootstrapper implements CommandLineRunner {
     }
 
     private void createAuthors() {
-        if (authorRepository.findByName(new Name("Manuel Antonio Pina")).isEmpty()) {
+        if (authorRepository.findByName("Manuel Antonio Pina").isEmpty()) {
             final Author a1 = new Author("Manuel Antonio Pina",
                     "Manuel António Pina foi um jornalista e escritor português, premiado em 2011 com o Prémio Camões");
             authorRepository.save(a1);
         }
-        if (authorRepository.findByName(new Name("Author2")).isEmpty()) {
+        if (authorRepository.findByName("Author2").isEmpty()) {
             final Author a2 = new Author("Author2", "Bio do Author 2");
             authorRepository.save(a2);
         }
-        if (authorRepository.findByName(new Name("Author3")).isEmpty()) {
+        if (authorRepository.findByName("Author3").isEmpty()) {
             final Author a3 = new Author("Author3", "Bio do Author 3");
             authorRepository.save(a3);
         }
-        if (authorRepository.findByName(new Name("Author4")).isEmpty()) {
+        if (authorRepository.findByName("Author4").isEmpty()) {
             final Author a4 = new Author("Author4", "Bio do Author 4");
             authorRepository.save(a4);
         }
@@ -148,7 +148,7 @@ public class Bootstrapper implements CommandLineRunner {
     private void createBooks() {
         Optional<Genre> genre = Optional.ofNullable(genreRepository.findByString("Ação"))
                 .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-        Optional<Author> author = Optional.ofNullable(authorRepository.findByName(new Name("Manuel Antonio Pina")))
+        Optional<Author> author = Optional.ofNullable(authorRepository.findByName("Manuel Antonio Pina"))
                 .orElseThrow(() -> new NotFoundException("Cannot find author"));
         ArrayList<Author> authors = new ArrayList<>();
 
@@ -160,7 +160,9 @@ public class Bootstrapper implements CommandLineRunner {
                     "conhecido pastor-alemão que trabalha para a Judiciária, vai ser fundamental para resolver um importante caso de uma rede de malfeitores que quer colocar uma bomba num megaconcerto de uma ilustre cantora",
                     genre.get(),
                     authors);
-            bookRepository.save(b1);
+            if(bookRepository.findByIsbn("9782826012092").isEmpty()) {
+                bookRepository.save(b1);
+            }
         }
 
         authors.clear();
@@ -168,7 +170,7 @@ public class Bootstrapper implements CommandLineRunner {
         // C e Algoritmos
         genre = Optional.ofNullable(genreRepository.findByString("Informação"))
                 .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-        author = Optional.ofNullable(authorRepository.findByName(new Name("Author2")))
+        author = Optional.ofNullable(authorRepository.findByName("Author2"))
                 .orElseThrow(() -> new NotFoundException("Cannot find author"));
         if (genre.isPresent() && author.isPresent()) {
             authors.add(author.get());
@@ -177,15 +179,17 @@ public class Bootstrapper implements CommandLineRunner {
                     "O C é uma linguagem de programação incontornável no estudo e aprendizagem das linguagens de programação",
                     genre.get(),
                     authors);
-            bookRepository.save(b2);
+            if(bookRepository.findByIsbn("9782608153111").isEmpty()) {
+                bookRepository.save(b2);
+            }
         }
 
         authors.clear();
-
-        // Vemo-nos em Agosto
+/*
+        // Vemo-nos em Agosto    Ricardo: está a dar erro. Diz que quebra a relaçao de unicidade do ISBN, apesar de ser diferente
         genre = Optional.ofNullable(genreRepository.findByString("Romance"))
                 .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-        author = Optional.ofNullable(authorRepository.findByName(new Name("Author3")))
+        author = Optional.ofNullable(authorRepository.findByName("Author3"))
                 .orElseThrow(() -> new NotFoundException("Cannot find author"));
         if (genre.isPresent() && author.isPresent()) {
             authors.add(author.get());
@@ -194,18 +198,21 @@ public class Bootstrapper implements CommandLineRunner {
                     "Através das sensuais noites caribenhas repletas de salsa e boleros, homens sedutores e vigaristas, a cada agosto que passa Ana viaja mais longe para o interior do seu desejo e do medo escondido no seu coração.",
                     genre.get(),
                     authors);
-            bookRepository.save(b3);
+            if(bookRepository.findByIsbn("9782722203402").isEmpty()) {
+                bookRepository.save(b3);
+            }
         }
 
         authors.clear();
+*/
+        /*
+        // O Principezinho
 
-        // O Principezinho    Ricardo: está a dar erro
-/*
         genre = Optional.ofNullable(genreRepository.findByString("Infantil"))
                 .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-        author = Optional.ofNullable(authorRepository.findByName(new Name("Author4")))
+        author = Optional.ofNullable(authorRepository.findByName("Author4"))
                 .orElseThrow(() -> new NotFoundException("Cannot find author"));
-        Optional<Author> author2 = Optional.ofNullable(authorRepository.findByName(new Name("Author4")))
+        Optional<Author> author2 = Optional.ofNullable(authorRepository.findByName("Author4"))
                 .orElseThrow(() -> new NotFoundException("Cannot find author"));
         if (genre.isPresent() && author.isPresent() && author2.isPresent()) {
             authors.add(author.get());
@@ -214,12 +221,12 @@ public class Bootstrapper implements CommandLineRunner {
                     "O Principezinho", "Depois de deixar o seu asteroide e embarcar numa viagem pelo espaço, o principezinho chega, finalmente, à Terra. No deserto, o menino de cabelos da cor do ouro conhece um aviador, a quem conta todas as aventuras que viveu e tudo o que viu ao longo da sua jornada.",
                     genre.get(),
                     authors);
-            bookRepository.save(b4);
+            if(bookRepository.findByIsbn("9782722203426").isEmpty()) {
+                bookRepository.save(b4);
+            }
         }
-*/
-
         authors.clear();
-
+*/
     }
 
     private void createUsers() {

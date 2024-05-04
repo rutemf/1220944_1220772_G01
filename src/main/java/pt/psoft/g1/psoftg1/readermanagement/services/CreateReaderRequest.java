@@ -41,13 +41,10 @@ public class CreateReaderRequest {
     @NotBlank
     private String phoneNumber;
 
-    @NonNull
     private boolean gdpr;
 
-    @NonNull
     private boolean marketing;
 
-    @NonNull
     private boolean thirdParty;
 
     /*public CreateReaderRequest(String username, String password, String fullName, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) {

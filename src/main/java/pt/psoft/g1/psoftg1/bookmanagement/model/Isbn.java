@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.bookmanagement.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
@@ -11,6 +12,8 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class Isbn implements Serializable {
     @Size(min = 10, max = 13)
+    @Column(name="ISBN", length = 16)
+
     String isbn;
 
     public Isbn(String isbn) {

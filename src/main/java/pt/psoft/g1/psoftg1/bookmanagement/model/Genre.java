@@ -14,7 +14,7 @@ public class Genre {
     long pk;
 
     @Size(min = 1, max = 100, message = "Genre name must be between 1 and 100 characters")
-    @Column(unique=true, nullable=false)
+    @Column(unique=true, nullable=false, length = 100)
     String genre;
 
     protected Genre(){}

@@ -22,7 +22,7 @@ public class LendingServiceImpl implements LendingService{
     @Override
 
     public Optional<Lending> findByLendingNumber(String lendingNumber){
-        return lendingRepository.findByLendingNumber(new LendingNumber(lendingNumber));
+        return lendingRepository.findByLendingNumber(lendingNumber);
     }
 
     @Override

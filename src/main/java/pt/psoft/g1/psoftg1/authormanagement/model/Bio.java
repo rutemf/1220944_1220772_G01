@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 
 @Embeddable
 public class Bio {
-    @Column(nullable = false)
+    @Column(nullable = false, length = 4096)
     @NotNull
     @Size(min = 1, max = 4096)
     String Bio;

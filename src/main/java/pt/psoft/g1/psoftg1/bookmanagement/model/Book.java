@@ -4,27 +4,23 @@ package pt.psoft.g1.psoftg1.bookmanagement.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.Setter;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
-
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springdoc.core.service.GenericResponseService.setDescription;
-
 @Entity
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames={"ISBN"})})
+@Table(name = "Book", uniqueConstraints = {
+        @UniqueConstraint(name = "uc_book_isbn", columnNames = {"ISBN"})
+})
 public class Book {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     long pk;
+
     @Getter
     @Embedded
-    @Column(name="ISBN")
     Isbn isbn;
 
     @Getter
@@ -42,7 +38,6 @@ public class Book {
     private List<Author> authors = new ArrayList<>();
 
     @Embedded
-    @NotNull
     Description description;
 
     private void setTitle(String title) {this.title = new Title(title);}

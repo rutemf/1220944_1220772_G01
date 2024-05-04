@@ -12,30 +12,38 @@ import java.util.Optional;
 
 public interface SpringDataLendingRepository extends LendingRepository, CrudRepository<Lending, LendingNumber> {
     @Override
-    Optional<Lending> findByLendingNumber(LendingNumber lendingNumber);
+    @Query("SELECT l " +
+            "FROM Lending l " +
+            "WHERE l.lendingNumber.lendingNumber = :lendingNumber")
+    Optional<Lending> findByLendingNumber(String lendingNumber);
 
     //http://www.h2database.com/html/commands.html
 
+/*
     @Override
     @Query("SELECT l " +
             "FROM Lending l " +
-            "JOIN Book b ON l.book.isbn = b.isbn " +
-            "JOIN Reader r ON l.reader.pk = r.pk " +
-            "WHERE b.isbn = :isbn AND r.readerNumber = :readerNumber AND l.returnedDate IS NULL")
-    Optional<Lending> findOpenByReaderNumberAndIsbn(@Param("readerNumber") String readerNumber, @Param("isbn") String isbn);
+                "JOIN Book b ON l.book.isbn.isbn = b.isbn " +
+                "JOIN Reader r ON l.reader.pk = r.pk " +
+            "WHERE b.isbn.isbn = :isbn " +
+                "AND r.readerNumber.readerNumber = :readerNumber " +
+                "AND l.returnedDate IS NULL")
+    Optional<Lending> findOpenByReaderNumberAndIsbn(@Param("readerNumber") String readerNumber,
+                                                    @Param("isbn") String isbn);
+*/
 
     @Override
     @Query("SELECT l " +
             "FROM Lending l " +
-            "JOIN Book b ON l.book.isbn = b.isbn " +
-            "WHERE b.isbn = :isbn")
+                "JOIN Book b ON l.book.isbn.isbn = b.isbn.isbn " +
+            "WHERE b.isbn.isbn = :isbn")
     List<Lending> listAllByIsbn(@Param("isbn") String isbn);
 
     @Override
     @Query("SELECT l " +
             "FROM Lending l " +
-            "JOIN Reader r ON l.reader.pk = r.pk " +
-            "WHERE r.readerNumber = :readerNumber")
+                "JOIN Reader r ON l.reader.pk = r.pk " +
+            "WHERE r.readerNumber.readerNumber = :readerNumber")
     List<Lending> listAllByReaderNumber(@Param("readerNumber") String readerNumber);
 
     @Override
@@ -47,15 +55,17 @@ public interface SpringDataLendingRepository extends LendingRepository, CrudRepo
     @Override
     @Query("SELECT COUNT (l) " +
             "FROM Lending l " +
-            "JOIN Reader r ON l.reader.pk = r.pk " +
-            "WHERE r.readerNumber = :readerNumber AND CURRENT_DATE > l.limitDate")
+                "JOIN Reader r ON l.reader.pk = r.pk " +
+            "WHERE r.readerNumber.readerNumber = :readerNumber " +
+                "AND CURRENT_DATE > l.limitDate")
     int getOutstandingCountFromReader(String readerNumber);
 
     @Override
     @Query("SELECT l " +
             "FROM Lending l " +
-            "JOIN Reader r ON l.reader.pk = r.pk " +
-            "WHERE r.readerNumber = :readerNumber AND CURRENT_DATE > l.limitDate")
+                "JOIN Reader r ON l.reader.pk = r.pk " +
+            "WHERE r.readerNumber.readerNumber = :readerNumber " +
+                "AND CURRENT_DATE > l.limitDate")
     List<Lending> listOutstandingByReaderNumber(String readerNumber);
 
 

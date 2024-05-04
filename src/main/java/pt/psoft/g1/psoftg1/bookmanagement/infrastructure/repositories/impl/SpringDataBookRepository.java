@@ -15,14 +15,14 @@ public interface SpringDataBookRepository  extends BookRepository, CrudRepositor
 
     @Query("SELECT b " +
             "FROM Book b " +
-            "WHERE b.isbn = :isbn")
+            "WHERE b.isbn.isbn = :isbn")
     Optional<Book> findByIsbn(@Param("isbn") String isbn);
 
     @Override
     @Query("SELECT b " +
             "FROM Book b " +
             "JOIN Genre g ON b.genre.genre LIKE %:genre% " +
-            "WHERE b.isbn = :isbn")
+            "WHERE b.isbn.isbn = :isbn")
     List<Book> findByGenre(@Param("genre") String genre);
 
 }

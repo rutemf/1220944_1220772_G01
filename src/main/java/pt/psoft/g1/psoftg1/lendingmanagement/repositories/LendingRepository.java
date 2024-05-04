@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface LendingRepository {
 
-    Optional<Lending> findByLendingNumber(LendingNumber lendingNumber);
+    Optional<Lending> findByLendingNumber(String lendingNumber);
 
     Optional<Lending> findOpenByReaderNumberAndIsbn(String readerNumber, String isbn);
 

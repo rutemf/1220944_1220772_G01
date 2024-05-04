@@ -22,10 +22,11 @@ public class LendingNumber implements Serializable {
      * <p>
      * The string is constructed based on the values of {@code year} and {@code sequencial} (e.g.: 2024/23).
      */
-    @Column(name = "LENDING_NUMBER")
+    @Column(name = "LENDING_NUMBER", length = 32)
     @NotNull
     @NotBlank
     @Size(min = 6, max = 32)
+
     private String lendingNumber;
 
     /**
