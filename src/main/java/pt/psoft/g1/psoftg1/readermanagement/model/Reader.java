@@ -18,9 +18,11 @@ public class Reader {
     private ReaderNumber readerNumber;
 
     @Embedded
+    @Getter
     private Name fullName;
 
     @Embedded
+    @Getter
     private BirthDate birthDate;
 
     @Getter

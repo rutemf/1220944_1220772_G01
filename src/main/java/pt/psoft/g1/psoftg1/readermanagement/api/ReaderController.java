@@ -36,7 +36,7 @@ class ReaderController {
             // Use the `array` property instead of `schema`
             array = @ArraySchema(schema = @Schema(implementation = ReaderView.class))) })
     @GetMapping
-    public List<ReaderView> findAll() {
+    public Iterable<ReaderView> findAll() {
         return readerViewMapper.toReaderView(readerService.findAll());
     }
 

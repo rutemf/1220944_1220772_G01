@@ -12,6 +12,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.readermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
+import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
@@ -39,9 +40,9 @@ public class Bootstrapper implements CommandLineRunner {
     public void run(final String... args) throws Exception {
         createAuthors();
         createBookGenres();
-        //createUsers();
+        createUsers();
         createBooks();
-        //createReaders();
+        createReaders();
     }
 
     private void createAuthors() {
@@ -69,7 +70,7 @@ public class Bootstrapper implements CommandLineRunner {
         try {
             Optional<User> u1 = userRepository.findByUsername("manuel@gmail.com");
             Optional<Reader> readerNumber = readerRepository.findByReaderNumber("2024/1");
-            if (u1.isPresent()) {
+            if (u1.isPresent() && readerNumber.isPresent()) {
                 Reader r1 = new Reader(
                         1,
                         u1.get(),
@@ -87,8 +88,8 @@ public class Bootstrapper implements CommandLineRunner {
         //Reader2 - joao
         try {
             Optional<User> u2 = userRepository.findByUsername("joao@gmail.com");
-            Optional<Reader> readerNumber = readerRepository.findByReaderNumber("2024/2");
-            if (u2.isPresent()) {
+            Optional<Reader> readerNumber2 = readerRepository.findByReaderNumber("2024/2");
+            if (u2.isPresent() && readerNumber2.isPresent()) {
                 Reader r2 = new Reader(
                         2,
                         u2.get(),
@@ -106,8 +107,8 @@ public class Bootstrapper implements CommandLineRunner {
         //Reader3 - Pedro
         try {
             Optional<User> u3 = userRepository.findByUsername("pedro@gmail.com");
-            Optional<Reader> readerNumber = readerRepository.findByReaderNumber("2024/3");
-            if (u3.isPresent()) {
+            Optional<Reader> readerNumber3 = readerRepository.findByReaderNumber("2024/3");
+            if (u3.isPresent() && readerNumber3.isPresent()) {
                 Reader r3 = new Reader(
                         3,
                         u3.get(),
@@ -203,9 +204,9 @@ public class Bootstrapper implements CommandLineRunner {
 
         authors.clear();
 */
-        /*
-        // O Principezinho
 
+        // O Principezinho
+/*
         genre = Optional.ofNullable(genreRepository.findByString("Infantil"))
                 .orElseThrow(() -> new NotFoundException("Cannot find genre"));
         author = Optional.ofNullable(authorRepository.findByName("Author4"))
@@ -248,7 +249,7 @@ public class Bootstrapper implements CommandLineRunner {
         }
         // Maria
         if (userRepository.findByUsername("maria@mail.com").isEmpty()) {
-            final User maria = new User("maria@mail.com", "mariaroberta!");
+            final User maria = Librarian.newLibrarian("maria@mail.com", "mariaroberta!", "Maria Roberta");
             maria.addAuthority(new Role(Role.LIBRARIAN));
             userRepository.save(maria);
         }

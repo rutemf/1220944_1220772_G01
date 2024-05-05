@@ -11,7 +11,7 @@ public class Bio {
     @Column(nullable = false, length = 4096)
     @NotNull
     @Size(min = 1, max = 4096)
-    String Bio;
+    private String bio;
 
     public Bio(String bio) {
         setBio(bio);
@@ -20,8 +20,19 @@ public class Bio {
     protected Bio() {
     }
 
-    private void setBio(String bio) {
-        this.Bio = StringUtils.sanitizeHtml(bio);
+    public void setBio(String bio) {
+        if(bio == null)
+            throw new IllegalArgumentException("Bio cannot be null");
+        if(bio.isBlank())
+            throw new IllegalArgumentException("Bio cannot be blank");
+        if(bio.length() > 4096)
+            throw new IllegalArgumentException("Bio has a maximum of 4096 characters");
+        this.bio = StringUtils.sanitizeHtml(bio);
+    }
+
+    @Override
+    public String toString() {
+        return bio;
     }
 }
 

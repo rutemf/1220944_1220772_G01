@@ -1,7 +1,11 @@
 package pt.psoft.g1.psoftg1.readermanagement.model;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -13,6 +17,9 @@ import java.time.LocalTime;
 @Embeddable
 @NoArgsConstructor
 public class BirthDate {
+    @Getter
+    @Column(nullable = false, updatable = false)
+    @Temporal(TemporalType.DATE)
     LocalDate date;
 
     private final String dateFormatPatternRegex = "\\d{4}/\\d{2}/\\d{2}";

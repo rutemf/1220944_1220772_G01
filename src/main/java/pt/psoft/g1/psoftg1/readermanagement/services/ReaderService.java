@@ -19,7 +19,7 @@ public interface ReaderService {
     Reader save(Reader reader);
     Optional<Reader> findByPhoneNumber(PhoneNumber phoneNumber);
     Optional<Reader> findByReaderNumber(ReaderNumber readerNumber);
-    List<Reader> findAll();
+    Iterable<Reader> findAll();
 
 /*
     Optional<Reader> update(UpdateReaderRequest request) throws Exception;

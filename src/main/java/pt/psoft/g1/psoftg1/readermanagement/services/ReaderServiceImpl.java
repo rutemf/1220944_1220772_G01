@@ -69,7 +69,7 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public List<Reader> findAll() {
+    public Iterable<Reader> findAll() {
         return this.readerRepo.findAll();
     }
 
