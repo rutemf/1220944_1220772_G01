@@ -15,13 +15,13 @@ public interface SpringDataAuthorRepository extends AuthorRepository, CrudReposi
     @Override
     @Query("SELECT a " +
             "FROM Author a " +
-            "WHERE a.name.fullName = :name")
+            "WHERE a.name.name = :name")
     Optional<Author> findByName(String name);
     @Override
     @Query("SELECT a " +
             "FROM Author a " +
-            "WHERE a.name.fullName = :name")
-    List<Author> searchByName(@Param("name") String name);
+            "WHERE a.name.name LIKE %:name% ")
+    List<Author> searchByAuthorNameLike(@Param("name") String name);
 
     @Override
     @Query("SELECT a " +

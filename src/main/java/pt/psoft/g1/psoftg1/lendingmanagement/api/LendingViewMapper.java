@@ -16,6 +16,7 @@ public abstract class LendingViewMapper extends ViewMapper {
 
     @Mapping(target = "lendingNumber", source = "lendingNumber")
     @Mapping(target = "bookTitle", source = "book.title")
+    @Mapping(target = "fineValueInCents", expression = "java(lending.getFineValueInCents().orElse(null))")
     public abstract LendingView toLendingView(Lending lending);
 
     public abstract Iterable<LendingView> toLendingView(Iterable<Lending> lendings);

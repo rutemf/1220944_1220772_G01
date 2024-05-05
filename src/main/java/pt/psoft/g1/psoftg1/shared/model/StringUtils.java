@@ -12,11 +12,16 @@ public class StringUtils {
 
     /**
      * Returns {@code true} if every character is a letter (capitalized or not), or a number, or a white space.
-     * Adapted from <a href="https://www.baeldung.com/java-check-string-contains-only-letters-numbers">baeldung.com</a>
+     * <p>In this pattern:
+     *
+     *     <p>- '{@code \\p{L}}' matches any Unicode letter, including letters with diacritics (accents) in various languages.
+     *     <p>- '{@code 0-9}' matches any digit from 0 to 9.
+     *     <p>- '{@code \\s}' matches any whitespace character.
+     * <p>Adapted from <a href="https://www.baeldung.com/java-check-string-contains-only-letters-numbers">baeldung.com</a>
      * @param str string to be compared
      */
     public static boolean isAlphanumeric(String str){
-        String pattern = "^[a-zA-Z0-9\\s]*$";
+        String pattern = "^[\\p{L}0-9\\s'-]*$";
         return Pattern.matches(pattern, str);
     }
 

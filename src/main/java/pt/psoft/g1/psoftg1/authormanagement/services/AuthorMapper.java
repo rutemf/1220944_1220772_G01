@@ -8,11 +8,9 @@ import pt.psoft.g1.psoftg1.shared.api.ViewMapper;
 
 @Mapper(componentModel = "spring")
 public abstract class AuthorMapper extends ViewMapper {
-    private AuthorRepository authorRepository;
+
     public abstract Author create(CreateAuthorRequest request);
+
     public abstract void update(UpdateAuthorRequest request, @MappingTarget Author author);
-    public Author findByName(final String name) {
-        //return authorRepository.findByName(new Name(name)).orElseThrow(() -> new ValidationException("Select an existing name"));
-        return null;
-    }
+
 }

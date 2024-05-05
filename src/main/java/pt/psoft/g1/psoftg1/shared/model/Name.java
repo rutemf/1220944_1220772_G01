@@ -15,33 +15,32 @@ public class Name {
     @NotNull
     @NotBlank
     @Column(name="NAME", length = 150)
-    String fullName;
+    String name;
 
     //TODO: Move this to a properties file
     @Transient
     private static final List<String> FORBIDDEN_NAMES = List.of(new String[]{"Cocó", "Xixi"});
 
-    public Name(String fullName){
-        setFullName(fullName);
+    public Name(String name){
+        setName(name);
     }
 
-    public void setFullName(String fullName){
-        if(fullName.isBlank())
-        {
-            throw new IllegalArgumentException("Name can only contain alphanumeric characters");
-        }else if(!StringUtils.isAlphanumeric(fullName))
-        {
+    public void setName(String name){
+        if(name == null)
+            throw new IllegalArgumentException("Name cannot be null");
+        if(name.isBlank())
             throw new IllegalArgumentException("Name cannot be blank, nor only white spaces");
-        }
+        if(!StringUtils.isAlphanumeric(name))
+            throw new IllegalArgumentException("Name can only contain alphanumeric characters");
+
         for(String forbidden : FORBIDDEN_NAMES){
-            if(fullName.contains(forbidden)){
+            if(name.contains(forbidden))
                 throw new IllegalArgumentException("Name contains forbidden word");
-            }
         }
-        this.fullName = fullName;
+        this.name = name;
     }
     public String toString() {
-        return this.fullName;
+        return this.name;
     }
 
     protected Name() {

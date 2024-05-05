@@ -125,8 +125,6 @@ public class Lending {
     @Transient
     private Integer daysOverdue;
 
-    @Transient
-    private Integer fineValueInCents;
 
     /**
      * Constructs a new {@code Lending} object to be persisted in the database.
@@ -177,9 +175,6 @@ public class Lending {
         if(commentary != null)
             this.commentary = commentary;
 
-        if(getDaysDelayed() > 0)
-            this.fineValueInCents = FINE_VALUE_PER_DAY_IN_CENTS * getDaysDelayed();
-
         setReturnedDate();
     }
 
@@ -215,15 +210,6 @@ public class Lending {
         }
     }
 
-    private void setFineValueInCents(){
-        int days = getDaysDelayed();
-        if(days > 0){
-            this.fineValueInCents = FINE_VALUE_PER_DAY_IN_CENTS * days;
-        }else{
-            this.fineValueInCents = null;
-        }
-    }
-
     public Optional<Integer> getDaysUntilReturn() {
         setDaysUntilReturn();
         return Optional.ofNullable(daysUntilReturn);
@@ -235,8 +221,12 @@ public class Lending {
     }
 
     public Optional<Integer> getFineValueInCents() {
-        setFineValueInCents();
-        return Optional.ofNullable(fineValueInCents);
+        Optional<Integer> fineValueInCents = Optional.empty();
+        int days = getDaysDelayed();
+        if(days > 0){
+            fineValueInCents = Optional.of(FINE_VALUE_PER_DAY_IN_CENTS * days);
+        }
+        return fineValueInCents;
     }
 
     public String getTitle(){
