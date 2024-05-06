@@ -3,6 +3,7 @@ package pt.psoft.g1.psoftg1.readermanagement.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
@@ -15,34 +16,8 @@ public class Reader {
     private Long pk;
 
     @Getter
-    private ReaderNumber readerNumber;
-
-    @Embedded
-    @Getter
-    private Name fullName;
-
-    @Embedded
-    @Getter
-    private BirthDate birthDate;
-
-    @Getter
-    @Embedded
-    private PhoneNumber phoneNumber;
-
-    @Getter
-    @Setter
-    @Basic
-    private boolean gdprConsent;
-
-    @Getter
-    @Setter
-    @Basic
-    private boolean marketingConsent;
-
-    @Getter
-    @Setter
-    @Basic
-    private boolean thirdPartySharingConsent;
+    @OneToOne
+    private ReaderDetails readerDetails;
 
     @Getter
     @Setter
@@ -73,47 +48,28 @@ public class Reader {
             throw new Exception("Provided argument resolves to null object");
         }
 
-        //TODO: Aplicar regras de password ao user
+        if(!gdpr) {
+            throw new Exception("Readers must agree with the GDPR rules");
+        }
+
         setUser(user);
-        setReaderNumber(new ReaderNumber(LocalDate.now().getYear(), readerNumber));
-        setFullName(new Name(fullName));
-        setPhoneNumber(new PhoneNumber(phoneNumber));
-        setBirthDate(new BirthDate(birthDate));
-        setPhoneNumber(new PhoneNumber(phoneNumber));
-        //By the client specifications, gdpr can only have the value of true. A setter will be created anyways in case we have accept no gdpr consent later on the project
-        setGdprConsent(gdpr);
 
-        setMarketingConsent(marketing);
-        setThirdPartySharingConsent(thirdParty);
+        this.readerDetails = new ReaderDetails(readerNumber, fullName, birthDate, phoneNumber, gdpr, marketing, thirdParty);
     }
 
-    private void setPhoneNumber(PhoneNumber number) {
-        if(number != null) {
-            this.phoneNumber = number;
+    public void applyPatch(UpdateReaderRequest request) throws Exception {
+        this.readerDetails.applyPatch(request);
+
+        String username = request.getUsername();
+        String password = request.getPassword();
+
+        if(username != null) {
+            this.user.setUsername(username);
         }
-    }
 
-    private void setReaderNumber(ReaderNumber readerNumber) {
-        if(readerNumber != null) {
-            this.readerNumber = readerNumber;
+        if(password != null) {
+            this.user.setPassword(password);
         }
-    }
-
-    private void setFullName(Name fullName) {
-        if(fullName != null) {
-            this.fullName = fullName;
-        }
-    }
-
-    private void setBirthDate(BirthDate date) {
-        if(date != null) {
-            this.birthDate = date;
-        }
-    }
-
-    //TODO: Edu: Apply Patch method to update the properties we want
-    public void applyPatch() {
-
     }
 
     protected Reader() {

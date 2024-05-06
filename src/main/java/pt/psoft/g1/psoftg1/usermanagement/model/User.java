@@ -40,6 +40,7 @@ import pt.psoft.g1.psoftg1.shared.model.Name;
 
 import lombok.Getter;
 import lombok.Setter;
+import pt.psoft.g1.psoftg1.shared.model.Password;
 
 /**
  * Based on https://github.com/Yoh0xFF/java-spring-security-example
@@ -90,7 +91,8 @@ public class User implements UserDetails {
 	@Getter
 	private boolean enabled = true;
 
-	@Column(unique = true, updatable = false, nullable = false)
+	@Setter
+    @Column(unique = true, updatable = false, nullable = false)
 	@Email
 	@Getter
 	@NotNull
@@ -121,7 +123,7 @@ public class User implements UserDetails {
 	 * @param username
 	 * @param password
 	 */
-	public User(final String username, final String password) {
+	public User(final String username, final String password) throws Exception {
 		this.username = username;
 		setPassword(password);
 	}
@@ -136,7 +138,7 @@ public class User implements UserDetails {
 	 * @param fullName
 	 * @return
 	 */
-	public static User newUser(final String username, final String password, final String fullName) {
+	public static User newUser(final String username, final String password, final String fullName) throws Exception {
 		final var u = new User(username, password);
 		u.setName(new Name(fullName));
 		return u;
@@ -153,18 +155,24 @@ public class User implements UserDetails {
 	 * @param role
 	 * @return
 	 */
-	public static User newUser(final String username, final String password, final String fullName, final String role) {
+	public static User newUser(final String username, final String password, final String fullName, final String role) throws Exception {
 		final var u = new User(username, password);
 		u.setName(new Name(fullName));
 		u.addAuthority(new Role(role));
 		return u;
 	}
 
-	public void setPassword(final String password) {
-		this.password = Objects.requireNonNull(password);
+	public void setPassword(final String password) throws Exception {
+		//TODO: The compiler complains when the type of attribute password is changed from String to Password. Therefore, this is a "not so good" way of fixing the issue temporarily
+		try {
+			Password passwordCheck = new Password(password);
+			this.password = password;
+		} catch(Exception e) {
+			throw e;
+		}
 	}
 
-	public void addAuthority(final Role r) {
+    public void addAuthority(final Role r) {
 		authorities.add(r);
 	}
 

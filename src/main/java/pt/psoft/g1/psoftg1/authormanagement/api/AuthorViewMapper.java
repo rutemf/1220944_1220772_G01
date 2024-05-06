@@ -9,8 +9,8 @@ import pt.psoft.g1.psoftg1.shared.api.ViewMapper;
 public abstract class AuthorViewMapper extends ViewMapper {
 
     @Mapping(target = "authorNumber", source = "authorNumber")
-    @Mapping(target = "name", source = "author.name")
-    @Mapping(target = "bio", source = "author.bio")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "bio", source = "bio")
     public abstract AuthorView toAuthorView(Author author);
 
     public abstract Iterable<AuthorView> toAuthorView(Iterable<Author> authors);

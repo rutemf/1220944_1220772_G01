@@ -60,7 +60,7 @@ public class UserAdminApi {
 	private final UserViewMapper userViewMapper;
 
 	@PostMapping
-	public UserView create(@RequestBody @Valid final CreateUserRequest request) {
+	public UserView create(@RequestBody @Valid final CreateUserRequest request) throws Exception {
 		final var user = userService.create(request);
 		return userViewMapper.toUserView(user);
 	}
