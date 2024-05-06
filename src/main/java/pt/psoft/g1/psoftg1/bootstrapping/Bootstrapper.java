@@ -43,6 +43,11 @@ public class Bootstrapper implements CommandLineRunner {
         createUsers();
         createBooks();
         createReaders();
+        createLibrarians();
+    }
+
+    private void createLibrarians() {
+        //TODO: Tratar disto e talvez de librarianmanagement (????
     }
 
     private void createAuthors() {
@@ -206,7 +211,7 @@ public class Bootstrapper implements CommandLineRunner {
 */
 
         // O Principezinho
-/*
+
         genre = Optional.ofNullable(genreRepository.findByString("Infantil"))
                 .orElseThrow(() -> new NotFoundException("Cannot find genre"));
         author = Optional.ofNullable(authorRepository.findByName("Author4"))
@@ -225,7 +230,7 @@ public class Bootstrapper implements CommandLineRunner {
             }
         }
         authors.clear();
-*/
+
     }
 
     private void createUsers() {

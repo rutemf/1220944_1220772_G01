@@ -7,11 +7,9 @@ import java.util.Optional;
 
 public interface AuthorRepository {
 
-    Optional<Author> findByAuthorNumber(Long authorNumber); //todo: até que ponto faz sentido isto aqui estar para o meu wp?
+    Optional<Author> findByAuthorNumber(Long authorNumber);
     List<Author> searchByAuthorNameLike(@Param("name") String name);
     Optional<Author> findByName(String name);
-    Author searchByAuthorNumber(@Param("authorNumber") Long authorNumber);
-
     Author save(Author author);
     Iterable<Author> findAll();
 

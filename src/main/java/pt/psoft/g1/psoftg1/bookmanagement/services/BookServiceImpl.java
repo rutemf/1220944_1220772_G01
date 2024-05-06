@@ -35,7 +35,14 @@ public class BookServiceImpl implements BookService {
 			List<Long> authorNumbers = request.getAuthors();
 			List<Author> authors = new ArrayList<>();
             for (Long authorNumber : authorNumbers) {
-                Author author = authorRepository.searchByAuthorNumber(authorNumber);
+
+				Optional<Author> temp = authorRepository.findByAuthorNumber(authorNumber);
+				if(temp.isEmpty()) {
+					//TODO: É suposto passar à frente e ignorar os que não foram encontrados ou damos erro?
+					continue;
+				}
+
+				Author author = temp.get();
                 authors.add(author);
             }
 
@@ -65,7 +72,12 @@ public class BookServiceImpl implements BookService {
 			List<Long> authorNumbers = request.getAuthors();
 			List<Author> authors = new ArrayList<>();
 			for (Long authorNumber : authorNumbers) {
-				Author author = authorRepository.searchByAuthorNumber(authorNumber);
+				Optional<Author> temp = authorRepository.findByAuthorNumber(authorNumber);
+				if(temp.isEmpty()) {
+					//TODO: É suposto passar à frente e ignorar os que não foram encontrados ou damos erro?
+					continue;
+				}
+				Author author = temp.get();
 				authors.add(author);
 			}
 

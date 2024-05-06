@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.authormanagement.services;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
@@ -19,7 +20,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Optional<Author> findOne(final Long authorNumber) {
+    public Optional<Author> findByAuthorNumber(final Long authorNumber) {
         return repo.findByAuthorNumber(authorNumber);
     }
 
@@ -33,7 +34,7 @@ public class AuthorServiceImpl implements AuthorService {
     public Author partialUpdate(Long authornumber, UpdateAuthorRequest resource, long desiredVersion) {
         // first let's check if the object exists so we don't create a new object with
         // save
-        final var author = findOne(authornumber)
+        final var author = findByAuthorNumber(authornumber)
                 .orElseThrow(() -> new NotFoundException("Cannot update an object that does not yet exist"));
 
         // since we got the object from the database we can check the version in memory
