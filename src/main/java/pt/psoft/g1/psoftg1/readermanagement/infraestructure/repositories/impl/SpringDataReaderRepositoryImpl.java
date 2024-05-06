@@ -18,6 +18,9 @@ public interface SpringDataReaderRepositoryImpl extends ReaderRepository, CrudRe
     @Override
     @Query("SELECT r FROM Reader r WHERE r.readerNumber.readerNumber = :readerNumber")
     Optional<Reader> findByReaderNumber(@Param("readerNumber") @NotNull String readerNumber);
+    @Override
+    @Query("SELECT r FROM Reader r JOIN User u ON r.user.id = u.id WHERE u.username = :username")
+    Optional<Reader> findByUsername(@Param("username") @NotNull String username);
 
 
 /*

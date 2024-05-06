@@ -2,7 +2,6 @@ package pt.psoft.g1.psoftg1.readermanagement.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pt.psoft.g1.psoftg1.readermanagement.model.BirthDate;
 import pt.psoft.g1.psoftg1.readermanagement.model.PhoneNumber;
 import pt.psoft.g1.psoftg1.readermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderNumber;
@@ -11,8 +10,6 @@ import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -67,6 +64,12 @@ public class ReaderServiceImpl implements ReaderService {
     public Optional<Reader> findByReaderNumber(ReaderNumber readerNumber) {
         return this.readerRepo.findByReaderNumber(readerNumber.toString());
     }
+
+    @Override
+    public Optional<Reader> findByUsername(final String username) {
+        return this.readerRepo.findByUsername(username);
+    };
+
 
     @Override
     public Iterable<Reader> findAll() {

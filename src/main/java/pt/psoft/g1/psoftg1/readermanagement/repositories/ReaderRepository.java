@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface ReaderRepository {
     Optional<Reader> findByPhoneNumber(@Param("phoneNumber") @NotNull String phoneNumber);
     Optional<Reader> findByReaderNumber(@Param("readerNumber") @NotNull String readerNumber);
+    Optional<Reader> findByUsername(@Param("username") @NotNull String username);
     Reader save(Reader reader);
     Iterable<Reader> findAll();
 /*
