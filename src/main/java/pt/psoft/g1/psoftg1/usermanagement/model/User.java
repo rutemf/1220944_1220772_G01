@@ -22,7 +22,6 @@ package pt.psoft.g1.psoftg1.usermanagement.model;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -40,7 +39,6 @@ import pt.psoft.g1.psoftg1.shared.model.Name;
 
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.shared.model.Password;
 
 /**
  * Based on https://github.com/Yoh0xFF/java-spring-security-example

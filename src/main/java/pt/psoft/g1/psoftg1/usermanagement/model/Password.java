@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1.shared.model;
+package pt.psoft.g1.psoftg1.usermanagement.model;
 
 import java.beans.Transient;
 

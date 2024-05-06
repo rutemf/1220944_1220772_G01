@@ -7,7 +7,7 @@ import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.shared.api.ViewMapper;
 
 @Mapper(componentModel = "spring")
-public abstract class AuthorMapper extends ViewMapper {
+public abstract class AuthorMapper/* extends ViewMapper */{
 
     public abstract Author create(CreateAuthorRequest request);
 
