@@ -12,7 +12,7 @@ public interface LendingService {
     Optional<Lending> findByLendingNumber(String lendingNumber);
     Iterable<Lending> findAll();
 
-    Lending create(CreateLendingDto resource); //No ID passed, as it is auto generated
+    Lending create(CreateLendingRequest resource); //No ID passed, as it is auto generated
 
     Lending setReturned(String id, SetLendingReturnedDto resource, long desiredVersion);
 

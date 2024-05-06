@@ -33,7 +33,7 @@ public class LendingServiceImpl implements LendingService{
     }
 
     @Override
-    public Lending create(final CreateLendingDto resource) {
+    public Lending create(final CreateLendingRequest resource) {
         int count = 0;
 
         for (Lending lending : lendingRepository.listOutstandingByReaderNumber(resource.getReaderNumber())) {

@@ -3,29 +3,31 @@ package pt.psoft.g1.psoftg1.lendingmanagement.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
-import pt.psoft.g1.psoftg1.lendingmanagement.services.CreateLendingDto;
+import pt.psoft.g1.psoftg1.lendingmanagement.services.CreateLendingRequest;
 import pt.psoft.g1.psoftg1.lendingmanagement.services.LendingService;
+import pt.psoft.g1.psoftg1.lendingmanagement.services.SetLendingReturnedDto;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
+import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
-import java.nio.file.AccessDeniedException;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Optional;
 
 @Tag(name = "Lendings", description = "Endpoints for managing Lendings")
@@ -34,44 +36,44 @@ import java.util.Optional;
 @RequestMapping("/api/lending")
 public class LendingController {
 
-    private final AuthenticationManager authenticationManager;
-
     private static final String IF_MATCH = "If-Match";
 
     private static final Logger logger = LoggerFactory.getLogger(LendingController.class);
 
-    private final LendingService service;
+    private final LendingService lendingService;
     private final ReaderService readerService;
     private final UserService userService;
 
     private final LendingViewMapper lendingViewMapper;
 
+    @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Creates a new Lending")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<LendingView> create(@Valid @RequestBody final CreateLendingDto resource) {
+    public ResponseEntity<LendingView> create(@Valid @RequestBody final CreateLendingRequest resource) {
 
-        final var lending = service.create(resource);
+        final var lending = lendingService.create(resource);
 
         final var newlendingUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .pathSegment(lending.getLendingNumber().toString())
+                .pathSegment(lending.getLendingNumber())
                 .build().toUri();
 
-        return ResponseEntity.created(newlendingUri).eTag(Long.toString(lending.getVersion()))
+        return ResponseEntity.created(newlendingUri)
+                .eTag(Long.toString(lending.getVersion()))
                 .body(lendingViewMapper.toLendingView(lending));
     }
 
     @Operation(summary = "Gets a specific Lending")
-    @GetMapping(value = "/{year}/{sequential}")
+    @GetMapping(value = "/{year}/{seq}")
     public ResponseEntity<LendingView> findByLendingNumber(
             Authentication authentication,
             @PathVariable("year")
                 @Parameter(description = "The year of the Lending to find")
                 final Integer year,
-            @PathVariable("sequential")
+            @PathVariable("seq")
                 @Parameter(description = "The sequencial of the Lending to find")
-                final Integer sequential) throws AccessDeniedException {
-
+                final Integer seq)
+    {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
 
@@ -80,13 +82,72 @@ public class LendingController {
             throw new AccessDeniedException("User is not logged in");
         }
 
-        ReaderDetails readerDetails = null;
-        //TODO: Get readerDetails from the username
+        String ln = year + "/" + seq;
 
-        String ln = year + "/" + sequential;
-
-        final var lending = service.findByLendingNumber(ln)
+        final var lending = lendingService.findByLendingNumber(ln)
                 .orElseThrow(() -> new NotFoundException(Lending.class, ln));
+
+        if(!optUser.get().getAuthorities().contains(new Role(Role.LIBRARIAN))){
+            //if Librarian is logged in, skip ahead
+            Optional<ReaderDetails> readerDetails = readerService.findByUsername(username);
+            if(readerDetails.isPresent()){
+                if(readerDetails.get().getReaderNumber() != lending.getReaderDetails().getReaderNumber()){
+                    //if logged Reader matches the one associated with the lending, skip ahead
+                    throw new AccessDeniedException("Reader does not have permission to view this lending");
+                }
+            }
+        }
+
+        return ResponseEntity.ok()
+                .eTag(Long.toString(lending.getVersion()))
+                .body(lendingViewMapper.toLendingView(lending));
+    }
+
+    private Long getVersionFromIfMatchHeader(final String ifMatchHeader) {
+        if (ifMatchHeader.startsWith("\"")) {
+            return Long.parseLong(ifMatchHeader.substring(1, ifMatchHeader.length() - 1));
+        }
+        return Long.parseLong(ifMatchHeader);
+    }
+
+    @RolesAllowed(Role.READER)
+    @Operation(summary = "Sets a lending as returned")
+    @PatchMapping(value = "/{year}/{seq}")
+    public ResponseEntity<LendingView> setLendingReturned(
+            final WebRequest request,
+            final Authentication authentication,
+            @PathVariable("year")
+                @Parameter(description = "The year component of the Lending to find")
+                final Integer year,
+            @PathVariable("seq")
+                @Parameter(description = "The sequential component of the Lending to find")
+                final Integer seq,
+            @Valid @RequestBody final SetLendingReturnedDto resource)
+    {
+        final String ifMatchValue = request.getHeader(IF_MATCH);
+        if (ifMatchValue == null || ifMatchValue.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "You must issue a conditional PATCH using 'if-match'");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+
+        if(this.userService.findByUsername(username).isEmpty())
+            throw new AccessDeniedException("User is not logged in");
+
+        String ln = year + "/" + seq;
+        final var maybeLending = lendingService.findByLendingNumber(ln)
+                .orElseThrow(() -> new NotFoundException(Lending.class, ln));
+
+        Optional<ReaderDetails> readerDetails = readerService.findByUsername(username);
+        if(readerDetails.isPresent()){
+            if(readerDetails.get().getReaderNumber() != maybeLending.getReaderDetails().getReaderNumber()){
+                //if logged Reader matches the one associated with the lending, skip ahead
+                throw new AccessDeniedException("Reader does not have permission to edit this lending");
+            }
+        }
+
+        final var lending = lendingService.setReturned(ln, resource, getVersionFromIfMatchHeader(ifMatchValue));
 
         return ResponseEntity.ok()
                 .eTag(Long.toString(lending.getVersion()))

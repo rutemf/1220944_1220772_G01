@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "A DTO for creating a Lending")
-public class CreateLendingDto {
+public class CreateLendingRequest {
     @Size(min = 10, max = 13)
     private String isbn;
 
