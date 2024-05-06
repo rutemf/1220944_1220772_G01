@@ -10,7 +10,7 @@ import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
-import pt.psoft.g1.psoftg1.readermanagement.model.Reader;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
@@ -74,12 +74,11 @@ public class Bootstrapper implements CommandLineRunner {
         //Reader1 - Manuel
         try {
             Optional<User> u1 = userRepository.findByUsername("manuel@gmail.com");
-            Optional<Reader> readerNumber = readerRepository.findByReaderNumber("2024/1");
+            Optional<ReaderDetails> readerNumber = readerRepository.findByReaderNumber("2024/1");
             if (u1.isPresent() && readerNumber.isPresent()) {
-                Reader r1 = new Reader(
+                ReaderDetails r1 = new ReaderDetails(
                         1,
                         u1.get(),
-                        "Manuel Ferreira",
                         "01-01-2000",
                         "919191919",
                         true,
@@ -93,12 +92,11 @@ public class Bootstrapper implements CommandLineRunner {
         //Reader2 - joao
         try {
             Optional<User> u2 = userRepository.findByUsername("joao@gmail.com");
-            Optional<Reader> readerNumber2 = readerRepository.findByReaderNumber("2024/2");
+            Optional<ReaderDetails> readerNumber2 = readerRepository.findByReaderNumber("2024/2");
             if (u2.isPresent() && readerNumber2.isPresent()) {
-                Reader r2 = new Reader(
+                ReaderDetails r2 = new ReaderDetails(
                         2,
                         u2.get(),
-                        "Joao silva",
                         "02-02-2000",
                         "919191919",
                         false,
@@ -112,12 +110,11 @@ public class Bootstrapper implements CommandLineRunner {
         //Reader3 - Pedro
         try {
             Optional<User> u3 = userRepository.findByUsername("pedro@gmail.com");
-            Optional<Reader> readerNumber3 = readerRepository.findByReaderNumber("2024/3");
+            Optional<ReaderDetails> readerNumber3 = readerRepository.findByReaderNumber("2024/3");
             if (u3.isPresent() && readerNumber3.isPresent()) {
-                Reader r3 = new Reader(
+                ReaderDetails r3 = new ReaderDetails(
                         3,
                         u3.get(),
-                        "Pedro Saramago",
                         "03-03-2000",
                         "919191919",
                         true,
@@ -212,7 +209,7 @@ public class Bootstrapper implements CommandLineRunner {
 
         // O Principezinho
 
-        genre = Optional.ofNullable(genreRepository.findByString("Infantil"))
+        /*genre = Optional.ofNullable(genreRepository.findByString("Infantil"))
                 .orElseThrow(() -> new NotFoundException("Cannot find genre"));
         author = Optional.ofNullable(authorRepository.findByName("Author4"))
                 .orElseThrow(() -> new NotFoundException("Cannot find author"));
@@ -229,32 +226,32 @@ public class Bootstrapper implements CommandLineRunner {
                 bookRepository.save(b4);
             }
         }
-        authors.clear();
+        authors.clear();*/
 
     }
 
     private void createUsers() throws Exception {
         // Manuel
         if (userRepository.findByUsername("manuel@mail.com").isEmpty()) {
-            final User manuel = new User("manuel@mail.com", "manuelino");
+            final User manuel = User.newUser("manuel@mail.com", "Manuelino123!", "Manuel Sarapinto das Coives");
             manuel.addAuthority(new Role(Role.READER));
             userRepository.save(manuel);
         }
         // João
         if (userRepository.findByUsername("joao@mail.com").isEmpty()) {
-            final User joao = new User("joao@mail.com", "joaoratao!");
+            final User joao = User.newUser("joao@mail.com", "Joaoratao!123", "Joao Ratao");
             joao.addAuthority(new Role(Role.READER));
             userRepository.save(joao);
         }
         // Pedro
         if (userRepository.findByUsername("pedro@mail.com").isEmpty()) {
-            final User pedro = new User("pedro@mail.com", "pedrito!");
+            final User pedro = User.newUser("pedro@mail.com", "Pedrodascenas!123", "Pedro Das Cenas");
             pedro.addAuthority(new Role(Role.READER));
             userRepository.save(pedro);
         }
         // Maria
         if (userRepository.findByUsername("maria@mail.com").isEmpty()) {
-            final User maria = Librarian.newLibrarian("maria@mail.com", "mariaroberta!", "Maria Roberta");
+            final User maria = Librarian.newLibrarian("maria@mail.com", "Mariaroberta!123", "Maria Roberta");
             maria.addAuthority(new Role(Role.LIBRARIAN));
             userRepository.save(maria);
         }

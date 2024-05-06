@@ -2,7 +2,7 @@ package pt.psoft.g1.psoftg1.readermanagement.services;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import pt.psoft.g1.psoftg1.readermanagement.model.Reader;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
 /**
@@ -31,6 +31,6 @@ public abstract class ReaderMapper {
      * LendingMapper class. However, it's generally not recommended to include such business logic directly in
      * the mapper class. Instead, you might consider moving this logic to the service layer where the business
      * operations are performed.*/
-    public abstract void update(SetReaderReturnedDto request, @MappingTarget Reader reader);
+    public abstract void update(SetReaderReturnedDto request, @MappingTarget ReaderDetails readerDetails);
 
 }

@@ -1,21 +1,19 @@
 package pt.psoft.g1.psoftg1.readermanagement.services;
 
-import pt.psoft.g1.psoftg1.readermanagement.model.PhoneNumber;
-import pt.psoft.g1.psoftg1.readermanagement.model.Reader;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderNumber;
-
 import java.util.Optional;
+
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 
 /**
  *
  */
 public interface ReaderService {
-    Reader create(CreateReaderRequest request) throws Exception;
-    Reader save(Reader reader);
-    Optional<Reader> findByPhoneNumber(PhoneNumber phoneNumber);
-    Optional<Reader> findByReaderNumber(ReaderNumber readerNumber);
-    Optional<Reader> findByUsername(final String username);
-    Iterable<Reader> findAll();
+    ReaderDetails create(CreateReaderRequest request) throws Exception;
+    ReaderDetails save(ReaderDetails readerDetails);
+    Optional<ReaderDetails> findByUsername(final String username);
+    Optional<ReaderDetails> findByPhoneNumber(String phoneNumber);
+    Optional<ReaderDetails> findByReaderNumber(String readerNumber);
+    Iterable<ReaderDetails> findAll();
 
 /*
     Optional<Reader> update(UpdateReaderRequest request) throws Exception;

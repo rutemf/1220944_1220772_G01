@@ -4,28 +4,30 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
-import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
 import java.time.LocalDate;
 
 @Entity
-@Getter
 public class ReaderDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long pk;
 
     @Getter
+    @Setter
+    @OneToOne
+    private User user;
+
+    @Getter
     private ReaderNumber readerNumber;
 
     @Embedded
-    private Name fullName;
-
-    @Embedded
+    @Getter
     private BirthDate birthDate;
 
     @Embedded
+    @Getter
     private PhoneNumber phoneNumber;
 
     @Setter
@@ -34,10 +36,12 @@ public class ReaderDetails {
 
     @Setter
     @Basic
+    @Getter
     private boolean marketingConsent;
 
     @Setter
     @Basic
+    @Getter
     private boolean thirdPartySharingConsent;
 
 /*
@@ -59,17 +63,17 @@ public class ReaderDetails {
         return u;
     }*/
 
-    public ReaderDetails(int readerNumber, String fullName, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) throws Exception {
-        if(fullName == null || phoneNumber == null) {
-            throw new Exception("Provided argument resolves to null object");
+    public ReaderDetails(int readerNumber, User user, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) throws Exception {
+        if(user == null || phoneNumber == null) {
+            throw new IllegalArgumentException("Provided argument resolves to null object");
         }
 
         if(!gdpr) {
-            throw new Exception("Readers must agree with the GDPR rules");
+            throw new IllegalArgumentException("Readers must agree with the GDPR rules");
         }
 
+        setUser(user);
         setReaderNumber(new ReaderNumber(LocalDate.now().getYear(), readerNumber));
-        setFullName(new Name(fullName));
         setPhoneNumber(new PhoneNumber(phoneNumber));
         setBirthDate(new BirthDate(birthDate));
         setPhoneNumber(new PhoneNumber(phoneNumber));
@@ -92,12 +96,6 @@ public class ReaderDetails {
         }
     }
 
-    private void setFullName(Name fullName) {
-        if(fullName != null) {
-            this.fullName = fullName;
-        }
-    }
-
     private void setBirthDate(BirthDate date) {
         if(date != null) {
             this.birthDate = date;
@@ -111,16 +109,23 @@ public class ReaderDetails {
         String fullName = request.getFullName();
         boolean marketing = request.getMarketing();
         boolean thirdParty = request.getThirdParty();
+        String username = request.getUsername();
+        String password = request.getPassword();
+
+        if(username != null) {
+            this.user.setUsername(username);
+        }
+
+        if(password != null) {
+            this.user.setPassword(password);
+        }
+
         if(birthDate != null) {
             setBirthDate(new BirthDate(birthDate));
         }
 
         if(phoneNumber != null) {
             setPhoneNumber(new PhoneNumber(phoneNumber));
-        }
-
-        if(fullName != null) {
-            setFullName(new Name(fullName));
         }
 
         if(marketing != this.marketingConsent) {

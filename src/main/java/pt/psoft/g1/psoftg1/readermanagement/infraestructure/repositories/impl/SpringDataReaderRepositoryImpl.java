@@ -4,23 +4,24 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import pt.psoft.g1.psoftg1.readermanagement.model.Reader;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 
 import java.util.Optional;
 
 
-public interface SpringDataReaderRepositoryImpl extends ReaderRepository, CrudRepository<Reader, Long> {
+public interface SpringDataReaderRepositoryImpl extends ReaderRepository, CrudRepository<ReaderDetails, Long> {
     @Override
-    @Query("SELECT r FROM Reader r WHERE r.phoneNumber.number = :phoneNumber")
-    Optional<Reader> findByPhoneNumber(@Param("phoneNumber") @NotNull String phoneNumber);
+    @Query("SELECT r FROM ReaderDetails r WHERE r.phoneNumber.number = :phoneNumber")
+    Optional<ReaderDetails> findByPhoneNumber(@Param("phoneNumber") @NotNull String phoneNumber);
 
     @Override
-    @Query("SELECT r FROM Reader r WHERE r.readerNumber.readerNumber = :readerNumber")
-    Optional<Reader> findByReaderNumber(@Param("readerNumber") @NotNull String readerNumber);
+    @Query("SELECT r FROM ReaderDetails r WHERE r.readerNumber.readerNumber = :readerNumber")
+    Optional<ReaderDetails> findByReaderNumber(@Param("readerNumber") @NotNull String readerNumber);
+
     @Override
-    @Query("SELECT r FROM Reader r JOIN User u ON r.user.id = u.id WHERE u.username = :username")
-    Optional<Reader> findByUsername(@Param("username") @NotNull String username);
+    @Query("SELECT r FROM ReaderDetails r JOIN User u ON r.user.id = u.id WHERE u.username = :username")
+    Optional<ReaderDetails> findByUsername(@Param("username") @NotNull String username);
 
 
 /*

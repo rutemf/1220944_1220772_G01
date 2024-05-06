@@ -2,9 +2,7 @@ package pt.psoft.g1.psoftg1.readermanagement.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pt.psoft.g1.psoftg1.readermanagement.model.PhoneNumber;
-import pt.psoft.g1.psoftg1.readermanagement.model.Reader;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderNumber;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
@@ -19,8 +17,8 @@ public class ReaderServiceImpl implements ReaderService {
     private final UserRepository userRepo;
     private int readerID = 0;
     @Override
-    public Reader create(CreateReaderRequest request) throws Exception {
-        Reader newReader = null;
+    public ReaderDetails create(CreateReaderRequest request) throws Exception {
+        ReaderDetails newReaderDetails = null;
 
         //This should be wrapped on a try catch to avoid any domain exceptions, this way we make sure we catch everything
         try {
@@ -28,51 +26,51 @@ public class ReaderServiceImpl implements ReaderService {
                 throw new Exception("A user with the provided username is already registered");
             }
 
-            if(findByReaderNumber(new ReaderNumber(LocalDate.now().getYear(), readerID+1)) != null) {
+            if(findByReaderNumber(String.format("%d/%d", LocalDate.now().getYear(), readerID + 1)).isEmpty()) {
                 throw new Exception("A reader with provided reader number is already registered");
             }
 
-            if(findByPhoneNumber(new PhoneNumber(request.getPhoneNumber())) != null) {
+            if(findByPhoneNumber(request.getPhoneNumber()).isEmpty()) {
                 throw new Exception("A reader with provided phone number is already registered");
             }
 
 
-            User tempUser = new User(request.getUsername(), request.getPassword());
+            User tempUser = User.newUser(request.getUsername(), request.getPassword(), request.getFullName());
             User user = this.userRepo.save(tempUser);
 
             request.setNumber(String.valueOf(++readerID));
-            newReader = new Reader(Integer.parseInt(request.getNumber()), user, request.getFullName(), request.getBirthDate(), request.getPhoneNumber(), request.getGdpr(), request.getMarketing(), request.getThirdParty());
-            this.readerRepo.save(newReader);
+            newReaderDetails = new ReaderDetails(Integer.parseInt(request.getNumber()), user, request.getBirthDate(), request.getPhoneNumber(), request.getGdpr(), request.getMarketing(), request.getThirdParty());
+            this.readerRepo.save(newReaderDetails);
         } catch(Exception e) {
             throw new Exception("One of the provided data does not match domain criteria: " + e.getMessage());
         }
 
-        return newReader;
+        return newReaderDetails;
     }
 
     @Override
-    public Reader save(Reader reader) {
-        return this.readerRepo.save(reader);
+    public ReaderDetails save(ReaderDetails readerDetails) {
+        return this.readerRepo.save(readerDetails);
     }
 
     @Override
-    public Optional<Reader> findByPhoneNumber(PhoneNumber phoneNumber) {
+    public Optional<ReaderDetails> findByPhoneNumber(String phoneNumber) {
         return this.readerRepo.findByPhoneNumber(phoneNumber.toString());
     }
 
     @Override
-    public Optional<Reader> findByReaderNumber(ReaderNumber readerNumber) {
+    public Optional<ReaderDetails> findByReaderNumber(String readerNumber) {
         return this.readerRepo.findByReaderNumber(readerNumber.toString());
     }
 
     @Override
-    public Optional<Reader> findByUsername(final String username) {
+    public Optional<ReaderDetails> findByUsername(final String username) {
         return this.readerRepo.findByUsername(username);
     };
 
 
     @Override
-    public Iterable<Reader> findAll() {
+    public Iterable<ReaderDetails> findAll() {
         return this.readerRepo.findAll();
     }
 

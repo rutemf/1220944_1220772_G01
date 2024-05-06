@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import org.hibernate.StaleObjectStateException;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.readermanagement.model.Reader;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -72,7 +72,7 @@ public class Lending {
     @NotBlank
     @Getter
     @ManyToOne(fetch=FetchType.EAGER, optional = false)
-    private Reader reader;
+    private ReaderDetails readerDetails;
 
     /**
      * Date of this {@code Lending}'s creation.
@@ -133,14 +133,14 @@ public class Lending {
      * business specified number of days a reader can take to return the book ({@link Lending#MAX_DAYS_PER_LENDING}).
      *
      * @param       book {@code Book} object, which should be retrieved from the database.
-     * @param       reader {@code Reader} object, which should be retrieved from the database.
+     * @param       readerDetails {@code Reader} object, which should be retrieved from the database.
      * @param       seq sequential number, which should be obtained from the year's count on the database.
      * @throws      NullPointerException if any of the arguments is {@code null}
      * */
-    public Lending(Book book, Reader reader, int seq){
+    public Lending(Book book, ReaderDetails readerDetails, int seq){
         this.lendingNumber = new LendingNumber(seq);
         this.book = Objects.requireNonNull(book);
-        this.reader = Objects.requireNonNull(reader);
+        this.readerDetails = Objects.requireNonNull(readerDetails);
         this.startDate = LocalDate.now();
         this.limitDate = LocalDate.now().plusDays(MAX_DAYS_PER_LENDING);
         setDaysUntilReturn();

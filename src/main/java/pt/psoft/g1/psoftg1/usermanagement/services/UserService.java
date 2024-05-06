@@ -95,6 +95,8 @@ public class UserService implements UserDetailsService {
 		return userRepo.getById(id);
 	}
 
+	public Optional<User> findByUsername(final String username) { return userRepo.findByUsername(username); }
+
 	public List<User> searchUsers(Page page, SearchUsersQuery query) {
 		if (page == null) {
 			page = new Page(1, 10);

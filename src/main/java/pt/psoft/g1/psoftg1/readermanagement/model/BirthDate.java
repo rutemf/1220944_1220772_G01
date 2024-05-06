@@ -1,10 +1,7 @@
 package pt.psoft.g1.psoftg1.readermanagement.model;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,8 +19,10 @@ public class BirthDate {
     @Temporal(TemporalType.DATE)
     LocalDate date;
 
+    @Transient
     private final String dateFormatPatternRegex = "\\d{4}/\\d{2}/\\d{2}";
 
+    @Transient
     //TODO: Colocar este valor a partir do application.properties ou de outro ficheiro de configuração
     private int minimumAge = 12; //TODO: Ricardo : colocar static/final?
 
