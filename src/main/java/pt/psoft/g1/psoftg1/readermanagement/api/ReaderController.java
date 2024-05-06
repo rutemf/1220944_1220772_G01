@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.services.CreateReaderRequest;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
+import pt.psoft.g1.psoftg1.usermanagement.api.ListResponse;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.CreateUserRequest;
@@ -21,7 +22,7 @@ import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 @Tag(name = "Readers", description = "Endpoints to manage readers")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/readers")
+@RequestMapping("/api/reader")
 class ReaderController {
     private final ReaderService readerService;
     private final UserService userService;
@@ -32,8 +33,8 @@ class ReaderController {
             // Use the `array` property instead of `schema`
             array = @ArraySchema(schema = @Schema(implementation = ReaderView.class))) })
     @GetMapping
-    public Iterable<ReaderView> findAll() {
-        return readerViewMapper.toReaderView(readerService.findAll());
+    public ListResponse<ReaderView> findAll() {
+        return new ListResponse<>(readerViewMapper.toReaderView(readerService.findAll()));
     }
 
     @Operation(summary = "Creates a reader")

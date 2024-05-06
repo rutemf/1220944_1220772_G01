@@ -14,8 +14,8 @@ public class PhoneNumber {
     protected PhoneNumber() {}
 
     private void setPhoneNumber(String number) throws Exception {
-        if(!number.startsWith("9") || !number.startsWith("2") || number.length() != 9) {
-            throw new Exception("Phone number is not valid");
+        if(!(number.startsWith("9") || number.startsWith("2")) || number.length() != 9) {
+            throw new IllegalArgumentException("Phone number is not valid: " + number);
         }
 
         this.number = number;

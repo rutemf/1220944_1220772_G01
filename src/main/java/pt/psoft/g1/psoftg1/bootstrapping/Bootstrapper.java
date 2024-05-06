@@ -75,11 +75,11 @@ public class Bootstrapper implements CommandLineRunner {
         try {
             Optional<User> u1 = userRepository.findByUsername("manuel@gmail.com");
             Optional<ReaderDetails> readerNumber = readerRepository.findByReaderNumber("2024/1");
-            if (u1.isPresent() && readerNumber.isPresent()) {
+            if (u1.isPresent() && readerNumber.isEmpty()) {
                 ReaderDetails r1 = new ReaderDetails(
                         1,
                         u1.get(),
-                        "01-01-2000",
+                        "2000/01/01",
                         "919191919",
                         true,
                         true,
@@ -93,13 +93,13 @@ public class Bootstrapper implements CommandLineRunner {
         try {
             Optional<User> u2 = userRepository.findByUsername("joao@gmail.com");
             Optional<ReaderDetails> readerNumber2 = readerRepository.findByReaderNumber("2024/2");
-            if (u2.isPresent() && readerNumber2.isPresent()) {
+            if (u2.isPresent() && readerNumber2.isEmpty()) {
                 ReaderDetails r2 = new ReaderDetails(
                         2,
                         u2.get(),
-                        "02-02-2000",
-                        "919191919",
-                        false,
+                        "2000/02/02",
+                        "929292929",
+                        true,
                         false,
                         false);
                 readerRepository.save(r2);
@@ -111,12 +111,12 @@ public class Bootstrapper implements CommandLineRunner {
         try {
             Optional<User> u3 = userRepository.findByUsername("pedro@gmail.com");
             Optional<ReaderDetails> readerNumber3 = readerRepository.findByReaderNumber("2024/3");
-            if (u3.isPresent() && readerNumber3.isPresent()) {
+            if (u3.isPresent() && readerNumber3.isEmpty()) {
                 ReaderDetails r3 = new ReaderDetails(
                         3,
                         u3.get(),
-                        "03-03-2000",
-                        "919191919",
+                        "2000/03/03",
+                        "939393939",
                         true,
                         false,
                         true);
@@ -232,26 +232,26 @@ public class Bootstrapper implements CommandLineRunner {
 
     private void createUsers() throws Exception {
         // Manuel
-        if (userRepository.findByUsername("manuel@mail.com").isEmpty()) {
-            final User manuel = User.newUser("manuel@mail.com", "Manuelino123!", "Manuel Sarapinto das Coives");
+        if (userRepository.findByUsername("manuel@gmail.com").isEmpty()) {
+            final User manuel = User.newUser("manuel@gmail.com", "Manuelino123!", "Manuel Sarapinto das Coives");
             manuel.addAuthority(new Role(Role.READER));
             userRepository.save(manuel);
         }
         // João
-        if (userRepository.findByUsername("joao@mail.com").isEmpty()) {
-            final User joao = User.newUser("joao@mail.com", "Joaoratao!123", "Joao Ratao");
+        if (userRepository.findByUsername("joao@gmail.com").isEmpty()) {
+            final User joao = User.newUser("joao@gmail.com", "Joaoratao!123", "Joao Ratao");
             joao.addAuthority(new Role(Role.READER));
             userRepository.save(joao);
         }
         // Pedro
-        if (userRepository.findByUsername("pedro@mail.com").isEmpty()) {
-            final User pedro = User.newUser("pedro@mail.com", "Pedrodascenas!123", "Pedro Das Cenas");
+        if (userRepository.findByUsername("pedro@gmail.com").isEmpty()) {
+            final User pedro = User.newUser("pedro@gmail.com", "Pedrodascenas!123", "Pedro Das Cenas");
             pedro.addAuthority(new Role(Role.READER));
             userRepository.save(pedro);
         }
         // Maria
-        if (userRepository.findByUsername("maria@mail.com").isEmpty()) {
-            final User maria = Librarian.newLibrarian("maria@mail.com", "Mariaroberta!123", "Maria Roberta");
+        if (userRepository.findByUsername("maria@gmail.com").isEmpty()) {
+            final User maria = Librarian.newLibrarian("maria@gmail.com", "Mariaroberta!123", "Maria Roberta");
             maria.addAuthority(new Role(Role.LIBRARIAN));
             userRepository.save(maria);
         }
