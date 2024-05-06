@@ -55,17 +55,11 @@ public class Book {
 
     public Optional<Description> getDescription(){ return Optional.ofNullable(description); }
 
-    public Book(String isbn, String title, Genre genre,List<Author> authors) {
-        setTitle(title);
-        setIsbn(isbn);
-        setGenre(genre);
-        setAuthors(authors);
-    }
-
     public Book(String isbn, String title, String description, Genre genre, List<Author> authors) {
         setTitle(title);
         setIsbn(isbn);
-        setDescription(description);
+        if(description != null)
+            setDescription(description);
         setGenre(genre);
         setAuthors(authors);
     }

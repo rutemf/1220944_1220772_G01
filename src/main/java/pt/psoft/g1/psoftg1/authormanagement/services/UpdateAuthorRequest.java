@@ -6,7 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateAuthorRequest {
     @NotNull
     @NotBlank
@@ -15,7 +16,7 @@ public class UpdateAuthorRequest {
 
     @NotNull
     @NotBlank
-    @Size(min = 1, max = 32)
+    @Size(min = 1, max = 150)
     private String name;
 
 }

@@ -18,7 +18,7 @@ public class Description {
 
     protected Description() {}
 
-    private void setDescription(@Nullable String description) {
+    public void setDescription(@Nullable String description) {
         if (description != null && !description.isEmpty()) {
             this.description = StringUtils.sanitizeHtml(description);
         } else {

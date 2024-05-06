@@ -5,6 +5,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 /**
  * The {@code Fine} class models a fine applied when a lending is past its due date.
  * <p>It stores its current value, and the associated {@code Lending}.
@@ -39,6 +41,7 @@ public class Fine {
             throw new IllegalArgumentException("Lending is not overdue");
         fineValuePerDayInCents = Lending.FINE_VALUE_PER_DAY_IN_CENTS;
         centsValue = fineValuePerDayInCents * lending.getDaysDelayed();
+        this.lending = Objects.requireNonNull(lending);
     }
 
     /**Protected empty constructor for ORM only.*/

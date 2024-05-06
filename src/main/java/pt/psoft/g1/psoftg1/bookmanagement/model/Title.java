@@ -20,7 +20,7 @@ public class Title {
         setTitle(title);
     }
 
-    private void setTitle(String title) {
+    public void setTitle(String title) {
         if (!StringUtils.startsOrEndsInWhiteSpace(title)) {
             throw new IllegalArgumentException("Invalid title: " + title);
         }

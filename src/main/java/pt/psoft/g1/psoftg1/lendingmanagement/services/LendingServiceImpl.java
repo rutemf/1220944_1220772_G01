@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.exceptions.LendingForbiddenException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.Fine;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
+import pt.psoft.g1.psoftg1.lendingmanagement.repositories.FineRepository;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 
@@ -15,6 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LendingServiceImpl implements LendingService{
     private final LendingRepository lendingRepository;
+    private final FineRepository fineRepository;
     private final BookRepository bookRepository;
     private final ReaderRepository readerRepository;
 
@@ -57,21 +60,22 @@ public class LendingServiceImpl implements LendingService{
 
     @Override
     public Lending setReturned(final String lendingNumber, final SetLendingReturnedDto resource, final long desiredVersion) {
-
-        Optional<Lending> l;
+//TODO: separate methods for lendingNumber and ReaderNumber&ISBN
+        Lending lending;
 
         try{
-            l = Optional.ofNullable(lendingRepository.findOpenByReaderNumberAndIsbn(resource.getReaderNumber(), resource.getIsbn())
-                    .orElseThrow(() -> new NotFoundException("Cannot find lending with this book")));
+            lending = lendingRepository.findOpenByReaderNumberAndIsbn(resource.getReaderNumber(), resource.getIsbn())
+                    .orElseThrow(() -> new NotFoundException("Cannot find lending with this book"));
         }catch (NotFoundException e){
-            l = Optional.ofNullable(lendingRepository.findByLendingNumber(lendingNumber)
-                    .orElseThrow(() -> new NotFoundException("Cannot update lending with this lending number")));
+            lending = lendingRepository.findByLendingNumber(lendingNumber)
+                    .orElseThrow(() -> new NotFoundException("Cannot update lending with this lending number"));
+        }
+        lending.setReturned(desiredVersion, resource.getCommentary());
+        if(lending.getDaysDelayed() > 0){
+            final var fine = new Fine(lending);
+            fineRepository.save(fine);
         }
 
-        //there is no way to get to this point with an empty optional
-        assert l.isPresent() : "Optional<Lending> should not be empty";
-        l.get().setReturned(desiredVersion, resource.getCommentary());
-
-        return lendingRepository.save(l.get());
+        return lendingRepository.save(lending);
     }
 }
