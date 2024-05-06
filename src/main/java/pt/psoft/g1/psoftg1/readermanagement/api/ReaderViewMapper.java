@@ -8,9 +8,9 @@ import pt.psoft.g1.psoftg1.shared.api.ViewMapper;
 @Mapper(componentModel = "spring")
 public abstract class ReaderViewMapper extends ViewMapper {
 
-    @Mapping(target = "fullName", source = "fullName.name")
+    @Mapping(target = "fullName", source = "readerDetails.fullName.name")
     @Mapping(target = "email", source = "user.username")
-    @Mapping(target = "birthDate", source = "birthDate.date")
+    @Mapping(target = "birthDate", source = "readerDetails.birthDate.date")
     public abstract ReaderView toReaderView(Reader reader);
 
     public abstract Iterable<ReaderView> toReaderView(Iterable<Reader> readerList);

@@ -8,7 +8,7 @@ public class Librarian extends User {
     protected Librarian() {
         // for ORM only
     }
-    public Librarian(String username, String password){
+    public Librarian(String username, String password) throws Exception {
         super(username, password);
     }
 
@@ -23,7 +23,7 @@ public class Librarian extends User {
      * @return
      */
 
-    public static Librarian newLibrarian(final String username, final String password, final String fullName) {
+    public static Librarian newLibrarian(final String username, final String password, final String fullName) throws Exception {
         final var u = new Librarian(username, password);
         u.setName(new Name(fullName));
         u.addAuthority(new Role(Role.LIBRARIAN));

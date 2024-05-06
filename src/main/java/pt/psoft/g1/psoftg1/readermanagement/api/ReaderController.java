@@ -53,7 +53,7 @@ class ReaderController {
 
         try {
             user = userService.create(userRequest);
-        } catch(ConflictException e) {
+        } catch(Exception e) {
             ErrorResponse responseBody = new ErrorResponse("Error creating reader: " + e.getMessage());
             return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);
         }

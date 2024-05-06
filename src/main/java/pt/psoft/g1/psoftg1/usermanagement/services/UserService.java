@@ -52,7 +52,7 @@ public class UserService implements UserDetailsService {
 	private final PasswordEncoder passwordEncoder;
 
 	@Transactional
-	public User create(final CreateUserRequest request) {
+	public User create(final CreateUserRequest request) throws Exception {
 		if (userRepo.findByUsername(request.getUsername()).isPresent()) {
 			throw new ConflictException("Username already exists!");
 		}

@@ -10,6 +10,7 @@ public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "AUTHOR_NUMBER")
+    @Getter
     private Long authorNumber;
 
 

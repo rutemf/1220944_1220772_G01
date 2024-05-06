@@ -43,7 +43,7 @@ import pt.psoft.g1.psoftg1.usermanagement.model.User;
 @Mapper(componentModel = "spring")
 public abstract class EditUserMapper {
 
-	public abstract User create(CreateUserRequest request);
+	public abstract User create(CreateUserRequest request) throws Exception;
 
 	@BeanMapping(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
 			nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
