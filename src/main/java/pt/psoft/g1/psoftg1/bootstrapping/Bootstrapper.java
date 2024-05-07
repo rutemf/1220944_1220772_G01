@@ -12,7 +12,8 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
-import pt.psoft.g1.psoftg1.usermanagement.model.Role;
+import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
+import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
@@ -232,22 +233,22 @@ public class Bootstrapper implements CommandLineRunner {
     private void createUsers() throws Exception {
         // Manuel
         if (userRepository.findByUsername("manuel@gmail.com").isEmpty()) {
-            final User manuel = User.newUser("manuel@gmail.com", "Manuelino123!", "Manuel Sarapinto das Coives", Role.READER);
+            final User manuel = Reader.newReader("manuel@gmail.com", "Manuelino123!", "Manuel Sarapinto das Coives");
             userRepository.save(manuel);
         }
         // João
         if (userRepository.findByUsername("joao@gmail.com").isEmpty()) {
-            final User joao = User.newUser("joao@gmail.com", "Joaoratao!123", "Joao Ratao", Role.READER);
+            final User joao = Reader.newReader("joao@gmail.com", "Joaoratao!123", "Joao Ratao");
             userRepository.save(joao);
         }
         // Pedro
         if (userRepository.findByUsername("pedro@gmail.com").isEmpty()) {
-            final User pedro = User.newUser("pedro@gmail.com", "Pedrodascenas!123", "Pedro Das Cenas", Role.READER);
+            final User pedro = Reader.newReader("pedro@gmail.com", "Pedrodascenas!123", "Pedro Das Cenas");
             userRepository.save(pedro);
         }
         // Maria
         if (userRepository.findByUsername("maria@gmail.com").isEmpty()) {
-            final User maria = User.newUser("maria@gmail.com", "Mariaroberta!123", "Maria Roberta", Role.LIBRARIAN);
+            final User maria = Librarian.newLibrarian("maria@gmail.com", "Mariaroberta!123", "Maria Roberta");
             userRepository.save(maria);
         }
 

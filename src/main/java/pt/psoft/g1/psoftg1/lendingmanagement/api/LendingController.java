@@ -24,6 +24,7 @@ import pt.psoft.g1.psoftg1.lendingmanagement.services.LendingService;
 import pt.psoft.g1.psoftg1.lendingmanagement.services.SetLendingReturnedDto;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
+import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
@@ -74,24 +75,17 @@ public class LendingController {
                 @Parameter(description = "The sequencial of the Lending to find")
                 final Integer seq)
     {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String username = userDetails.getUsername();
-
-        Optional<User> optUser = this.userService.findByUsername(username);
-        if(optUser.isEmpty()) {
-            throw new AccessDeniedException("User is not logged in");
-        }
+        User loggedUser = isUserLoggedIn(authentication);
 
         String ln = year + "/" + seq;
-
         final var lending = lendingService.findByLendingNumber(ln)
                 .orElseThrow(() -> new NotFoundException(Lending.class, ln));
 
-        if(!optUser.get().getAuthorities().contains(new Role(Role.LIBRARIAN))){
+        if(!(loggedUser instanceof Librarian)){
             //if Librarian is logged in, skip ahead
-            Optional<ReaderDetails> readerDetails = readerService.findByUsername(username);
-            if(readerDetails.isPresent()){
-                if(readerDetails.get().getReaderNumber() != lending.getReaderDetails().getReaderNumber()){
+            Optional<ReaderDetails> loggedReaderDetails = readerService.findByUsername(loggedUser.getUsername());
+            if(loggedReaderDetails.isPresent()){
+                if(loggedReaderDetails.get().getReaderNumber() != lending.getReaderDetails().getReaderNumber()){
                     //if logged Reader matches the one associated with the lending, skip ahead
                     throw new AccessDeniedException("Reader does not have permission to view this lending");
                 }
@@ -101,13 +95,6 @@ public class LendingController {
         return ResponseEntity.ok()
                 .eTag(Long.toString(lending.getVersion()))
                 .body(lendingViewMapper.toLendingView(lending));
-    }
-
-    private Long getVersionFromIfMatchHeader(final String ifMatchHeader) {
-        if (ifMatchHeader.startsWith("\"")) {
-            return Long.parseLong(ifMatchHeader.substring(1, ifMatchHeader.length() - 1));
-        }
-        return Long.parseLong(ifMatchHeader);
     }
 
     @RolesAllowed(Role.READER)
@@ -129,19 +116,15 @@ public class LendingController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must issue a conditional PATCH using 'if-match'");
         }
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String username = userDetails.getUsername();
-
-        if(this.userService.findByUsername(username).isEmpty())
-            throw new AccessDeniedException("User is not logged in");
+        User loggedUser = isUserLoggedIn(authentication);
 
         String ln = year + "/" + seq;
         final var maybeLending = lendingService.findByLendingNumber(ln)
                 .orElseThrow(() -> new NotFoundException(Lending.class, ln));
 
-        Optional<ReaderDetails> readerDetails = readerService.findByUsername(username);
-        if(readerDetails.isPresent()){
-            if(readerDetails.get().getReaderNumber() != maybeLending.getReaderDetails().getReaderNumber()){
+        Optional<ReaderDetails> loggedReaderDetails = readerService.findByUsername(loggedUser.getUsername());
+        if(loggedReaderDetails.isPresent()){
+            if(loggedReaderDetails.get().getReaderNumber() != maybeLending.getReaderDetails().getReaderNumber()){
                 //if logged Reader matches the one associated with the lending, skip ahead
                 throw new AccessDeniedException("Reader does not have permission to edit this lending");
             }
@@ -154,4 +137,19 @@ public class LendingController {
                 .body(lendingViewMapper.toLendingView(lending));
     }
 
+    private User isUserLoggedIn(Authentication authentication){
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String loggedUsername = userDetails.getUsername();
+        Optional<User> loggedUser = this.userService.findByUsername(loggedUsername);
+        if(loggedUser.isEmpty())
+            throw new AccessDeniedException("User is not logged in");
+        return loggedUser.get();
+    }
+
+    private Long getVersionFromIfMatchHeader(final String ifMatchHeader) {
+        if (ifMatchHeader.startsWith("\"")) {
+            return Long.parseLong(ifMatchHeader.substring(1, ifMatchHeader.length() - 1));
+        }
+        return Long.parseLong(ifMatchHeader);
+    }
 }

@@ -121,7 +121,7 @@ public class User implements UserDetails {
 	 * @param username
 	 * @param password
 	 */
-	public User(final String username, final String password) throws Exception {
+	public User(final String username, final String password) {
 		this.username = username;
 		setPassword(password);
 	}
@@ -160,14 +160,9 @@ public class User implements UserDetails {
 		return u;
 	}
 
-	public void setPassword(final String password) throws Exception {
-		//TODO: The compiler complains when the type of attribute password is changed from String to Password. Therefore, this is a "not so good" way of fixing the issue temporarily
-		try {
-			Password passwordCheck = new Password(password);
-			this.password = password;
-		} catch(Exception e) {
-			throw e;
-		}
+	public void setPassword(final String password) {
+		Password passwordCheck = new Password(password);
+		this.password = password;
 	}
 
     public void addAuthority(final Role r) {

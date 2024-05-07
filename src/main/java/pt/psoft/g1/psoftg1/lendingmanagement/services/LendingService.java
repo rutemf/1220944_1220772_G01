@@ -12,6 +12,8 @@ public interface LendingService {
     Optional<Lending> findByLendingNumber(String lendingNumber);
     Iterable<Lending> findAll();
 
+    Iterable<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn);
+
     Lending create(CreateLendingRequest resource); //No ID passed, as it is auto generated
 
     Lending setReturned(String id, SetLendingReturnedDto resource, long desiredVersion);

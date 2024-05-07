@@ -3,6 +3,7 @@ package pt.psoft.g1.psoftg1.authormanagement.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -11,9 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pt.psoft.g1.psoftg1.authormanagement.services.CreateAuthorRequest;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.services.AuthorService;
+import pt.psoft.g1.psoftg1.authormanagement.services.CreateAuthorRequest;
+import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 
 @Tag(name = "Author", description = "Endpoints for managing Authors")
 @RestController
@@ -25,16 +27,16 @@ public class AuthorController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthorController.class);
 
-    private final AuthorService service;
-
+    private final AuthorService authorService;
     private final AuthorViewMapper authorViewMapper;
 
+    @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Creates a new Author")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthorView> create(@Valid @RequestBody final CreateAuthorRequest resource) {
 
-        final var author = service.create(resource);
+        final var author = authorService.create(resource);
 
         final var newauthorUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .build().toUri();
@@ -50,7 +52,7 @@ public class AuthorController {
             @Parameter(description = "The number of the Author to find") final Long number) {
 
 
-        final var temp = service.findByAuthorNumber(number);
+        final var temp = authorService.findByAuthorNumber(number);
         if(temp.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

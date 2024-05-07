@@ -33,6 +33,11 @@ public class LendingServiceImpl implements LendingService{
     }
 
     @Override
+    public Iterable<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn){
+        return lendingRepository.listByReaderNumberAndIsbn(readerNumber, isbn);
+    }
+
+    @Override
     public Lending create(final CreateLendingRequest resource) {
         int count = 0;
 

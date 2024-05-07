@@ -11,7 +11,9 @@ public interface LendingRepository {
 
     Optional<Lending> findOpenByReaderNumberAndIsbn(String readerNumber, String isbn);
 
-    List<Lending> findClosedByReaderNumberAndIsbn(String readerNumber, String isbn);
+    List<Lending> listClosedByReaderNumberAndIsbn(String readerNumber, String isbn);
+
+    List<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn);
 
     List<Lending> listAllByIsbn(String isbn);
 

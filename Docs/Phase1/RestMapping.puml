@@ -5,7 +5,7 @@ skinparam classAttributeIconSize 0
 
 title PSOFT-G1 Rest Mapping
 
-class Resource <<interface>>{
+class "/api" as Resource <<interface>>{
     GET
     PUT
     PATCH
@@ -30,8 +30,8 @@ class "/{year}/{seq}" as ReaderID extends "/readers"{
 class "/lendings" as ReaderLendings extends ReaderID{
 }
 
-class "?isbn={isbn}&returned=false" extends ReaderLendings{
-    GET : open lending of a \nreader, searched by ISBN (A16)
+class "?isbn={isbn}" extends ReaderLendings{
+    GET : lendings of a reader,\n searched by ISBN (A16)
 }
 
 class "/authors" extends Resource{
