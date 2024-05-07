@@ -32,6 +32,17 @@ public interface SpringDataLendingRepository extends LendingRepository, CrudRepo
     @Override
     @Query("SELECT l " +
             "FROM Lending l " +
+            "JOIN Book b ON l.book.pk = b.pk " +
+            "JOIN ReaderDetails r ON l.readerDetails.pk = r.pk " +
+            "WHERE b.isbn.isbn = :isbn " +
+            "AND r.readerNumber.readerNumber = :readerNumber " +
+            "AND l.returnedDate IS NOT NULL")
+    List<Lending> findClosedByReaderNumberAndIsbn(@Param("readerNumber")String readerNumber,
+                                                  @Param("isbn")String isbn);
+
+    @Override
+    @Query("SELECT l " +
+            "FROM Lending l " +
                 "JOIN Book b ON l.book.pk = b.pk " +
             "WHERE b.isbn.isbn = :isbn")
     List<Lending> listAllByIsbn(@Param("isbn") String isbn);

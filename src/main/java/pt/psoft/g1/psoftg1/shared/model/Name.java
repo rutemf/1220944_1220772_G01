@@ -30,7 +30,7 @@ public class Name {
             throw new IllegalArgumentException("Name cannot be null");
         if(name.isBlank())
             throw new IllegalArgumentException("Name cannot be blank, nor only white spaces");
-        if(!StringUtils.isAlphanumeric(name))
+        if(!StringUtilsCustom.isAlphanumeric(name))
             throw new IllegalArgumentException("Name can only contain alphanumeric characters");
 
         for(String forbidden : FORBIDDEN_NAMES){

@@ -19,12 +19,14 @@ class TitleTest {
 
     @Test
     void ensureTitleCantStartWithWhitespace() {
-        assertThrows(IllegalArgumentException.class, () -> new Title(" A Bíblia"));
+        final var title = new Title(" Some title");
+        assertEquals("Some title", title.toString());
     }
 
     @Test
     void ensureTitleCantEndWithWhitespace() {
-        assertThrows(IllegalArgumentException.class, () -> new Title("A Bíblia "));
+        final var title = new Title("Some title ");
+        assertEquals("Some title", title.toString());
     }
 
 

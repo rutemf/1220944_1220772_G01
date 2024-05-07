@@ -31,6 +31,7 @@ public class ReaderDetails {
     private PhoneNumber phoneNumber;
 
     @Setter
+    @Getter
     @Basic
     private boolean gdprConsent;
 
