@@ -9,6 +9,7 @@ import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "READER_DETAILS")
 public class ReaderDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
