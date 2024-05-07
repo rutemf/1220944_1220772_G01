@@ -230,7 +230,7 @@ public class Bootstrapper implements CommandLineRunner {
 
     }
 
-    private void createUsers() throws Exception {
+    private void createUsers() {
         // Manuel
         if (userRepository.findByUsername("manuel@gmail.com").isEmpty()) {
             final User manuel = Reader.newReader("manuel@gmail.com", "Manuelino123!", "Manuel Sarapinto das Coives");

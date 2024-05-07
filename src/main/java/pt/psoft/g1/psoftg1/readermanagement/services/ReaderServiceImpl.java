@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
-import pt.psoft.g1.psoftg1.usermanagement.model.Role;
+import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
@@ -36,7 +36,7 @@ public class ReaderServiceImpl implements ReaderService {
             }
 
 
-            User tempUser = User.newUser(request.getUsername(), request.getPassword(), request.getFullName(), Role.READER);
+            User tempUser = Reader.newReader(request.getUsername(), request.getPassword(), request.getFullName());
             User user = userRepo.save(tempUser);
 
             request.setNumber(String.valueOf(++readerID));

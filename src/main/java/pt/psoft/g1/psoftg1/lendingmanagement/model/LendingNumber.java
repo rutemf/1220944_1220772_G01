@@ -63,12 +63,18 @@ public class LendingNumber implements Serializable {
      * @param lendingNumber String containing the lending number.
      * */
     public LendingNumber(String lendingNumber){
+        if(lendingNumber == null)
+            throw new IllegalArgumentException("Lending number cannot be null");
+
         int year, sequential;
         try { //TODO: Ricardo: Should this logic be here?
-            year        = Integer.parseInt(lendingNumber, 0, 3, 10);
+            year        = Integer.parseInt(lendingNumber, 0, 4, 10);
             sequential  = Integer.parseInt(lendingNumber, 5, lendingNumber.length(), 10);
+            if(lendingNumber.charAt(4) != '/'){
+                throw new IllegalArgumentException("Lending number has wrong format. It should be \"{year}/{sequential}\"");
+            }
         }catch (NumberFormatException | IndexOutOfBoundsException e){
-            return;
+            throw new IllegalArgumentException("Lending number has wrong format. It should be \"{year}/{sequential}\"");
         }
         this.year = year;
         this.sequential = sequential;
@@ -82,7 +88,7 @@ public class LendingNumber implements Serializable {
      * The {@code year} value is automatically set with {@code LocalDate.now().getYear()}.
      * @param sequential Sequential component of the {@code LendingNumber}
      * */
-    public LendingNumber(int sequential) {
+    public  LendingNumber(int sequential) {
         this.year = LocalDate.now().getYear();
         this.sequential = sequential;
         this.lendingNumber = year + "/" + sequential;
