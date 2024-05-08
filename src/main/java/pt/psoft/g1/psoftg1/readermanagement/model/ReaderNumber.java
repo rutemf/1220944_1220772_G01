@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 
 @Embeddable
@@ -13,6 +14,10 @@ public class ReaderNumber implements Serializable {
 
     public ReaderNumber(int year, int number) {
         this.readerNumber = year + "/" + number;
+    }
+
+    public ReaderNumber(int number) {
+        this.readerNumber = LocalDate.now().getYear() + "/" + number;
     }
 
     protected ReaderNumber() {}

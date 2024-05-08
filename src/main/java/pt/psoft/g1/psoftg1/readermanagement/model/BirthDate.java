@@ -4,11 +4,9 @@ package pt.psoft.g1.psoftg1.readermanagement.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 
 @Embeddable
@@ -20,19 +18,19 @@ public class BirthDate {
     LocalDate date;
 
     @Transient
-    private final String dateFormatPatternRegex = "\\d{4}/\\d{2}/\\d{2}";
+    private final String dateFormatRegexPattern = "\\d{4}/\\d{2}/\\d{2}";
 
     @Transient
     //TODO: Colocar este valor a partir do application.properties ou de outro ficheiro de configuração
-    private int minimumAge = 12; //TODO: Ricardo : colocar static/final?
+    private int minimumAge = 12;
 
-    public BirthDate(int year, int month, int day) throws Exception {
+    public BirthDate(int year, int month, int day) {
         setDate(year, month, day);
     }
 
-    public BirthDate(String date) throws Exception {
-        if(!date.matches(dateFormatPatternRegex)) {
-            throw new Exception("Provided birth date is not in a valid format");
+    public BirthDate(String date) {
+        if(!date.matches(dateFormatRegexPattern)) {
+            throw new IllegalArgumentException("Provided birth date is not in a valid format. Use yyyy/MM/dd");
         }
 
         String[] dateParts = date.split("/");
@@ -44,11 +42,11 @@ public class BirthDate {
         setDate(year, month, day);
     }
 
-    private void setDate(int year, int month, int day) throws Exception {
+    private void setDate(int year, int month, int day) {
         LocalDate minimumAgeDate = LocalDate.now().minusYears(minimumAge);
         LocalDate userDate = LocalDate.of(year, month, day);
         if(userDate.isAfter(minimumAgeDate)) {
-            throw new Exception("User age must be, at least, " + minimumAge);
+            throw new AccessDeniedException("User must be, at least, " + minimumAge + "years old");
         }
 
         this.date = userDate;

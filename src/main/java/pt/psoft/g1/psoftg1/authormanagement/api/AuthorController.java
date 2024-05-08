@@ -25,8 +25,6 @@ public class AuthorController {
 
     private static final String IF_MATCH = "If-Match";
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthorController.class);
-
     private final AuthorService authorService;
     private final AuthorViewMapper authorViewMapper;
 

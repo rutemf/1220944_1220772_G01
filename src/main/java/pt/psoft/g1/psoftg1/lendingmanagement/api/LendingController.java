@@ -39,8 +39,6 @@ public class LendingController {
 
     private static final String IF_MATCH = "If-Match";
 
-    private static final Logger logger = LoggerFactory.getLogger(LendingController.class);
-
     private final LendingService lendingService;
     private final ReaderService readerService;
     private final UserService userService;

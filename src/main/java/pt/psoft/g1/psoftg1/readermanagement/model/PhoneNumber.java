@@ -7,13 +7,13 @@ import jakarta.persistence.Embeddable;
 public class PhoneNumber {
     String number;
 
-    public PhoneNumber(String number) throws Exception {
+    public PhoneNumber(String number) {
         setPhoneNumber(number);
     }
 
     protected PhoneNumber() {}
 
-    private void setPhoneNumber(String number) throws Exception {
+    private void setPhoneNumber(String number) {
         if(!(number.startsWith("9") || number.startsWith("2")) || number.length() != 9) {
             throw new IllegalArgumentException("Phone number is not valid: " + number);
         }

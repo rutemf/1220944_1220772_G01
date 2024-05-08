@@ -20,6 +20,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -74,8 +75,8 @@ public class Bootstrapper implements CommandLineRunner {
         //Reader1 - Manuel
         try {
             Optional<User> u1 = userRepository.findByUsername("manuel@gmail.com");
-            Optional<ReaderDetails> readerNumber = readerRepository.findByReaderNumber("2024/1");
-            if (u1.isPresent() && readerNumber.isEmpty()) {
+            Optional<ReaderDetails> readerDetails1= readerRepository.findByReaderNumber(LocalDate.now().getYear() + "/1");
+            if (u1.isPresent() && readerDetails1.isEmpty()) {
                 ReaderDetails r1 = new ReaderDetails(
                         1,
                         u1.get(),
@@ -92,8 +93,8 @@ public class Bootstrapper implements CommandLineRunner {
         //Reader2 - joao
         try {
             Optional<User> u2 = userRepository.findByUsername("joao@gmail.com");
-            Optional<ReaderDetails> readerNumber2 = readerRepository.findByReaderNumber("2024/2");
-            if (u2.isPresent() && readerNumber2.isEmpty()) {
+            Optional<ReaderDetails> readerDetails2 = readerRepository.findByReaderNumber(LocalDate.now().getYear() + "/2");
+            if (u2.isPresent() && readerDetails2.isEmpty()) {
                 ReaderDetails r2 = new ReaderDetails(
                         2,
                         u2.get(),
@@ -110,8 +111,8 @@ public class Bootstrapper implements CommandLineRunner {
         //Reader3 - Pedro
         try {
             Optional<User> u3 = userRepository.findByUsername("pedro@gmail.com");
-            Optional<ReaderDetails> readerNumber3 = readerRepository.findByReaderNumber("2024/3");
-            if (u3.isPresent() && readerNumber3.isEmpty()) {
+            Optional<ReaderDetails> readerDetails3 = readerRepository.findByReaderNumber(LocalDate.now().getYear() + "/3");
+            if (u3.isPresent() && readerDetails3.isEmpty()) {
                 ReaderDetails r3 = new ReaderDetails(
                         3,
                         u3.get(),

@@ -26,24 +26,8 @@ public class LendingNumber implements Serializable {
     @NotNull
     @NotBlank
     @Size(min = 6, max = 32)
-
     private String lendingNumber;
 
-    /**
-     * Year component of the {@code LendingNumber}
-     */
-    @Column(name =  "\"YEAR\"")
-    @NotNull
-    @NotBlank
-    private int year;
-
-    /**
-     * Sequential component of the {@code LendingNumber}
-     */
-    @Column(name = "SEQUENCIAL")
-    @NotNull
-    @NotBlank
-    private int sequential;
 
     /**
      * Constructs a new {@code LendingNumber} object based on a year and a given sequential number.
@@ -51,8 +35,10 @@ public class LendingNumber implements Serializable {
      * @param   sequential  Sequential component of the {@code LendingNumber}
      * */
     public LendingNumber(int year, int sequential) {
-        this.year = year;
-        this.sequential = sequential;
+        if(year < 1970 || LocalDate.now().getYear() < year)
+            throw new IllegalArgumentException("Invalid year component");
+        if(sequential < 0)
+            throw new IllegalArgumentException("Sequencial component cannot be negative");
         this.lendingNumber = year + "/" + sequential;
     }
 
@@ -70,14 +56,11 @@ public class LendingNumber implements Serializable {
         try { //TODO: Ricardo: Should this logic be here?
             year        = Integer.parseInt(lendingNumber, 0, 4, 10);
             sequential  = Integer.parseInt(lendingNumber, 5, lendingNumber.length(), 10);
-            if(lendingNumber.charAt(4) != '/'){
+            if(lendingNumber.charAt(4) != '/')
                 throw new IllegalArgumentException("Lending number has wrong format. It should be \"{year}/{sequential}\"");
-            }
         }catch (NumberFormatException | IndexOutOfBoundsException e){
             throw new IllegalArgumentException("Lending number has wrong format. It should be \"{year}/{sequential}\"");
         }
-        this.year = year;
-        this.sequential = sequential;
         this.lendingNumber = year + "/" + sequential;
     }
 
@@ -89,9 +72,9 @@ public class LendingNumber implements Serializable {
      * @param sequential Sequential component of the {@code LendingNumber}
      * */
     public  LendingNumber(int sequential) {
-        this.year = LocalDate.now().getYear();
-        this.sequential = sequential;
-        this.lendingNumber = year + "/" + sequential;
+        if(sequential < 0)
+            throw new IllegalArgumentException("Sequencial component cannot be negative");
+        this.lendingNumber = LocalDate.now().getYear() + "/" + sequential;
     }
 
     /**Protected empty constructor for ORM only.*/

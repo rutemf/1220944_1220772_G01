@@ -6,8 +6,6 @@ import lombok.Setter;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
-import java.time.LocalDate;
-
 @Entity
 @Table(name = "READER_DETAILS")
 public class ReaderDetails {
@@ -46,26 +44,7 @@ public class ReaderDetails {
     @Getter
     private boolean thirdPartySharingConsent;
 
-/*
-    /**
-     * factory method. since mapstruct does not handle protected/private setters
-     * neither more than one public constructor, we use these factory methods for
-     * helper creation scenarios
-     *
-     * @param username
-     * @param password
-     * @param fullName
-     * @return
-     */
-
-    /*public Reader newReader(final String username, final String password, final String fullName) {
-        final var u = new Reader(username, password);
-        u.setName(new Name(fullName));
-        u.addAuthority(new Role(Role.READER));
-        return u;
-    }*/
-
-    public ReaderDetails(int readerNumber, User user, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) throws Exception {
+    public ReaderDetails(int readerNumber, User user, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) {
         if(user == null || phoneNumber == null) {
             throw new IllegalArgumentException("Provided argument resolves to null object");
         }
@@ -75,10 +54,9 @@ public class ReaderDetails {
         }
 
         setUser(user);
-        setReaderNumber(new ReaderNumber(LocalDate.now().getYear(), readerNumber));
+        setReaderNumber(new ReaderNumber(readerNumber));
         setPhoneNumber(new PhoneNumber(phoneNumber));
         setBirthDate(new BirthDate(birthDate));
-        setPhoneNumber(new PhoneNumber(phoneNumber));
         //By the client specifications, gdpr can only have the value of true. A setter will be created anyways in case we have accept no gdpr consent later on the project
         setGdprConsent(true);
 
@@ -105,10 +83,9 @@ public class ReaderDetails {
     }
 
     //TODO: Edu: Apply Patch method to update the properties we want
-    public void applyPatch(UpdateReaderRequest request) throws Exception {
+    public void applyPatch(UpdateReaderRequest request) {
         String birthDate = request.getBirthDate();
         String phoneNumber = request.getPhoneNumber();
-        String fullName = request.getFullName();
         boolean marketing = request.getMarketing();
         boolean thirdParty = request.getThirdParty();
         String username = request.getUsername();

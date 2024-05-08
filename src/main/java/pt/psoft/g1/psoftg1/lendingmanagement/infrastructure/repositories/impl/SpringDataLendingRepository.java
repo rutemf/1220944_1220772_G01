@@ -66,7 +66,7 @@ public interface SpringDataLendingRepository extends LendingRepository, CrudRepo
     @Override
     @Query("SELECT COUNT (l) " +
             "FROM Lending l " +
-            "WHERE l.lendingNumber.year = YEAR(CURRENT_DATE)")
+            "WHERE YEAR(l.startDate) = YEAR(CURRENT_DATE)")
     int getCountFromCurrentYear();
 
     @Override

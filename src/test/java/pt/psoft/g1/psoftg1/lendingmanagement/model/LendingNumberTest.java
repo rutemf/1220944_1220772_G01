@@ -41,4 +41,14 @@ class LendingNumberTest {
         assertNotNull(ln);
     }
 
+    @Test
+    void ensureSequentialCannotBeNegative() {
+        assertThrows(IllegalArgumentException.class, () -> new LendingNumber(2024,-1));
+    }
+
+    @Test
+    void ensureYearCannotBeInTheFuture() {
+        assertThrows(IllegalArgumentException.class, () -> new LendingNumber(LocalDate.now().getYear()+1,1));
+    }
+
 }
