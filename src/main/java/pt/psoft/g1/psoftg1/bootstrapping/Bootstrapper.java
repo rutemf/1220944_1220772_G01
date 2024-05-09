@@ -134,12 +134,12 @@ public class Bootstrapper implements CommandLineRunner {
 
 
         // O Principezinho
-
+        /*
         genre = Optional.ofNullable(genreRepository.findByString("Infantil"))
                 .orElseThrow(() -> new NotFoundException("Cannot find genre"));
         author = Optional.ofNullable(authorRepository.findByName("Author4"))
                 .orElseThrow(() -> new NotFoundException("Cannot find author"));
-        Optional<Author> author2 = Optional.ofNullable(authorRepository.findByName("Author4"))
+        Optional<Author> author2 = Optional.ofNullable(authorRepository.findByName("Author2"))
                 .orElseThrow(() -> new NotFoundException("Cannot find author"));
         if (genre.isPresent() && author.isPresent() && author2.isPresent()) {
             authors.add(author.get());
@@ -152,7 +152,7 @@ public class Bootstrapper implements CommandLineRunner {
                 bookRepository.save(b4);
             }
         }
-        authors.clear();
+        authors.clear();*/
 
     }
 }

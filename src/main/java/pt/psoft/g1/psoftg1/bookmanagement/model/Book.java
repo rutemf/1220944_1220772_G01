@@ -4,6 +4,7 @@ package pt.psoft.g1.psoftg1.bookmanagement.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import org.hibernate.StaleObjectStateException;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 
@@ -19,6 +20,10 @@ public class Book {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     long pk;
+
+    @Version
+    @Getter
+    private long version;
 
     @Getter
     @Embedded
@@ -68,12 +73,14 @@ public class Book {
         // got ORM only
     }
 
-    public void applyPatch(UpdateBookRequest request) {
+    public void applyPatch(final long desiredVersion, UpdateBookRequest request) {
+        if (this.version != desiredVersion)
+            throw new StaleObjectStateException("Object was already modified by another user", this.pk);
+
         String title = request.getTitle();
         String description = request.getDescription();
         Genre genre = request.getGenreObj();
         List<Author> authors = request.getAuthorObjList();
-
         if(title != null) {
             setTitle(title);
         }

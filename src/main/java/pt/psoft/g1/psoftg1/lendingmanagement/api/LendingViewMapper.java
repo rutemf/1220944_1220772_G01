@@ -21,7 +21,4 @@ public abstract class LendingViewMapper extends MapperInterface {
 
     public abstract Iterable<LendingView> toLendingView(Iterable<Lending> lendings);
 
-
-
-
 }

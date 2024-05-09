@@ -87,8 +87,9 @@ public class BookServiceImpl implements BookService {
 			if(genre.isEmpty()) {
 				throw new Exception("Genre not found");
 			}
+
 			request.setGenreObj(genre.get());
-			book.applyPatch(request);
+			book.applyPatch(book.getVersion(), request);
 			bookRepository.save(book);
 		} catch(Exception e) {
 			throw new Exception("One of the provided data does not match domain criteria: " + e.getMessage());
@@ -100,6 +101,11 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public Book save(Book book) {
 		return this.bookRepository.save(book);
+	}
+
+	@Override
+	public List<Book> findByGenre(Genre genre) {
+		return this.bookRepository.findByGenre(genre.toString());
 	}
 
 	@Override

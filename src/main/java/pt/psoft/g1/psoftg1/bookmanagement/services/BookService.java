@@ -18,4 +18,5 @@ public interface BookService {
     Book save(Book book);
     Optional<Book> findByIsbn(Isbn isbn);
     Book update(UpdateBookRequest request) throws Exception;
+    List<Book> findByGenre(Genre genre);
 }
