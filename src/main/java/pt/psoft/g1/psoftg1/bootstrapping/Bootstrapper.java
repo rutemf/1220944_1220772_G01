@@ -135,9 +135,6 @@ public class Bootstrapper implements CommandLineRunner {
             }
         }
 
-        authors.clear();
-
-
         // O Principezinho
         if(bookRepository.findByIsbn("9782722203426").isEmpty()) {
             List<Author> authors4 = new ArrayList<>();
