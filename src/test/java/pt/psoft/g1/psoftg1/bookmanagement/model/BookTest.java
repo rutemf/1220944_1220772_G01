@@ -50,4 +50,11 @@ class BookTest {
         assertThrows(IllegalArgumentException.class, () -> new Book(validIsbn, validTitle, null, validGenre, authors));
     }
 
+    @Test
+    void ensureBookCreatedWithMultipleAuthors() {
+        authors.add(validAuthor1);
+        authors.add(validAuthor2);
+        assertDoesNotThrow(() -> new Book(validIsbn, validTitle, null, validGenre, authors));
+    }
+
 }
