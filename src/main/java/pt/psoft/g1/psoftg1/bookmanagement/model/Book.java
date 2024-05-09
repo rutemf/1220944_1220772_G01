@@ -40,7 +40,7 @@ public class Book {
     Genre genre;
 
     @Getter
-    @OneToMany
+    @ManyToMany
     private List<Author> authors = new ArrayList<>();
 
     @Embedded
