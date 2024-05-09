@@ -2,7 +2,7 @@ package pt.psoft.g1.psoftg1.shared.api;
 
 import java.util.Optional;
 
-public abstract class ViewMapper{
+public abstract class MapperInterface {
 
     public <T> String map(final T value) {return value.toString();}
 

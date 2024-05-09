@@ -48,7 +48,19 @@ public class CreateUserRequest {
 	@Getter
 	private String password;
 
+	@NonNull
+	@NotBlank
+	private String name;
+
 	@Getter
 	@Setter
 	private String role;
+
+	private Set<String> authorities = new HashSet<>();
+
+	public CreateUserRequest(final String username, final String fullName, final String password) {
+		this.username = username;
+		this.name = fullName;
+		this.password = password;
+	}
 }

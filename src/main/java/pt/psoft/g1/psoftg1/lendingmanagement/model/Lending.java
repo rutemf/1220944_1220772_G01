@@ -123,6 +123,9 @@ public class Lending {
     @Transient
     private Integer daysOverdue;
 
+    @Getter
+    private int fineValuePerDayInCents;
+
 
     /**
      * Constructs a new {@code Lending} object to be persisted in the database.
@@ -135,7 +138,7 @@ public class Lending {
      * @param       seq sequential number, which should be obtained from the year's count on the database.
      * @throws      NullPointerException if any of the arguments is {@code null}
      * */
-    public Lending(Book book, ReaderDetails readerDetails, int seq){
+    public Lending(Book book, ReaderDetails readerDetails, int seq, int lendingDuration, int fineValuePerDayInCents){
         try {
             this.book = Objects.requireNonNull(book);
             this.readerDetails = Objects.requireNonNull(readerDetails);
@@ -144,7 +147,8 @@ public class Lending {
         }
         this.lendingNumber = new LendingNumber(seq);
         this.startDate = LocalDate.now();
-        this.limitDate = LocalDate.now().plusDays(MAX_DAYS_PER_LENDING);
+        this.limitDate = LocalDate.now().plusDays(lendingDuration);
+        this.fineValuePerDayInCents = fineValuePerDayInCents;
         setDaysUntilReturn();
         setDaysOverdue();
     }
@@ -226,7 +230,7 @@ public class Lending {
         Optional<Integer> fineValueInCents = Optional.empty();
         int days = getDaysDelayed();
         if(days > 0){
-            fineValueInCents = Optional.of(FINE_VALUE_PER_DAY_IN_CENTS * days);
+            fineValueInCents = Optional.of(fineValuePerDayInCents * days);
         }
         return fineValueInCents;
     }

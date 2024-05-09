@@ -3,10 +3,10 @@ package pt.psoft.g1.psoftg1.authormanagement.api;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
-import pt.psoft.g1.psoftg1.shared.api.ViewMapper;
+import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 
 @Mapper(componentModel = "spring")
-public abstract class AuthorViewMapper extends ViewMapper {
+public abstract class AuthorViewMapper extends MapperInterface {
 
     @Mapping(target = "authorNumber", source = "authorNumber")
     @Mapping(target = "name", source = "name")

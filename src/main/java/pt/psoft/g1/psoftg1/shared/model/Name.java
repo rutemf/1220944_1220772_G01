@@ -6,11 +6,15 @@ import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Embeddable
+@PropertySource({"classpath:config/library.properties"})
 public class Name {
     @NotNull
     @NotBlank
@@ -19,7 +23,10 @@ public class Name {
 
     //TODO: Move this to a properties file
     @Transient
-    private static final List<String> FORBIDDEN_NAMES = List.of(new String[]{"Cocó", "Xixi"});
+    //@Value("#{'${forbiddenNames}'.split(',')}")
+    //@Value("#{${forbiddenNames}}")
+    //private List<String> forbiddenNames = new ArrayList<>();
+    private static final List<String> forbiddenNames = List.of(new String[]{"Cocó", "Xixi"});
 
     public Name(String name){
         setName(name);
@@ -33,7 +40,7 @@ public class Name {
         if(!StringUtilsCustom.isAlphanumeric(name))
             throw new IllegalArgumentException("Name can only contain alphanumeric characters");
 
-        for(String forbidden : FORBIDDEN_NAMES){
+        for(String forbidden : forbiddenNames){
             if(name.contains(forbidden))
                 throw new IllegalArgumentException("Name contains forbidden word");
         }

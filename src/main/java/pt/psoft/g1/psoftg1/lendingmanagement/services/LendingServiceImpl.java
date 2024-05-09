@@ -1,6 +1,8 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.exceptions.LendingForbiddenException;
@@ -15,11 +17,17 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@PropertySource({"classpath:config/library.properties"})
 public class LendingServiceImpl implements LendingService{
     private final LendingRepository lendingRepository;
     private final FineRepository fineRepository;
     private final BookRepository bookRepository;
     private final ReaderRepository readerRepository;
+
+    @Value("${lendingDurationInDays}")
+    private int lendingDurationInDays = 15;
+    @Value("${fineValuePerDayInCents}")
+    private int fineValuePerDayInCents = 300;
 
     @Override
 
@@ -58,7 +66,7 @@ public class LendingServiceImpl implements LendingService{
         final var r = readerRepository.findByReaderNumber(resource.getReaderNumber())
                 .orElseThrow(() -> new NotFoundException("Reader not found"));
         int seq = lendingRepository.getCountFromCurrentYear()+1;
-        final Lending l = new Lending(b,r,seq);
+        final Lending l = new Lending(b,r,seq, lendingDurationInDays, fineValuePerDayInCents );
 
         return lendingRepository.save(l);
     }

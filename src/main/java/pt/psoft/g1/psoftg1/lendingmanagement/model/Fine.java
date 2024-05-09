@@ -39,7 +39,7 @@ public class Fine {
     public Fine(Lending lending) {
         if(lending.getDaysDelayed() <= 0)
             throw new IllegalArgumentException("Lending is not overdue");
-        fineValuePerDayInCents = Lending.FINE_VALUE_PER_DAY_IN_CENTS;
+        fineValuePerDayInCents = lending.getFineValuePerDayInCents();
         centsValue = fineValuePerDayInCents * lending.getDaysDelayed();
         this.lending = Objects.requireNonNull(lending);
     }

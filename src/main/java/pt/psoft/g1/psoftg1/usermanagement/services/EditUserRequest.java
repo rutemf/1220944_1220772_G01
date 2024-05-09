@@ -37,7 +37,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EditUserRequest {
 	@NotBlank
-	private String fullName;
+	private String name;
 
 	private Set<String> authorities;
 }

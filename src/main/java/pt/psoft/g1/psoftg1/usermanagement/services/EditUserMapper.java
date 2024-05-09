@@ -33,6 +33,8 @@ import org.mapstruct.Named;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
+import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
+import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
@@ -41,13 +43,16 @@ import pt.psoft.g1.psoftg1.usermanagement.model.User;
  *
  */
 @Mapper(componentModel = "spring")
-public abstract class EditUserMapper {
+public abstract class EditUserMapper extends MapperInterface {
 
-	public abstract User create(CreateUserRequest request) throws Exception;
+	@Mapping(source = "authorities", target = "authorities", qualifiedByName = "stringToRole")
+	@Mapping(source = "name", target = "name", qualifiedByName = "stringToName")
+	public abstract User create(CreateUserRequest request);
 
 	@BeanMapping(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
 			nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(source = "authorities", target = "authorities", qualifiedByName = "stringToRole")
+	@Mapping(source = "name", target = "name", qualifiedByName = "stringToName")
 	public abstract void update(EditUserRequest request, @MappingTarget User user);
 
 	@Named("stringToRole")
@@ -56,6 +61,11 @@ public abstract class EditUserMapper {
 			return authorities.stream().map(Role::new).collect(toSet());
 		}
 		return new HashSet<>();
+	}
+
+	@Named("stringToName")
+	protected Name stringToName(final String nameStr) {
+		return new Name(nameStr);
 	}
 
 }

@@ -4,6 +4,8 @@ package pt.psoft.g1.psoftg1.readermanagement.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDate;
@@ -11,6 +13,7 @@ import java.time.LocalDate;
 
 @Embeddable
 @NoArgsConstructor
+@PropertySource({"classpath:config/library.properties"})
 public class BirthDate {
     @Getter
     @Column(nullable = false, updatable = false)
@@ -21,8 +24,8 @@ public class BirthDate {
     private final String dateFormatRegexPattern = "\\d{4}/\\d{2}/\\d{2}";
 
     @Transient
-    //TODO: Colocar este valor a partir do application.properties ou de outro ficheiro de configuração
-    private int minimumAge = 12;
+    @Value("${minimumReaderAge}")
+    private int minimumAge;
 
     public BirthDate(int year, int month, int day) {
         setDate(year, month, day);
