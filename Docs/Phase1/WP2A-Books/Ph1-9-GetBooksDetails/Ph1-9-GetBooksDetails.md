@@ -25,5 +25,8 @@ As Librarian, I want to get the details of a book given its ISBN(isbn, title, ge
 
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
+![SD](Ph1-9-SD-GetBooksDetails.svg)
+### 3.2. Class Diagram (CD)
+![CD](../WP2A-Books-CD.svg)
 ## 4. Tests
 ## 5. Observations
