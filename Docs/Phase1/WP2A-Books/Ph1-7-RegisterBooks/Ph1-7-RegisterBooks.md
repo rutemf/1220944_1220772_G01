@@ -12,14 +12,14 @@ As Librarian, I want to register a book (isbn, title, genre, description, author
 - AC
 -
 ### 1.4. Found out Dependencies
-- The Libarian must be authenticated in the system
+- The Librarian must be authenticated in the system
 ### 1.5 Input and Output Data
 - The librarian needs to give all the details to register the book
 **Input Data:**
 * Typed data:
     * ISBN
     * Title
-    * Desription
+    * Description
     * Author(s)
     * Genre
 
@@ -29,5 +29,8 @@ As Librarian, I want to register a book (isbn, title, genre, description, author
 
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
+![SD](Ph1-7-SD-RegisterBooks.svg)
+### 3.2. Class Diagram (CD)
+![CD](../WP2A-Books-CD.svg)
 ## 4. Tests
 ## 5. Observations**

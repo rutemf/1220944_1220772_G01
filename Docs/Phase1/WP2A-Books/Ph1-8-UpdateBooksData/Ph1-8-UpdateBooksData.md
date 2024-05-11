@@ -28,5 +28,8 @@ As Librarian, I want to update a book (title, genre, description, author(s))
 
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
+![SD](Ph1-8-SD-UpdateBooksData.svg)
+### 3.2. Class Diagram (CD)
+![CD](../WP2A-Books-CD.svg)
 ## 4. Tests
 ## 5. Observations
