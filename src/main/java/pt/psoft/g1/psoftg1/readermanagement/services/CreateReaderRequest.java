@@ -28,12 +28,6 @@ public class CreateReaderRequest {
     @Getter
     @NonNull
     @NotBlank
-    @Email
-    private String emailAddress;
-
-    @Getter
-    @NonNull
-    @NotBlank
     private String birthDate;
 
     @Getter

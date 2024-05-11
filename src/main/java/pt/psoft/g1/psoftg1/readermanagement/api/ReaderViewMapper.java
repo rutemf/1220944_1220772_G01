@@ -14,6 +14,7 @@ public abstract class ReaderViewMapper extends MapperInterface {
     @Mapping(target = "email", source = "user.username")
     @Mapping(target = "birthDate", source = "birthDate.date")
     @Mapping(target = "gdprConsent", source = "gdprConsent")
+    @Mapping(target = "readerNumber", source = "readerNumber")
     public abstract ReaderView toReaderView(ReaderDetails readerDetails);
 
     public abstract List<ReaderView> toReaderView(Iterable<ReaderDetails> readerList);
