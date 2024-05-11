@@ -36,8 +36,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EditUserRequest {
-	@NotBlank
 	private String name;
-
+	private String username;
+	private String password;
 	private Set<String> authorities;
 }

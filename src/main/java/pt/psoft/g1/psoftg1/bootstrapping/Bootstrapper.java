@@ -12,6 +12,11 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
+import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
+import pt.psoft.g1.psoftg1.usermanagement.model.Role;
+import pt.psoft.g1.psoftg1.usermanagement.model.User;
+import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +31,13 @@ public class Bootstrapper implements CommandLineRunner {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
 
+    //Service, for readers, needs to be used as its sequencial number is managed there
+    private final ReaderService readerService;
+    private final UserRepository userRepository;
+
 
     @Override
-    public void run(final String... args) {
+    public void run(final String... args) throws Exception {
         createAuthors();
         createGenres();
         createBooks();

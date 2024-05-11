@@ -33,6 +33,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
+import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
+import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
+import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
@@ -52,13 +55,29 @@ public class UserService implements UserDetailsService {
 	private final PasswordEncoder passwordEncoder;
 
 	@Transactional
-	public User create(final CreateUserRequest request) {
+	public User create(final CreateUserRequest request) throws Exception {
 		if (userRepo.findByUsername(request.getUsername()).isPresent()) {
 			throw new ConflictException("Username already exists!");
 		}
 
-		final User user = userEditMapper.create(request);
+		User user = null;
+		switch(request.getRole()) {
+			case Role.READER: {
+				user = Reader.newUser(request.getUsername(), request.getPassword(), request.getName());
+				break;
+			}
+			case Role.LIBRARIAN: {
+				user = Librarian.newLibrarian(request.getUsername(), request.getPassword(), request.getName());
+				break;
+			}
+			default: {
+				return null;
+			}
+		}
+
+		//final User user = userEditMapper.create(request);
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
+		//user.addAuthority(new Role(request.getRole()));
 
 		return userRepo.save(user);
 	}

@@ -23,15 +23,11 @@ public class ReaderServiceImpl implements ReaderService {
 
         //This should be wrapped on a try catch to avoid any domain exceptions, this way we make sure we catch everything
         try {
-            if(this.userRepo.findByUsername(request.getUsername()).isPresent()) {
-                throw new Exception("A user with the provided username is already registered");
-            }
-
             if(findByReaderNumber(String.format("%d/%d", LocalDate.now().getYear(), readerID + 1)).isEmpty()) {
                 throw new Exception("A reader with provided reader number is already registered");
             }
 
-            if(findByPhoneNumber(request.getPhoneNumber()).isEmpty()) {
+            if(findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
                 throw new Exception("A reader with provided phone number is already registered");
             }
 
