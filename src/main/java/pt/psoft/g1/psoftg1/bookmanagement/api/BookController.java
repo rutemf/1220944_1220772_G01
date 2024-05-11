@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
@@ -29,29 +31,34 @@ import java.util.Optional;
 @RequestMapping("/api/book")
 public class BookController {
 
+    private static final String IF_MATCH = "If-Match";
     private final BookService bookService;
     private final GenreService genreService;
 
     private final BookViewMapper bookViewMapper;
 
-    @RolesAllowed(Role.LIBRARIAN)
+    //@RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Register a new Book")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<BookView> create(@Valid @RequestBody final CreateBookRequest resource) throws Exception {
-
-        final var book = bookService.create(resource);
-
+        Book book = null;
+        try {
+            book = bookService.create(resource);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        final var savedBook = bookService.save(book);
         final var newBookUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .pathSegment(book.getIsbn().toString())
+                .pathSegment(savedBook.getIsbn().toString())
                 .build().toUri();
 
         return ResponseEntity.created(newBookUri)
-                .eTag(Long.toString(book.getVersion()))
-                .body(bookViewMapper.toBookView(book));
+                .eTag(Long.toString(savedBook.getVersion()))
+                .body(bookViewMapper.toBookView(savedBook));
     }
 
-    @RolesAllowed({Role.LIBRARIAN, Role.READER})
+    //@RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Gets a specific Book by isbn")
     @GetMapping(value = "/{isbn}")
     public ResponseEntity<BookView> findByIsbn(@PathVariable final String isbn) throws Exception {
@@ -65,10 +72,16 @@ public class BookController {
                 .body(bookViewMapper.toBookView(book));
     }
 
-    @RolesAllowed({Role.LIBRARIAN})
+    //@RolesAllowed({Role.LIBRARIAN})
     @Operation(summary = "Updates a specific Book")
     @PatchMapping(value = "/{isbn}")
-    public ResponseEntity<BookView> updateBook(@PathVariable final String isbn, @Valid @RequestBody final UpdateBookRequest resource) throws Exception {
+    public ResponseEntity<BookView> updateBook(@PathVariable final String isbn, final WebRequest request, @Valid @RequestBody final UpdateBookRequest resource) throws Exception {
+
+        final String ifMatchValue = request.getHeader(IF_MATCH);
+        if (ifMatchValue == null || ifMatchValue.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "You must issue a conditional PATCH using 'if-match'");
+        }
 
         resource.setIsbn(isbn);
         final var book = bookService.update(resource);
@@ -78,7 +91,7 @@ public class BookController {
                 .body(bookViewMapper.toBookView(book));
     }
 
-    @RolesAllowed({Role.LIBRARIAN, Role.READER})
+    //@RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Gets a specific Book by genre")
     @GetMapping
     public ListResponse<BookView> findByGenre(@RequestParam("genre") final String genre) throws Exception {
@@ -86,6 +99,13 @@ public class BookController {
         Optional<Genre> optGenre = genreService.findByString(genre);
         final var books = bookService.findByGenre(optGenre.orElseThrow(() -> new NotFoundException(Book.class, genre)));
         return new ListResponse<>(bookViewMapper.toBookView(books));
+    }
+
+    private Long getVersionFromIfMatchHeader(final String ifMatchHeader) {
+        if (ifMatchHeader.startsWith("\"")) {
+            return Long.parseLong(ifMatchHeader.substring(1, ifMatchHeader.length() - 1));
+        }
+        return Long.parseLong(ifMatchHeader);
     }
 }
 
