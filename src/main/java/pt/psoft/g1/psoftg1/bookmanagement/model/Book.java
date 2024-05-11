@@ -23,7 +23,7 @@ public class Book {
 
     @Version
     @Getter
-    private long version;
+    private Long version;
 
     @Getter
     @Embedded
@@ -73,7 +73,7 @@ public class Book {
         // got ORM only
     }
 
-    public void applyPatch(final long desiredVersion, UpdateBookRequest request) {
+    public void applyPatch(final Long desiredVersion, UpdateBookRequest request) {
         if (this.version != desiredVersion)
             throw new StaleObjectStateException("Object was already modified by another user", this.pk);
 

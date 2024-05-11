@@ -20,7 +20,6 @@ public class UpdateBookRequest {
     @Setter
     private String description;
 
-    @NotBlank
     private String title;
 
     @Setter
@@ -28,7 +27,6 @@ public class UpdateBookRequest {
 
     private String genre;
 
-    @NonNull
     private List<Long> authors;
 
     private List<Author> authorObjList;

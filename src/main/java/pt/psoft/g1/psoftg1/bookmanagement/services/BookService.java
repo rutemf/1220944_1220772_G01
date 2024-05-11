@@ -17,6 +17,6 @@ public interface BookService {
     Book create(CreateBookRequest request) throws Exception;
     Book save(Book book);
     Optional<Book> findByIsbn(Isbn isbn);
-    Book update(UpdateBookRequest request) throws Exception;
+    Book update(UpdateBookRequest request,String currentVersion) throws Exception;
     List<Book> findByGenre(Genre genre);
 }

@@ -18,6 +18,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.services.BookService;
 import pt.psoft.g1.psoftg1.bookmanagement.services.CreateBookRequest;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreService;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
+import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.usermanagement.api.ListResponse;
 
@@ -82,10 +83,13 @@ public class BookController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must issue a conditional PATCH using 'if-match'");
         }
-
+        Book  book;
         resource.setIsbn(isbn);
-        final var book = bookService.update(resource);
-
+        try {
+            book = bookService.update(resource, ifMatchValue);
+        }catch (Exception e){
+            throw new ConflictException("Could not update book: "+ e.getMessage());
+        }
         return ResponseEntity.ok()
                 .eTag(Long.toString(book.getVersion()))
                 .body(bookViewMapper.toBookView(book));

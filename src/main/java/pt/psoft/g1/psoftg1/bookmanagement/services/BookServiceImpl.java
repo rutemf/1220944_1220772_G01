@@ -60,7 +60,7 @@ public class BookServiceImpl implements BookService {
 
 
 	@Override
-	public Book update(UpdateBookRequest request) throws Exception {
+	public Book update(UpdateBookRequest request, String currentVersion) throws Exception {
 		Book book = null;
 
 		try {
@@ -69,27 +69,31 @@ public class BookServiceImpl implements BookService {
 				throw new Exception("A book with provided Isbn was not found");
 			}
 			book = tempBook.get();
-			List<Long> authorNumbers = request.getAuthors();
-			List<Author> authors = new ArrayList<>();
-			for (Long authorNumber : authorNumbers) {
-				Optional<Author> temp = authorRepository.findByAuthorNumber(authorNumber);
-				if(temp.isEmpty()) {
-					//TODO: É suposto passar à frente e ignorar os que não foram encontrados ou damos erro?
-					continue;
+			if(request.getAuthors()!= null){
+				List<Long> authorNumbers = request.getAuthors();
+				List<Author> authors = new ArrayList<>();
+				for (Long authorNumber : authorNumbers) {
+					Optional<Author> temp = authorRepository.findByAuthorNumber(authorNumber);
+					if(temp.isEmpty()) {
+						//TODO: É suposto passar à frente e ignorar os que não foram encontrados ou damos erro?
+						continue;
+					}
+					Author author = temp.get();
+					authors.add(author);
 				}
-				Author author = temp.get();
-				authors.add(author);
+
+				request.setAuthorObjList(authors);
+			}
+			if(request.getGenre()!= null){
+				Optional<Genre> genre = genreRepository.findByString(request.getGenre());
+				if(genre.isEmpty()) {
+					throw new Exception("Genre not found");
+				}
+
+				request.setGenreObj(genre.get());
 			}
 
-			request.setAuthorObjList(authors);
-
-			Optional<Genre> genre = genreRepository.findByString(request.getGenre());
-			if(genre.isEmpty()) {
-				throw new Exception("Genre not found");
-			}
-
-			request.setGenreObj(genre.get());
-			book.applyPatch(book.getVersion(), request);
+			book.applyPatch(Long.parseLong(currentVersion), request);
 			bookRepository.save(book);
 		} catch(Exception e) {
 			throw new Exception("One of the provided data does not match domain criteria: " + e.getMessage());
