@@ -9,7 +9,7 @@ public interface AuthorRepository {
 
     Optional<Author> findByAuthorNumber(Long authorNumber);
     List<Author> searchByAuthorNameLike(@Param("name") String name);
-    Optional<Author> findByName(String name);
+    List<Author> findByName(String name);
     Author save(Author author);
     Iterable<Author> findAll();
 

@@ -11,7 +11,7 @@ participant "service:AuthorsService" as Service
 participant "repo:AuthorsRepository" as Repo
 activate User
 
-User -> Ctrl: SearchAuthorsByName(name)
+User -> Ctrl: findByName(name)
 activate Ctrl
 Ctrl -> Service: FindByName(name)
 activate Service

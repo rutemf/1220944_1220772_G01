@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
@@ -37,6 +38,7 @@ public class Bootstrapper implements CommandLineRunner {
 
 
     @Override
+    @Transactional
     public void run(final String... args) throws Exception {
         createAuthors();
         createGenres();
@@ -85,14 +87,13 @@ public class Bootstrapper implements CommandLineRunner {
     protected void createBooks() {
         Optional<Genre> genre = Optional.ofNullable(genreRepository.findByString("Ação"))
                 .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-        Optional<Author> author = Optional.ofNullable(authorRepository.findByName("Manuel Antonio Pina"))
-                .orElseThrow(() -> new NotFoundException("Cannot find author"));
+        List<Author> author = authorRepository.findByName("Manuel Antonio Pina");
 
         // O Inspetor Max
         if(bookRepository.findByIsbn("9782826012092").isEmpty()) {
             List<Author> authors = new ArrayList<>();
-            if (genre.isPresent() && author.isPresent()) {
-                authors.add(author.get());
+            if (genre.isPresent() && !author.isEmpty()) {
+                authors.add(author.get(0));
                 Book b1 = new Book("9782826012092",
                         "O Inspetor Max",
                         "conhecido pastor-alemão que trabalha para a Judiciária, vai ser fundamental para resolver um importante caso de uma rede de malfeitores que quer colocar uma bomba num megaconcerto de uma ilustre cantora",
@@ -103,16 +104,14 @@ public class Bootstrapper implements CommandLineRunner {
             }
         }
 
-
         // C e Algoritmos
         if(bookRepository.findByIsbn("9782608153111").isEmpty()) {
             List<Author> authors2 = new ArrayList<>();
             genre = Optional.ofNullable(genreRepository.findByString("Informação"))
                     .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-            author = Optional.ofNullable(authorRepository.findByName("Author2"))
-                    .orElseThrow(() -> new NotFoundException("Cannot find author"));
-            if (genre.isPresent() && author.isPresent()) {
-                authors2.add(author.get());
+            author = authorRepository.findByName("Author2");
+            if (genre.isPresent() && !author.isEmpty()) {
+                authors2.add(author.get(0));
                 Book b2 = new Book("9782608153111",
                         "C e Algoritmos",
                         "O C é uma linguagem de programação incontornável no estudo e aprendizagem das linguagens de programação",
@@ -130,10 +129,9 @@ public class Bootstrapper implements CommandLineRunner {
             List<Author> authors3 = new ArrayList<>();
             genre = Optional.ofNullable(genreRepository.findByString("Romance"))
                     .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-            author = Optional.ofNullable(authorRepository.findByName("Author3"))
-                    .orElseThrow(() -> new NotFoundException("Cannot find author"));
-            if (genre.isPresent() && author.isPresent()) {
-                authors3.add(author.get());
+            author = authorRepository.findByName("Author3");
+            if (genre.isPresent() && !author.isEmpty()) {
+                authors3.add(author.get(0));
                 Book b3 = new Book("9782722203402",
                         "Vemo-nos em Agosto",
                         "Através das sensuais noites caribenhas repletas de salsa e boleros, homens sedutores e vigaristas, a cada agosto que passa Ana viaja mais longe para o interior do seu desejo e do medo escondido no seu coração.",
@@ -149,13 +147,11 @@ public class Bootstrapper implements CommandLineRunner {
             List<Author> authors4 = new ArrayList<>();
             genre = Optional.ofNullable(genreRepository.findByString("Infantil"))
                     .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-            author = Optional.ofNullable(authorRepository.findByName("Author3"))
-                    .orElseThrow(() -> new NotFoundException("Cannot find author"));
-            Optional<Author> author2 = Optional.ofNullable(authorRepository.findByName("Author4"))
-                    .orElseThrow(() -> new NotFoundException("Cannot find author"));
-            if (genre.isPresent() && author.isPresent() && author2.isPresent()) {
-                authors4.add(author.get());
-                authors4.add(author2.get());
+            author = authorRepository.findByName("Author3");
+            List<Author> author2 = authorRepository.findByName("Author4");
+            if (genre.isPresent() && !author.isEmpty() && !author2.isEmpty()) {
+                authors4.add(author.get(0));
+                authors4.add(author2.get(0));
                 Book b4 = new Book("9782722203426",
                         "O Principezinho", "Depois de deixar o seu asteroide e embarcar numa viagem pelo espaço, o principezinho chega, finalmente, à Terra. No deserto, o menino de cabelos da cor do ouro conhece um aviador, a quem conta todas as aventuras que viveu e tudo o que viu ao longo da sua jornada.",
                         genre.get(),

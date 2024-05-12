@@ -13,9 +13,9 @@ activate User
 
 User -> Ctrl: Request author details
 activate Ctrl
-Ctrl -> Service: FindById(authorNumber)
+Ctrl -> Service: findByAuthorNumber(authorNumber)
 activate Service
-Service -> Repo: findById(authorNumber)
+Service -> Repo: findByAuthorNumber(authorNumber)
 activate Repo
 
 Repo --> Service: authorDetails

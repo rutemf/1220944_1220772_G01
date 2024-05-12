@@ -1,12 +1,12 @@
 package pt.psoft.g1.psoftg1.authormanagement.services;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +22,11 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Optional<Author> findByAuthorNumber(final Long authorNumber) {
         return repo.findByAuthorNumber(authorNumber);
+    }
+
+    @Override
+    public List<Author> findByName(String name) {
+        return repo.findByName(name);
     }
 
     @Override
