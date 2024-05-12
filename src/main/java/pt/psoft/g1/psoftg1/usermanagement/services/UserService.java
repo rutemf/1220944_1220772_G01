@@ -59,15 +59,15 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional
-	public User create(final CreateUserRequest request) throws Exception {
+	public User create(final CreateUserRequest request) {
 		if (userRepo.findByUsername(request.getUsername()).isPresent()) {
 			throw new ConflictException("Username already exists!");
 		}
 
-		User user = null;
+		User user;
 		switch(request.getRole()) {
 			case Role.READER: {
-				user = Reader.newUser(request.getUsername(), request.getPassword(), request.getName());
+				user = Reader.newReader(request.getUsername(), request.getPassword(), request.getName());
 				break;
 			}
 			case Role.LIBRARIAN: {

@@ -42,7 +42,7 @@ public class BookController {
     @Operation(summary = "Register a new Book")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<BookView> create(@Valid @RequestBody final CreateBookRequest resource) throws Exception {
+    public ResponseEntity<BookView> create(@Valid @RequestBody final CreateBookRequest resource) {
         Book book = null;
         try {
             book = bookService.create(resource);
@@ -62,7 +62,7 @@ public class BookController {
     @RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Gets a specific Book by isbn")
     @GetMapping(value = "/{isbn}")
-    public ResponseEntity<BookView> findByIsbn(@PathVariable final String isbn) throws Exception {
+    public ResponseEntity<BookView> findByIsbn(@PathVariable final String isbn) {
 
         final var book = bookService.findByIsbn(new Isbn(isbn))
                 .orElseThrow(() -> new NotFoundException(Book.class, isbn));
@@ -76,7 +76,9 @@ public class BookController {
     @RolesAllowed({Role.LIBRARIAN})
     @Operation(summary = "Updates a specific Book")
     @PatchMapping(value = "/{isbn}")
-    public ResponseEntity<BookView> updateBook(@PathVariable final String isbn, final WebRequest request, @Valid @RequestBody final UpdateBookRequest resource) throws Exception {
+    public ResponseEntity<BookView> updateBook(@PathVariable final String isbn,
+                                               final WebRequest request,
+                                               @Valid @RequestBody final UpdateBookRequest resource) {
 
         final String ifMatchValue = request.getHeader(IF_MATCH);
         if (ifMatchValue == null || ifMatchValue.isEmpty()) {
@@ -98,7 +100,7 @@ public class BookController {
     @RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Gets a specific Book by genre")
     @GetMapping
-    public ListResponse<BookView> findByGenre(@RequestParam("genre") final String genre) throws Exception {
+    public ListResponse<BookView> findByGenre(@RequestParam("genre") final String genre) {
 
         Optional<Genre> optGenre = genreService.findByString(genre);
         final var books = bookService.findByGenre(optGenre.orElseThrow(() -> new NotFoundException(Book.class, genre)));

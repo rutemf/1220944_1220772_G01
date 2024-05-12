@@ -65,7 +65,14 @@ public class Book {
         setIsbn(isbn);
         if(description != null)
             setDescription(description);
+        if(genre==null)
+            throw new IllegalArgumentException("Genre cannot be null");
         setGenre(genre);
+        if(authors == null)
+            throw new IllegalArgumentException("Author list is null");
+        if(authors.isEmpty())
+            throw new IllegalArgumentException("Author list is empty");
+
         setAuthors(authors);
     }
 

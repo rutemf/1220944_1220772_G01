@@ -138,7 +138,7 @@ public class User implements UserDetails {
 	 * @param fullName
 	 * @return
 	 */
-	public static User newUser(final String username, final String password, final String fullName) throws Exception {
+	public static User newUser(final String username, final String password, final String fullName) {
 		final var u = new User(username, password);
 		u.setName(new Name(fullName));
 		return u;
@@ -155,7 +155,7 @@ public class User implements UserDetails {
 	 * @param role
 	 * @return
 	 */
-	public static User newUser(final String username, final String password, final String fullName, final String role) throws Exception {
+	public static User newUser(final String username, final String password, final String fullName, final String role) {
 		final var u = new User(username, password);
 		u.setName(new Name(fullName));
 		u.addAuthority(new Role(role));

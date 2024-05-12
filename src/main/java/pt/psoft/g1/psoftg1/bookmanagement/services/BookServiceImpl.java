@@ -10,6 +10,8 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
+import pt.psoft.g1.psoftg1.exceptions.ConflictException;
+import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,80 +26,72 @@ public class BookServiceImpl implements BookService {
 	private final GenreRepository genreRepository;
 	private final AuthorRepository authorRepository;
 	@Override
-	public Book create(CreateBookRequest request) throws Exception {
+	public Book create(CreateBookRequest request) {
 		Book newBook = null;
 
-		try {
-			if(findByIsbn(new Isbn(request.getIsbn())).isPresent()) {
-				throw new Exception("A book with provided Isbn is already registered");
-			}
 
-			List<Long> authorNumbers = request.getAuthors();
-			List<Author> authors = new ArrayList<>();
-            for (Long authorNumber : authorNumbers) {
-
-				Optional<Author> temp = authorRepository.findByAuthorNumber(authorNumber);
-				if(temp.isEmpty()) {
-					//TODO: É suposto passar à frente e ignorar os que não foram encontrados ou damos erro?
-					continue;
-				}
-
-				Author author = temp.get();
-                authors.add(author);
-            }
-
-			Optional<Genre> genre = genreRepository.findByString(request.getGenre());
-			if(genre.isEmpty()) {
-				throw new Exception("Genre not found");
-			}
-			newBook = new Book(request.getIsbn(), request.getTitle(), request.getDescription(), genre.get(), authors);
-		} catch(Exception e) {
-			throw new Exception("One of the provided data does not match domain criteria: " + e.getMessage());
+		if(findByIsbn(new Isbn(request.getIsbn())).isPresent()) {
+			throw new ConflictException("A book with provided Isbn is already registered");
 		}
+
+		List<Long> authorNumbers = request.getAuthors();
+		List<Author> authors = new ArrayList<>();
+		for (Long authorNumber : authorNumbers) {
+
+			Optional<Author> temp = authorRepository.findByAuthorNumber(authorNumber);
+			if(temp.isEmpty()) {
+				//TODO: É suposto passar à frente e ignorar os que não foram encontrados ou damos erro?
+				continue;
+			}
+
+			Author author = temp.get();
+			authors.add(author);
+		}
+		final var genre = genreRepository.findByString(request.getGenre())
+				.orElseThrow(() -> new NotFoundException("Genre not found"));
+
+		newBook = new Book(request.getIsbn(), request.getTitle(), request.getDescription(), genre, authors);
+
 
         return newBook;
 	}
 
 
 	@Override
-	public Book update(UpdateBookRequest request, String currentVersion) throws Exception {
+	public Book update(UpdateBookRequest request, String currentVersion) {
 		Book book = null;
 
-		try {
-			Optional<Book> tempBook = findByIsbn(new Isbn(request.getIsbn()));
-			if(tempBook.isEmpty()) {
-				throw new Exception("A book with provided Isbn was not found");
-			}
-			book = tempBook.get();
-			if(request.getAuthors()!= null){
-				List<Long> authorNumbers = request.getAuthors();
-				List<Author> authors = new ArrayList<>();
-				for (Long authorNumber : authorNumbers) {
-					Optional<Author> temp = authorRepository.findByAuthorNumber(authorNumber);
-					if(temp.isEmpty()) {
-						//TODO: É suposto passar à frente e ignorar os que não foram encontrados ou damos erro?
-						continue;
-					}
-					Author author = temp.get();
-					authors.add(author);
-				}
-
-				request.setAuthorObjList(authors);
-			}
-			if(request.getGenre()!= null){
-				Optional<Genre> genre = genreRepository.findByString(request.getGenre());
-				if(genre.isEmpty()) {
-					throw new Exception("Genre not found");
-				}
-
-				request.setGenreObj(genre.get());
-			}
-
-			book.applyPatch(Long.parseLong(currentVersion), request);
-			bookRepository.save(book);
-		} catch(Exception e) {
-			throw new Exception("One of the provided data does not match domain criteria: " + e.getMessage());
+		Optional<Book> tempBook = findByIsbn(new Isbn(request.getIsbn()));
+		if(tempBook.isEmpty()) {
+			throw new NotFoundException("A book with provided Isbn was not found");
 		}
+        book = tempBook.get();
+        if(request.getAuthors()!= null) {
+            List<Long> authorNumbers = request.getAuthors();
+            List<Author> authors = new ArrayList<>();
+            for (Long authorNumber : authorNumbers) {
+                Optional<Author> temp = authorRepository.findByAuthorNumber(authorNumber);
+                if (temp.isEmpty()) {
+                    //TODO: É suposto passar à frente e ignorar os que não foram encontrados ou damos erro?
+                    continue;
+                }
+                Author author = temp.get();
+                authors.add(author);
+            }
+
+            request.setAuthorObjList(authors);
+        }
+        if (request.getGenre() != null) {
+            Optional<Genre> genre = genreRepository.findByString(request.getGenre());
+            if (genre.isEmpty()) {
+                throw new NotFoundException("Genre not found");
+            }
+            request.setGenreObj(genre.get());
+        }
+
+        book.applyPatch(Long.parseLong(currentVersion), request);
+		bookRepository.save(book);
+
 
 		return book;
 	}

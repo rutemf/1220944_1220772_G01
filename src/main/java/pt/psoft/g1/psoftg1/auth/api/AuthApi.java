@@ -104,7 +104,7 @@ public class AuthApi {
 	 * @return
 	 */
 	@PostMapping("register")
-	public UserView register(@RequestBody @Valid final CreateUserRequest request) throws Exception {
+	public UserView register(@RequestBody @Valid final CreateUserRequest request) {
 		final var user = userService.create(request);
 		return userViewMapper.toUserView(user);
 	}
