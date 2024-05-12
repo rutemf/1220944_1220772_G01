@@ -58,7 +58,6 @@ public class Lending {
      * {@code Book} associated with this {@code Lending}.
      * */
     @NotNull
-    @NotBlank
     @Getter
     @ManyToOne(fetch=FetchType.EAGER, optional = false)
     private Book book;
@@ -67,7 +66,6 @@ public class Lending {
      * {@code Reader} associated with this {@code Lending}.
      **/
     @NotNull
-    @NotBlank
     @Getter
     @ManyToOne(fetch=FetchType.EAGER, optional = false)
     private ReaderDetails readerDetails;
@@ -76,7 +74,6 @@ public class Lending {
      * Date of this {@code Lending}'s creation.
      * */
     @NotNull
-    @NotBlank
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.DATE)
     @Getter
@@ -86,7 +83,6 @@ public class Lending {
      * Date this {@code Lending} is to be returned.
      * */
     @NotNull
-    @NotBlank
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     @Getter
