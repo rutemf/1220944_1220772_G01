@@ -35,6 +35,8 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 
 import lombok.Getter;
@@ -162,7 +164,8 @@ public class User implements UserDetails {
 
 	public void setPassword(final String password) {
 		Password passwordCheck = new Password(password);
-		this.password = password;
+		final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		this.password = passwordEncoder.encode(password);
 	}
 
     public void addAuthority(final Role r) {
