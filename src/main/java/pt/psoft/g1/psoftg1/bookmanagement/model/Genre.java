@@ -3,9 +3,6 @@ package pt.psoft.g1.psoftg1.bookmanagement.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
-import java.util.Collection;
-import java.util.List;
-
 @Entity
 @Table
 public class Genre {
@@ -26,6 +23,12 @@ public class Genre {
     }
 
     private void setGenre(String genre) {
+        if(genre == null)
+            throw new IllegalArgumentException("Genre cannot be null");
+        if(genre.isBlank())
+            throw new IllegalArgumentException("Genre cannot be blank");
+        if(genre.length() > GENRE_MAX_LENGTH)
+            throw new IllegalArgumentException("Genre has a maximum of 4096 characters");
         this.genre = genre;
     }
 
