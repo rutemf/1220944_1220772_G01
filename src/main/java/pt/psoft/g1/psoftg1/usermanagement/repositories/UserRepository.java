@@ -48,4 +48,6 @@ public interface UserRepository {
 	Optional<User> findByUsername(String username);
 
 	List<User> searchUsers(Page page, SearchUsersQuery query);
+
+	List<User> findByNameName(String name);
 }

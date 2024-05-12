@@ -66,7 +66,7 @@ class ReaderController {
         return new ListResponse<>(readerViewMapper.toReaderView(readerService.findAll()));
     }
 
-    //@RolesAllowed(Role.LIBRARIAN)
+    @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Gets reader by number")
     @ApiResponse(description = "Success", responseCode = "200", content = { @Content(mediaType = "application/json",
             // Use the `array` property instead of `schema`
@@ -89,14 +89,15 @@ class ReaderController {
         return new ResponseEntity<>(readerViewMapper.toReaderView(readerDetailsOpt.get()), HttpStatus.OK);
     }
 
-    //@RolesAllowed(Role.LIBRARIAN)
+    @RolesAllowed(Role.LIBRARIAN)
     @GetMapping(params = "name")
     public ListResponse<ReaderView> findByReaderName(@RequestParam("name") final String name) {
-        SearchUsersQuery query = new SearchUsersQuery();
+        /*SearchUsersQuery query = new SearchUsersQuery();
         query.setFullName(name);
         query.setUseNameAsString(true);
         Page page = new Page(1, 20);
-        List<User> userList = this.userService.searchUsers(page, query);
+        List<User> userList = this.userService.searchUsers(page, query);*/
+        List<User> userList = this.userService.findByName(name);
         List<ReaderDetails> readerDetailsList = new ArrayList<>();
 
         for(User user : userList) {

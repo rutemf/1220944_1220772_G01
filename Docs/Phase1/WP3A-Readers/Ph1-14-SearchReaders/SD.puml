@@ -3,25 +3,19 @@
 autoactivate on
 autonumber
 
-title Search Readers by name as Librarian
+title As Librarian I want to know a user’s detail given its name
 
 actor "Librarian" as User
-participant "Ctrl:ReadersController" as Ctrl
-participant "service:ReadersService" as Service
-participant "repo:ReadersRepository" as Repo
+participant "Ctrl:ReaderController" as Ctrl
+participant "service:ReaderService" as Service
+participant "repo:ReaderRepository" as Repo
 activate User
 
-User -> Ctrl: SearchReadersByName(name)
-activate Ctrl
-Ctrl -> Service: FindByName(name)
-activate Service
-Service -> Repo: findByName(name)
-activate Repo
-Repo --> Service: Reader
-deactivate Repo
-Service --> Ctrl: Reader
-deactivate Service
-Ctrl --> User: Reader
-deactivate Ctrl
+User -> Ctrl: Request user details
+Ctrl -> Service: findByNameName(ReaderName)
+Service -> Repo: findByNameName(ReaderName)
+Repo -> Service: Reader or 404
+Service -> Ctrl: Reader or 404
+Ctrl -> User: Reader or 404
 
 @enduml

@@ -26,10 +26,7 @@ import java.util.Optional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -40,6 +37,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 import pt.psoft.g1.psoftg1.usermanagement.services.Page;
@@ -87,6 +85,9 @@ public interface SpringDataUserRepository extends UserRepository, UserRepoCustom
 
 	@Cacheable
 	Optional<User> findByUsername(String username);
+
+	@Cacheable
+	List<User> findByNameName(String name);
 }
 
 /**

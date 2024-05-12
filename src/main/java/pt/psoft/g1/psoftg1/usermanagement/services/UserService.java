@@ -54,6 +54,10 @@ public class UserService implements UserDetailsService {
 
 	private final PasswordEncoder passwordEncoder;
 
+	public List<User> findByName(String name){
+		return this.userRepo.findByNameName(name);
+	}
+
 	@Transactional
 	public User create(final CreateUserRequest request) throws Exception {
 		if (userRepo.findByUsername(request.getUsername()).isPresent()) {

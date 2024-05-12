@@ -1,8 +1,8 @@
-# WP#3A.13 Get Reader Details
+# WP#3A.12 Update Reader Data
 ## 1. Requirements Engineering
 ### 1.1. User Story Description
 
-As Librarian I want to know a user’s detail given its reader number
+As Reader I want to update my personal data
 
 ### 1.2. Customer Specifications and Clarifications
 
@@ -17,7 +17,7 @@ As Librarian I want to know a user’s detail given its reader number
 **Input Data:**
 
 * Typed data:
-    * Number of reader
+    * Data to be modified
 
 **Output Data:**
 

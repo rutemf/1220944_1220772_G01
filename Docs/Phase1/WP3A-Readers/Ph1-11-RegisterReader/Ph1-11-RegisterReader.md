@@ -7,7 +7,7 @@ consent). A Reader Number is assigned to me by the library
 
 ### 1.2. Customer Specifications and Clarifications
 
-[View WP4A](../WP4A-Lendings.md/#12-customer-specifications-and-clarifications)
+[View WP3A](../WP3A-Readers.md)
 
 ### 1.3. Acceptance Criteria
 - AC

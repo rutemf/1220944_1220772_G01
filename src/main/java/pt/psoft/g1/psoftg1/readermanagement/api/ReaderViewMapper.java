@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public abstract class ReaderViewMapper extends MapperInterface {
 
-    @Mapping(target = "fullName", source = "user.name")
+    @Mapping(target = "fullName", source = "user.name.name")
     @Mapping(target = "email", source = "user.username")
     @Mapping(target = "birthDate", source = "birthDate.date")
     @Mapping(target = "gdprConsent", source = "gdprConsent")

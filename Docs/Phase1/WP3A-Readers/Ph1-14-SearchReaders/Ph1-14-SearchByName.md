@@ -1,8 +1,8 @@
-# WP#3A.13 Get Reader Details
+# WP#3A.14 Get Reader Details
 ## 1. Requirements Engineering
 ### 1.1. User Story Description
 
-As Librarian I want to know a user’s detail given its reader number
+As Librarian I want to search Readers by name
 
 ### 1.2. Customer Specifications and Clarifications
 
@@ -17,7 +17,7 @@ As Librarian I want to know a user’s detail given its reader number
 **Input Data:**
 
 * Typed data:
-    * Number of reader
+    * Name of reader
 
 **Output Data:**
 

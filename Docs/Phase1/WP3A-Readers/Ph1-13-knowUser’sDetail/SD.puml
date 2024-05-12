@@ -12,17 +12,10 @@ participant "repo:ReaderRepository" as Repo
 activate User
 
 User -> Ctrl: Request user details
-activate Ctrl
-Ctrl -> Service: FindById(ReaderNumber)
-activate Service
-Service -> Repo: findById(ReaderNumber)
-activate Repo
-
-Repo --> Service: userDetails
-deactivate Repo
-Service --> Ctrl: userDetails
-deactivate Service
-Ctrl --> User: userDetails
-deactivate Ctrl
+Ctrl -> Service: findByReaderNumber(ReaderNumber)
+Service -> Repo: findByReaderNumber(ReaderNumber)
+Repo -> Service: Reader or 404
+Service -> Ctrl: Reader or 404
+Ctrl -> User: Reader or 404
 
 @enduml
