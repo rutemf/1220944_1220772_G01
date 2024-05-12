@@ -17,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
@@ -51,6 +53,8 @@ class ReaderController {
     private final LendingService lendingService;
     private final LendingViewMapper lendingViewMapper;
 
+    private static final String IF_MATCH = "If-Match";
+
     @Operation(summary = "Gets all readers")
     @ApiResponse(description = "Success", responseCode = "200", content = { @Content(mediaType = "application/json",
             // Use the `array` property instead of `schema`
@@ -62,8 +66,8 @@ class ReaderController {
         return new ListResponse<>(readerViewMapper.toReaderView(readerService.findAll()));
     }
 
-    @RolesAllowed(Role.LIBRARIAN)
-    @Operation(summary = "Gets all reader by number")
+    //@RolesAllowed(Role.LIBRARIAN)
+    @Operation(summary = "Gets reader by number")
     @ApiResponse(description = "Success", responseCode = "200", content = { @Content(mediaType = "application/json",
             // Use the `array` property instead of `schema`
             array = @ArraySchema(schema = @Schema(implementation = ReaderView.class))) })
@@ -85,12 +89,13 @@ class ReaderController {
         return new ResponseEntity<>(readerViewMapper.toReaderView(readerDetailsOpt.get()), HttpStatus.OK);
     }
 
-    @RolesAllowed(Role.LIBRARIAN)
+    //@RolesAllowed(Role.LIBRARIAN)
+    @GetMapping(params = "name")
     public ListResponse<ReaderView> findByReaderName(@RequestParam("name") final String name) {
         SearchUsersQuery query = new SearchUsersQuery();
         query.setFullName(name);
-        Page page = new Page();
-
+        query.setUseNameAsString(true);
+        Page page = new Page(1, 20);
         List<User> userList = this.userService.searchUsers(page, query);
         List<ReaderDetails> readerDetailsList = new ArrayList<>();
 
@@ -102,10 +107,10 @@ class ReaderController {
         }
 
         if(readerDetailsList.isEmpty()) {
-            throw new NotFoundException("Could not find reader with name " + name);
+            throw new NotFoundException("Could not find reader with name: " + name);
         }
 
-        return new ListResponse<ReaderView>(readerViewMapper.toReaderView(readerDetailsList));
+        return new ListResponse<>(readerViewMapper.toReaderView(readerDetailsList));
     }
 
     @Operation(summary = "Creates a reader")
@@ -154,7 +159,14 @@ class ReaderController {
     @Operation(summary = "Updates a reader")
     @RolesAllowed(Role.READER)
     @PatchMapping
-    public ResponseEntity<ReaderView> updateReader(@RequestBody UpdateReaderRequest readerRequest, Authentication authentication) {
+    public ResponseEntity<ReaderView> updateReader(@RequestBody UpdateReaderRequest readerRequest, Authentication authentication, final WebRequest request) {
+
+        final String ifMatchValue = request.getHeader(IF_MATCH);
+        if (ifMatchValue == null || ifMatchValue.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "You must issue a conditional PATCH using 'if-match'");
+        }
+
         User loggedUser = isUserLoggedIn(authentication);
         Optional<ReaderDetails> optReader = this.readerService.findByUsername(loggedUser.getUsername());
 
@@ -168,10 +180,9 @@ class ReaderController {
         editUserRequest.setUsername(readerRequest.getUsername());
         editUserRequest.setPassword(readerRequest.getPassword());
         editUserRequest.setName(readerRequest.getFullName());
-        editUserRequest.setUsername(readerRequest.getUsername());
 
         try {
-            reader.applyPatch(readerRequest);
+            reader.applyPatch(Long.parseLong(ifMatchValue), readerRequest);
             userService.update(loggedUser.getId(), editUserRequest);
             readerService.save(reader);
         } catch(Exception e) {

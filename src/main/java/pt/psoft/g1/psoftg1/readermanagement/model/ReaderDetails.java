@@ -3,6 +3,7 @@ package pt.psoft.g1.psoftg1.readermanagement.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
@@ -44,6 +45,10 @@ public class ReaderDetails {
     @Getter
     private boolean thirdPartySharingConsent;
 
+    @Version
+    @Getter
+    private Long version;
+
     public ReaderDetails(int readerNumber, User user, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) {
         if(user == null || phoneNumber == null) {
             throw new IllegalArgumentException("Provided argument resolves to null object");
@@ -83,7 +88,10 @@ public class ReaderDetails {
     }
 
     //TODO: Edu: Apply Patch method to update the properties we want
-    public void applyPatch(UpdateReaderRequest request) {
+    public void applyPatch(Long currentVersion, UpdateReaderRequest request) {
+        if(currentVersion != this.version) {
+            throw new ConflictException("Provided version does not match latest version of this object");
+        }
         String birthDate = request.getBirthDate();
         String phoneNumber = request.getPhoneNumber();
         boolean marketing = request.getMarketing();
