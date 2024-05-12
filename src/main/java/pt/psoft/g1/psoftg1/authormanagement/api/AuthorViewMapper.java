@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class AuthorViewMapper extends MapperInterface {
@@ -13,7 +14,7 @@ public abstract class AuthorViewMapper extends MapperInterface {
     @Mapping(target = "bio", source = "bio")
     public abstract AuthorView toAuthorView(Author author);
 
-    public abstract Iterable<AuthorView> toAuthorView(Iterable<Author> authors);
+    public abstract List<AuthorView> toAuthorView(List<Author> authors);
 
 
 

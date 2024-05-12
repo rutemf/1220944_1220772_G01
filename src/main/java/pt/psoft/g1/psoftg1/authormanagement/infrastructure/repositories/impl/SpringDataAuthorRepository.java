@@ -16,7 +16,7 @@ public interface SpringDataAuthorRepository extends AuthorRepository, CrudReposi
     @Query("SELECT a " +
             "FROM Author a " +
             "WHERE a.name.name = :name")
-    Optional<Author> findByName(String name);
+    List<Author> findByName(String name);
     @Override
     @Query("SELECT a " +
             "FROM Author a " +
