@@ -38,7 +38,7 @@ public class BookController {
 
     private final BookViewMapper bookViewMapper;
 
-    //@RolesAllowed(Role.LIBRARIAN)
+    @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Register a new Book")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -59,7 +59,7 @@ public class BookController {
                 .body(bookViewMapper.toBookView(savedBook));
     }
 
-    //@RolesAllowed({Role.LIBRARIAN, Role.READER})
+    @RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Gets a specific Book by isbn")
     @GetMapping(value = "/{isbn}")
     public ResponseEntity<BookView> findByIsbn(@PathVariable final String isbn) throws Exception {
@@ -73,7 +73,7 @@ public class BookController {
                 .body(bookViewMapper.toBookView(book));
     }
 
-    //@RolesAllowed({Role.LIBRARIAN})
+    @RolesAllowed({Role.LIBRARIAN})
     @Operation(summary = "Updates a specific Book")
     @PatchMapping(value = "/{isbn}")
     public ResponseEntity<BookView> updateBook(@PathVariable final String isbn, final WebRequest request, @Valid @RequestBody final UpdateBookRequest resource) throws Exception {
@@ -95,7 +95,7 @@ public class BookController {
                 .body(bookViewMapper.toBookView(book));
     }
 
-    //@RolesAllowed({Role.LIBRARIAN, Role.READER})
+    @RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Gets a specific Book by genre")
     @GetMapping
     public ListResponse<BookView> findByGenre(@RequestParam("genre") final String genre) throws Exception {

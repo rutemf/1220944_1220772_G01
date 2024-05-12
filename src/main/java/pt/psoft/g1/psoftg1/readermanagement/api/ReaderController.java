@@ -236,12 +236,4 @@ class ReaderController {
             throw new AccessDeniedException("User is not logged in");
         return loggedUser.get();
     }
-
-    private class ErrorResponse {
-        private String error = "";
-
-        public ErrorResponse(String error) {
-            this.error = error;
-        }
-    }
 }

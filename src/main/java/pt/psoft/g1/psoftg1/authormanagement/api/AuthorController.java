@@ -33,7 +33,7 @@ public class AuthorController {
     private final AuthorViewMapper authorViewMapper;
 
     //Create
-    //@RolesAllowed(Role.LIBRARIAN)
+    @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Creates a new Author")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -50,7 +50,7 @@ public class AuthorController {
 
 
     //Update
-    //@RolesAllowed({Role.LIBRARIAN})
+    @RolesAllowed({Role.LIBRARIAN})
     @Operation(summary = "Updates a specific author")
     @PatchMapping(value = "/{authornumber}")
     public ResponseEntity<AuthorView> partialUpdate(@PathVariable final String authornumber, final WebRequest request, @Valid @RequestBody final
@@ -73,7 +73,7 @@ public class AuthorController {
     }
 
     //Gets
-    //@RolesAllowed({Role.LIBRARIAN, Role.READER})
+    @RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Know an author’s detail given its author number")
     @GetMapping(value = "/{number}")
     public ResponseEntity<AuthorView> findByAuthorNumber(
@@ -92,7 +92,7 @@ public class AuthorController {
                 .body(authorViewMapper.toAuthorView(author));
     }
 
-    //@RolesAllowed({Role.LIBRARIAN, Role.READER})
+    @RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Search authors by name")
     @GetMapping
     public ListResponse<AuthorView> findByName(@RequestParam("name") final String name) throws Exception {
