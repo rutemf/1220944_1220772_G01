@@ -35,6 +35,8 @@ As Reader, I want to return a book. If the return is overdue I’m fined by the 
 ### 2.2. Other Remarks
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
+<img src="Ph1-16-ReturnBook-SD-WP_4A_16_Return_Book.svg" alt="Ph1-16-ReturnBook">
+
 ### 3.2. Class Diagram (CD)
 ## 4. Tests
 ## 5. Observations

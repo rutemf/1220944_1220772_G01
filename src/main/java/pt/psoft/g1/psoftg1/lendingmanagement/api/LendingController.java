@@ -136,6 +136,9 @@ public class LendingController {
     }
 
     private User isUserLoggedIn(Authentication authentication){
+        if (authentication == null) {
+            throw new AccessDeniedException("User is not logged in");
+        }
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String loggedUsername = userDetails.getUsername();
         Optional<User> loggedUser = this.userService.findByUsername(loggedUsername);
