@@ -35,6 +35,9 @@ to the Librarian.
 ### 2.2. Other Remarks
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
+
+<img src="Ph1-15-LendBook-SD-WP_4A_15_Lend_Book.svg" alt="WP_4A_15_Lend_Book">
+
 ### 3.2. Class Diagram (CD)
 ## 4. Tests
 ## 5. Observations
