@@ -2,13 +2,13 @@ package pt.psoft.g1.psoftg1.readermanagement.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pt.psoft.g1.psoftg1.exceptions.ConflictException;
+import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
-import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -16,48 +16,45 @@ import java.util.Optional;
 public class ReaderServiceImpl implements ReaderService {
     private final ReaderRepository readerRepo;
     private final UserRepository userRepo;
+    private final ReaderMapper readerMapper;
+
     private int readerID = 0;
     @Override
-    public ReaderDetails create(CreateReaderRequest request) throws Exception {
-        ReaderDetails newReaderDetails = null;
-
-        //This should be wrapped on a try catch to avoid any domain exceptions, this way we make sure we catch everything
-        try {
-            if(findByReaderNumber(String.format("%d/%d", LocalDate.now().getYear(), readerID + 1)).isEmpty()) {
-                throw new Exception("A reader with provided reader number is already registered");
-            }
-
-            if(findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
-                throw new Exception("A reader with provided phone number is already registered");
-            }
-
-
-            User tempUser = Reader.newReader(request.getUsername(), request.getPassword(), request.getFullName());
-            User user = userRepo.save(tempUser);
-
-            request.setNumber(String.valueOf(++readerID));
-            newReaderDetails = new ReaderDetails(Integer.parseInt(request.getNumber()), user, request.getBirthDate(), request.getPhoneNumber(), request.getGdpr(), request.getMarketing(), request.getThirdParty());
-            readerRepo.save(newReaderDetails);
-        } catch(Exception e) {
-            throw new Exception("One of the provided data does not match domain criteria: " + e.getMessage());
+    public ReaderDetails create(CreateReaderRequest request) {
+        if (userRepo.findByUsername(request.getUsername()).isPresent()) {
+            throw new ConflictException("Username already exists!");
         }
 
+        int count = readerRepo.getCountFromCurrentYear();
+        Reader reader = readerMapper.createReader(request);
+        ReaderDetails rd = readerMapper.createReaderDetails(count+1, reader, request);
+/*
+        User tempUser = Reader.newReader(request.getUsername(), request.getPassword(), request.getFullName());
+        User user = userRepo.save(tempUser);
+        request.setNumber(String.valueOf(++readerID));
+        ReaderDetails newReaderDetails = new ReaderDetails(Integer.parseInt(request.getNumber()), user, request.getBirthDate(), request.getPhoneNumber(), request.getGdpr(), request.getMarketing(), request.getThirdParty());
+        readerRepo.save(newReaderDetails);
         return newReaderDetails;
+*/
+        userRepo.save(reader);
+        return readerRepo.save(rd);
     }
 
     @Override
-    public ReaderDetails save(ReaderDetails readerDetails) {
-        return this.readerRepo.save(readerDetails);
+    public ReaderDetails update(final Long id, final UpdateReaderRequest request, final long desiredVersion){
+        final ReaderDetails readerDetails = readerRepo.findByUserId(id)
+                .orElseThrow(() -> new NotFoundException("Cannot find reader"));
+
+        readerDetails.applyPatch(desiredVersion, request);
+
+        userRepo.save(readerDetails.getReader());
+        return readerRepo.save(readerDetails);
     }
 
-    @Override
-    public Optional<ReaderDetails> findByPhoneNumber(String phoneNumber) {
-        return this.readerRepo.findByPhoneNumber(phoneNumber.toString());
-    }
 
     @Override
     public Optional<ReaderDetails> findByReaderNumber(String readerNumber) {
-        return this.readerRepo.findByReaderNumber(readerNumber.toString());
+        return this.readerRepo.findByReaderNumber(readerNumber);
     }
 
     @Override
@@ -73,7 +70,7 @@ public class ReaderServiceImpl implements ReaderService {
 
 /*
     @Override
-    public Optional<Reader> update(UpdateReaderRequest request) throws Exception {
+    public Optional<Reader> update(UpdateReaderRequest request) {
         String[] dateParts = request.getBirthDate().split("/");
 
         if(dateParts.length != 3) {

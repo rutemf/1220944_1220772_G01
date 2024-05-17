@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
-import pt.psoft.g1.psoftg1.usermanagement.model.User;
+import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 
 @Entity
 @Table(name = "READER_DETAILS")
@@ -17,7 +17,7 @@ public class ReaderDetails {
     @Getter
     @Setter
     @OneToOne
-    private User user;
+    private Reader reader;
 
     @Getter
     private ReaderNumber readerNumber;
@@ -49,8 +49,8 @@ public class ReaderDetails {
     @Getter
     private Long version;
 
-    public ReaderDetails(int readerNumber, User user, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) {
-        if(user == null || phoneNumber == null) {
+    public ReaderDetails(int readerNumber, Reader reader, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) {
+        if(reader == null || phoneNumber == null) {
             throw new IllegalArgumentException("Provided argument resolves to null object");
         }
 
@@ -58,7 +58,7 @@ public class ReaderDetails {
             throw new IllegalArgumentException("Readers must agree with the GDPR rules");
         }
 
-        setUser(user);
+        setReader(reader);
         setReaderNumber(new ReaderNumber(readerNumber));
         setPhoneNumber(new PhoneNumber(phoneNumber));
         setBirthDate(new BirthDate(birthDate));
@@ -88,7 +88,7 @@ public class ReaderDetails {
     }
 
     //TODO: Edu: Apply Patch method to update the properties we want
-    public void applyPatch(Long currentVersion, UpdateReaderRequest request) {
+    public void applyPatch(final long currentVersion, final UpdateReaderRequest request) {
         if(currentVersion != this.version) {
             throw new ConflictException("Provided version does not match latest version of this object");
         }
@@ -100,11 +100,11 @@ public class ReaderDetails {
         String password = request.getPassword();
 
         if(username != null) {
-            this.user.setUsername(username);
+            this.reader.setUsername(username);
         }
 
         if(password != null) {
-            this.user.setPassword(password);
+            this.reader.setPassword(password);
         }
 
         if(birthDate != null) {

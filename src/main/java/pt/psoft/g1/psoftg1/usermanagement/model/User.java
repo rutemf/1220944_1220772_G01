@@ -92,7 +92,7 @@ public class User implements UserDetails {
 	private boolean enabled = true;
 
 	@Setter
-    @Column(unique = true, updatable = false, nullable = false)
+    @Column(unique = true, /*updatable = false,*/ nullable = false)
 	@Email
 	@Getter
 	@NotNull
@@ -106,7 +106,7 @@ public class User implements UserDetails {
 	private String password;
 
 	@Getter
-	@Setter
+//	@Setter
 	@Embedded
 	private Name name;
 
@@ -135,12 +135,12 @@ public class User implements UserDetails {
 	 *
 	 * @param username
 	 * @param password
-	 * @param fullName
+	 * @param name
 	 * @return
 	 */
-	public static User newUser(final String username, final String password, final String fullName) {
+	public static User newUser(final String username, final String password, final String name) {
 		final var u = new User(username, password);
-		u.setName(new Name(fullName));
+		u.setName(name);
 		return u;
 	}
 
@@ -151,13 +151,13 @@ public class User implements UserDetails {
 	 *
 	 * @param username
 	 * @param password
-	 * @param fullName
+	 * @param name
 	 * @param role
 	 * @return
 	 */
-	public static User newUser(final String username, final String password, final String fullName, final String role) {
+	public static User newUser(final String username, final String password, final String name, final String role) {
 		final var u = new User(username, password);
-		u.setName(new Name(fullName));
+		u.setName(name);
 		u.addAuthority(new Role(role));
 		return u;
 	}
@@ -185,5 +185,9 @@ public class User implements UserDetails {
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return isEnabled();
+	}
+
+	public void setName(String name){
+		this.name = new Name(name);
 	}
 }

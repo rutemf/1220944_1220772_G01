@@ -14,13 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.api.LendingView;
 import pt.psoft.g1.psoftg1.lendingmanagement.api.LendingViewMapper;
@@ -34,13 +32,11 @@ import pt.psoft.g1.psoftg1.usermanagement.api.ListResponse;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
-import pt.psoft.g1.psoftg1.usermanagement.services.*;
+import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.web.servlet.function.ServerResponse.ok;
 
 @Tag(name = "Readers", description = "Endpoints to manage readers")
 @RestController
@@ -116,7 +112,9 @@ class ReaderController {
 
     @Operation(summary = "Creates a reader")
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ReaderView> createReader(@RequestBody CreateReaderRequest readerRequest) {
+/*
         CreateUserRequest userRequest = new CreateUserRequest();
 
         userRequest.setUsername(readerRequest.getUsername());
@@ -149,18 +147,25 @@ class ReaderController {
 
             throw new ConflictException("Error creating Reader: " + e.getMessage());
         }
+*/
+        ReaderDetails readerDetails = readerService.create(readerRequest);
 
         final var newReaderUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .pathSegment(readerDetails.getReaderNumber().toString())
                 .build().toUri();
 
-        return ResponseEntity.created(newReaderUri).body(readerViewMapper.toReaderView(readerDetails));
+        return ResponseEntity.created(newReaderUri)
+                .eTag(Long.toString(readerDetails.getVersion()))
+                .body(readerViewMapper.toReaderView(readerDetails));
     }
 
     @Operation(summary = "Updates a reader")
     @RolesAllowed(Role.READER)
     @PatchMapping
-    public ResponseEntity<ReaderView> updateReader(@RequestBody UpdateReaderRequest readerRequest, Authentication authentication, final WebRequest request) {
+    public ResponseEntity<ReaderView> updateReader(
+            @Valid @RequestBody UpdateReaderRequest readerRequest,
+            Authentication authentication,
+            final WebRequest request) {
 
         final String ifMatchValue = request.getHeader(IF_MATCH);
         if (ifMatchValue == null || ifMatchValue.isEmpty()) {
@@ -169,14 +174,11 @@ class ReaderController {
         }
 
         User loggedUser = isUserLoggedIn(authentication);
-        Optional<ReaderDetails> optReader = this.readerService.findByUsername(loggedUser.getUsername());
+        ReaderDetails readerDetails = readerService
+                .update(loggedUser.getId(), readerRequest, getVersionFromIfMatchHeader(ifMatchValue));
 
-        if(optReader.isEmpty()) {
-            throw new NotFoundException("User with given authentication not found");
-        }
 
-        ReaderDetails reader = optReader.get();
-
+/*
         EditUserRequest editUserRequest = new EditUserRequest();
         editUserRequest.setUsername(readerRequest.getUsername());
         editUserRequest.setPassword(readerRequest.getPassword());
@@ -189,8 +191,11 @@ class ReaderController {
         } catch(Exception e) {
             throw new ConflictException("Error updating reader details: " + e.getMessage());
         }
+*/
 
-        return ResponseEntity.accepted().body(readerViewMapper.toReaderView(reader));
+        return ResponseEntity.ok()
+                .eTag(Long.toString(readerDetails.getVersion()))
+                .body(readerViewMapper.toReaderView(readerDetails));
     }
 
     @RolesAllowed({Role.READER, Role.ADMIN})
@@ -229,11 +234,23 @@ class ReaderController {
     }
 
     private User isUserLoggedIn(Authentication authentication){
+        if (authentication == null) {
+            throw new AccessDeniedException("User is not logged in");
+        }
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String loggedUsername = userDetails.getUsername();
         Optional<User> loggedUser = this.userService.findByUsername(loggedUsername);
         if(loggedUser.isEmpty())
             throw new AccessDeniedException("User is not logged in");
         return loggedUser.get();
+
+
+    }
+
+    private Long getVersionFromIfMatchHeader(final String ifMatchHeader) {
+        if (ifMatchHeader.startsWith("\"")) {
+            return Long.parseLong(ifMatchHeader.substring(1, ifMatchHeader.length() - 1));
+        }
+        return Long.parseLong(ifMatchHeader);
     }
 }

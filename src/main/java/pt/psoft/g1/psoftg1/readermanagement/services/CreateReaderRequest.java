@@ -3,34 +3,29 @@ package pt.psoft.g1.psoftg1.readermanagement.services;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import pt.psoft.g1.psoftg1.usermanagement.model.User;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @NoArgsConstructor
 public class CreateReaderRequest {
-    @Setter
-    @Getter
-    private String number;
-
-    @Getter
+    @NotBlank
+    @Email
     @NonNull
     private String username;
 
-    @Getter
-    @Setter
+    @NotBlank
+    @NonNull
     private String password;
 
-    @Getter
-    @NonNull
     @NotBlank
+    @NonNull
     private String fullName;
 
-    @Getter
     @NonNull
     @NotBlank
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private String birthDate;
 
-    @Getter
     @NonNull
     @NotBlank
     private String phoneNumber;

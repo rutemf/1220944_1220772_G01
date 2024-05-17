@@ -8,10 +8,9 @@ import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
  *
  */
 public interface ReaderService {
-    ReaderDetails create(CreateReaderRequest request) throws Exception;
-    ReaderDetails save(ReaderDetails readerDetails);
+    ReaderDetails create(CreateReaderRequest request);
+    ReaderDetails update(Long id, UpdateReaderRequest request, long desireVersion);
     Optional<ReaderDetails> findByUsername(final String username);
-    Optional<ReaderDetails> findByPhoneNumber(String phoneNumber);
     Optional<ReaderDetails> findByReaderNumber(String readerNumber);
     Iterable<ReaderDetails> findAll();
 

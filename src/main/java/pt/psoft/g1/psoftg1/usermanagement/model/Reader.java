@@ -10,6 +10,7 @@ public class Reader extends User {
     }
     public Reader(String username, String password) {
         super(username, password);
+        this.addAuthority(new Role(Role.READER));
     }
 
     /**
@@ -19,13 +20,13 @@ public class Reader extends User {
      *
      * @param username
      * @param password
-     * @param fullName
+     * @param name
      * @return
      */
 
-    public static Reader newReader(final String username, final String password, final String fullName) {
+    public static Reader newReader(final String username, final String password, final String name) {
         final var u = new Reader(username, password);
-        u.setName(new Name(fullName));
+        u.setName(name);
         u.addAuthority(new Role(Role.READER));
         return u;
     }

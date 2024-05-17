@@ -62,7 +62,7 @@ public class UserBootstrapper implements CommandLineRunner {
             if (u1.isPresent() && readerDetails1.isEmpty()) {
                 ReaderDetails r1 = new ReaderDetails(
                         1,
-                        u1.get(),
+                        (Reader) u1.get(),
                         "2000/01/01",
                         "919191919",
                         true,
@@ -80,7 +80,7 @@ public class UserBootstrapper implements CommandLineRunner {
             if (u2.isPresent() && readerDetails2.isEmpty()) {
                 ReaderDetails r2 = new ReaderDetails(
                         2,
-                        u2.get(),
+                        (Reader) u2.get(),
                         "2000/02/02",
                         "929292929",
                         true,
@@ -98,7 +98,7 @@ public class UserBootstrapper implements CommandLineRunner {
             if (u3.isPresent() && readerDetails3.isEmpty()) {
                 ReaderDetails r3 = new ReaderDetails(
                         3,
-                        u3.get(),
+                        (Reader) u3.get(),
                         "2000/03/03",
                         "939393939",
                         true,

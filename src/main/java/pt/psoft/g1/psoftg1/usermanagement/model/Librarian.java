@@ -19,13 +19,13 @@ public class Librarian extends User {
      *
      * @param username
      * @param password
-     * @param fullName
+     * @param name
      * @return
      */
 
-    public static Librarian newLibrarian(final String username, final String password, final String fullName) {
+    public static Librarian newLibrarian(final String username, final String password, final String name) {
         final var u = new Librarian(username, password);
-        u.setName(new Name(fullName));
+        u.setName(name);
         u.addAuthority(new Role(Role.LIBRARIAN));
         return u;
     }

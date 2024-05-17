@@ -10,9 +10,10 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public abstract class ReaderViewMapper extends MapperInterface {
 
-    @Mapping(target = "fullName", source = "user.name.name")
-    @Mapping(target = "email", source = "user.username")
+    @Mapping(target = "fullName", source = "reader.name.name")
+    @Mapping(target = "email", source = "reader.username")
     @Mapping(target = "birthDate", source = "birthDate.date")
+    //@Mapping(target = "phoneNumber", source = "phoneNumber.number")
     @Mapping(target = "gdprConsent", source = "gdprConsent")
     @Mapping(target = "readerNumber", source = "readerNumber")
     public abstract ReaderView toReaderView(ReaderDetails readerDetails);

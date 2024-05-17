@@ -1,7 +1,6 @@
 package pt.psoft.g1.psoftg1.readermanagement.services;
 
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
