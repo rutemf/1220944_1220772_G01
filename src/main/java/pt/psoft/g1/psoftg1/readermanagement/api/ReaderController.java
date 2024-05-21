@@ -233,7 +233,6 @@ class ReaderController {
         return lendingViewMapper.toLendingView(lendingService.listByReaderNumberAndIsbn(urlReaderNumber, isbn));
     }
 
-    //@RolesAllowed(Role.LIBRARIAN)
     //TODO: Modify the mapping accordingly and apply the min top (static of dynamic)
     @GetMapping("top5")
     public ListResponse<ReaderView> getTop() {
