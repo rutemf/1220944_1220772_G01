@@ -1,6 +1,7 @@
 package pt.psoft.g1.psoftg1.bookmanagement.services;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Description;
@@ -21,15 +22,13 @@ public class CreateBookRequest {
     @Setter
     private String description;
 
-    @NonNull
     @NotBlank
     private String title;
 
-    @NonNull
     @NotBlank
     private String genre;
 
-    @NonNull
+    @NotNull
     private List<Long> authors;
 
     public CreateBookRequest(String isbn, @NonNull String title, @NonNull String genre, @NonNull List<Long> authors, String description) {
