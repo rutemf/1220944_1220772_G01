@@ -1,12 +1,16 @@
 package pt.psoft.g1.psoftg1.readermanagement.infraestructure.repositories.impl;
 
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 import java.util.Optional;
 
 
@@ -38,6 +42,13 @@ public interface SpringDataReaderRepositoryImpl extends ReaderRepository, CrudRe
             "JOIN User u ON rd.reader.id = u.id " +
             "WHERE YEAR(u.createdAt) = YEAR(CURRENT_DATE)")
     int getCountFromCurrentYear();
+
+    @Query("SELECT rd " +
+            "FROM ReaderDetails rd " +
+            "JOIN Lending l ON l.readerDetails.pk = rd.pk " +
+            "GROUP BY rd " +
+            "ORDER BY COUNT(l) DESC")
+    Page<ReaderDetails> findTopReaders(Pageable pageable);
 
 /*
     @Override

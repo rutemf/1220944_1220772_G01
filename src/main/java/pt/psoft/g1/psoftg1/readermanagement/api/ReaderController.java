@@ -233,6 +233,13 @@ class ReaderController {
         return lendingViewMapper.toLendingView(lendingService.listByReaderNumberAndIsbn(urlReaderNumber, isbn));
     }
 
+    //@RolesAllowed(Role.LIBRARIAN)
+    //TODO: Modify the mapping accordingly and apply the min top (static of dynamic)
+    @GetMapping("top5")
+    public ListResponse<ReaderView> getTop() {
+        return new ListResponse<ReaderView>(readerViewMapper.toReaderView(readerService.findTopReaders(5)));
+    }
+
     private User isUserLoggedIn(Authentication authentication){
         if (authentication == null) {
             throw new AccessDeniedException("User is not logged in");

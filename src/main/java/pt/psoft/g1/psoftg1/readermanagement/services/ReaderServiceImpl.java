@@ -1,6 +1,8 @@
 package pt.psoft.g1.psoftg1.readermanagement.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
@@ -8,8 +10,9 @@ import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
-
+import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -66,6 +69,17 @@ public class ReaderServiceImpl implements ReaderService {
     @Override
     public Iterable<ReaderDetails> findAll() {
         return this.readerRepo.findAll();
+    }
+
+    @Override
+    public List<ReaderDetails> findTopReaders(int minTop) {
+        if(minTop < 1) {
+            throw new IllegalArgumentException("Minimum top reader must be greater than 0");
+        }
+
+        Pageable pageableRules = PageRequest.of(0,minTop);
+        Page<ReaderDetails> page = readerRepo.findTopReaders(pageableRules);
+        return page.getContent();
     }
 
 /*
