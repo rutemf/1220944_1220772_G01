@@ -110,24 +110,32 @@ public class SecurityConfig {
         //TODO: Setup permissions if required (see how it has to be done and which methods need permissions)!!!!
 
         // Set permissions on endpoints
-        /*http.authorizeHttpRequests()
+        http.authorizeHttpRequests()
                 // Swagger endpoints must be publicly accessible
                 .requestMatchers("/").permitAll().requestMatchers(format("%s/**", restApiDocPath)).permitAll()
                 .requestMatchers(format("%s/**", swaggerPath)).permitAll()
                 // Our public endpoints
                 .requestMatchers("/api/public/**").permitAll() // public assets & end-points
-                .requestMatchers("/api/rectangle/**").permitAll() // rectangle management
-                .requestMatchers(HttpMethod.GET, "/api/foo/**").permitAll() // read-only foo
-                .requestMatchers(HttpMethod.GET, "/api/bar/**").permitAll() // read-only bar
                 // Our private endpoints
-                .requestMatchers("/api/admin/user/**").hasRole(Role.ADMIN) // user management
-                .requestMatchers("/api/foo/**").hasRole(Role.ADMIN) // foo management
-                .requestMatchers("/api/bar/**").hasRole(Role.FOO_ADMIN) // foo-bar management
+                // Librarians have access to all endpoints below
+                .requestMatchers("/api/author/**").hasRole(Role.LIBRARIAN)
+                .requestMatchers("/api/book/**").hasRole(Role.LIBRARIAN)
+                .requestMatchers("/api/reader/**").hasRole(Role.LIBRARIAN)
+                .requestMatchers("/api/lending/**").hasRole(Role.LIBRARIAN)
+                // Readers have access to specific endpoints below
+                .requestMatchers(HttpMethod.GET, "/api/author/**").hasRole(Role.READER)
+                .requestMatchers(HttpMethod.GET, "/api/book/**").hasRole(Role.READER)
+                .requestMatchers(HttpMethod.GET, "/api/lending/**").hasRole(Role.READER)
+                .requestMatchers(HttpMethod.PATCH,"/api/lending/{year}/{seq}").hasRole(Role.READER)
+                .requestMatchers(HttpMethod.PATCH,"/api/reader").hasRole(Role.READER)
+                // Admin has access to all endpoints
+                .requestMatchers("/**").hasRole(Role.ADMIN)
                 .anyRequest().authenticated()
                 // Set up oauth2 resource server
-                .and().httpBasic(Customizer.withDefaults()).oauth2ResourceServer().jwt();*/
+                .and().httpBasic(Customizer.withDefaults()).oauth2ResourceServer().jwt();
 
 
+/*
         http.authorizeHttpRequests()
                 // Swagger endpoints must be publicly accessible
                 .requestMatchers("/").permitAll().requestMatchers(format("%s/**", restApiDocPath)).permitAll()
@@ -144,6 +152,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
                 // Set up oauth2 resource server
                 .and().httpBasic(Customizer.withDefaults()).oauth2ResourceServer().jwt();
+*/
 
         return http.build();
     }
