@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Title;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
@@ -12,6 +13,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.shared.model.Name;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,6 +106,10 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public List<Book> findByGenre(Genre genre) {
 		return this.bookRepository.findByGenre(genre.toString());
+	}
+
+	public List<Book> findByTitle(String title) {
+		return bookRepository.findByTitle(title);
 	}
 
 	@Override

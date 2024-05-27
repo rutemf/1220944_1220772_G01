@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Title;
 import pt.psoft.g1.psoftg1.bookmanagement.services.BookService;
 import pt.psoft.g1.psoftg1.bookmanagement.services.CreateBookRequest;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreService;
@@ -24,6 +25,7 @@ import pt.psoft.g1.psoftg1.usermanagement.api.ListResponse;
 
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 
+import java.util.List;
 import java.util.Optional;
 
 @Tag(name = "Books", description = "Endpoints for managing Books")
@@ -98,6 +100,44 @@ public class BookController {
     }
 
     @RolesAllowed({Role.LIBRARIAN, Role.READER})
+    @Operation(summary = "Gets Books by title or genre")
+    @GetMapping
+    public ListResponse<BookView> findBooks(@RequestParam(value = "title", required = false) final String title,
+                                            @RequestParam(value = "genre", required = false) final String genre) {
+
+        if (title != null && genre != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only search by title or genre, not both");
+        }
+
+        List<Book> books;
+        if (title != null) {
+            books = bookService.findByTitle(title);
+            if (books.isEmpty()) {
+                throw new NotFoundException(Book.class, title);
+            }
+        } else if (genre != null) {
+            Optional<Genre> optGenre = genreService.findByString(genre);
+            books = bookService.findByGenre(optGenre.orElseThrow(() -> new NotFoundException(Book.class, genre)));
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You must provide either a title or a genre to search for books");
+        }
+
+        return new ListResponse<>(bookViewMapper.toBookView(books));
+    }
+
+    /*@RolesAllowed({Role.LIBRARIAN, Role.READER})
+    @Operation(summary = "Gets a specific Book by title")
+    @GetMapping
+    public ListResponse<BookView> findByTitle(@RequestParam("title") final String title) {
+        List<Book> books = bookService.findByTitle(title);
+        if(books.isEmpty()) {
+            throw new NotFoundException(Book.class, title);
+        }
+
+        return new ListResponse<>(bookViewMapper.toBookView(books));
+    }*/
+
+    /*@RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Gets a specific Book by genre")
     @GetMapping
     public ListResponse<BookView> findByGenre(@RequestParam("genre") final String genre) {
@@ -105,7 +145,7 @@ public class BookController {
         Optional<Genre> optGenre = genreService.findByString(genre);
         final var books = bookService.findByGenre(optGenre.orElseThrow(() -> new NotFoundException(Book.class, genre)));
         return new ListResponse<>(bookViewMapper.toBookView(books));
-    }
+    }*/
 
     private Long getVersionFromIfMatchHeader(final String ifMatchHeader) {
         if (ifMatchHeader.startsWith("\"")) {
