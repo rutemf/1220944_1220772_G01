@@ -21,6 +21,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.services.GenreService;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.readermanagement.api.ReaderView;
 import pt.psoft.g1.psoftg1.usermanagement.api.ListResponse;
 
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
@@ -39,6 +40,7 @@ public class BookController {
     private final GenreService genreService;
 
     private final BookViewMapper bookViewMapper;
+    private final GenreViewMapper genreViewMapper;
 
     @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Register a new Book")
@@ -66,7 +68,7 @@ public class BookController {
     @GetMapping(value = "/{isbn}")
     public ResponseEntity<BookView> findByIsbn(@PathVariable final String isbn) {
 
-        final var book = bookService.findByIsbn(new Isbn(isbn))
+        final var book = bookService.findByIsbn(isbn)
                 .orElseThrow(() -> new NotFoundException(Book.class, isbn));
 
 
@@ -123,6 +125,11 @@ public class BookController {
         }
 
         return new ListResponse<>(bookViewMapper.toBookView(books));
+    }
+
+    @GetMapping("top5")
+    public ListResponse<GenreBookCountView> getTop() {
+        return new ListResponse<>(genreViewMapper.toGenreBookCountView(genreService.findTopGenreByBooks()));
     }
 
     /*@RolesAllowed({Role.LIBRARIAN, Role.READER})

@@ -3,17 +3,13 @@ package pt.psoft.g1.psoftg1.bookmanagement.services;
 import org.springframework.stereotype.Service;
 
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Title;
+import pt.psoft.g1.psoftg1.bookmanagement.model.*;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
-import pt.psoft.g1.psoftg1.shared.model.Name;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +28,7 @@ public class BookServiceImpl implements BookService {
 		Book newBook = null;
 
 
-		if(findByIsbn(new Isbn(request.getIsbn())).isPresent()) {
+		if(bookRepository.findByIsbn(request.getIsbn()).isEmpty()) {
 			throw new ConflictException("A book with provided Isbn is already registered");
 		}
 
@@ -61,9 +57,9 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Book update(UpdateBookRequest request, String currentVersion) {
-		Book book = null;
+		Book book;
 
-		Optional<Book> tempBook = findByIsbn(new Isbn(request.getIsbn()));
+		Optional<Book> tempBook = findByIsbn(request.getIsbn());
 		if(tempBook.isEmpty()) {
 			throw new NotFoundException("A book with provided Isbn was not found");
 		}
@@ -112,8 +108,7 @@ public class BookServiceImpl implements BookService {
 		return bookRepository.findByTitle(title);
 	}
 
-	@Override
-	public Optional<Book> findByIsbn(Isbn isbn) {
-		return this.bookRepository.findByIsbn(isbn.toString());
+	public Optional<Book> findByIsbn(String isbn) {
+		return this.bookRepository.findByIsbn(isbn);
 	}
 }
