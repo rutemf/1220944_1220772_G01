@@ -44,12 +44,12 @@ public class BookController {
 
     @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Register a new Book")
-    @PostMapping
+    @PutMapping(value = "/{isbn}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<BookView> create(@Valid @RequestBody final CreateBookRequest resource) {
+    public ResponseEntity<BookView> create(@Valid @RequestBody final CreateBookRequest resource, @PathVariable String isbn) {
         Book book = null;
         try {
-            book = bookService.create(resource);
+            book = bookService.create(resource, isbn);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -11,7 +11,7 @@ import java.util.Optional;
  *
  */
 public interface BookService {
-    Book create(CreateBookRequest request);
+    Book create(CreateBookRequest request, String isbn);
     Book save(Book book);
     Optional<Book> findByIsbn(String isbn);
     Book update(UpdateBookRequest request, String currentVersion);

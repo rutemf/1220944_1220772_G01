@@ -24,11 +24,11 @@ public class BookServiceImpl implements BookService {
 	private final GenreRepository genreRepository;
 	private final AuthorRepository authorRepository;
 	@Override
-	public Book create(CreateBookRequest request) {
+	public Book create(CreateBookRequest request, String isbn) {
 		Book newBook = null;
 
 
-		if(bookRepository.findByIsbn(request.getIsbn()).isEmpty()) {
+		if(bookRepository.findByIsbn(isbn).isEmpty()) {
 			throw new ConflictException("A book with provided Isbn is already registered");
 		}
 
@@ -48,7 +48,7 @@ public class BookServiceImpl implements BookService {
 		final var genre = genreRepository.findByString(request.getGenre())
 				.orElseThrow(() -> new NotFoundException("Genre not found"));
 
-		newBook = new Book(request.getIsbn(), request.getTitle(), request.getDescription(), genre, authors);
+		newBook = new Book(isbn, request.getTitle(), request.getDescription(), genre, authors);
 
 
         return newBook;

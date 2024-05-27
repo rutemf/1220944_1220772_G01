@@ -16,8 +16,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class CreateBookRequest {
-    @Setter
-    private String isbn;
 
     @Setter
     private String description;
@@ -31,8 +29,7 @@ public class CreateBookRequest {
     @NotNull
     private List<Long> authors;
 
-    public CreateBookRequest(String isbn, @NonNull String title, @NonNull String genre, @NonNull List<Long> authors, String description) {
-        this.isbn = isbn;
+    public CreateBookRequest(@NonNull String title, @NonNull String genre, @NonNull List<Long> authors, String description) {
         this.genre = genre;
         this.title = title;
         this.description = description;
