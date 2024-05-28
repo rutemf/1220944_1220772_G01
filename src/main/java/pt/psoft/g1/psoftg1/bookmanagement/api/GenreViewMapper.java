@@ -13,13 +13,14 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class GenreViewMapper extends MapperInterface{
+
     @Mapping(target = "genre", source = "genre")
     public abstract GenreView toGenreView(Genre genre);
 
+    public abstract GenreView mapStringToGenreView(String genre);
+
+    @Mapping(target = "genreView", source = "genre")
     public abstract GenreBookCountView toGenreBookCountView(GenreBookCountDTO genreBookCountView);
 
     public abstract List<GenreBookCountView> toGenreBookCountView(List<GenreBookCountDTO> genreBookCountView);
-
-    public abstract List<GenreView> toBookView(List<Genre> genreList);
-
 }
