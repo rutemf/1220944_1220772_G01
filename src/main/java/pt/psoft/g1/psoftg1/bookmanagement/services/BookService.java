@@ -1,7 +1,10 @@
 package pt.psoft.g1.psoftg1.bookmanagement.services;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
+import pt.psoft.g1.psoftg1.bookmanagement.model.BookCountDTO;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 
 import java.util.List;
@@ -16,5 +19,6 @@ public interface BookService {
     Optional<Book> findByIsbn(String isbn);
     Book update(UpdateBookRequest request, String currentVersion);
     List<Book> findByGenre(Genre genre);
-    List<Book> findByTitle(String title);;
+    List<Book> findByTitle(String title);
+    List<BookCountDTO> findTop5BooksLent();
 }

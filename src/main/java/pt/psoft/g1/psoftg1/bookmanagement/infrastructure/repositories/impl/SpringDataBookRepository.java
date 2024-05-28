@@ -11,6 +11,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,16 @@ public interface SpringDataBookRepository  extends BookRepository, CrudRepositor
             "FROM Book b " +
             "WHERE b.isbn.isbn = :isbn")
     Optional<Book> findByIsbn(@Param("isbn") String isbn);
+
+    @Override
+    @Query("SELECT new pt.psoft.g1.psoftg1.bookmanagement.model.BookCountDTO(b, COUNT(l)) " +
+                "FROM Book b " +
+                "JOIN Lending l ON l.book = b " +
+                "WHERE l.startDate > :oneYearAgo " +
+                "GROUP BY b " +
+                "ORDER BY COUNT(l) DESC")
+    Page<BookCountDTO> findTop5BooksLent(Pageable pageable);
+
 
     @Override
     @Query("SELECT b " +

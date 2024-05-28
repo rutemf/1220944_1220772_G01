@@ -1,5 +1,8 @@
 package pt.psoft.g1.psoftg1.bookmanagement.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
@@ -99,6 +102,11 @@ public class BookServiceImpl implements BookService {
 		return this.bookRepository.save(book);
 	}
 
+	@Override
+	public List<BookCountDTO> findTop5BooksLent(){
+		Pageable pageableRules = PageRequest.of(0,5);
+		return this.bookRepository.findTop5BooksLent(pageableRules).getContent();
+	}
 	@Override
 	public List<Book> findByGenre(Genre genre) {
 		return this.bookRepository.findByGenre(genre.toString());

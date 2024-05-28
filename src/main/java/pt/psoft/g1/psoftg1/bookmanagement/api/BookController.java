@@ -127,9 +127,16 @@ public class BookController {
         return new ListResponse<>(bookViewMapper.toBookView(books));
     }
 
+    @RolesAllowed({Role.LIBRARIAN})
     @GetMapping("top5")
     public ListResponse<GenreBookCountView> getTop() {
         return new ListResponse<>(genreViewMapper.toGenreBookCountView(genreService.findTopGenreByBooks()));
+    }
+
+    @RolesAllowed({Role.LIBRARIAN})
+    @GetMapping("top5BooksLent")
+    public ListResponse<BookCountView> getTop5BooksLent() {
+        return new ListResponse<>(bookViewMapper.toBookCountViewList(bookService.findTop5BooksLent()));
     }
 
     /*@RolesAllowed({Role.LIBRARIAN, Role.READER})
