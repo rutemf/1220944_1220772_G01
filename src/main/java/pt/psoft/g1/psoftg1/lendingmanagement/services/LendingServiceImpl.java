@@ -25,12 +25,11 @@ public class LendingServiceImpl implements LendingService{
     private final ReaderRepository readerRepository;
 
     @Value("${lendingDurationInDays}")
-    private int lendingDurationInDays = 15;
+    private int lendingDurationInDays;
     @Value("${fineValuePerDayInCents}")
-    private int fineValuePerDayInCents = 300;
+    private int fineValuePerDayInCents;
 
     @Override
-
     public Optional<Lending> findByLendingNumber(String lendingNumber){
         return lendingRepository.findByLendingNumber(lendingNumber);
     }
@@ -49,7 +48,8 @@ public class LendingServiceImpl implements LendingService{
     public Lending create(final CreateLendingRequest resource) {
         int count = 0;
 
-        for (Lending lending : lendingRepository.listOutstandingByReaderNumber(resource.getReaderNumber())) {
+        Iterable<Lending> lendingList = lendingRepository.listOutstandingByReaderNumber(resource.getReaderNumber());
+        for (Lending lending : lendingList) {
             //Business rule: cannot create a lending if user has late outstanding books to return.
             if (lending.getDaysDelayed() > 0) {
                 throw new LendingForbiddenException("Reader has book(s) past their due date");

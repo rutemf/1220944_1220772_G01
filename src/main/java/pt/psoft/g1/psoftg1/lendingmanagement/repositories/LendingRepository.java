@@ -27,6 +27,12 @@ public interface LendingRepository {
 
     List<Lending> listOutstandingByReaderNumber(String readerNumber);
 
+
+/*
+    List<Lending> listOverdueByTardiness(Page page);
+*/
+    double getAverageLendingsPerGenrePerMonth(int year, int month, String genre);
+
     Lending save(Lending lending);
 
 }

@@ -74,16 +74,49 @@ public interface SpringDataLendingRepository extends LendingRepository, CrudRepo
             "FROM Lending l " +
                 "JOIN ReaderDetails r ON l.readerDetails.pk = r.pk " +
             "WHERE r.readerNumber.readerNumber = :readerNumber " +
-                "AND CURRENT_DATE > l.limitDate")
-    int getOutstandingCountFromReader(String readerNumber);
+                "AND l.returnedDate IS NULL")
+    int getOutstandingCountFromReader(@Param("readerNumber") String readerNumber);
 
     @Override
     @Query("SELECT l " +
             "FROM Lending l " +
                 "JOIN ReaderDetails r ON l.readerDetails.pk = r.pk " +
             "WHERE r.readerNumber.readerNumber = :readerNumber " +
-                "AND CURRENT_DATE > l.limitDate")
-    List<Lending> listOutstandingByReaderNumber(String readerNumber);
+                "AND l.returnedDate IS NULL")
+    List<Lending> listOutstandingByReaderNumber(@Param("readerNumber") String readerNumber);
 
+    @Override
+    @Query("SELECT avg(count(l)) " +
+            "FROM Lending l " +
+            "WHERE l.book.genre.genre = :genre " +
+            "AND YEAR(l.startDate) = :year " +
+            "AND MONTH(l.startDate) = :month ")
+    double getAverageLendingsPerGenrePerMonth(int year, int month, String genre);
 
 }
+/*
+interface LendingRepoCustom {
+    List<Lending> listOverdueByTardiness(Page page);
+
+}
+
+@RequiredArgsConstructor
+class LendingRepoCustomImpl implements LendingRepoCustom {
+    // get the underlying JPA Entity Manager via spring thru constructor dependency
+    // injection
+    private final EntityManager em;
+
+    @Override
+    public List<Lending> listOverdueByTardiness(Page page){
+
+        final CriteriaBuilder cb = em.getCriteriaBuilder();
+        final CriteriaQuery<Lending> cq = cb.createQuery(Lending.class);
+        final Root<Lending> root = cq.from(Lending.class);
+        cq.select(root);
+
+        final List<Predicate> where = new ArrayList<>();
+
+        where.add(cb.greaterThan(root.))
+    }
+
+}*/

@@ -6,19 +6,20 @@ skinparam classAttributeIconSize 0
 class LendingController {
     + createLending(isbn, readerNumber)
     + returnBook(isbn, readerNumber)
-    + findByLendingNumber(lendingNumber)
+    + getLending(lendingNumber)
 }
 
 interface LendingRepository {
-    + findByLendingNumber(lendingNumber) : Lending
+    + findById(lendingNumber) : Lending
     + save(lending) : Lending
 }
 
 interface LendingService {
     + create(isbn, readerNumber) : Lending
-    + findByLendingNumber(lendingNumber)
-    + listByReaderNumberAndIsbn(readerNumber, isbn)
-    + setReturned(lendingNumber)
+    + findById(lendingNumber)
+    + findByReader(readerNumber)
+    + findByBook(Isbn)
+    + update(lendingNumber)
 }
 
 class LendingServiceImpl implements LendingService{
