@@ -1,5 +1,8 @@
 package pt.psoft.g1.psoftg1.bookmanagement.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
@@ -24,11 +27,11 @@ public class BookServiceImpl implements BookService {
 	private final GenreRepository genreRepository;
 	private final AuthorRepository authorRepository;
 	@Override
-	public Book create(CreateBookRequest request) {
+	public Book create(CreateBookRequest request, String isbn) {
 		Book newBook = null;
 
 
-		if(bookRepository.findByIsbn(request.getIsbn()).isEmpty()) {
+		if(bookRepository.findByIsbn(isbn).isEmpty()) {
 			throw new ConflictException("A book with provided Isbn is already registered");
 		}
 
@@ -48,7 +51,7 @@ public class BookServiceImpl implements BookService {
 		final var genre = genreRepository.findByString(request.getGenre())
 				.orElseThrow(() -> new NotFoundException("Genre not found"));
 
-		newBook = new Book(request.getIsbn(), request.getTitle(), request.getDescription(), genre, authors);
+		newBook = new Book(isbn, request.getTitle(), request.getDescription(), genre, authors);
 
 
         return newBook;
@@ -99,6 +102,11 @@ public class BookServiceImpl implements BookService {
 		return this.bookRepository.save(book);
 	}
 
+	@Override
+	public List<BookCountDTO> findTop5BooksLent(){
+		Pageable pageableRules = PageRequest.of(0,5);
+		return this.bookRepository.findTop5BooksLent(pageableRules).getContent();
+	}
 	@Override
 	public List<Book> findByGenre(Genre genre) {
 		return this.bookRepository.findByGenre(genre.toString());

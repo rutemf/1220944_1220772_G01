@@ -28,15 +28,6 @@ public class GenreServiceImpl implements GenreService {
         return genreRepository.findAll();
     }
 
-    /*@Override
-    public Genre create(final CreateGenreRequest resource) {
-        // construct a new object based on data received by the service
-        final Genre genre = genreEditMapper.create(resource);
-
-        // TODO ensure domain invariants or does the Mapper runs validations?
-        return genreRepository.save(genre);
-    }*/
-
     @Override
     public List<GenreBookCountDTO> findTopGenreByBooks(){
         Pageable pageableRules = PageRequest.of(0,5);

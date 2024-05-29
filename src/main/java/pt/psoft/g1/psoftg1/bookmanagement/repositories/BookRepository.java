@@ -10,6 +10,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.*;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,8 @@ public interface BookRepository {
     List<Book> findByTitle(@Param("title") String title);
 
     Optional<Book> findByIsbn(@Param("isbn") String isbn);
+
+    Page<BookCountDTO> findTop5BooksLent(Pageable pageable);
 
     Book save(Book book);
 

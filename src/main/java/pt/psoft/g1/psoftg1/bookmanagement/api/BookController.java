@@ -44,12 +44,12 @@ public class BookController {
 
     @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Register a new Book")
-    @PostMapping
+    @PutMapping(value = "/{isbn}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<BookView> create(@Valid @RequestBody final CreateBookRequest resource) {
+    public ResponseEntity<BookView> create(@Valid @RequestBody final CreateBookRequest resource, @PathVariable String isbn) {
         Book book = null;
         try {
-            book = bookService.create(resource);
+            book = bookService.create(resource, isbn);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -127,9 +127,16 @@ public class BookController {
         return new ListResponse<>(bookViewMapper.toBookView(books));
     }
 
+    @RolesAllowed({Role.LIBRARIAN})
     @GetMapping("top5")
     public ListResponse<GenreBookCountView> getTop() {
         return new ListResponse<>(genreViewMapper.toGenreBookCountView(genreService.findTopGenreByBooks()));
+    }
+
+    @RolesAllowed({Role.LIBRARIAN})
+    @GetMapping("top5BooksLent")
+    public ListResponse<BookCountView> getTop5BooksLent() {
+        return new ListResponse<>(bookViewMapper.toBookCountViewList(bookService.findTop5BooksLent()));
     }
 
     /*@RolesAllowed({Role.LIBRARIAN, Role.READER})
