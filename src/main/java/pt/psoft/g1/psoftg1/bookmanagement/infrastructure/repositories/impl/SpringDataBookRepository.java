@@ -29,7 +29,7 @@ public interface SpringDataBookRepository  extends BookRepository, CrudRepositor
                 "WHERE l.startDate > :oneYearAgo " +
                 "GROUP BY b " +
                 "ORDER BY COUNT(l) DESC")
-    Page<BookCountDTO> findTop5BooksLent(Pageable pageable);
+    Page<BookCountDTO> findTop5BooksLent(@Param("oneYearAgo") LocalDate oneYearAgo, Pageable pageable);
 
 
     @Override
