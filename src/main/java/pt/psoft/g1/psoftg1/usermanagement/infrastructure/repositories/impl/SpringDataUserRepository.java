@@ -37,10 +37,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
-import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
-import pt.psoft.g1.psoftg1.usermanagement.services.Page;
+import pt.psoft.g1.psoftg1.shared.services.Page;
 import pt.psoft.g1.psoftg1.usermanagement.services.SearchUsersQuery;
 
 import lombok.RequiredArgsConstructor;

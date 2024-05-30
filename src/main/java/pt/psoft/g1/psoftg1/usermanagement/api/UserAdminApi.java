@@ -20,30 +20,20 @@
  */
 package pt.psoft.g1.psoftg1.usermanagement.api;
 
-import java.util.List;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import pt.psoft.g1.psoftg1.shared.services.SearchRequest;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.CreateUserRequest;
 import pt.psoft.g1.psoftg1.usermanagement.services.EditUserRequest;
-import pt.psoft.g1.psoftg1.usermanagement.services.SearchRequest;
 import pt.psoft.g1.psoftg1.usermanagement.services.SearchUsersQuery;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 /**
  * Based on https://github.com/Yoh0xFF/java-spring-security-example
@@ -60,7 +50,7 @@ public class UserAdminApi {
 	private final UserViewMapper userViewMapper;
 
 	@PostMapping
-	public UserView create(@RequestBody @Valid final CreateUserRequest request) throws Exception {
+	public UserView create(@RequestBody @Valid final CreateUserRequest request) {
 		final var user = userService.create(request);
 		return userViewMapper.toUserView(user);
 	}
