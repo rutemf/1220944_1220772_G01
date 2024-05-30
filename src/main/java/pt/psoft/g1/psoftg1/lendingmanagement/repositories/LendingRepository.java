@@ -31,7 +31,9 @@ public interface LendingRepository {
 /*
     List<Lending> listOverdueByTardiness(Page page);
 */
-    double getAverageLendingsPerGenrePerMonth(int year, int month, String genre);
+    Double getAverageLendingsPerGenrePerMonth(int year, int month, String genre);
+
+    Double getAverageDuration();
 
     Lending save(Lending lending);
 

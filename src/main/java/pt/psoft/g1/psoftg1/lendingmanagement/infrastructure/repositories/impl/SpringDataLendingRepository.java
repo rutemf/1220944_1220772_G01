@@ -91,7 +91,14 @@ public interface SpringDataLendingRepository extends LendingRepository, CrudRepo
             "WHERE l.book.genre.genre = :genre " +
             "AND YEAR(l.startDate) = :year " +
             "AND MONTH(l.startDate) = :month ")
-    double getAverageLendingsPerGenrePerMonth(int year, int month, String genre);
+    Double getAverageLendingsPerGenrePerMonth(int year, int month, String genre);
+
+    @Override
+/*    @Query("SELECT AVG(DATEDIFF('DAY',l.startDate, l.returnedDate)) " +
+            "FROM Lending l")*/
+    @Query(value = "SELECT AVG(DATEDIFF(day, l.start_date, l.returned_date)) FROM Lending l", nativeQuery = true)
+    Double getAverageDuration();
+
 
 }
 /*

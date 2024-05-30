@@ -133,6 +133,15 @@ public class LendingController {
                 .body(lendingViewMapper.toLendingView(lending));
     }
 
+    @RolesAllowed(Role.LIBRARIAN)
+    @Operation(summary = "Get average lending duration")
+    @GetMapping(value = "/avgduration")
+    public @ResponseBody String getAvgDuration(){
+        return lendingService.getAverageDuration();
+    }
+
+
+
     private User isUserLoggedIn(Authentication authentication){
         if (authentication == null) {
             throw new AccessDeniedException("User is not logged in");

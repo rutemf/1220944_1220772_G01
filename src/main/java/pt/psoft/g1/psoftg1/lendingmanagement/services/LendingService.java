@@ -22,6 +22,6 @@ public interface LendingService {
 
     Lending setReturned(String id, SetLendingReturnedDto resource, long desiredVersion);
 
-
+    String getAverageDuration();
 
 }

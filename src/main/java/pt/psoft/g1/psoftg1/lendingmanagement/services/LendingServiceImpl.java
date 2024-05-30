@@ -91,4 +91,11 @@ public class LendingServiceImpl implements LendingService{
 
         return lendingRepository.save(lending);
     }
+
+    @Override
+    public String getAverageDuration(){
+        Double avg = lendingRepository.getAverageDuration();
+        return String.format("%.1f", avg);
+    }
+
 }
