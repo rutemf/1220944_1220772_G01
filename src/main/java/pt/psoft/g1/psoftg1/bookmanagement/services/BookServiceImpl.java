@@ -14,6 +14,7 @@ import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -104,8 +105,9 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public List<BookCountDTO> findTop5BooksLent(){
+		LocalDate oneYearAgo = LocalDate.now().minusYears(1);
 		Pageable pageableRules = PageRequest.of(0,5);
-		return this.bookRepository.findTop5BooksLent(pageableRules).getContent();
+		return this.bookRepository.findTop5BooksLent(oneYearAgo, pageableRules).getContent();
 	}
 	@Override
 	public List<Book> findByGenre(Genre genre) {

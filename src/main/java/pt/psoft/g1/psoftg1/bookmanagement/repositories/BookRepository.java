@@ -27,7 +27,7 @@ public interface BookRepository {
 
     Optional<Book> findByIsbn(@Param("isbn") String isbn);
 
-    Page<BookCountDTO> findTop5BooksLent(Pageable pageable);
+    Page<BookCountDTO> findTop5BooksLent(@Param("oneYearAgo") LocalDate oneYearAgo, Pageable pageable);
 
     Book save(Book book);
 

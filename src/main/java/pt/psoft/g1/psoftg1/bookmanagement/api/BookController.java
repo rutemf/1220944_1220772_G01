@@ -42,7 +42,6 @@ public class BookController {
     private final BookViewMapper bookViewMapper;
     private final GenreViewMapper genreViewMapper;
 
-    @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Register a new Book")
     @PutMapping(value = "/{isbn}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -63,7 +62,6 @@ public class BookController {
                 .body(bookViewMapper.toBookView(savedBook));
     }
 
-    @RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Gets a specific Book by isbn")
     @GetMapping(value = "/{isbn}")
     public ResponseEntity<BookView> findByIsbn(@PathVariable final String isbn) {
@@ -77,7 +75,6 @@ public class BookController {
                 .body(bookViewMapper.toBookView(book));
     }
 
-    @RolesAllowed({Role.LIBRARIAN})
     @Operation(summary = "Updates a specific Book")
     @PatchMapping(value = "/{isbn}")
     public ResponseEntity<BookView> updateBook(@PathVariable final String isbn,
@@ -101,7 +98,6 @@ public class BookController {
                 .body(bookViewMapper.toBookView(book));
     }
 
-    @RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Gets Books by title or genre")
     @GetMapping
     public ListResponse<BookView> findBooks(@RequestParam(value = "title", required = false) final String title,
@@ -127,13 +123,11 @@ public class BookController {
         return new ListResponse<>(bookViewMapper.toBookView(books));
     }
 
-    @RolesAllowed({Role.LIBRARIAN})
     @GetMapping("top5")
     public ListResponse<GenreBookCountView> getTop() {
         return new ListResponse<>(genreViewMapper.toGenreBookCountView(genreService.findTopGenreByBooks()));
     }
 
-    @RolesAllowed({Role.LIBRARIAN})
     @GetMapping("top5BooksLent")
     public ListResponse<BookCountView> getTop5BooksLent() {
         return new ListResponse<>(bookViewMapper.toBookCountViewList(bookService.findTop5BooksLent()));
