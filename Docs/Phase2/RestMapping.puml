@@ -58,7 +58,7 @@ class "/{isbn}" extends "/books"{
 }
 
 class "?genre={genre}" extends "/books"{
-    GET : get filtered\n entities (A6)
+    GET : get filtered\n entities (A10)
 }
 
 class "/lendings" extends Resource{
@@ -74,14 +74,12 @@ class "/{year}/{seq}" as LendingID extends "/lendings"{
 'PHASE 2
 '
 
-class "?author={author}" extends "/books"{
+class "/books" as AuthorBooks extends AuthorID{
     GET : get books of\nan author (B4)
-    'TODO: esclarecer que é que o utilizador sabe sobre o autor
 }
 
 class "/coauthors" extends AuthorID{
     GET : get coauthors\nof an author (B5)
-    'TODO: esclarecer que é que o utilizador sabe sobre o autor
 }
 
 class "/top5" as TopAuthors extends "/authors"{
@@ -115,7 +113,14 @@ class "/overdue" extends "/lendings"{
     GET : list of overdue\n lendings (B23)
 }
 
-class "/avgduration" extends "/lendings"{
+class "/avgLendings" extends "/genres"{
+}
+
+class "?period={day}&start={date}&end{date}" extends "/avgLendings"{
+    GET: daily average number of \nlendings per genre (B14)
+}
+
+class "/avgDuration" extends "/lendings"{
     GET : average lending duration (B15)
 }
 
@@ -127,10 +132,10 @@ class "/top5readers" extends "/genres"{
     GET : get top 5\nreaders per genre (B17)
 }
 
-class "?period={month}&groupby={genre}&begin={date}&end={date}" extends "/avgduration"{
+class "?period={month}&groupBy={genre}&begin={date}&end={date}" extends "/avgDuration"{
     GET : average lending duration (B19)
 }
 
-' TODO: B14, B18
+' TODO:  B18
 
 @enduml
