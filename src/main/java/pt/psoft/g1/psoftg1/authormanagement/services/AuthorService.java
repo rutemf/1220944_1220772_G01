@@ -1,6 +1,7 @@
 package pt.psoft.g1.psoftg1.authormanagement.services;
 
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
+import pt.psoft.g1.psoftg1.authormanagement.model.AuthorCountDTO;
 
 
 import java.util.List;
@@ -17,4 +18,5 @@ public interface AuthorService {
 
     Author partialUpdate(Long authornumber, UpdateAuthorRequest resource, long desiredVersion);
 
+    List<Author> findTopAuthorByLendings();
 }

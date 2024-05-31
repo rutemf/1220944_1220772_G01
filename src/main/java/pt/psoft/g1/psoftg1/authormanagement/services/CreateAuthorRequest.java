@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Schema(description = "A DTO for creating a Author")
 public class CreateAuthorRequest {
+    @Size(min = 1, max = 150)
     private String name;
 
     @Size(min = 1, max = 4096)

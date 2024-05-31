@@ -17,6 +17,7 @@ import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.services.AuthorService;
 import pt.psoft.g1.psoftg1.authormanagement.services.CreateAuthorRequest;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
+import pt.psoft.g1.psoftg1.bookmanagement.api.GenreBookCountView;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.usermanagement.api.ListResponse;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
@@ -35,7 +36,7 @@ public class AuthorController {
     //Create
     @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Creates a new Author")
-    @PostMapping
+    @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthorView> create(@Valid @RequestBody final CreateAuthorRequest resource) {
 
@@ -100,5 +101,10 @@ public class AuthorController {
         final var authors = authorService.findByName(name);
         return new ListResponse<>(authorViewMapper.toAuthorView(authors));
     }
-
+    //@RolesAllowed({Role.READER})
+    @Operation(summary = "Know the Top 5 authors which have the most lent books")
+    @GetMapping("top5")
+    public ListResponse<AuthorView> getTop() {
+        return new ListResponse<>(authorViewMapper.toAuthorView(authorService.findTopAuthorByLendings()));
+    }
 }
