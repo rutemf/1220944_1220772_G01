@@ -29,6 +29,7 @@ import pt.psoft.g1.psoftg1.readermanagement.services.CreateReaderRequest;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
+import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
@@ -48,6 +49,8 @@ class ReaderController {
     private final ReaderViewMapper readerViewMapper;
     private final LendingService lendingService;
     private final LendingViewMapper lendingViewMapper;
+    private final ConcurrencyService concurrencyService;
+
 
     private static final String IF_MATCH = "If-Match";
 
@@ -175,7 +178,7 @@ class ReaderController {
 
         User loggedUser = isUserLoggedIn(authentication);
         ReaderDetails readerDetails = readerService
-                .update(loggedUser.getId(), readerRequest, getVersionFromIfMatchHeader(ifMatchValue));
+                .update(loggedUser.getId(), readerRequest, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
 
 
 /*
@@ -251,12 +254,5 @@ class ReaderController {
         return loggedUser.get();
 
 
-    }
-
-    private Long getVersionFromIfMatchHeader(final String ifMatchHeader) {
-        if (ifMatchHeader.startsWith("\"")) {
-            return Long.parseLong(ifMatchHeader.substring(1, ifMatchHeader.length() - 1));
-        }
-        return Long.parseLong(ifMatchHeader);
     }
 }

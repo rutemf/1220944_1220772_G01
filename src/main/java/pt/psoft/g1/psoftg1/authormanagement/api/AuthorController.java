@@ -3,10 +3,8 @@ package pt.psoft.g1.psoftg1.authormanagement.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +15,10 @@ import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.services.AuthorService;
 import pt.psoft.g1.psoftg1.authormanagement.services.CreateAuthorRequest;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
-import pt.psoft.g1.psoftg1.exceptions.ConflictException;
+import pt.psoft.g1.psoftg1.bookmanagement.api.BookView;
+import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
-import pt.psoft.g1.psoftg1.usermanagement.model.Role;
+import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 
 @Tag(name = "Author", description = "Endpoints for managing Authors")
 @RestController
@@ -31,6 +30,7 @@ public class AuthorController {
 
     private final AuthorService authorService;
     private final AuthorViewMapper authorViewMapper;
+    private final ConcurrencyService concurrencyService;
 
     //Create
     @Operation(summary = "Creates a new Author")
@@ -50,21 +50,21 @@ public class AuthorController {
 
     //Update
     @Operation(summary = "Updates a specific author")
-    @PatchMapping(value = "/{authornumber}")
-    public ResponseEntity<AuthorView> partialUpdate(@PathVariable final String authornumber, final WebRequest request, @Valid @RequestBody final
-    UpdateAuthorRequest resource) throws Exception {
+    @PatchMapping(value = "/{authorNumber}")
+    public ResponseEntity<AuthorView> partialUpdate(
+            @PathVariable("authorNumber")
+                @Parameter(description = "The number of the Author to find")
+                final Long authorNumber,
+            final WebRequest request,
+            @Valid @RequestBody final UpdateAuthorRequest resource) {
 
         final String ifMatchValue = request.getHeader(IF_MATCH);
         if (ifMatchValue == null || ifMatchValue.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must issue a conditional PATCH using 'if-match'");
         }
-        Author author;
-        try {
-            author = authorService.partialUpdate(Long.parseLong(authornumber),resource, Long.parseLong(ifMatchValue));
-        }catch (Exception e){
-            throw new ConflictException("Could not update author: "+ e.getMessage());
-        }
+        Author author = authorService.partialUpdate(authorNumber, resource, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
+
         return ResponseEntity.ok()
                 .eTag(Long.toString(author.getVersion()))
                 .body(authorViewMapper.toAuthorView(author));
@@ -72,35 +72,43 @@ public class AuthorController {
 
     //Gets
     @Operation(summary = "Know an author’s detail given its author number")
-    @GetMapping(value = "/{number}")
+    @GetMapping(value = "/{authorNumber}")
     public ResponseEntity<AuthorView> findByAuthorNumber(
-            @PathVariable("number")
-            @Parameter(description = "The authornumber of the Author to find") final Long number) {
+            @PathVariable("authorNumber")
+                @Parameter(description = "The number of the Author to find")
+                final Long authorNumber) {
 
 
-        final var temp = authorService.findByAuthorNumber(number);
-        if(temp.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        Author author = temp.get();
+        final var author = authorService.findByAuthorNumber(authorNumber)
+                .orElseThrow(() -> new NotFoundException(Author.class, authorNumber));
 
         return ResponseEntity.ok()
                 .eTag(Long.toString(author.getVersion()))
                 .body(authorViewMapper.toAuthorView(author));
     }
 
-    @RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Search authors by name")
     @GetMapping
-    public ListResponse<AuthorView> findByName(@RequestParam("name") final String name) throws Exception {
+    public ListResponse<AuthorView> findByName(@RequestParam("name") final String name) {
 
         final var authors = authorService.findByName(name);
         return new ListResponse<>(authorViewMapper.toAuthorView(authors));
     }
-    //@RolesAllowed({Role.READER})
+
     @Operation(summary = "Know the Top 5 authors which have the most lent books")
     @GetMapping("top5")
-    public ListResponse<AuthorView> getTop() {
+    public ListResponse<AuthorView> getTop5() {
         return new ListResponse<>(authorViewMapper.toAuthorView(authorService.findTopAuthorByLendings()));
+    }
+
+    @Operation(summary = "Know the books of an author")
+    @GetMapping("{authorNumber}/books")
+    public ListResponse<BookView> getBookByAuthor(      //TODO: decidir se é necessário uma view nova
+            @PathVariable("authorNumber")
+                @Parameter(description = "The number of the Author to find")
+                final Long authorNumber) {
+
+        return null;
+
     }
 }

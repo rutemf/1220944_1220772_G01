@@ -3,7 +3,6 @@ package pt.psoft.g1.psoftg1.bookmanagement.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +19,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
+import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +33,7 @@ public class BookController {
     private static final String IF_MATCH = "If-Match";
     private final BookService bookService;
     private final GenreService genreService;
+    private final ConcurrencyService concurrencyService;
 
     private final BookViewMapper bookViewMapper;
     private final GenreViewMapper genreViewMapper;
@@ -85,7 +86,7 @@ public class BookController {
         Book  book;
         resource.setIsbn(isbn);
         try {
-            book = bookService.update(resource, String.valueOf(getVersionFromIfMatchHeader(ifMatchValue)));
+            book = bookService.update(resource, String.valueOf(concurrencyService.getVersionFromIfMatchHeader(ifMatchValue)));
         }catch (Exception e){
             throw new ConflictException("Could not update book: "+ e.getMessage());
         }
@@ -145,12 +146,5 @@ public class BookController {
         final var books = bookService.findByGenre(optGenre.orElseThrow(() -> new NotFoundException(Book.class, genre)));
         return new ListResponse<>(bookViewMapper.toBookView(books));
     }*/
-
-    private Long getVersionFromIfMatchHeader(final String ifMatchHeader) {
-        if (ifMatchHeader.startsWith("\"")) {
-            return Long.parseLong(ifMatchHeader.substring(1, ifMatchHeader.length() - 1));
-        }
-        return Long.parseLong(ifMatchHeader);
-    }
 }
 

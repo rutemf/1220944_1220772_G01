@@ -3,8 +3,8 @@
 | UC      | Method | URI Template                                                                    | Equivalent RPC operation | Access                  |                                       
 |---------|:-------|:--------------------------------------------------------------------------------|--------------------------|-------------------------|
 | A3/B3   | POST   | api/authors                                                                     | createAuthor             | Librarian               |
-| A4      | PATCH  | api/authors/{id}                                                                | updateAuthor             | Librarian               |
-| A5      | GET    | api/authors/{id}                                                                | getAuthor                | Librarian, Reader       |
+| A4      | PATCH  | api/authors/{authorNumber}                                                      | updateAuthor             | Librarian               |
+| A5      | GET    | api/authors/{authorNumber}                                                      | getAuthor                | Librarian, Reader       |
 | A6      | GET    | api/authors?name={name}                                                         | searchAuthorsByName      | Librarian, Reader       |
 | A7/B7   | PUT    | api/books/{isbn}                                                                | createBook               | Librarian               |
 | A8      | PATCH  | api/books/{isbn}                                                                | updateBook               | Librarian               |
@@ -19,8 +19,8 @@
 | A16     | PATCH  | api/lendings/{year}/{seq}                                                       | updateLending            | Reader(Self)            |
 | A17     | GET    | api/lendings/{year}/{seq}                                                       | getLending               | Librarian, Reader(Self) |
 |         |        | PHASE 2                                                                         |                          |                         |
-| B4      | GET    | api/authors/{id}/books                                                          | getBookByAuthor          | Reader                  |
-| B5      | GET    | api/authors/{id}/coauthors                                                      | getAuthorCoauthors       | Reader                  |
+| B4      | GET    | api/authors/{authorNumber}/books                                                | getBookByAuthor          | Reader                  |
+| B5      | GET    | api/authors/{authorNumber}/coauthors                                            | getAuthorCoauthors       | Reader                  |
 | B6      | GET    | api/authors/top5                                                                | getTop5Authors           | Reader                  |
 | B8      | GET    | api/books/?title={title}                                                        | searchBookByTitle        | Reader                  |
 | B9      | GET    | api/books/top5                                                                  | getTop5Books             | Librarian               |

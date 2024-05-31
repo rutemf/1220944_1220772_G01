@@ -16,7 +16,7 @@ public interface AuthorService {
 
     Author create(CreateAuthorRequest resource);
 
-    Author partialUpdate(Long authornumber, UpdateAuthorRequest resource, long desiredVersion);
+    Author partialUpdate(Long authorNumber, UpdateAuthorRequest resource, long desiredVersion);
 
     List<Author> findTopAuthorByLendings();
 }

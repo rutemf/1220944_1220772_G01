@@ -40,10 +40,10 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author partialUpdate(Long authornumber, UpdateAuthorRequest resource, long desiredVersion) {
+    public Author partialUpdate(final Long authorNumber, final UpdateAuthorRequest resource, final long desiredVersion) {
         // first let's check if the object exists so we don't create a new object with
         // save
-        final var author = findByAuthorNumber(authornumber)
+        final var author = findByAuthorNumber(authorNumber)
                 .orElseThrow(() -> new NotFoundException("Cannot update an object that does not yet exist"));
 
         // since we got the object from the database we can check the version in memory
