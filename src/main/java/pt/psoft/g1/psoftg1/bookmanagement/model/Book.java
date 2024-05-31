@@ -58,7 +58,7 @@ public class Book {
 
     private void setAuthors(List<Author> authors) {this.authors = authors; }
 
-    public Optional<Description> getDescription(){ return Optional.ofNullable(description); }
+    public String getDescription(){ return this.description.toString(); }
 
     public Book(String isbn, String title, String description, Genre genre, List<Author> authors) {
         setTitle(title);

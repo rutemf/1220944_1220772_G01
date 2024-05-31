@@ -32,7 +32,7 @@ public class BookServiceImpl implements BookService {
 		Book newBook = null;
 
 
-		if(bookRepository.findByIsbn(isbn).isEmpty()) {
+		if(bookRepository.findByIsbn(isbn).isPresent()) {
 			throw new ConflictException("A book with provided Isbn is already registered");
 		}
 

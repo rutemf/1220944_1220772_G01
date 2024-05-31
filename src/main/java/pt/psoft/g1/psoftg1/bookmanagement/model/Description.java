@@ -12,7 +12,7 @@ public class Description {
     @Transient
     private final int DESC_MAX_LENGTH = 4096;
 
-    @Size(min = 1, max = DESC_MAX_LENGTH)
+    @Size(max = DESC_MAX_LENGTH)
     @Column(length = DESC_MAX_LENGTH)
     String description;
 
