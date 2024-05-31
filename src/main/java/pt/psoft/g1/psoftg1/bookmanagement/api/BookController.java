@@ -18,7 +18,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.services.GenreService;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
-import pt.psoft.g1.psoftg1.usermanagement.api.ListResponse;
+import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 
 import java.util.List;
 import java.util.Optional;

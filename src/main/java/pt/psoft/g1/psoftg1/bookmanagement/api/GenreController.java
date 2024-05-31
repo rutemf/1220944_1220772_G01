@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreService;
-import pt.psoft.g1.psoftg1.usermanagement.api.ListResponse;
+import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 
 import java.time.LocalDate;

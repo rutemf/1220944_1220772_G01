@@ -54,6 +54,14 @@ class GenreRepoCustomImpl implements GenreRepoCustom {
     @Override
     public List<Pair<Genre, Double>> getAverageLendings(String period, LocalDate startDate, LocalDate endDate) {
 
+        int diff = switch (period.toLowerCase()) {
+            case "days", "day" -> (int) ChronoUnit.DAYS.between(startDate, endDate)+1;
+            case "weeks", "week" -> (int) ChronoUnit.WEEKS.between(startDate, endDate)+1;
+            case "months", "month" -> (int) ChronoUnit.MONTHS.between(startDate, endDate)+1;
+            case "years", "year" -> (int) ChronoUnit.YEARS.between(startDate, endDate)+1;
+            default -> 1;
+        };
+
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> query = cb.createQuery(Tuple.class);
 
@@ -62,8 +70,7 @@ class GenreRepoCustomImpl implements GenreRepoCustom {
         Join<Book, Genre> genreJoin = bookJoin.join("genre", JoinType.LEFT);
 
         Expression<Long> loanCount = cb.count(lendingRoot.get("pk"));
-        Expression<Long> distinctDays = cb.countDistinct(lendingRoot.get("startDate"));
-        Expression<Number> dailyAvgLoans = cb.quot(cb.diff(cb.toDouble(loanCount), cb.toDouble(distinctDays)), cb.literal(1.0));
+        Expression<Number> dailyAvgLoans = cb.quot(cb.toDouble(loanCount), cb.literal(diff));
 
         query.multiselect(genreJoin, dailyAvgLoans);
         query.groupBy(genreJoin.get("pk"));
@@ -78,17 +85,9 @@ class GenreRepoCustomImpl implements GenreRepoCustom {
         List<Tuple> results = entityManager.createQuery(query).getResultList();
         List<Pair<Genre, Double>> avgLendings = new ArrayList<>();
 
-        int diff = switch (period.toLowerCase()) {
-            case "days", "day" -> (int) ChronoUnit.DAYS.between(startDate, endDate)+1;
-            case "weeks", "week" -> (int) ChronoUnit.WEEKS.between(startDate, endDate)+1;
-            case "months", "month" -> (int) ChronoUnit.MONTHS.between(startDate, endDate)+1;
-            case "years", "year" -> (int) ChronoUnit.YEARS.between(startDate, endDate)+1;
-            default -> 1;
-        };
-
         for (Tuple result : results) {
             Genre genre = result.get(0, Genre.class);
-            Double avg = result.get(1, Double.class) / diff;
+            Double avg = result.get(1, Double.class);
             avgLendings.add(Pair.of(genre, avg));
         }
 
