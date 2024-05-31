@@ -1,11 +1,11 @@
 package pt.psoft.g1.psoftg1.bookmanagement.services;
 
 
-import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
+import org.springframework.data.util.Pair;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.model.GenreBookCountDTO;
 
-import javax.swing.text.html.Option;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,4 +18,6 @@ public interface GenreService {
     Optional<Genre> findByString(String name);
 
     List<GenreBookCountDTO> findTopGenreByBooks();
+
+    List<Pair<Genre, String>> getAverageLendings(String period, LocalDate startDate, LocalDate endDate);
 }

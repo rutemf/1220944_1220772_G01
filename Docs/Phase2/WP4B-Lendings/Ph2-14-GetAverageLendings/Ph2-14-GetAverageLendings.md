@@ -8,13 +8,17 @@ As Librarian I want to know the average number of lending per genre of a certain
 
 >[View WP4B](../WP4B-Lendings.md/#12-customer-specifications-and-clarifications)
 
->[Q: O resultado deve ser apresentado em número de dias? ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29835#p37841)
+>[Q: Para esta US, também são incluídos tanto empréstimos em aberto como devolvidos? ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29835#p37841)
 >
->A: sim
+>A: todos os emprestimos independente do seu estado
 
 >[Q: A média deve contemplar a parte decimal do valor? Se sim, com quantas casas decimais? ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29835#p37841)
 >
 >A: sim. 1 casa decimal
+
+>[Q:  O que é que é realmente pretendido? A média diária de empréstimos por género num dado mês? Ou a média mensal de empréstimos por género num mês, ao longo de vários anos? ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29835#p37857)
+>
+>A: Pretende-se saber para esse mês , em média, quantos livros de um dado género foram emprestados por dia
 
 
 ### 1.3. Acceptance Criteria
