@@ -41,7 +41,7 @@ import java.util.Optional;
 @Tag(name = "Readers", description = "Endpoints to manage readers")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/reader")
+@RequestMapping("/api/readers")
 class ReaderController {
     private final ReaderService readerService;
     private final UserService userService;

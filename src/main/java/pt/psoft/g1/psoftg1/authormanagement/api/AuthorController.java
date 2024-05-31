@@ -24,7 +24,7 @@ import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 @Tag(name = "Author", description = "Endpoints for managing Authors")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/author")
+@RequestMapping("/api/authors")
 public class AuthorController {
 
     private static final String IF_MATCH = "If-Match";

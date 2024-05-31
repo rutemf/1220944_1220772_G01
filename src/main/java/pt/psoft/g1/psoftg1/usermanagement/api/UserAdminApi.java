@@ -41,7 +41,7 @@ import java.util.List;
  */
 @Tag(name = "UserAdmin")
 @RestController
-@RequestMapping(path = "api/admin/user")
+@RequestMapping(path = "api/admin/users")
 @RolesAllowed(Role.ADMIN)
 @RequiredArgsConstructor
 public class UserAdminApi {

@@ -2,7 +2,6 @@ package pt.psoft.g1.psoftg1.bookmanagement.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,18 +12,13 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Title;
 import pt.psoft.g1.psoftg1.bookmanagement.services.BookService;
 import pt.psoft.g1.psoftg1.bookmanagement.services.CreateBookRequest;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreService;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
-import pt.psoft.g1.psoftg1.readermanagement.api.ReaderView;
 import pt.psoft.g1.psoftg1.usermanagement.api.ListResponse;
-
-import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +26,7 @@ import java.util.Optional;
 @Tag(name = "Books", description = "Endpoints for managing Books")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/book")
+@RequestMapping("/api/books")
 public class BookController {
 
     private static final String IF_MATCH = "If-Match";

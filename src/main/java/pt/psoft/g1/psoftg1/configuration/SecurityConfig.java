@@ -118,17 +118,17 @@ public class SecurityConfig {
                 .requestMatchers("/api/public/**").permitAll() // public assets & end-points
                 // Our private endpoints
                 // Librarians have access to all endpoints below
-                .requestMatchers("/api/author/**").hasRole(Role.LIBRARIAN)
-                .requestMatchers("/api/book/**").hasRole(Role.LIBRARIAN)
-                .requestMatchers("/api/reader/**").hasRole(Role.LIBRARIAN)
-                .requestMatchers("/api/lending/**").hasRole(Role.LIBRARIAN)
+                .requestMatchers("/api/authors/**").hasRole(Role.LIBRARIAN)
+                .requestMatchers("/api/books/**").hasRole(Role.LIBRARIAN)
+                .requestMatchers("/api/readers/**").hasRole(Role.LIBRARIAN)
+                .requestMatchers("/api/lendings/**").hasRole(Role.LIBRARIAN)
+                .requestMatchers("/api/genres/**").hasRole(Role.LIBRARIAN)
                 // Readers have access to specific endpoints below
-                .requestMatchers(HttpMethod.GET, "/api/author/**").hasRole(Role.READER)
-                .requestMatchers(HttpMethod.GET, "/api/book/**").hasRole(Role.READER)
-                .requestMatchers(HttpMethod.GET, "/api/lending/**").hasRole(Role.READER)
-                .requestMatchers(HttpMethod.PATCH,"/api/lending/{year}/{seq}").hasRole(Role.READER)
-                .requestMatchers(HttpMethod.PATCH,"/api/reader").hasRole(Role.READER)
-                .requestMatchers(HttpMethod.GET, "api/reader/top5").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET, "/api/authors/**").hasRole(Role.READER)
+                .requestMatchers(HttpMethod.GET, "/api/books/**").hasRole(Role.READER)
+                .requestMatchers(HttpMethod.GET, "/api/lendings/**").hasRole(Role.READER)
+                .requestMatchers(HttpMethod.PATCH,"/api/lendings/{year}/{seq}").hasRole(Role.READER)
+                .requestMatchers(HttpMethod.PATCH,"/api/readers").hasRole(Role.READER)
                 // Admin has access to all endpoints
                 .requestMatchers("/**").hasRole(Role.ADMIN)
                 .anyRequest().authenticated()

@@ -32,7 +32,7 @@ import java.util.Optional;
 @Tag(name = "Lendings", description = "Endpoints for managing Lendings")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/lending")
+@RequestMapping("/api/lendings")
 public class LendingController {
 
     private static final String IF_MATCH = "If-Match";
