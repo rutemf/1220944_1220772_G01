@@ -29,7 +29,7 @@ public class CreateBookRequest {
     @NotNull
     private List<Long> authors;
 
-    public CreateBookRequest(@NonNull String title, @NonNull String genre, @NonNull List<Long> authors, String description) {
+    public CreateBookRequest(String title, String genre, List<Long> authors, String description) {
         this.genre = genre;
         this.title = title;
         this.description = description;

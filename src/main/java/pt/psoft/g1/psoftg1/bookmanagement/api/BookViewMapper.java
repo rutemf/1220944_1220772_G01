@@ -15,6 +15,7 @@ public abstract class BookViewMapper extends MapperInterface {
     @Mapping(target = "genre", source = "genre")
     @Mapping(target = "isbn", source = "isbn")
     @Mapping(target = "description", source = "description")
+    //@Mapping(target = "description", expression = "java(mapOpt(book.getDescription()).toString())")
     @Mapping(target = "title", source = "title")
     public abstract BookView toBookView(Book book);
 

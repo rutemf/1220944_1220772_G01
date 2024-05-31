@@ -3,6 +3,7 @@ package pt.psoft.g1.psoftg1.bookmanagement.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class BookController {
     @Operation(summary = "Register a new Book")
     @PutMapping(value = "/{isbn}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<BookView> create(@Valid @RequestBody final CreateBookRequest resource, @PathVariable String isbn) {
+    public ResponseEntity<BookView> create(@Valid @RequestBody final CreateBookRequest resource, @PathVariable("isbn") String isbn) {
         Book book = null;
         try {
             book = bookService.create(resource, isbn);
@@ -63,10 +64,11 @@ public class BookController {
         final var book = bookService.findByIsbn(isbn)
                 .orElseThrow(() -> new NotFoundException(Book.class, isbn));
 
+        BookView bookView = bookViewMapper.toBookView(book);
 
         return ResponseEntity.ok()
                 .eTag(Long.toString(book.getVersion()))
-                .body(bookViewMapper.toBookView(book));
+                .body(bookView);
     }
 
     @Operation(summary = "Updates a specific Book")
@@ -83,7 +85,7 @@ public class BookController {
         Book  book;
         resource.setIsbn(isbn);
         try {
-            book = bookService.update(resource, ifMatchValue);
+            book = bookService.update(resource, String.valueOf(getVersionFromIfMatchHeader(ifMatchValue)));
         }catch (Exception e){
             throw new ConflictException("Could not update book: "+ e.getMessage());
         }
@@ -118,11 +120,6 @@ public class BookController {
     }
 
     @GetMapping("top5")
-    public ListResponse<GenreBookCountView> getTop() {
-        return new ListResponse<>(genreViewMapper.toGenreBookCountView(genreService.findTopGenreByBooks()));
-    }
-
-    @GetMapping("top5BooksLent")
     public ListResponse<BookCountView> getTop5BooksLent() {
         return new ListResponse<>(bookViewMapper.toBookCountViewList(bookService.findTop5BooksLent()));
     }
