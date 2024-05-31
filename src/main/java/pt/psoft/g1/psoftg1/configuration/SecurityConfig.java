@@ -117,18 +117,21 @@ public class SecurityConfig {
                 // Our public endpoints
                 .requestMatchers("/api/public/**").permitAll() // public assets & end-points
                 // Our private endpoints
-                // Librarians have access to all endpoints below
-                .requestMatchers("/api/authors/**").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.POST,"/api/authors").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.PATCH,"/api/authors").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/authors/{number}").hasAnyRole(Role.READER, Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/authors").hasAnyRole(Role.READER, Role.LIBRARIAN)
                 .requestMatchers("/api/books/**").hasRole(Role.LIBRARIAN)
                 .requestMatchers("/api/readers/**").hasRole(Role.LIBRARIAN)
-                .requestMatchers("/api/lendings/**").hasRole(Role.LIBRARIAN)
-                .requestMatchers("/api/genres/**").hasRole(Role.LIBRARIAN)
-                // Readers have access to specific endpoints below
+                .requestMatchers(HttpMethod.GET,"/api/genres/avgLendings*").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/lendings/overdue*").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/lendings/{year}/{seq}").hasAnyRole(Role.READER, Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.POST,"/api/lendings").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/lendings/avgDuration").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.PATCH,"/api/readers").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.GET, "/api/authors/**").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.GET, "/api/books/**").hasRole(Role.READER)
-                .requestMatchers(HttpMethod.GET, "/api/lendings/**").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.PATCH,"/api/lendings/{year}/{seq}").hasRole(Role.READER)
-                .requestMatchers(HttpMethod.PATCH,"/api/readers").hasRole(Role.READER)
                 // Admin has access to all endpoints
                 .requestMatchers("/**").hasRole(Role.ADMIN)
                 .anyRequest().authenticated()

@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
@@ -43,7 +42,6 @@ public class LendingController {
 
     private final LendingViewMapper lendingViewMapper;
 
-    @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Creates a new Lending")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -71,7 +69,7 @@ public class LendingController {
                 @Parameter(description = "The sequencial of the Lending to find")
                 final Integer seq)
     {
-        User loggedUser = isUserLoggedIn(authentication);
+        User loggedUser = userService.getAuthenticatedUser(authentication);
 
         String ln = year + "/" + seq;
         final var lending = lendingService.findByLendingNumber(ln)
@@ -87,13 +85,14 @@ public class LendingController {
                 }
             }
         }
+        final var lendingUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
+                .build().toUri();
 
-        return ResponseEntity.ok()
+        return ResponseEntity.ok().location(lendingUri)
                 .eTag(Long.toString(lending.getVersion()))
                 .body(lendingViewMapper.toLendingView(lending));
     }
 
-    @RolesAllowed(Role.READER)
     @Operation(summary = "Sets a lending as returned")
     @PatchMapping(value = "/{year}/{seq}")
     public ResponseEntity<LendingView> setLendingReturned(
@@ -112,7 +111,7 @@ public class LendingController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must issue a conditional PATCH using 'if-match'");
         }
-        User loggedUser = isUserLoggedIn(authentication);
+        User loggedUser = userService.getAuthenticatedUser(authentication);
 
         String ln = year + "/" + seq;
         final var maybeLending = lendingService.findByLendingNumber(ln)
@@ -133,25 +132,10 @@ public class LendingController {
                 .body(lendingViewMapper.toLendingView(lending));
     }
 
-    @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Get average lending duration")
-    @GetMapping(value = "/avgduration")
+    @GetMapping(value = "/avgDuration")
     public @ResponseBody String getAvgDuration(){
         return lendingService.getAverageDuration();
-    }
-
-
-
-    private User isUserLoggedIn(Authentication authentication){
-        if (authentication == null) {
-            throw new AccessDeniedException("User is not logged in");
-        }
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String loggedUsername = userDetails.getUsername();
-        Optional<User> loggedUser = this.userService.findByUsername(loggedUsername);
-        if(loggedUser.isEmpty())
-            throw new AccessDeniedException("User is not logged in");
-        return loggedUser.get();
     }
 
     private Long getVersionFromIfMatchHeader(final String ifMatchHeader) {

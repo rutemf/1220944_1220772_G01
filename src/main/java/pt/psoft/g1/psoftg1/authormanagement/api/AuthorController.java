@@ -33,9 +33,8 @@ public class AuthorController {
     private final AuthorViewMapper authorViewMapper;
 
     //Create
-    @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Creates a new Author")
-    @PutMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthorView> create(@Valid @RequestBody final CreateAuthorRequest resource) {
 
@@ -50,7 +49,6 @@ public class AuthorController {
 
 
     //Update
-    @RolesAllowed({Role.LIBRARIAN})
     @Operation(summary = "Updates a specific author")
     @PatchMapping(value = "/{authornumber}")
     public ResponseEntity<AuthorView> partialUpdate(@PathVariable final String authornumber, final WebRequest request, @Valid @RequestBody final
@@ -73,7 +71,6 @@ public class AuthorController {
     }
 
     //Gets
-    @RolesAllowed({Role.LIBRARIAN, Role.READER})
     @Operation(summary = "Know an author’s detail given its author number")
     @GetMapping(value = "/{number}")
     public ResponseEntity<AuthorView> findByAuthorNumber(
