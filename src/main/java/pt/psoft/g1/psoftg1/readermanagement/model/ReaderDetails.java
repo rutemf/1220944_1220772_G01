@@ -3,9 +3,15 @@ package pt.psoft.g1.psoftg1.readermanagement.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
+import pt.psoft.g1.psoftg1.shared.model.Photo;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 @Entity
 @Table(name = "READER_DETAILS")
@@ -45,9 +51,20 @@ public class ReaderDetails {
     @Getter
     private boolean thirdPartySharingConsent;
 
+    @Getter
+    @Setter
+    @OneToOne
+    private Photo photo;
+
     @Version
     @Getter
     private Long version;
+
+    @Getter
+    @Setter
+    //TODO: Fica many to many ou one to many?
+    @OneToMany
+    private List<Genre> interestList;
 
     public ReaderDetails(int readerNumber, Reader reader, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) {
         if(reader == null || phoneNumber == null) {
@@ -87,6 +104,15 @@ public class ReaderDetails {
         }
     }
 
+    private void setPhoto(String photoURI) {
+        try {
+            URI uri = new URI(photoURI);
+            this.photo.setPhotoURI(uri.toString());
+        } catch (URISyntaxException e) {
+            return;
+        }
+    }
+
     //TODO: Edu: Apply Patch method to update the properties we want
     public void applyPatch(final long currentVersion, final UpdateReaderRequest request) {
         if(currentVersion != this.version) {
@@ -98,6 +124,7 @@ public class ReaderDetails {
         boolean thirdParty = request.getThirdParty();
         String username = request.getUsername();
         String password = request.getPassword();
+        String photoURI = request.getPhotoURI();
 
         if(username != null) {
             this.reader.setUsername(username);
@@ -121,6 +148,10 @@ public class ReaderDetails {
 
         if(thirdParty != this.thirdPartySharingConsent) {
             setThirdPartySharingConsent(thirdParty);
+        }
+
+        if(photoURI != null) {
+            setPhoto(photoURI);
         }
     }
 

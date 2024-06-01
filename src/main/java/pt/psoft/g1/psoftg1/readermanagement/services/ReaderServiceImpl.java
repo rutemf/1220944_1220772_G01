@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
+import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +24,18 @@ public class ReaderServiceImpl implements ReaderService {
     private final ReaderRepository readerRepo;
     private final UserRepository userRepo;
     private final ReaderMapper readerMapper;
+    private final GenreRepository genreRepo;
 
     private int readerID = 0;
     @Override
     public ReaderDetails create(CreateReaderRequest request) {
         if (userRepo.findByUsername(request.getUsername()).isPresent()) {
             throw new ConflictException("Username already exists!");
+        }
+
+        List<String> stringInterestList = request.getStringInterestList();
+        if(stringInterestList != null && !stringInterestList.isEmpty()) {
+            request.setInterestList(this.getGenreListFromStringList(stringInterestList));
         }
 
         int count = readerRepo.getCountFromCurrentYear();
@@ -47,6 +57,11 @@ public class ReaderServiceImpl implements ReaderService {
     public ReaderDetails update(final Long id, final UpdateReaderRequest request, final long desiredVersion){
         final ReaderDetails readerDetails = readerRepo.findByUserId(id)
                 .orElseThrow(() -> new NotFoundException("Cannot find reader"));
+
+        List<String> stringInterestList = request.getStringInterestList();
+        if(stringInterestList != null && !stringInterestList.isEmpty()) {
+            request.setInterestList(this.getGenreListFromStringList(stringInterestList));
+        }
 
         readerDetails.applyPatch(desiredVersion, request);
 
@@ -80,6 +95,20 @@ public class ReaderServiceImpl implements ReaderService {
         Pageable pageableRules = PageRequest.of(0,minTop);
         Page<ReaderDetails> page = readerRepo.findTopReaders(pageableRules);
         return page.getContent();
+    }
+
+    private List<Genre> getGenreListFromStringList(List<String> interestList) {
+        List<Genre> genreList = new ArrayList<>();
+        for(String interest : interestList) {
+            Optional<Genre> optGenre = genreRepo.findByString(interest);
+            if(optGenre.isEmpty()) {
+                continue;
+            }
+
+            genreList.add(optGenre.get());
+        }
+
+        return genreList;
     }
 
 /*

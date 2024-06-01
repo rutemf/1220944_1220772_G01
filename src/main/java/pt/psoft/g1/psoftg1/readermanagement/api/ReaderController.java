@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
@@ -29,12 +30,17 @@ import pt.psoft.g1.psoftg1.readermanagement.services.CreateReaderRequest;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
+import pt.psoft.g1.psoftg1.shared.api.UploadFileResponse;
+import pt.psoft.g1.psoftg1.shared.model.FileUtils;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
+import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +56,7 @@ class ReaderController {
     private final LendingService lendingService;
     private final LendingViewMapper lendingViewMapper;
     private final ConcurrencyService concurrencyService;
+    private final FileStorageService fileStorageService;
 
 
     private static final String IF_MATCH = "If-Match";
@@ -116,42 +123,36 @@ class ReaderController {
     @Operation(summary = "Creates a reader")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ReaderView> createReader(@RequestBody CreateReaderRequest readerRequest) {
-/*
-        CreateUserRequest userRequest = new CreateUserRequest();
-
-        userRequest.setUsername(readerRequest.getUsername());
-        userRequest.setPassword(readerRequest.getPassword());
-        userRequest.setRole(Role.READER);
-        userRequest.setName(readerRequest.getFullName());
-
-        User user = null;
-
-        try {
-            user = userService.create(userRequest);
-        } catch(Exception e) {
-            throw new ConflictException("Error creating User for Reader: " + e.getMessage());
-        }
-
-        //TODO: User is created as User and not with Role, even though we're using the same approach to create a new user on the repo.
-        //TODO: For some reason, it's enabled attribute is set to false... WHYYYY
-        //TODO: Manually force this data until fixed.
-        user.setEnabled(true);
-        user.addAuthority(new Role(Role.READER));
-
-        ReaderDetails readerDetails = null;
-
-        try {
-            readerDetails = readerService.create(readerRequest);
-            //TODO: Key violation here, even though we just created the user and readerDetails...
-            readerService.save(readerDetails);
-        } catch (Exception e) {
-            userService.delete(user.getId());
-
-            throw new ConflictException("Error creating Reader: " + e.getMessage());
-        }
-*/
+    public ResponseEntity<ReaderView> createReader(@RequestBody CreateReaderRequest readerRequest, @RequestParam(value="photo", required=false) MultipartFile file, Authentication authentication) throws URISyntaxException, URISyntaxException {
+        //TODO: Find another way to just call create instead of creating + updating
         ReaderDetails readerDetails = readerService.create(readerRequest);
+
+        String readerNumber = readerDetails.getReaderNumber().toString();
+
+        UploadFileResponse up = null;
+
+        //Parameter has a valid photo file
+        if(file != null) {
+            //Reader registration continues even though the photo doesn't go through
+            //TODO: Above condition must be checked with teachers
+            try {
+                up = FileUtils.doUploadFile(fileStorageService, readerNumber, file);
+            } catch(Exception e) {
+                //throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            URI photoUri = null;
+            if(up != null) {
+                photoUri = new URI(up.getFileDownloadUri());
+
+                UpdateReaderRequest request = new UpdateReaderRequest();
+                request.setPhotoURI(photoUri.toString());
+                readerDetails.applyPatch(readerDetails.getVersion(), request);
+
+                User loggedUser = isUserLoggedIn(authentication);
+                readerService.update(loggedUser.getId(), request, readerDetails.getVersion());
+            }
+        }
 
         final var newReaderUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .pathSegment(readerDetails.getReaderNumber().toString())
@@ -179,22 +180,6 @@ class ReaderController {
         User loggedUser = isUserLoggedIn(authentication);
         ReaderDetails readerDetails = readerService
                 .update(loggedUser.getId(), readerRequest, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
-
-
-/*
-        EditUserRequest editUserRequest = new EditUserRequest();
-        editUserRequest.setUsername(readerRequest.getUsername());
-        editUserRequest.setPassword(readerRequest.getPassword());
-        editUserRequest.setName(readerRequest.getFullName());
-
-        try {
-            reader.applyPatch(Long.parseLong(ifMatchValue), readerRequest);
-            userService.update(loggedUser.getId(), editUserRequest);
-            readerService.save(reader);
-        } catch(Exception e) {
-            throw new ConflictException("Error updating reader details: " + e.getMessage());
-        }
-*/
 
         return ResponseEntity.ok()
                 .eTag(Long.toString(readerDetails.getVersion()))
@@ -254,5 +239,12 @@ class ReaderController {
         return loggedUser.get();
 
 
+    }
+
+    private Long getVersionFromIfMatchHeader(final String ifMatchHeader) {
+        if (ifMatchHeader.startsWith("\"")) {
+            return Long.parseLong(ifMatchHeader.substring(1, ifMatchHeader.length() - 1));
+        }
+        return Long.parseLong(ifMatchHeader);
     }
 }
