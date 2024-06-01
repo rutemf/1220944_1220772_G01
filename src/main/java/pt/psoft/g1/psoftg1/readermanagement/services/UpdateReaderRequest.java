@@ -3,7 +3,13 @@ package pt.psoft.g1.psoftg1.readermanagement.services;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 
+import java.net.URI;
+import java.util.List;
+
+@Getter
+@Setter
 @Data
 @NoArgsConstructor
 public class UpdateReaderRequest {
@@ -41,6 +47,21 @@ public class UpdateReaderRequest {
 
     @Nullable
     private boolean thirdParty;
+
+    @Nullable
+    @Setter
+    private String photoURI;
+
+    @Nullable
+    @Getter
+    @Setter
+    private List<String> stringInterestList;
+
+    @Nullable
+    @Getter
+    @Setter
+    private List<Genre> interestList;
+
 
     /*public CreateReaderRequest(String username, String password, String fullName, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) {
         setUsername(username);

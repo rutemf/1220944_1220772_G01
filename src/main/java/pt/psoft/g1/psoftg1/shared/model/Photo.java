@@ -1,18 +1,23 @@
 package pt.psoft.g1.psoftg1.shared.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 public class Photo {
     @Id
     @GeneratedValue
     private Long id;
+
+    @Setter
+    @Getter
     @Lob
-    private byte[] photo;
+    private String photoURI;
 
     protected Photo (){}
-    public Photo (byte[] photoBytes){
-        this.photo= photoBytes;
+    public Photo (String photoUri){
+        setPhotoURI(photoUri);
     }
 }
 
