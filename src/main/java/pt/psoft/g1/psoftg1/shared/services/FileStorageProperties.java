@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1.configuration;
+package pt.psoft.g1.psoftg1.shared.services;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
