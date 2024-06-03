@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
-import pt.psoft.g1.psoftg1.authormanagement.model.AuthorCountDTO;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 
 import java.util.ArrayList;
