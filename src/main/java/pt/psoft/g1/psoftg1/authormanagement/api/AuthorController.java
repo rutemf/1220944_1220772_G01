@@ -16,6 +16,7 @@ import pt.psoft.g1.psoftg1.authormanagement.services.AuthorService;
 import pt.psoft.g1.psoftg1.authormanagement.services.CreateAuthorRequest;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookView;
+import pt.psoft.g1.psoftg1.bookmanagement.api.BookViewMapper;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
@@ -30,6 +31,7 @@ public class AuthorController {
 
     private final AuthorService authorService;
     private final AuthorViewMapper authorViewMapper;
+    private final BookViewMapper bookViewMapper;
     private final ConcurrencyService concurrencyService;
 
     //Create
@@ -97,19 +99,23 @@ public class AuthorController {
     //Know the books of an Author
     //@RolesAllowed({Role.READER})
     @Operation(summary = "Know the books of an author")
-    @GetMapping("{authorNumber}/books")
-    public ListResponse<BookView> findBooksByAuthorNumber(      //TODO: decidir se é necessário uma view nova
-             @PathVariable("authorNumber")
+    @GetMapping("/{authorNumber}/books")
+    public ListResponse<BookView> getBooksByAuthorNumber(      //TODO: decidir se é necessário uma view nova
+           @PathVariable("authorNumber")
              @Parameter(description = "The number of the Author to find")
              final Long authorNumber) {
 
-        return null;
+        //Checking if author exists with this id
+        authorService.findByAuthorNumber(authorNumber)
+                .orElseThrow(() -> new NotFoundException(Author.class, authorNumber));
+
+        return new ListResponse<>(bookViewMapper.toBookView(authorService.findBooksByAuthorNumber(authorNumber)));
     }
 
     //Know the Top 5 authors which have the most lent books
     //@RolesAllowed({Role.READER})
     @Operation(summary = "Know the Top 5 authors which have the most lent books")
-    @GetMapping("top5")
+    @GetMapping("/top5")
     public ListResponse<AuthorView> getTop5() {
         return new ListResponse<>(authorViewMapper.toAuthorView(authorService.findTopAuthorByLendings()));
     }

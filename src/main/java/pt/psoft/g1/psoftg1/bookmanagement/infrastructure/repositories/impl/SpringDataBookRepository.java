@@ -1,15 +1,14 @@
 package pt.psoft.g1.psoftg1.bookmanagement.infrastructure.repositories.impl;
 
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import pt.psoft.g1.psoftg1.bookmanagement.model.*;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
+import pt.psoft.g1.psoftg1.bookmanagement.model.BookCountDTO;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
-
 
 import java.time.LocalDate;
 import java.util.List;
@@ -41,5 +40,15 @@ public interface SpringDataBookRepository  extends BookRepository, CrudRepositor
     @Override
     @Query("SELECT b FROM Book b WHERE b.title.title LIKE %:title%")
     List<Book> findByTitle(@Param("title") String title);
+
+    @Override
+    @Query(value =
+            "SELECT b.* " +
+            "FROM Book b " +
+            "JOIN BOOK_AUTHORS on b.pk = BOOK_AUTHORS.BOOK_PK " +
+            "JOIN AUTHOR a on BOOK_AUTHORS.AUTHORS_AUTHOR_NUMBER = a.AUTHOR_NUMBER " +
+            "WHERE a.AUTHOR_NUMBER = :authorNumber "
+            , nativeQuery = true)
+    List<Book> findBooksByAuthorNumber(Long authorNumber);
 
 }

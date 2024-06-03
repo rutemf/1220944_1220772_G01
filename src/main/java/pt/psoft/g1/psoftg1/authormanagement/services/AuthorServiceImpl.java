@@ -6,36 +6,38 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
+import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
-    private final AuthorRepository repo;
+    private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
     private final AuthorMapper mapper;
     @Override
     public Iterable<Author> findAll() {
-        return repo.findAll();
+        return authorRepository.findAll();
     }
 
     @Override
     public Optional<Author> findByAuthorNumber(final Long authorNumber) {
-        return repo.findByAuthorNumber(authorNumber);
+        return authorRepository.findByAuthorNumber(authorNumber);
     }
 
     @Override
     public List<Author> findByName(String name) {
-        return repo.findByName(name);
+        return authorRepository.findByName(name);
     }
 
     @Override
     public Author create(final CreateAuthorRequest resource) {
         final Author author = mapper.create(resource);
-        return repo.save(author);
+        return authorRepository.save(author);
     }
 
     @Override
@@ -52,11 +54,17 @@ public class AuthorServiceImpl implements AuthorService {
         // in the meantime some other user might have changed this object on the
         // database, so concurrency control will still be applied when we try to save
         // this updated object
-        return repo.save(author);
+        return authorRepository.save(author);
     }
     @Override
     public List<Author> findTopAuthorByLendings() {
         Pageable pageableRules = PageRequest.of(0,5);
-        return repo.findTopAuthorByLendings(pageableRules).getContent();
+        return authorRepository.findTopAuthorByLendings(pageableRules).getContent();
     }
+
+    @Override
+    public List<Book> findBooksByAuthorNumber(Long authorNumber){
+        return bookRepository.findBooksByAuthorNumber(authorNumber);
+    }
+
 }

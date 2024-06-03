@@ -13,7 +13,7 @@
 | A11/B12 | POST   | api/readers                                                                     | createReader             | *Anon*                  |
 | A12     | PATCH  | api/readers/{year}/{seq}                                                        | updateReader             | Reader(Self)            |
 | A13     | GET    | api/readers/{year}/{seq}                                                        | getReader                | Librarian, Reader(Self) |
-| A14     | GET    | api/readers?name={name}                                                         | getReadersByName         | Librarian               |
+| A14     | GET    | api/readers?name={name}                                                         | searchReadersByName      | Librarian               |
 | A15     | POST   | api/lendings                                                                    | createLending            | Librarian               |
 | A16     | GET    | api/readers/{year}/{seq}/lendings?isbn={isbn}                                   | getReaderLendingsByIsbn  | Reader(Self)            |
 | A16     | PATCH  | api/lendings/{year}/{seq}                                                       | updateLending            | Reader(Self)            |
@@ -22,7 +22,7 @@
 | B4      | GET    | api/authors/{authorNumber}/books                                                | getBookByAuthor          | Reader                  |
 | B5      | GET    | api/authors/{authorNumber}/coauthors                                            | getAuthorCoauthors       | Reader                  |
 | B6      | GET    | api/authors/top5                                                                | getTop5Authors           | Reader                  |
-| B8      | GET    | api/books/?title={title}                                                        | searchBookByTitle        | Reader                  |
+| B8      | GET    | api/books?title={title}                                                         | searchBookByTitle        | Reader                  |
 | B9      | GET    | api/books/top5                                                                  | getTop5Books             | Librarian               |
 | B10     | GET    | api/genres/top5                                                                 | getTop5Genres            | Librarian               |
 | B11     | GET    | api/readers/top5                                                                | getTop5Readers           | Librarian               |
@@ -30,7 +30,7 @@
 | B23     | GET    | api/lendings/overdue                                                            | getOverdueLendings       | Librarian               |
 | B14     | GET    | api/genres/avgLendings?period={day}&start={date}&end{date}                      | getAverageLendings       | Librarian               |
 | B15     | GET    | api/lendings/avgDuration                                                        | getAverageDuration       | Librarian               |
-| B16     | GET    | api/lendings/?period={month}&count={12}                                         | getLendingCount          | Librarian               |
+| B16     | GET    | api/lendings?period={month}&count={12}                                          | getLendingCount          | Librarian               |
 | B17     | GET    | api/genres/top5readers (falta resp prof)                                        | getTop5Readers           | Librarian               |
 | B19     | GET    | api/lendings/avgDuration?period={month}&groupBy={genre}&start={date}&end={date} | getAverageDuration       | Librarian               |
 
