@@ -32,14 +32,9 @@ public class Bootstrapper implements CommandLineRunner {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
 
-    //Service, for readers, needs to be used as its sequencial number is managed there
-    private final ReaderService readerService;
-    private final UserRepository userRepository;
-
-
     @Override
     @Transactional
-    public void run(final String... args) throws Exception {
+    public void run(final String... args) {
         createAuthors();
         createGenres();
         createBooks();

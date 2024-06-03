@@ -26,43 +26,19 @@ public class UserBootstrapper implements CommandLineRunner {
     @Override
     @Transactional
     public void run(final String... args)  {
-        createUsers();
-        createReaderDetails();
-
+        createReaders();
+        createLibrarian();
     }
-    private void createUsers() {
-        // Manuel
-        if (userRepository.findByUsername("manuel@gmail.com").isEmpty()) {
-            final User manuel = Reader.newReader("manuel@gmail.com", "Manuelino123!", "Manuel Sarapinto das Coives");
-            userRepository.save(manuel);
-        }
-        // João
-        if (userRepository.findByUsername("joao@gmail.com").isEmpty()) {
-            final User joao = Reader.newReader("joao@gmail.com", "Joaoratao!123", "Joao Ratao");
-            userRepository.save(joao);
-        }
-        // Pedro
-        if (userRepository.findByUsername("pedro@gmail.com").isEmpty()) {
-            final User pedro = Reader.newReader("pedro@gmail.com", "Pedrodascenas!123", "Pedro Das Cenas");
-            userRepository.save(pedro);
-        }
-        // Maria
-        if (userRepository.findByUsername("maria@gmail.com").isEmpty()) {
-            final User maria = Librarian.newLibrarian("maria@gmail.com", "Mariaroberta!123", "Maria Roberta");
-            userRepository.save(maria);
-        }
-
-    }
-
-    private void createReaderDetails() {
+    private void createReaders() {
         //Reader1 - Manuel
-        try {
-            Optional<User> u1 = userRepository.findByUsername("manuel@gmail.com");
+        if (userRepository.findByUsername("manuel@gmail.com").isEmpty()) {
+            final Reader manuel = Reader.newReader("manuel@gmail.com", "Manuelino123!", "Manuel Sarapinto das Coives");
+            userRepository.save(manuel);
             Optional<ReaderDetails> readerDetails1= readerRepository.findByReaderNumber(LocalDate.now().getYear() + "/1");
-            if (u1.isPresent() && readerDetails1.isEmpty()) {
+            if (readerDetails1.isEmpty()) {
                 ReaderDetails r1 = new ReaderDetails(
                         1,
-                        (Reader) u1.get(),
+                        manuel,
                         "2000/01/01",
                         "919191919",
                         true,
@@ -70,17 +46,17 @@ public class UserBootstrapper implements CommandLineRunner {
                         true);
                 readerRepository.save(r1);
             }
-        } catch(Exception e) {
-            System.out.println("Erro: " + e.getMessage());
         }
+
         //Reader2 - joao
-        try {
-            Optional<User> u2 = userRepository.findByUsername("joao@gmail.com");
+        if (userRepository.findByUsername("joao@gmail.com").isEmpty()) {
+            final Reader joao = Reader.newReader("joao@gmail.com", "Joaoratao!123", "Joao Ratao");
+            userRepository.save(joao);
             Optional<ReaderDetails> readerDetails2 = readerRepository.findByReaderNumber(LocalDate.now().getYear() + "/2");
-            if (u2.isPresent() && readerDetails2.isEmpty()) {
+            if (readerDetails2.isEmpty()) {
                 ReaderDetails r2 = new ReaderDetails(
                         2,
-                        (Reader) u2.get(),
+                        joao,
                         "2000/02/02",
                         "929292929",
                         true,
@@ -88,17 +64,17 @@ public class UserBootstrapper implements CommandLineRunner {
                         false);
                 readerRepository.save(r2);
             }
-        } catch(Exception e) {
-            System.out.println("Erro: " + e.getMessage());
         }
+
         //Reader3 - Pedro
-        try {
-            Optional<User> u3 = userRepository.findByUsername("pedro@gmail.com");
+        if (userRepository.findByUsername("pedro@gmail.com").isEmpty()) {
+            final Reader pedro = Reader.newReader("pedro@gmail.com", "Pedrodascenas!123", "Pedro Das Cenas");
+            userRepository.save(pedro);
             Optional<ReaderDetails> readerDetails3 = readerRepository.findByReaderNumber(LocalDate.now().getYear() + "/3");
-            if (u3.isPresent() && readerDetails3.isEmpty()) {
+            if (readerDetails3.isEmpty()) {
                 ReaderDetails r3 = new ReaderDetails(
                         3,
-                        (Reader) u3.get(),
+                        pedro,
                         "2000/03/03",
                         "939393939",
                         true,
@@ -106,10 +82,14 @@ public class UserBootstrapper implements CommandLineRunner {
                         true);
                 readerRepository.save(r3);
             }
-        } catch(Exception e) {
-            System.out.println("Erro: " + e.getMessage());
         }
     }
 
-
+    private void createLibrarian(){
+        // Maria
+        if (userRepository.findByUsername("maria@gmail.com").isEmpty()) {
+            final User maria = Librarian.newLibrarian("maria@gmail.com", "Mariaroberta!123", "Maria Roberta");
+            userRepository.save(maria);
+        }
+    }
 }
