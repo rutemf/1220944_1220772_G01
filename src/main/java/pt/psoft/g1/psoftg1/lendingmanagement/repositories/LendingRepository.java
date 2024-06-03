@@ -1,6 +1,7 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.repositories;
 
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
+import pt.psoft.g1.psoftg1.shared.services.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,14 +28,10 @@ public interface LendingRepository {
 
     List<Lending> listOutstandingByReaderNumber(String readerNumber);
 
-
-/*
-    List<Lending> listOverdueByTardiness(Page page);
-*/
-    Double getAverageLendingsPerGenrePerMonth(int year, int month, String genre);
-
     Double getAverageDuration();
 
     Lending save(Lending lending);
+
+    List<Lending> getOverdue(Page page);
 
 }

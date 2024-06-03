@@ -1,6 +1,9 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.services;
 
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
+import pt.psoft.g1.psoftg1.shared.services.Page;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface LendingService {
@@ -16,7 +19,7 @@ public interface LendingService {
      * @param isbn - ISBN of the book associated with the lending
      * @return {@code Iterable<Lending>}
      */
-    Iterable<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn);
+    List<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn);
 
     Lending create(CreateLendingRequest resource); //No ID passed, as it is auto generated
 
@@ -24,4 +27,5 @@ public interface LendingService {
 
     String getAverageDuration();
 
+    List<Lending> getOverdue(Page page);
 }

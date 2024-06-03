@@ -12,7 +12,9 @@ import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.FineRepository;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
+import pt.psoft.g1.psoftg1.shared.services.Page;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,7 +42,7 @@ public class LendingServiceImpl implements LendingService{
     }
 
     @Override
-    public Iterable<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn){
+    public List<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn){
         return lendingRepository.listByReaderNumberAndIsbn(readerNumber, isbn);
     }
 
@@ -96,6 +98,14 @@ public class LendingServiceImpl implements LendingService{
     public String getAverageDuration(){
         Double avg = lendingRepository.getAverageDuration();
         return String.format("%.1f", avg);
+    }
+
+    @Override
+    public List<Lending> getOverdue(Page page) {
+        if (page == null) {
+            page = new Page(1, 10);
+        }
+        return lendingRepository.getOverdue(page);
     }
 
 }

@@ -1,15 +1,25 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.infrastructure.repositories.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
+import pt.psoft.g1.psoftg1.shared.services.Page;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public interface SpringDataLendingRepository extends LendingRepository, CrudRepository<Lending, Long> {
+public interface SpringDataLendingRepository extends LendingRepository, LendingRepoCustom, CrudRepository<Lending, Long> {
     @Override
     @Query("SELECT l " +
             "FROM Lending l " +
@@ -86,14 +96,6 @@ public interface SpringDataLendingRepository extends LendingRepository, CrudRepo
     List<Lending> listOutstandingByReaderNumber(@Param("readerNumber") String readerNumber);
 
     @Override
-    @Query("SELECT avg(count(l)) " +
-            "FROM Lending l " +
-            "WHERE l.book.genre.genre = :genre " +
-            "AND YEAR(l.startDate) = :year " +
-            "AND MONTH(l.startDate) = :month ")
-    Double getAverageLendingsPerGenrePerMonth(int year, int month, String genre);
-
-    @Override
 /*    @Query("SELECT AVG(DATEDIFF('DAY',l.startDate, l.returnedDate)) " +
             "FROM Lending l")*/
     @Query(value =
@@ -104,9 +106,9 @@ public interface SpringDataLendingRepository extends LendingRepository, CrudRepo
 
 
 }
-/*
+
 interface LendingRepoCustom {
-    List<Lending> listOverdueByTardiness(Page page);
+    List<Lending> getOverdue(Page page);
 
 }
 
@@ -117,7 +119,8 @@ class LendingRepoCustomImpl implements LendingRepoCustom {
     private final EntityManager em;
 
     @Override
-    public List<Lending> listOverdueByTardiness(Page page){
+    public List<Lending> getOverdue(Page page)
+    {
 
         final CriteriaBuilder cb = em.getCriteriaBuilder();
         final CriteriaQuery<Lending> cq = cb.createQuery(Lending.class);
@@ -126,7 +129,17 @@ class LendingRepoCustomImpl implements LendingRepoCustom {
 
         final List<Predicate> where = new ArrayList<>();
 
-        where.add(cb.greaterThan(root.))
-    }
+        // Select overdue lendings where returnedDate is null and limitDate is before the current date
+        where.add(cb.isNull(root.get("returnedDate")));
+        where.add(cb.lessThan(root.get("limitDate"), LocalDate.now()));
 
-}*/
+        cq.where(where.toArray(new Predicate[0]));
+        cq.orderBy(cb.asc(root.get("limitDate"))); // Order by limitDate, oldest first
+
+        final TypedQuery<Lending> q = em.createQuery(cq);
+        q.setFirstResult((page.getNumber() - 1) * page.getLimit());
+        q.setMaxResults(page.getLimit());
+
+        return q.getResultList();
+    }
+}

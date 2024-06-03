@@ -5,6 +5,8 @@ import org.mapstruct.Mapping;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 
+import java.util.List;
+
 /**
  * Brief guides:
  * <a href="https://www.baeldung.com/mapstruct">https://www.baeldung.com/mapstruct</a>
@@ -19,6 +21,6 @@ public abstract class LendingViewMapper extends MapperInterface {
     @Mapping(target = "fineValueInCents", expression = "java(lending.getFineValueInCents().orElse(null))")
     public abstract LendingView toLendingView(Lending lending);
 
-    public abstract Iterable<LendingView> toLendingView(Iterable<Lending> lendings);
+    public abstract List<LendingView> toLendingView(List<Lending> lendings);
 
 }

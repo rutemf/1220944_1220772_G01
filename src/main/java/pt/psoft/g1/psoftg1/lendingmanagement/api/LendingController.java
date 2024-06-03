@@ -3,7 +3,6 @@ package pt.psoft.g1.psoftg1.lendingmanagement.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,11 +20,15 @@ import pt.psoft.g1.psoftg1.lendingmanagement.services.LendingService;
 import pt.psoft.g1.psoftg1.lendingmanagement.services.SetLendingReturnedDto;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
+import pt.psoft.g1.psoftg1.shared.api.ListResponse;
+import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
+import pt.psoft.g1.psoftg1.shared.services.Page;
+import pt.psoft.g1.psoftg1.shared.services.SearchRequest;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
-import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Tag(name = "Lendings", description = "Endpoints for managing Lendings")
@@ -39,6 +42,7 @@ public class LendingController {
     private final LendingService lendingService;
     private final ReaderService readerService;
     private final UserService userService;
+    private final ConcurrencyService concurrencyService;
 
     private final LendingViewMapper lendingViewMapper;
 
@@ -125,7 +129,7 @@ public class LendingController {
             }
         }
 
-        final var lending = lendingService.setReturned(ln, resource, getVersionFromIfMatchHeader(ifMatchValue));
+        final var lending = lendingService.setReturned(ln, resource, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
 
         return ResponseEntity.ok()
                 .eTag(Long.toString(lending.getVersion()))
@@ -138,10 +142,11 @@ public class LendingController {
         return lendingService.getAverageDuration();
     }
 
-    private Long getVersionFromIfMatchHeader(final String ifMatchHeader) {
-        if (ifMatchHeader.startsWith("\"")) {
-            return Long.parseLong(ifMatchHeader.substring(1, ifMatchHeader.length() - 1));
-        }
-        return Long.parseLong(ifMatchHeader);
+    @Operation(summary = "Get list of overdue lendings")
+    @GetMapping(value = "/overdue")
+    public ListResponse<LendingView> getOverdueLendings(@RequestBody final Page page) {
+        final List<Lending> overdueLendings = lendingService.getOverdue(page);
+        return new ListResponse<>(lendingViewMapper.toLendingView(overdueLendings));
     }
+
 }

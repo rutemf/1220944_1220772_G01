@@ -26,12 +26,10 @@ As Librarian I want to list overdue lending sorted by their tardiness.
 **Input Data:**
 
 * Typed data:
-  * (...)
+  * N/A
 
 **Output Data:**
-
-* (In)success of the operation
-
+  * List of overdue lendings (not returned), sorted by tardiness.
 
 ### 1.6. System Sequence Diagram (SSD)
 ### 1.7. Functionality
