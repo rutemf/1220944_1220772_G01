@@ -97,7 +97,6 @@ public class AuthorController {
 
 
     //Know the books of an Author
-    //@RolesAllowed({Role.READER})
     @Operation(summary = "Know the books of an author")
     @GetMapping("/{authorNumber}/books")
     public ListResponse<BookView> getBooksByAuthorNumber(      //TODO: decidir se é necessário uma view nova
@@ -113,7 +112,6 @@ public class AuthorController {
     }
 
     //Know the Top 5 authors which have the most lent books
-    //@RolesAllowed({Role.READER})
     @Operation(summary = "Know the Top 5 authors which have the most lent books")
     @GetMapping("/top5")
     public ListResponse<AuthorView> getTop5() {

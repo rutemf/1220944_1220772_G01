@@ -23,7 +23,7 @@ Quando se refere "em termos de recursos rest e em subrecursos"
 
 ### 1.3. Acceptance Criteria
 - AC
-- 
+
 ### 1.4. Found out Dependencies
 - The reader must be authenticated in the system
 - Books repository
@@ -39,14 +39,16 @@ Quando se refere "em termos de recursos rest e em subrecursos"
 * Books of an author
 * (In)success of the operation
 
+## 2. Design
+### 2.1. Sequence Diagram (SD)
+![Ph2-4-KnowBooksAnAuthor.svg](Ph2-4-KnowBooksAnAuthor.svg)
+### 2.2. Class Diagram (CD)
+![ClassDiagram.svg](..%2FClassDiagram.svg)
+## 3. Tests
+## 4. Observations
+It was assumed, in response to this user story,
+that the author search was conducted using the
+only unique attribute they have. This attribute is
+the author number, which is why it is implemented
+this way.
 
-### 1.6. Functionality
-## 2. OO Analysis
-### 2.1. Relevant Domain Model Excerpt
-### 2.2. Other Remarks
-## 3. Design
-### 3.1. Sequence Diagram (SD)
-
-### 3.2. Class Diagram (CD)
-## 4. Tests
-## 5. Observations
