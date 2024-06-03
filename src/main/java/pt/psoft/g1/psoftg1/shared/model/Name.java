@@ -2,15 +2,10 @@ package pt.psoft.g1.psoftg1.shared.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Embeddable
@@ -20,14 +15,6 @@ public class Name {
     @NotBlank
     @Column(name="NAME", length = 150)
     String name;
-
-    //TODO: Move this to a properties file
-    @Transient
-    //@Value("#{'${forbiddenNames}'.split(',')}")
-    //@Value("#{${forbiddenNames}}")
-    //private List<String> forbiddenNames = new ArrayList<>();
-    private static final List<String> forbiddenNames = List.of(new String[]{"Cocó", "Xixi"});
-
     public Name(String name){
         setName(name);
     }
@@ -40,10 +27,13 @@ public class Name {
         if(!StringUtilsCustom.isAlphanumeric(name))
             throw new IllegalArgumentException("Name can only contain alphanumeric characters");
 
+/*
+        //  Logic moved to UserService.java, ReaderService.java
         for(String forbidden : forbiddenNames){
             if(name.contains(forbidden))
                 throw new IllegalArgumentException("Name contains forbidden word");
         }
+*/
         this.name = name;
     }
     public String toString() {

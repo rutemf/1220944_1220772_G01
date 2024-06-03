@@ -5,7 +5,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
@@ -13,11 +12,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
-import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
-import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
-import pt.psoft.g1.psoftg1.usermanagement.model.Role;
-import pt.psoft.g1.psoftg1.usermanagement.model.User;
-import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
+import pt.psoft.g1.psoftg1.shared.services.ForbiddenNameService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +27,15 @@ public class Bootstrapper implements CommandLineRunner {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
 
+    private final ForbiddenNameService forbiddenNameService;
+
     @Override
     @Transactional
     public void run(final String... args) {
         createAuthors();
         createGenres();
         createBooks();
+        loadForbiddenNames();
     }
 
     private void createAuthors() {
@@ -155,6 +153,11 @@ public class Bootstrapper implements CommandLineRunner {
                 bookRepository.save(b4);
             }
         }
+    }
+
+    protected void loadForbiddenNames() {
+        String fileName = "forbiddenNames.txt";
+        forbiddenNameService.loadDataFromFile(fileName);
     }
 }
 
