@@ -98,11 +98,7 @@ class ReaderController {
     @RolesAllowed(Role.LIBRARIAN)
     @GetMapping(params = "name")
     public ListResponse<ReaderView> findByReaderName(@RequestParam("name") final String name) {
-        /*SearchUsersQuery query = new SearchUsersQuery();
-        query.setFullName(name);
-        query.setUseNameAsString(true);
-        Page page = new Page(1, 20);
-        List<User> userList = this.userService.searchUsers(page, query);*/
+
         List<User> userList = this.userService.findByName(name);
         List<ReaderDetails> readerDetailsList = new ArrayList<>();
 
@@ -149,7 +145,7 @@ class ReaderController {
                 request.setPhotoURI(photoUri.toString());
                 readerDetails.applyPatch(readerDetails.getVersion(), request);
 
-                User loggedUser = isUserLoggedIn(authentication);
+                User loggedUser = userService.getAuthenticatedUser(authentication);
                 readerService.update(loggedUser.getId(), request, readerDetails.getVersion());
             }
         }
@@ -177,7 +173,7 @@ class ReaderController {
                     "You must issue a conditional PATCH using 'if-match'");
         }
 
-        User loggedUser = isUserLoggedIn(authentication);
+        User loggedUser = userService.getAuthenticatedUser(authentication);
         ReaderDetails readerDetails = readerService
                 .update(loggedUser.getId(), readerRequest, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
 
@@ -186,10 +182,9 @@ class ReaderController {
                 .body(readerViewMapper.toReaderView(readerDetails));
     }
 
-    @RolesAllowed({Role.READER, Role.ADMIN})
     @Operation(summary = "Gets the lendings of this reader by ISBN")
-    @GetMapping(value = "{year}/{seq}/lendings?isbn={isbn}")
-    public Iterable<LendingView> getReaderLendingsByIsbn(
+    @GetMapping(value = "/{year}/{seq}/lendings", params = {"isbn"})
+    public List<LendingView> getReaderLendingsByIsbn(
             Authentication authentication,
             @PathVariable("year")
             @Parameter(description = "The year of the Reader to find")
@@ -197,11 +192,11 @@ class ReaderController {
             @PathVariable("seq")
             @Parameter(description = "The sequencial of the Reader to find")
             final Integer seq,
-            @PathVariable("isbn")
+            @RequestParam("isbn")
             @Parameter(description = "The ISBN of the Book to find")
             final String isbn)
     {
-        User loggedUser = isUserLoggedIn(authentication);
+        User loggedUser = userService.getAuthenticatedUser(authentication);
 
         String urlReaderNumber = year + "/" + seq;
 
@@ -222,29 +217,9 @@ class ReaderController {
     }
 
     //TODO: Modify the mapping accordingly and apply the min top (static of dynamic)
-    @GetMapping("top5")
+    @GetMapping("/top5")
     public ListResponse<ReaderView> getTop() {
-        return new ListResponse<ReaderView>(readerViewMapper.toReaderView(readerService.findTopReaders(5)));
+        return new ListResponse<>(readerViewMapper.toReaderView(readerService.findTopReaders(5)));
     }
 
-    private User isUserLoggedIn(Authentication authentication){
-        if (authentication == null) {
-            throw new AccessDeniedException("User is not logged in");
-        }
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String loggedUsername = userDetails.getUsername();
-        Optional<User> loggedUser = this.userService.findByUsername(loggedUsername);
-        if(loggedUser.isEmpty())
-            throw new AccessDeniedException("User is not logged in");
-        return loggedUser.get();
-
-
-    }
-
-    private Long getVersionFromIfMatchHeader(final String ifMatchHeader) {
-        if (ifMatchHeader.startsWith("\"")) {
-            return Long.parseLong(ifMatchHeader.substring(1, ifMatchHeader.length() - 1));
-        }
-        return Long.parseLong(ifMatchHeader);
-    }
 }

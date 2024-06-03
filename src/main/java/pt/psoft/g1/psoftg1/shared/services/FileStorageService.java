@@ -35,8 +35,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
-import pt.psoft.g1.psoftg1.shared.services.FileStorageException;
-import pt.psoft.g1.psoftg1.shared.services.FileStorageProperties;
+import pt.psoft.g1.psoftg1.exceptions.FileStorageException;
 
 /**
  * <p>
