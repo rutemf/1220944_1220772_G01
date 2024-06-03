@@ -11,17 +11,19 @@ import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Based on https://www.baeldung.com/spring-boot-testing
+ * <p>Adaptations to Junit 5 with ChatGPT
+ */
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class AuthorRepositoryIntegrationTest {
-
     @Autowired
     private TestEntityManager entityManager;
-
     @Autowired
-    private AuthorRepository employeeRepository;
+    private AuthorRepository authorRepository;
 
     @Test
     public void whenFindByName_thenReturnEmployee() {
@@ -31,9 +33,10 @@ public class AuthorRepositoryIntegrationTest {
         entityManager.flush();
 
         // when
-        List<Author> list = employeeRepository.findByName(alex.getName());
+        List<Author> list = authorRepository.findByName(alex.getName());
 
         // then
+        assertThat(list).isNotEmpty();
         assertThat(list.get(0).getName())
                 .isEqualTo(alex.getName());
     }

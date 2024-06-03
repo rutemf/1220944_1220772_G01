@@ -20,6 +20,10 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Based on https://www.baeldung.com/spring-boot-testing
+ * <p>Adaptations to Junit 5 with ChatGPT
+ */
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(AuthorController.class)
 @AutoConfigureMockMvc
