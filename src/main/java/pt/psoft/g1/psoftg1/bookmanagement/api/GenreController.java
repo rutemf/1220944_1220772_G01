@@ -57,7 +57,7 @@ public class GenreController {
         return new ListResponse<>(genreViewMapper.toGenreAvgLendingsView(genreService.getAverageLendings(period, startDate, endDate)));
     }
 
-    @GetMapping("top5")
+    @GetMapping("/top5")
     public ListResponse<GenreBookCountView> getTop() {
         return new ListResponse<>(genreViewMapper.toGenreBookCountView(genreService.findTopGenreByBooks()));
     }
