@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import pt.psoft.g1.psoftg1.authormanagement.api.AuthorView;
 
 import java.util.List;
 

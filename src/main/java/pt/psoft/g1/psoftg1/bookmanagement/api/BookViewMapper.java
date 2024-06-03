@@ -9,14 +9,15 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.GenreBookCountDTO;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class BookViewMapper extends MapperInterface {
     @Mapping(target = "genre", source = "genre")
     @Mapping(target = "isbn", source = "isbn")
     @Mapping(target = "description", source = "description")
-    //@Mapping(target = "description", expression = "java(mapOpt(book.getDescription()).toString())")
     @Mapping(target = "title", source = "title")
+    @Mapping(target = "authors", expression = "java(mapAuthors(book.getAuthors()))")
     public abstract BookView toBookView(Book book);
 
     public abstract List<BookView> toBookView(List<Book> bookList);
@@ -28,12 +29,9 @@ public abstract class BookViewMapper extends MapperInterface {
 
     public abstract List<BookCountView> toBookCountViewList(List<BookCountDTO> bookCountDTOList);
 
-    public String[] map(List<Author> authorList) {
-        String[] authorNames = new String[authorList.size()];
-        for(int i = 0; i < authorList.size(); i++) {
-            authorNames[i] = authorList.get(i).getName().toString();
-        }
-
-        return authorNames;
+    protected List<String> mapAuthors(List<Author> authors) {
+        return authors.stream()
+                .map(Author::getName)
+                .collect(Collectors.toList());
     }
 }
