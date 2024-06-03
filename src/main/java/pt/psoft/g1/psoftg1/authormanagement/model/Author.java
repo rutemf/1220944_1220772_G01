@@ -18,7 +18,6 @@ public class Author {
     private long version;
 
     @Embedded
-    @Getter
     private Name name;
 
 /*
@@ -27,7 +26,6 @@ public class Author {
 */
 
     @Embedded
-    @Getter
     private Bio bio;
 
     public void setName(String name) {
@@ -64,6 +62,14 @@ public class Author {
         if (bio != null) {
             setBio(bio);
         }
+    }
+
+    public String getName(){
+        return this.name.toString();
+    }
+
+    public String getBio(){
+        return this.bio.toString();
     }
 }
 
