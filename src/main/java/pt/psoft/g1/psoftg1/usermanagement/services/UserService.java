@@ -31,6 +31,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
+import pt.psoft.g1.psoftg1.shared.repositories.ForbiddenNameRepository;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
@@ -52,6 +53,8 @@ public class UserService implements UserDetailsService {
 	private final UserRepository userRepo;
 	private final EditUserMapper userEditMapper;
 
+	private final ForbiddenNameRepository forbiddenNameRepository;
+
 	private final PasswordEncoder passwordEncoder;
 
 	public List<User> findByName(String name){
@@ -62,6 +65,13 @@ public class UserService implements UserDetailsService {
 	public User create(final CreateUserRequest request) {
 		if (userRepo.findByUsername(request.getUsername()).isPresent()) {
 			throw new ConflictException("Username already exists!");
+		}
+
+		Iterable<String> words = List.of(request.getName().split("\\s+"));
+		for (String word : words){
+			if(!forbiddenNameRepository.findByForbiddenNameLike(word).isEmpty()) {
+				throw new IllegalArgumentException("Name contains a forbidden word");
+			}
 		}
 
 		User user;

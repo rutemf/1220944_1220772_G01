@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -119,7 +118,7 @@ class ReaderController {
     @Operation(summary = "Creates a reader")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ReaderView> createReader(@RequestBody CreateReaderRequest readerRequest, @RequestParam(value="photo", required=false) MultipartFile file, Authentication authentication) throws URISyntaxException, URISyntaxException {
+    public ResponseEntity<ReaderView> createReader(@RequestBody CreateReaderRequest readerRequest, @RequestParam(value="photo", required=false) MultipartFile file, Authentication authentication) throws URISyntaxException {
         //TODO: Find another way to just call create instead of creating + updating
         ReaderDetails readerDetails = readerService.create(readerRequest);
 

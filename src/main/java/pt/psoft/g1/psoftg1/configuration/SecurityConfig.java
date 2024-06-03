@@ -116,6 +116,7 @@ public class SecurityConfig {
                 .requestMatchers(format("%s/**", swaggerPath)).permitAll()
                 // Our public endpoints
                 .requestMatchers("/api/public/**").permitAll() // public assets & end-points
+                .requestMatchers(HttpMethod.POST, "/api/readers").permitAll() //unregistered should be able to register
                 // Our private endpoints
                 .requestMatchers(HttpMethod.POST,"/api/authors").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.PATCH,"/api/authors").hasRole(Role.LIBRARIAN)

@@ -10,6 +10,7 @@ import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
+import pt.psoft.g1.psoftg1.shared.repositories.ForbiddenNameRepository;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
@@ -25,12 +26,21 @@ public class ReaderServiceImpl implements ReaderService {
     private final UserRepository userRepo;
     private final ReaderMapper readerMapper;
     private final GenreRepository genreRepo;
+    private final ForbiddenNameRepository forbiddenNameRepository;
+
 
     private int readerID = 0;
     @Override
     public ReaderDetails create(CreateReaderRequest request) {
         if (userRepo.findByUsername(request.getUsername()).isPresent()) {
             throw new ConflictException("Username already exists!");
+        }
+
+        Iterable<String> words = List.of(request.getFullName().split("\\s+"));
+        for (String word : words){
+            if(!forbiddenNameRepository.findByForbiddenNameLike(word).isEmpty()) {
+                throw new IllegalArgumentException("Name contains a forbidden word");
+            }
         }
 
         List<String> stringInterestList = request.getStringInterestList();
