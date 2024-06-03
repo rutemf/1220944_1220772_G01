@@ -1,0 +1,21 @@
+@startuml
+
+actor Reader
+participant "AuthorsController" as Controller
+participant "AuthorsService" as Service
+participant "BooksRepository" as BooksRepo
+
+Reader -> Controller: getBooksByAuthor(authorNumber)
+activate Controller
+Controller -> Service: getBooksByAuthor(authorNumber)
+activate Service
+Service -> BooksRepo: findBooksByAuthor(authorNumber)
+activate BooksRepo
+BooksRepo --> Service: List of Books
+deactivate BooksRepo
+Service --> Controller: List of Books
+deactivate Service
+Controller --> Reader: List of Books
+deactivate Controller
+
+@enduml

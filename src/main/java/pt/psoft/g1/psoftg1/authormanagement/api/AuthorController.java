@@ -53,8 +53,7 @@ public class AuthorController {
     @PatchMapping(value = "/{authorNumber}")
     public ResponseEntity<AuthorView> partialUpdate(
             @PathVariable("authorNumber")
-                @Parameter(description = "The number of the Author to find")
-                final Long authorNumber,
+            @Parameter(description = "The number of the Author to find") final Long authorNumber,
             final WebRequest request,
             @Valid @RequestBody final UpdateAuthorRequest resource) {
 
@@ -75,8 +74,7 @@ public class AuthorController {
     @GetMapping(value = "/{authorNumber}")
     public ResponseEntity<AuthorView> findByAuthorNumber(
             @PathVariable("authorNumber")
-                @Parameter(description = "The number of the Author to find")
-                final Long authorNumber) {
+            @Parameter(description = "The number of the Author to find") final Long authorNumber) {
 
 
         final var author = authorService.findByAuthorNumber(authorNumber)
@@ -95,20 +93,24 @@ public class AuthorController {
         return new ListResponse<>(authorViewMapper.toAuthorView(authors));
     }
 
+
+    //Know the books of an Author
+    //@RolesAllowed({Role.READER})
+    @Operation(summary = "Know the books of an author")
+    @GetMapping("{authorNumber}/books")
+    public ListResponse<BookView> findBooksByAuthorNumber(      //TODO: decidir se é necessário uma view nova
+             @PathVariable("authorNumber")
+             @Parameter(description = "The number of the Author to find")
+             final Long authorNumber) {
+
+        return null;
+    }
+
+    //Know the Top 5 authors which have the most lent books
+    //@RolesAllowed({Role.READER})
     @Operation(summary = "Know the Top 5 authors which have the most lent books")
     @GetMapping("top5")
     public ListResponse<AuthorView> getTop5() {
         return new ListResponse<>(authorViewMapper.toAuthorView(authorService.findTopAuthorByLendings()));
-    }
-
-    @Operation(summary = "Know the books of an author")
-    @GetMapping("{authorNumber}/books")
-    public ListResponse<BookView> getBookByAuthor(      //TODO: decidir se é necessário uma view nova
-            @PathVariable("authorNumber")
-                @Parameter(description = "The number of the Author to find")
-                final Long authorNumber) {
-
-        return null;
-
     }
 }

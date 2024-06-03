@@ -1,42 +1,34 @@
-# WP #1B - Authors - Know the books of an Author
+# WP #1B - Authors - Know the co-authors of an author and their respective books
 
 ## 1. Requirements Engineering
 ### 1.1. User Story Description
 
-As Reader I want to know the books of an Author
-
+As Reader I want to know the co-authors of an author and their respective books
 ### 1.2. Customer Specifications and Clarifications
 
 >[View WP1B](..%2FWP1B-Authors.md)
 
->[Q: Como irá ser feita a pesquisa? Pelo nome do autor? Pelo authors number?  ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29862)
->
->A: Devem pensar em termos de recursos rest e em subrecursos, não em “pesquisas”
-
->[Q:
-Quando se refere "em termos de recursos rest e em subrecursos" 
-> quer dizer o que? Podemos assumir para ambos os casos que o cliente ja tem o link para o autor?
-](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29862)
+>[Q:  ]()
 >
 >A: 
-
-
+> 
 ### 1.3. Acceptance Criteria
 - AC
 - 
 ### 1.4. Found out Dependencies
-- Books management
-- Authors management
+- The reader must be authenticated in the system
+- Books repository
+- Authors repository
 ### 1.5 Input and Output Data
 
 **Input Data:**
 
 * Typed data:
-  * Authors name
+  * Author name
 
 **Output Data:**
 
-* Books of an author
+* Co-authors of an author and their respective books
 * (In)success of the operation
 
 

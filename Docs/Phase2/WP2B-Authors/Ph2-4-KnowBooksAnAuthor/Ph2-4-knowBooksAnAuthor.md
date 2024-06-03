@@ -25,13 +25,14 @@ Quando se refere "em termos de recursos rest e em subrecursos"
 - AC
 - 
 ### 1.4. Found out Dependencies
-- Books management
+- The reader must be authenticated in the system
+- Books repository
 ### 1.5 Input and Output Data
 
 **Input Data:**
 
 * Typed data:
-  * Authors name
+  * Authors number
 
 **Output Data:**
 

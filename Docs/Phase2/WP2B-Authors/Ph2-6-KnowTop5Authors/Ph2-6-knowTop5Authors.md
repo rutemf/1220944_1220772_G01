@@ -21,9 +21,10 @@ As Reader I want to know the Top 5 authors (which have the most lent books)
 - AC
 
 ### 1.4. Found out Dependencies
-- Books 
-- Lendings
-- Authors
+- The reader must be authenticated in the system
+- Lendings management
+- Books repository
+- Authors repository
 ### 1.5 Input and Output Data
 
 **Input Data:**

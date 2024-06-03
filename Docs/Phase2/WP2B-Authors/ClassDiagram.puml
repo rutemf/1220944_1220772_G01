@@ -20,29 +20,31 @@ class Photo <<Entity>>{
 }
 
 class AuthorsController {
-    +createAuthor(name,short bio,photo): void
-    +UpdateAuthors(name,short bio,photo): data
-    + getDetailsByNumber(AuthorsNumber)
-    + searchAuthorsByName(name)
-    + ()
+    +create(name,short bio,photo): void
+    +partialUpdate(name,short bio,photo): data
+    + findByAuthorNumber(AuthorsNumber)
+    + findByName(name)
+    + getTop()
 }
 
 class AuthorsServiceImpl implements AuthorsService{
 }
 
 interface AuthorsService {
-    + create(name, short bio, opt photo) : Authors
-    + findByName(AuthorsName)
-    + findById(AuthorsNumber)
-    + update(AuthorsData)
+    + create(CreateAuthorRequest resource);
+    + findByName(String name)
+    + findByAuthorNumber(Long authorNumber)
+    + partialUpdate(Long authornumber, UpdateAuthorRequest resource, long desiredVersion)
+    +findTopAuthorByLendings()
 }
 
 interface AuthorsRepository {
-    +saveCreatedAuthor(): Authors
-    + findByName(AuthorsName)
-    + findById(AuthorsNumber)
-    + searchAuthorsByName(Name)
-
+    +save(Author author)
+    + searchByAuthorNameLike(@Param("name") String name)
+    + findByAuthorNumber(Long authorNumber)
+    + findByName(String name)
+    +findAll()
+    +findTopAuthorByLendings (Pageable pageableRules)
 }
 
 AuthorsServiceImpl ..> Authors
