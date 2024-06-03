@@ -16,12 +16,6 @@ deactivate Repository
 Service --> Controller: Authors
 deactivate Service
 
-opt photo is provided
-    Controller -> Controller: saveAuthorPhoto(photo)
-    activate Controller
-    deactivate Controller
-end
-
 Controller -> Controller: saveCreatedAuthor()
 activate Controller
 Controller --> Librarian: Result

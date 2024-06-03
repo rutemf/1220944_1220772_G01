@@ -46,5 +46,6 @@ As Reader I want to know the Top 5 authors (which have the most lent books)
 ### 3.1. Sequence Diagram (SD)
 ![Ph2-6-KnowTop5Authors.svg](Ph2-6-KnowTop5Authors.svg)
 ### 3.2. Class Diagram (CD)
+![ClassDiagram.svg](..%2FClassDiagram.svg)
 ## 4. Tests
-## 5. Observations
+

@@ -3,10 +3,15 @@
 As Librarian I want to register an author (name, short bio).
 ### 1.2. Customer Specifications and Clarifications
 
-[WP1A-Authors.md](..%2FWP1A-Authors.md)
+>[View WP1B](..%2FWP1B-Authors.md)
+
+>[Q:   Referente ao que é falado sobre a foto, o mesmo se aplica ao Wp do author/reader?
+](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29861)
+>
+>A: Sim
+
 ### 1.3. Acceptance Criteria
 - AC
-
 ### 1.4. Found out Dependencies
 - The Librarian must be authenticated in the system
 ### 1.5 Input and Output Data
@@ -21,8 +26,8 @@ As Librarian I want to register an author (name, short bio).
 
 * (In)success of the operation
 
-## 3. Design
-### 3.1. Sequence Diagram (SD)
-![Ph2-3-RegisterAuthor.png](Ph2-3-RegisterAuthor.svg)
-### 3.2. Class Diagram (CD)
+## 2. Design
+### 2.1. Sequence Diagram (SD)
+![Ph2-3-RegisterAuthorPhoto.svg](Ph2-3-RegisterAuthorPhoto.svg)
+### 2.2. Class Diagram (CD)
 ![ClassDiagram.svg](..%2FClassDiagram.svg)

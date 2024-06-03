@@ -1,21 +1,30 @@
 @startuml
 
-actor Reader
-participant "AuthorsController" as Controller
-participant "AuthorsService" as Service
-participant "BooksRepository" as BooksRepo
+actor Client
+participant Controller
+participant AuthorService
+participant AuthorRepository
+participant BookRepository
+participant BookViewMapper
+participant ListResponse
 
-Reader -> Controller: getBooksByAuthor(authorNumber)
-activate Controller
-Controller -> Service: getBooksByAuthor(authorNumber)
-activate Service
-Service -> BooksRepo: findBooksByAuthor(authorNumber)
-activate BooksRepo
-BooksRepo --> Service: List of Books
-deactivate BooksRepo
-Service --> Controller: List of Books
-deactivate Service
-Controller --> Reader: List of Books
-deactivate Controller
+Client -> Controller: GET /{authorNumber}/books
+Controller -> AuthorService: findByAuthorNumber(authorNumber)
+AuthorService -> AuthorRepository: findByAuthorNumber(authorNumber)
+AuthorRepository -> AuthorService: Author or NotFoundException
+AuthorService -> Controller: Author
+
+Controller -> AuthorService: findBooksByAuthorNumber(authorNumber)
+AuthorService -> BookRepository: findBooksByAuthorNumber(authorNumber)
+BookRepository -> AuthorService: List<Book>
+AuthorService -> Controller: List<Book>
+
+Controller -> BookViewMapper: toBookView(List<Book>)
+BookViewMapper -> Controller: List<BookView>
+
+Controller -> ListResponse: new ListResponse(List<BookView>)
+ListResponse -> Controller: ListResponse<BookView>
+
+Controller -> Client: ListResponse<BookView>
 
 @enduml

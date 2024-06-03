@@ -62,9 +62,9 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.findTopAuthorByLendings(pageableRules).getContent();
     }
 
+
     @Override
     public List<Book> findBooksByAuthorNumber(Long authorNumber){
         return bookRepository.findBooksByAuthorNumber(authorNumber);
-    }
+    }    }
 
-}
