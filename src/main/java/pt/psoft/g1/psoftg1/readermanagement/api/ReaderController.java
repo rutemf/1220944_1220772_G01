@@ -154,7 +154,13 @@ class ReaderController {
         }
 
         ReaderDetails readerDetails = optReaderDetails.get();
-        String photoPathString = uploadDir + readerDetails.getPhoto().getPhotoFile();
+
+        //In case the user has no photo, just return a 200 OK without body
+        if(readerDetails.getPhoto() == null) {
+            return ResponseEntity.ok().build();
+        }
+
+        String photoPathString = uploadDir + "/" + readerDetails.getPhoto().getPhotoFile();
         Path photoPath = Paths.get(photoPathString);
         String fileFormat = photoPathString.split("\\.")[1];
         byte[] image = null;
@@ -180,7 +186,13 @@ class ReaderController {
         }
 
         ReaderDetails readerDetails = optReaderDetails.get();
-        String photoPathString = uploadDir + readerDetails.getPhoto().getPhotoFile();
+
+        //In case the user has no photo, just return a 200 OK without body
+        if(readerDetails.getPhoto() == null) {
+            return ResponseEntity.ok().build();
+        }
+
+        String photoPathString = uploadDir + "/" + readerDetails.getPhoto().getPhotoFile();
         Path photoPath = Paths.get(photoPathString);
         String fileFormat = photoPathString.split("\\.")[1];
         byte[] image = null;
