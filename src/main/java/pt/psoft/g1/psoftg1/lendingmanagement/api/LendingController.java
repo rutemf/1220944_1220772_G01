@@ -23,13 +23,12 @@ import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.Page;
-import pt.psoft.g1.psoftg1.shared.services.SearchRequest;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Tag(name = "Lendings", description = "Endpoints for managing Lendings")
 @RestController
@@ -71,22 +70,22 @@ public class LendingController {
                 final Integer year,
             @PathVariable("seq")
                 @Parameter(description = "The sequencial of the Lending to find")
-                final Integer seq)
-    {
-        User loggedUser = userService.getAuthenticatedUser(authentication);
+                final Integer seq) {
 
         String ln = year + "/" + seq;
         final var lending = lendingService.findByLendingNumber(ln)
                 .orElseThrow(() -> new NotFoundException(Lending.class, ln));
 
-        if(!(loggedUser instanceof Librarian)){
-            //if Librarian is logged in, skip ahead
-            Optional<ReaderDetails> loggedReaderDetails = readerService.findByUsername(loggedUser.getUsername());
-            if(loggedReaderDetails.isPresent()){
-                if(loggedReaderDetails.get().getReaderNumber() != lending.getReaderDetails().getReaderNumber()){
-                    //if logged Reader matches the one associated with the lending, skip ahead
-                    throw new AccessDeniedException("Reader does not have permission to view this lending");
-                }
+        User loggedUser = userService.getAuthenticatedUser(authentication);
+
+        //if Librarian is logged in, skip ahead
+        if (!(loggedUser instanceof Librarian)) {
+            final var loggedReaderDetails = readerService.findByUsername(loggedUser.getUsername())
+                    .orElseThrow(() -> new NotFoundException(ReaderDetails.class, loggedUser.getUsername()));
+
+            //if logged Reader matches the one associated with the lending, skip ahead
+            if (!Objects.equals(loggedReaderDetails.getReaderNumber(), lending.getReaderDetails().getReaderNumber())) {
+                throw new AccessDeniedException("Reader does not have permission to view this lending");
             }
         }
         final var lendingUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
@@ -108,25 +107,24 @@ public class LendingController {
             @PathVariable("seq")
                 @Parameter(description = "The sequential component of the Lending to find")
                 final Integer seq,
-            @Valid @RequestBody final SetLendingReturnedDto resource)
-    {
+            @Valid @RequestBody final SetLendingReturnedDto resource) {
         final String ifMatchValue = request.getHeader(IF_MATCH);
         if (ifMatchValue == null || ifMatchValue.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must issue a conditional PATCH using 'if-match'");
         }
-        User loggedUser = userService.getAuthenticatedUser(authentication);
-
         String ln = year + "/" + seq;
         final var maybeLending = lendingService.findByLendingNumber(ln)
                 .orElseThrow(() -> new NotFoundException(Lending.class, ln));
 
-        Optional<ReaderDetails> loggedReaderDetails = readerService.findByUsername(loggedUser.getUsername());
-        if(loggedReaderDetails.isPresent()){
-            if(loggedReaderDetails.get().getReaderNumber() != maybeLending.getReaderDetails().getReaderNumber()){
-                //if logged Reader matches the one associated with the lending, skip ahead
-                throw new AccessDeniedException("Reader does not have permission to edit this lending");
-            }
+        User loggedUser = userService.getAuthenticatedUser(authentication);
+
+        final var loggedReaderDetails = readerService.findByUsername(loggedUser.getUsername())
+                .orElseThrow(() -> new NotFoundException(ReaderDetails.class, loggedUser.getUsername()));
+
+        //if logged Reader matches the one associated with the lending, skip ahead
+        if (!Objects.equals(loggedReaderDetails.getReaderNumber(), maybeLending.getReaderDetails().getReaderNumber())) {
+            throw new AccessDeniedException("Reader does not have permission to edit this lending");
         }
 
         final var lending = lendingService.setReturned(ln, resource, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
@@ -138,7 +136,7 @@ public class LendingController {
 
     @Operation(summary = "Get average lending duration")
     @GetMapping(value = "/avgDuration")
-    public @ResponseBody String getAvgDuration(){
+    public @ResponseBody String getAvgDuration() {
         return lendingService.getAverageDuration();
     }
 

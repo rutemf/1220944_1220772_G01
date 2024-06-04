@@ -12,8 +12,6 @@ public interface LendingService {
      * @return {@code Optional<Lending>}
      */
     Optional<Lending> findByLendingNumber(String lendingNumber);
-    Iterable<Lending> findAll();
-
     /**
      * @param readerNumber - Reader Number of the Reader associated with the lending
      * @param isbn - ISBN of the book associated with the lending

@@ -37,11 +37,6 @@ public class LendingServiceImpl implements LendingService{
     }
 
     @Override
-    public Iterable<Lending> findAll() {
-        return lendingRepository.findAll();
-    }
-
-    @Override
     public List<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn){
         return lendingRepository.listByReaderNumberAndIsbn(readerNumber, isbn);
     }
@@ -75,17 +70,12 @@ public class LendingServiceImpl implements LendingService{
 
     @Override
     public Lending setReturned(final String lendingNumber, final SetLendingReturnedDto resource, final long desiredVersion) {
-//TODO: separate methods for lendingNumber and ReaderNumber&ISBN
-        Lending lending;
 
-        try{
-            lending = lendingRepository.findOpenByReaderNumberAndIsbn(resource.getReaderNumber(), resource.getIsbn())
-                    .orElseThrow(() -> new NotFoundException("Cannot find lending with this book"));
-        }catch (NotFoundException e){
-            lending = lendingRepository.findByLendingNumber(lendingNumber)
-                    .orElseThrow(() -> new NotFoundException("Cannot update lending with this lending number"));
-        }
+        var lending = lendingRepository.findByLendingNumber(lendingNumber)
+                .orElseThrow(() -> new NotFoundException("Cannot update lending with this lending number"));
+
         lending.setReturned(desiredVersion, resource.getCommentary());
+
         if(lending.getDaysDelayed() > 0){
             final var fine = new Fine(lending);
             fineRepository.save(fine);
