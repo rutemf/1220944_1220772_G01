@@ -15,7 +15,6 @@ public class Photo {
 
     @Setter
     @Getter
-    @Lob
     private String photoFile;
 
     protected Photo (){}
