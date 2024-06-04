@@ -15,4 +15,5 @@ import lombok.Data;
 @Data
 public class FileStorageProperties {
     private String uploadDir;
+    private long photoMaxSize;
 }

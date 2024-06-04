@@ -29,6 +29,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 import java.util.UUID;
 
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -36,6 +37,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.exceptions.FileStorageException;
+import pt.psoft.g1.psoftg1.shared.api.UploadFileResponse;
+import pt.psoft.g1.psoftg1.shared.model.FileUtils;
 
 /**
  * <p>
@@ -48,10 +51,13 @@ import pt.psoft.g1.psoftg1.exceptions.FileStorageException;
 public class FileStorageService {
 
     private final Path fileStorageLocation;
+    private long photoMaxSize;
+    private final String[] validImageFormats = {"image/png", "image/jpeg"};
 
     @Autowired
     public FileStorageService(final FileStorageProperties fileStorageProperties) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
+        this.photoMaxSize = fileStorageProperties.getPhotoMaxSize();
 
         try {
             Files.createDirectories(fileStorageLocation);
@@ -73,6 +79,61 @@ public class FileStorageService {
         } catch (final IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
+    }
+
+    public byte[] getFile(final String fileName) {
+        String photoPathString = this.fileStorageLocation + "/" + fileName;
+        Path photoPath = Paths.get(photoPathString);
+        byte[] image = null;
+        try {
+            image = Files.readAllBytes(photoPath);
+        } catch(IOException e) {}
+
+        return image;
+    }
+
+    //Returns the string of the fileName of the file (UUID.FILE_FORMAT) stored in the uploads folder | null for error or no photo
+    public String getRequestPhoto(MultipartFile file) {
+        UploadFileResponse up = null;
+        if(file != null) {
+            if(file.getSize() > photoMaxSize) {
+                throw new ValidationException("Attached photo can't be bigger than " + photoMaxSize + " bytes");
+            }
+
+            int formatIndex = -1;
+            String fileContentHeader = file.getContentType();
+
+            if(fileContentHeader == null) {
+                throw new ValidationException("Unknown file content header");
+            }
+
+            for(int i = 0; i < validImageFormats.length; i++) {
+                if(!fileContentHeader.equals(validImageFormats[i])) {
+                    continue;
+                }
+
+                formatIndex = i;
+                break;
+            }
+
+            if(formatIndex == -1) {
+                throw new ValidationException("Images can only be png or jpeg");
+            }
+
+            String photoUUID = UUID.randomUUID().toString();
+
+            try {
+                up = FileUtils.doUploadFile(this, photoUUID, file);
+            } catch (Exception e) {
+                return null;
+                //throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            String fileFormat = validImageFormats[formatIndex].split("/")[1];
+            return photoUUID+"."+fileFormat;
+        }
+
+        return null;
     }
 
     private String determineFileName(final MultipartFile file) {
