@@ -41,7 +41,7 @@ public class UserBootstrapper implements CommandLineRunner {
                 ReaderDetails r1 = new ReaderDetails(
                         1,
                         manuel,
-                        "2000/01/01",
+                        "2000-01-01",
                         "919191919",
                         true,
                         true,
@@ -60,7 +60,7 @@ public class UserBootstrapper implements CommandLineRunner {
                 ReaderDetails r2 = new ReaderDetails(
                         2,
                         joao,
-                        "2000/02/02",
+                        "2000-02-02",
                         "929292929",
                         true,
                         false,
@@ -79,7 +79,7 @@ public class UserBootstrapper implements CommandLineRunner {
                 ReaderDetails r3 = new ReaderDetails(
                         3,
                         pedro,
-                        "2000/03/03",
+                        "2000-03-03",
                         "939393939",
                         true,
                         false,
