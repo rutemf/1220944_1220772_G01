@@ -1,10 +1,11 @@
 package pt.psoft.g1.psoftg1.authormanagement.services;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @Data
 @NoArgsConstructor
@@ -16,4 +17,14 @@ public class CreateAuthorRequest {
 
     @Size(min = 1, max = 4096)
     private String bio;
+
+    @Nullable
+    @Getter
+    @Setter
+    private MultipartFile photo;
+
+    @Nullable
+    @Getter
+    @Setter
+    private String photoURI;
 }

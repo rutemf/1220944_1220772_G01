@@ -14,11 +14,6 @@ O que é esperador retornar? Top 5 dos autores por ordem e ao lado o total de le
 >
 >A:  Sim
 
->[Q:]()
->
->A: 
-
-
 ### 1.3. Acceptance Criteria
 - Deve retornar os 5 autores com o maior numero de livros requisitados no ultimo ano
 
