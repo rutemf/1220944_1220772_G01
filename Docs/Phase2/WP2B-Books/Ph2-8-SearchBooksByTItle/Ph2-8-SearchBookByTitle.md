@@ -3,10 +3,10 @@
 ### 1.1. User Story Description
 
 
-As Librarian, I want to get the details of a book given its ISBN(isbn, title, genre, description, author(s))
+As Librarian, I want to search a book given its title. 
 ### 1.2. Customer Specifications and Clarifications
 
-[View WP2A](../Book.md/)
+[View WP2B](../Book.md/)
 
 ### 1.3. Acceptance Criteria
 - AC
@@ -14,7 +14,7 @@ As Librarian, I want to get the details of a book given its ISBN(isbn, title, ge
 ### 1.4. Found out Dependencies
 - The Libarian or Reader must be authenticated in the system
 ### 1.5 Input and Output Data
-- The librarian or Reader needs to give the ISBN of the book
+- The librarian or Reader needs to give the title of the book
   **Input Data:**
 * Typed data:
     * ISBN

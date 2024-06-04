@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import org.springframework.web.multipart.MultipartFile;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.*;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
@@ -27,10 +27,11 @@ public class BookServiceImpl implements BookService {
 	private final BookRepository bookRepository;
 	private final GenreRepository genreRepository;
 	private final AuthorRepository authorRepository;
+
+
 	@Override
 	public Book create(CreateBookRequest request, String isbn) {
 		Book newBook = null;
-
 
 		if(bookRepository.findByIsbn(isbn).isPresent()) {
 			throw new ConflictException("A book with provided Isbn is already registered");
@@ -42,18 +43,24 @@ public class BookServiceImpl implements BookService {
 
 			Optional<Author> temp = authorRepository.findByAuthorNumber(authorNumber);
 			if(temp.isEmpty()) {
-				//TODO: É suposto passar à frente e ignorar os que não foram encontrados ou damos erro?
 				continue;
 			}
 
 			Author author = temp.get();
 			authors.add(author);
 		}
+
+		MultipartFile photo = request.getPhoto();
+		String photoURI = request.getPhotoURI();
+		if(photo == null && photoURI != null || photo != null && photoURI == null) {
+			request.setPhoto(null);
+			request.setPhotoURI(null);
+		}
+
 		final var genre = genreRepository.findByString(request.getGenre())
 				.orElseThrow(() -> new NotFoundException("Genre not found"));
 
-		newBook = new Book(isbn, request.getTitle(), request.getDescription(), genre, authors);
-
+		newBook = new Book(isbn, request.getTitle(), request.getDescription(), genre, authors, photoURI);
 
         return newBook;
 	}
@@ -83,6 +90,14 @@ public class BookServiceImpl implements BookService {
 
             request.setAuthorObjList(authors);
         }
+
+		MultipartFile photo = request.getPhoto();
+		String photoURI = request.getPhotoURI();
+		if(photo == null && photoURI != null || photo != null && photoURI == null) {
+			request.setPhoto(null);
+			request.setPhotoURI(null);
+		}
+
         if (request.getGenre() != null) {
             Optional<Genre> genre = genreRepository.findByString(request.getGenre());
             if (genre.isEmpty()) {

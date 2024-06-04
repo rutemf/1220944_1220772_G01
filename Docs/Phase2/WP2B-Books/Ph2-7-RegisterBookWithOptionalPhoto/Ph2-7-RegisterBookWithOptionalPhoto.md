@@ -3,7 +3,7 @@
 ### 1.1. User Story Description
 
 
-As Librarian, I want to register a book (isbn, title, genre, description, author(s))
+As Librarian, I want to register a book with an optional photo (isbn, title, genre, description, author(s), photo)
 ### 1.2. Customer Specifications and Clarifications
 
 [View WP2A](../Book.md/)
@@ -22,6 +22,7 @@ As Librarian, I want to register a book (isbn, title, genre, description, author
     * Description
     * Author(s)
     * Genre
+    * Photo
 
 **Output Data:**
 

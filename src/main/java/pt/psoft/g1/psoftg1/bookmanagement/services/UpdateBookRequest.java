@@ -1,7 +1,9 @@
 package pt.psoft.g1.psoftg1.bookmanagement.services;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Description;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
@@ -21,6 +23,16 @@ public class UpdateBookRequest {
     private String description;
 
     private String title;
+
+    @Nullable
+    @Setter
+    private String photoURI;
+
+    @Nullable
+    @Getter
+    @Setter
+    private MultipartFile photo;
+
 
     @Setter
     private Genre genreObj;

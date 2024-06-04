@@ -109,7 +109,7 @@ public class Bootstrapper implements CommandLineRunner {
                         "O Inspetor Max",
                         "conhecido pastor-alemão que trabalha para a Judiciária, vai ser fundamental para resolver um importante caso de uma rede de malfeitores que quer colocar uma bomba num megaconcerto de uma ilustre cantora",
                         genre.get(),
-                        authors);
+                        authors,null);
 
                 bookRepository.save(b1);
             }
@@ -127,7 +127,8 @@ public class Bootstrapper implements CommandLineRunner {
                         "C e Algoritmos",
                         "O C é uma linguagem de programação incontornável no estudo e aprendizagem das linguagens de programação",
                         genre.get(),
-                        authors2);
+                        authors2,
+                        null);
 
                 bookRepository.save(b2);
             }
@@ -147,7 +148,8 @@ public class Bootstrapper implements CommandLineRunner {
                         "Vemo-nos em Agosto",
                         "Através das sensuais noites caribenhas repletas de salsa e boleros, homens sedutores e vigaristas, a cada agosto que passa Ana viaja mais longe para o interior do seu desejo e do medo escondido no seu coração.",
                         genre.get(),
-                        authors3);
+                        authors3,
+                        null);
 
                 bookRepository.save(b3);
             }
@@ -166,7 +168,8 @@ public class Bootstrapper implements CommandLineRunner {
                 Book b4 = new Book("9782722203426",
                         "O Principezinho", "Depois de deixar o seu asteroide e embarcar numa viagem pelo espaço, o principezinho chega, finalmente, à Terra. No deserto, o menino de cabelos da cor do ouro conhece um aviador, a quem conta todas as aventuras que viveu e tudo o que viu ao longo da sua jornada.",
                         genre.get(),
-                        authors4);
+                        authors4,
+                        null);
 
                 bookRepository.save(b4);
             }

@@ -10,8 +10,8 @@ import java.nio.file.Paths;
 @Entity
 public class Photo {
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private long id;
 
     @Setter
     @Getter
