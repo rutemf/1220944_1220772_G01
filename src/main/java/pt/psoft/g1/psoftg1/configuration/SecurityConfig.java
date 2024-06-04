@@ -118,6 +118,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/public/**").permitAll() // public assets & end-points
                 .requestMatchers(HttpMethod.POST, "/api/readers").permitAll() //unregistered should be able to register
                 // Our private endpoints
+                //TODO: ENDPOINT DE TESTES, NÃO REMOVER
+                //.requestMatchers(HttpMethod.POST,"/api/readers/photo").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/readers/{year}/{seq}/photo").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/readers/photo").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.POST,"/api/authors").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.PATCH,"/api/authors").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/authors/{authorNumber}").hasAnyRole(Role.READER, Role.LIBRARIAN)

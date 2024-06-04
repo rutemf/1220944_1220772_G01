@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 
 import java.util.List;
@@ -34,10 +35,18 @@ public class CreateReaderRequest {
     @NotBlank
     private String phoneNumber;
 
+    @Nullable
+    @Getter
+    @Setter
+    private MultipartFile photo;
+
+    @Setter
     private boolean gdpr;
 
+    @Setter
     private boolean marketing;
 
+    @Setter
     private boolean thirdParty;
 
     @Nullable
@@ -50,16 +59,10 @@ public class CreateReaderRequest {
     @Setter
     private List<Genre> interestList;
 
-    /*public CreateReaderRequest(String username, String password, String fullName, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) {
-        setUsername(username);
-        setPassword(password);
-        setFullName(fullName);
-        setBirthDate(birthDate);
-        setPhoneNumber(phoneNumber);
-        setGdpr(gdpr);
-        setMarketing(marketing);
-        setThirdParty(thirdParty);
-    }*/
+    @Nullable
+    @Getter
+    @Setter
+    private String photoURI;
 
     public boolean getThirdParty() {
         return thirdParty;

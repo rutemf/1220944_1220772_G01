@@ -9,8 +9,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerErrorException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.api.LendingView;
@@ -38,11 +43,13 @@ import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 @Tag(name = "Readers", description = "Endpoints to manage readers")
 @RestController
@@ -57,6 +64,13 @@ class ReaderController {
     private final ConcurrencyService concurrencyService;
     private final FileStorageService fileStorageService;
 
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
+    @Value("${file.photo.max_size}")
+    private long photoMaxSize;
+
+    private final String[] validImageFormats = {"image/png", "image/jpeg"};
 
     private static final String IF_MATCH = "If-Match";
 
@@ -94,11 +108,21 @@ class ReaderController {
         return new ResponseEntity<>(readerViewMapper.toReaderView(readerDetailsOpt.get()), HttpStatus.OK);
     }
 
+    /*@GetMapping("/{year}/{seq}/photo")
+    public ResponseEntity<byte[]> getReaderPhoto(@PathVariable("year") final Long year, @PathVariable("seq") final Long seq) {
+        return
+    }*/
+
     @RolesAllowed(Role.LIBRARIAN)
     @GetMapping(params = "name")
     public ListResponse<ReaderView> findByReaderName(@RequestParam("name") final String name) {
-
-        List<User> userList = this.userService.findByName(name);
+        /*SearchUsersQuery query = new SearchUsersQuery();
+        query.setFullName(name);
+        query.setUseNameAsString(true);
+        Page page = new Page(1, 20);
+        List<User> userList = this.userService.searchUsers(page, query);*/
+        //List<User> userList = this.userService.findByName(name);
+        List<User> userList = this.userService.findByNameLike(name);
         List<ReaderDetails> readerDetailsList = new ArrayList<>();
 
         for(User user : userList) {
@@ -115,39 +139,77 @@ class ReaderController {
         return new ListResponse<>(readerViewMapper.toReaderView(readerDetailsList));
     }
 
+    @Operation(summary= "Gets a reader photo")
+    @GetMapping("/{year}/{seq}/photo")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> getSpecificReaderPhoto(@PathVariable("year")
+                                                     @Parameter(description = "The year of the Reader to find")
+                                                     final Integer year,
+                                                 @PathVariable("seq")
+                                                     @Parameter(description = "The sequencial of the Reader to find")
+                                                     final Integer seq) {
+        Optional<ReaderDetails> optReaderDetails = readerService.findByReaderNumber(year + "/" + seq);
+        if(optReaderDetails.isEmpty()) {
+            throw new AccessDeniedException("A reader could not be found with provided ID");
+        }
+
+        ReaderDetails readerDetails = optReaderDetails.get();
+        String photoPathString = uploadDir + readerDetails.getPhoto().getPhotoFile();
+        Path photoPath = Paths.get(photoPathString);
+        String fileFormat = photoPathString.split("\\.")[1];
+        byte[] image = null;
+        try {
+            image = Files.readAllBytes(photoPath);
+        } catch(IOException e) {
+            throw new NotFoundException("Could not get reader photo");
+        }
+
+        return ResponseEntity.ok().contentType(fileFormat.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG).body(image);
+    }
+
+    @Operation(summary= "Gets a reader photo")
+    @GetMapping("/photo")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> getReaderOwnPhoto(Authentication authentication) {
+
+        User loggedUser = userService.getAuthenticatedUser(authentication);
+
+        Optional<ReaderDetails> optReaderDetails = readerService.findByUsername(loggedUser.getUsername());
+        if(optReaderDetails.isEmpty()) {
+            throw new AccessDeniedException("Could not find a valid reader from current auth");
+        }
+
+        ReaderDetails readerDetails = optReaderDetails.get();
+        String photoPathString = uploadDir + readerDetails.getPhoto().getPhotoFile();
+        Path photoPath = Paths.get(photoPathString);
+        String fileFormat = photoPathString.split("\\.")[1];
+        byte[] image = null;
+        try {
+            image = Files.readAllBytes(photoPath);
+        } catch(IOException e) {
+            throw new NotFoundException("Could not get reader photo");
+        }
+
+        return ResponseEntity.ok().contentType(fileFormat.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG).body(image);
+    }
+
     @Operation(summary = "Creates a reader")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ReaderView> createReader(@RequestBody CreateReaderRequest readerRequest, @RequestParam(value="photo", required=false) MultipartFile file, Authentication authentication) throws URISyntaxException {
-        //TODO: Find another way to just call create instead of creating + updating
-        ReaderDetails readerDetails = readerService.create(readerRequest);
-
-        String readerNumber = readerDetails.getReaderNumber().toString();
-
+    public ResponseEntity<ReaderView> createReader(@Valid CreateReaderRequest readerRequest) throws ValidationException {
         UploadFileResponse up = null;
 
-        //Parameter has a valid photo file
-        if(file != null) {
-            //Reader registration continues even though the photo doesn't go through
-            //TODO: Above condition must be checked with teachers
-            try {
-                up = FileUtils.doUploadFile(fileStorageService, readerNumber, file);
-            } catch(Exception e) {
-                //throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        //Guarantee that the client doesn't provide a link on the body, null = no photo or error
+        readerRequest.setPhotoURI(null);
+        MultipartFile file = readerRequest.getPhoto();
 
-            URI photoUri = null;
-            if(up != null) {
-                photoUri = new URI(up.getFileDownloadUri());
+        String fileName = this.getRequestPhoto(file);
 
-                UpdateReaderRequest request = new UpdateReaderRequest();
-                request.setPhotoURI(photoUri.toString());
-                readerDetails.applyPatch(readerDetails.getVersion(), request);
-
-                User loggedUser = userService.getAuthenticatedUser(authentication);
-                readerService.update(loggedUser.getId(), request, readerDetails.getVersion());
-            }
+        if (fileName != null) {
+            readerRequest.setPhotoURI(fileName);
         }
+
+        ReaderDetails readerDetails = readerService.create(readerRequest);
 
         final var newReaderUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .pathSegment(readerDetails.getReaderNumber().toString())
@@ -158,11 +220,78 @@ class ReaderController {
                 .body(readerViewMapper.toReaderView(readerDetails));
     }
 
+    //Request for testing purposes. TODO: DO NOT DELETE
+//    @Operation(summary = "...")
+//    @PostMapping("/photo")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ResponseEntity<String> uploadPhoto(@Valid TestBody body) throws ValidationException {
+//        System.out.println("Got fullname from body: " + body.getFullName());
+//        UploadFileResponse up = null;
+//
+//        System.out.println("Got age #1: " + body.getAges().get(0));
+//        System.out.println("Got age #2: " + body.getAges().get(1));
+//        System.out.println("Got age #3: " + body.getAges().get(2));
+//
+//        System.out.println("File content type: " + body.getPhoto().getSize());
+//
+//        String linkValue = "NO PHOTO URI";
+//
+//        MultipartFile file = body.getPhoto();
+//
+//        long fileSize = file.getSize();
+//
+//        if(fileSize > photoMaxSize) {
+//            throw new ValidationException("Attached photo can't be bigger than " + photoMaxSize + " bytes");
+//        }
+//
+//
+//
+//        int formatIndex = -1;
+//        String fileContentHeader = file.getContentType();
+//
+//        if(fileContentHeader == null) {
+//            throw new ValidationException("Unknown file content header");
+//        }
+//
+//        for(int i = 0; i < validImageFormats.length; i++) {
+//            if(!fileContentHeader.equals(validImageFormats[i])) {
+//                continue;
+//            }
+//
+//            formatIndex = i;
+//            break;
+//        }
+//
+//        if(formatIndex == -1) {
+//            throw new ValidationException("Images can only be png or jpeg");
+//        }
+//
+//        /*if(file != null) {
+//            String photoUUID = UUID.randomUUID().toString();
+//
+//            try {
+//                up = FileUtils.doUploadFile(fileStorageService, photoUUID, file);
+//            } catch (Exception e) {
+//                //throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//
+//            if (up != null) {
+//                URI photoUri = new URI(up.getFileDownloadUri());
+//                linkValue = photoUri.toString();
+//            }
+//        } else {
+//            linkValue = "NO PHOTO ATTACHED";
+//        }*/
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).build();
+//    }
+
+    //TODO: Meter foto no UpdateReaderRequest e acabar o método do update. Depois fazer os testes unitários do reader
     @Operation(summary = "Updates a reader")
     @RolesAllowed(Role.READER)
     @PatchMapping
     public ResponseEntity<ReaderView> updateReader(
-            @Valid @RequestBody UpdateReaderRequest readerRequest,
+            @Valid UpdateReaderRequest readerRequest,
             Authentication authentication,
             final WebRequest request) {
 
@@ -172,6 +301,14 @@ class ReaderController {
                     "You must issue a conditional PATCH using 'if-match'");
         }
 
+        MultipartFile file = readerRequest.getPhoto();
+
+        String fileName = this.getRequestPhoto(file);
+
+        if (fileName != null) {
+            readerRequest.setPhotoURI(fileName);
+        }
+
         User loggedUser = userService.getAuthenticatedUser(authentication);
         ReaderDetails readerDetails = readerService
                 .update(loggedUser.getId(), readerRequest, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
@@ -179,6 +316,50 @@ class ReaderController {
         return ResponseEntity.ok()
                 .eTag(Long.toString(readerDetails.getVersion()))
                 .body(readerViewMapper.toReaderView(readerDetails));
+    }
+
+    //Returns the string of the fileName of the file (UUID.FILE_FORMAT) stored in the uploads folder | null for error or no photo
+    private String getRequestPhoto(MultipartFile file) {
+        UploadFileResponse up = null;
+        if(file != null) {
+            if(file.getSize() > photoMaxSize) {
+                throw new ValidationException("Attached photo can't be bigger than " + photoMaxSize + " bytes");
+            }
+
+            int formatIndex = -1;
+            String fileContentHeader = file.getContentType();
+
+            if(fileContentHeader == null) {
+                throw new ValidationException("Unknown file content header");
+            }
+
+            for(int i = 0; i < validImageFormats.length; i++) {
+                if(!fileContentHeader.equals(validImageFormats[i])) {
+                    continue;
+                }
+
+                formatIndex = i;
+                break;
+            }
+
+            if(formatIndex == -1) {
+                throw new ValidationException("Images can only be png or jpeg");
+            }
+
+            String photoUUID = UUID.randomUUID().toString();
+
+            try {
+                up = FileUtils.doUploadFile(fileStorageService, photoUUID, file);
+            } catch (Exception e) {
+                return null;
+                //throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            String fileFormat = validImageFormats[formatIndex].split("/")[1];
+            return photoUUID+"."+fileFormat;
+        }
+
+        return null;
     }
 
     @Operation(summary = "Gets the lendings of this reader by ISBN")

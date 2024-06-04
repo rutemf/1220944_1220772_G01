@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
@@ -29,7 +30,6 @@ public class ReaderServiceImpl implements ReaderService {
     private final ForbiddenNameRepository forbiddenNameRepository;
 
 
-    private int readerID = 0;
     @Override
     public ReaderDetails create(CreateReaderRequest request) {
         if (userRepo.findByUsername(request.getUsername()).isPresent()) {
@@ -48,17 +48,29 @@ public class ReaderServiceImpl implements ReaderService {
             request.setInterestList(this.getGenreListFromStringList(stringInterestList));
         }
 
+        /*
+         * Since photos can be null (no photo uploaded) that means the URI can be null as well.
+         * To avoid the client sending false data, photoURI has to be set to any value / null
+         * according to the MultipartFile photo object
+         *
+         * That means:
+         * - photo = null && photoURI = null -> photo is removed
+         * - photo = null && photoURI = validString -> ignored
+         * - photo = validFile && photoURI = null -> ignored
+         * - photo = validFile && photoURI = validString -> photo is set
+         * */
+
+        MultipartFile photo = request.getPhoto();
+        String photoURI = request.getPhotoURI();
+        if(photo == null && photoURI != null || photo != null && photoURI == null) {
+            request.setPhoto(null);
+            request.setPhotoURI(null);
+        }
+
         int count = readerRepo.getCountFromCurrentYear();
         Reader reader = readerMapper.createReader(request);
         ReaderDetails rd = readerMapper.createReaderDetails(count+1, reader, request);
-/*
-        User tempUser = Reader.newReader(request.getUsername(), request.getPassword(), request.getFullName());
-        User user = userRepo.save(tempUser);
-        request.setNumber(String.valueOf(++readerID));
-        ReaderDetails newReaderDetails = new ReaderDetails(Integer.parseInt(request.getNumber()), user, request.getBirthDate(), request.getPhoneNumber(), request.getGdpr(), request.getMarketing(), request.getThirdParty());
-        readerRepo.save(newReaderDetails);
-        return newReaderDetails;
-*/
+
         userRepo.save(reader);
         return readerRepo.save(rd);
     }
@@ -71,6 +83,25 @@ public class ReaderServiceImpl implements ReaderService {
         List<String> stringInterestList = request.getStringInterestList();
         if(stringInterestList != null && !stringInterestList.isEmpty()) {
             request.setInterestList(this.getGenreListFromStringList(stringInterestList));
+        }
+
+         /*
+         * Since photos can be null (no photo uploaded) that means the URI can be null as well.
+         * To avoid the client sending false data, photoURI has to be set to any value / null
+         * according to the MultipartFile photo object
+         *
+         * That means:
+         * - photo = null && photoURI = null -> photo is removed
+         * - photo = null && photoURI = validString -> ignored
+         * - photo = validFile && photoURI = null -> ignored
+         * - photo = validFile && photoURI = validString -> photo is set
+         * */
+
+        MultipartFile photo = request.getPhoto();
+        String photoURI = request.getPhotoURI();
+        if(photo == null && photoURI != null || photo != null && photoURI == null) {
+            request.setPhoto(null);
+            request.setPhotoURI(null);
         }
 
         readerDetails.applyPatch(desiredVersion, request);
@@ -112,7 +143,7 @@ public class ReaderServiceImpl implements ReaderService {
         for(String interest : interestList) {
             Optional<Genre> optGenre = genreRepo.findByString(interest);
             if(optGenre.isEmpty()) {
-                continue;
+                throw new NotFoundException("Could not find genre with name " + interest);
             }
 
             genreList.add(optGenre.get());
@@ -120,38 +151,4 @@ public class ReaderServiceImpl implements ReaderService {
 
         return genreList;
     }
-
-/*
-    @Override
-    public Optional<Reader> update(UpdateReaderRequest request) {
-        String[] dateParts = request.getBirthDate().split("/");
-
-        if(dateParts.length != 3) {
-            throw new Exception("Invalid birthDate format");
-        }
-
-        int year = Integer.parseInt(dateParts[0]);
-        int month = Integer.parseInt(dateParts[1]);
-        int day = Integer.parseInt(dateParts[2]);
-        LocalDate date = LocalDate.of(year, month, day);
-
-        String[] numberParts = request.getNumber().split("/");
-        if(numberParts.length != 2) {
-            throw new Exception("Invalid number format");
-        }
-
-        int numberYear = Integer.parseInt(dateParts[0]);
-        int numberNumber = Integer.parseInt(dateParts[1]);
-
-        Optional<Reader> optReader = this.findByReaderNumber(new ReaderNumber(numberYear, numberNumber));
-        if(!optReader.isPresent()) {
-            throw new Exception("Could not find reader with provided readerNumber");
-        }
-
-        Reader reader = optReader.get();
-
-        this.readerRepo.updateUser(reader.getUser().getId(), request.getUsername(), request.getPassword());
-        return this.readerRepo.updateReader(request.getNumber(), request.getFullName(), request.getPhoneNumber(), date, request.getMarketing(), request.getThirdParty());
-    }
-*/
 }

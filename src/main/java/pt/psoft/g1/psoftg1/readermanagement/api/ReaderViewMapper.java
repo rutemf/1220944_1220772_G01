@@ -2,7 +2,9 @@ package pt.psoft.g1.psoftg1.readermanagement.api;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderNumber;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 
 import java.util.List;
@@ -16,8 +18,17 @@ public abstract class ReaderViewMapper extends MapperInterface {
     //@Mapping(target = "phoneNumber", source = "phoneNumber.number")
     @Mapping(target = "gdprConsent", source = "gdprConsent")
     @Mapping(target = "readerNumber", source = "readerNumber")
+    @Mapping(target = "photo", expression = "java(generatePhotoUrl(readerDetails))")
     public abstract ReaderView toReaderView(ReaderDetails readerDetails);
 
     public abstract List<ReaderView> toReaderView(Iterable<ReaderDetails> readerList);
 
+    protected String generatePhotoUrl(ReaderDetails readerDetails) {
+        ReaderNumber readerNumber = readerDetails.getReaderNumber();
+        String sReaderNumber = readerNumber.toString();
+        String[] readerNumberSplit = sReaderNumber.split("/");
+        int year = Integer.parseInt(readerNumberSplit[0]);
+        int seq = Integer.parseInt(readerNumberSplit[1]);
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/readers/{year}/{seq}/photo").buildAndExpand(year,seq).toUri().toString();
+    }
 }

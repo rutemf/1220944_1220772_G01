@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @Entity
 public class Photo {
     @Id
@@ -13,11 +16,9 @@ public class Photo {
     @Setter
     @Getter
     @Lob
-    private String photoURI;
+    private String photoFile;
 
     protected Photo (){}
-    public Photo (String photoUri){
-        setPhotoURI(photoUri);
-    }
+    public Photo (Path photoUri){setPhotoFile(photoUri.toString());}
 }
 

@@ -45,7 +45,8 @@ public class UserBootstrapper implements CommandLineRunner {
                         "919191919",
                         true,
                         true,
-                        true);
+                        true,
+                        null);
                 readerRepository.save(r1);
             }
         }
@@ -63,7 +64,8 @@ public class UserBootstrapper implements CommandLineRunner {
                         "929292929",
                         true,
                         false,
-                        false);
+                        false,
+                        null);
                 readerRepository.save(r2);
             }
         }
@@ -81,7 +83,8 @@ public class UserBootstrapper implements CommandLineRunner {
                         "939393939",
                         true,
                         false,
-                        true);
+                        true,
+                        null);
                 readerRepository.save(r3);
             }
         }

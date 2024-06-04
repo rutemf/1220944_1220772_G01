@@ -3,6 +3,7 @@ package pt.psoft.g1.psoftg1.readermanagement.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
@@ -11,6 +12,9 @@ import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Entity
@@ -66,7 +70,11 @@ public class ReaderDetails {
     @OneToMany
     private List<Genre> interestList;
 
-    public ReaderDetails(int readerNumber, Reader reader, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty) {
+    @Transient
+    @Value("${file.upload-dir}")
+    private Path uploadDir;
+
+    public ReaderDetails(int readerNumber, Reader reader, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty, String photoURI) {
         if(reader == null || phoneNumber == null) {
             throw new IllegalArgumentException("Provided argument resolves to null object");
         }
@@ -81,6 +89,18 @@ public class ReaderDetails {
         setBirthDate(new BirthDate(birthDate));
         //By the client specifications, gdpr can only have the value of true. A setter will be created anyways in case we have accept no gdpr consent later on the project
         setGdprConsent(true);
+
+        if(photoURI != null) {
+            try {
+                //If the Path object instantiation succeeds, it means that we have a valid Path
+                this.photo = new Photo(Paths.get(photoURI));
+            } catch (InvalidPathException e) {
+                //For some reason it failed, let's set to null to avoid invalid references to photos
+                this.photo = null;
+            }
+        } else {
+            this.photo = null;
+        }
 
         setMarketingConsent(marketing);
         setThirdPartySharingConsent(thirdParty);
@@ -104,13 +124,8 @@ public class ReaderDetails {
         }
     }
 
-    private void setPhoto(String photoURI) {
-        try {
-            URI uri = new URI(photoURI);
-            this.photo.setPhotoURI(uri.toString());
-        } catch (URISyntaxException e) {
-            return;
-        }
+    private void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 
     //TODO: Edu: Apply Patch method to update the properties we want
@@ -151,7 +166,11 @@ public class ReaderDetails {
         }
 
         if(photoURI != null) {
-            setPhoto(photoURI);
+            try {
+                setPhoto(new Photo(Paths.get(photoURI)));
+            } catch(InvalidPathException ignored) {}
+        } else {
+            setPhoto(null);
         }
     }
 

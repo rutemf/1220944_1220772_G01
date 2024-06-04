@@ -11,6 +11,7 @@ public class ReaderView {
     private String fullName;
     private String birthDate;
     private String phoneNumber;
+    private String photo;
     private boolean gdprConsent;
     private boolean marketingConsent;
     private boolean thirdPartySharingConsent;

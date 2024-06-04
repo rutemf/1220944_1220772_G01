@@ -49,28 +49,4 @@ public interface SpringDataReaderRepositoryImpl extends ReaderRepository, CrudRe
             "GROUP BY rd " +
             "ORDER BY COUNT(l) DESC")
     Page<ReaderDetails> findTopReaders(Pageable pageable);
-
-/*
-    @Override
-    @Modifying
-    @Query("UPDATE Reader r SET "+
-            "r.fullName = COALESCE(:name, r.fullName), " +
-            "r.phoneNumber = COALESCE(:phoneNumber, r.phoneNumber), " +
-            "r.birthDate = COALESCE(:birthDate, r.birthDate), " +
-            "r.marketingConsent = COALESCE(:marketing, r.marketingConsent), " +
-            "r.thirdPartySharingConsent = COALESCE(:thirdParty, r.thirdPartySharingConsent) " +
-            "WHERE r.readerNumber = :readerNumber")
-    public Optional<Reader> updateReader(@Param("readerNumber") @NotNull String readerNumber, @Param("readerName") String name, @Param("readerPhoneNumber") String phoneNumber, @Param("birthDate") LocalDate birthDate, @Param("marketing") boolean marketing, @Param("thirdParty") boolean thirdParty);
-*/
-
-/*
-    @Override
-    @Query("UPDATE User u SET " +
-            "u.username = COALESCE(:username, u.username), "+
-            "u.password = COALESCE(:password, u.password) "+
-            "WHERE u.id = :userNumber")
-    public void updateUser(@Param("userNumber") @NotNull Long userNumber, @Param("username") String username, @Param("password") String password);
-*/
-
-
 }

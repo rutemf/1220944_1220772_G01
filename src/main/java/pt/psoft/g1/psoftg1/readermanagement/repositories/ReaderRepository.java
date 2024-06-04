@@ -20,10 +20,4 @@ public interface ReaderRepository {
     ReaderDetails save(ReaderDetails readerDetails);
     Iterable<ReaderDetails> findAll();
     Page<ReaderDetails> findTopReaders(Pageable pageable);
-/*
-    Optional<Reader> updateReader(@Param("readerNumber") @NotNull String readerNumber, @Param("readerName") String name, @Param("readerPhoneNumber") String phoneNumber, @Param("birthDate") LocalDate birthDate, @Param("marketing") boolean marketing, @Param("thirdParty") boolean thirdParty);
-*/
-/*
-    void updateUser(@Param("userNumber") @NotNull Long userNumber, @Param("username") String username, @Param("password") String password);
-*/
 }
