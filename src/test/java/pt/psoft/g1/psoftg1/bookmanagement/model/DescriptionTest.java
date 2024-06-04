@@ -11,14 +11,6 @@ class DescriptionTest {
         assertDoesNotThrow(() -> new Description(null));
     }
 
-/*
-    Ricardo: não é claro se isto é um requisito.
-    @Test
-    void ensureDescriptionMustNotBeBlank() {
-        assertThrows(IllegalArgumentException.class, () -> new Description(""));
-    }
-*/
-
 
     /**
      * Text from <a href="https://www.lipsum.com/">Lorem Ipsum</a> generator.
