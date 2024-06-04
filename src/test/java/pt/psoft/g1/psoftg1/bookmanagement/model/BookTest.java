@@ -24,37 +24,37 @@ class BookTest {
     @Test
     void ensureIsbnNotNull(){
         authors.add(validAuthor1);
-        assertThrows(IllegalArgumentException.class, () -> new Book(null, validTitle, null, validGenre, authors));
+        assertThrows(IllegalArgumentException.class, () -> new Book(null, validTitle, null, validGenre, authors, null));
     }
 
     @Test
     void ensureTitleNotNull(){
         authors.add(validAuthor1);
-        assertThrows(IllegalArgumentException.class, () -> new Book(validIsbn, null, null, validGenre, authors));
+        assertThrows(IllegalArgumentException.class, () -> new Book(validIsbn, null, null, validGenre, authors, null));
     }
 
     @Test
     void ensureGenreNotNull(){
         authors.add(validAuthor1);
-        assertThrows(IllegalArgumentException.class, () -> new Book(validIsbn, validTitle, null,null, authors));
+        assertThrows(IllegalArgumentException.class, () -> new Book(validIsbn, validTitle, null,null, authors, null));
     }
 
     @Test
     void ensureAuthorsNotNull(){
         authors.add(validAuthor1);
-        assertThrows(IllegalArgumentException.class, () -> new Book(validIsbn, validTitle, null, validGenre, null));
+        assertThrows(IllegalArgumentException.class, () -> new Book(validIsbn, validTitle, null, validGenre, null, null));
     }
 
     @Test
     void ensureAuthorsNotEmpty(){
-        assertThrows(IllegalArgumentException.class, () -> new Book(validIsbn, validTitle, null, validGenre, authors));
+        assertThrows(IllegalArgumentException.class, () -> new Book(validIsbn, validTitle, null, validGenre, authors, null));
     }
 
     @Test
     void ensureBookCreatedWithMultipleAuthors() {
         authors.add(validAuthor1);
         authors.add(validAuthor2);
-        assertDoesNotThrow(() -> new Book(validIsbn, validTitle, null, validGenre, authors));
+        assertDoesNotThrow(() -> new Book(validIsbn, validTitle, null, validGenre, authors, null));
     }
 
 }
