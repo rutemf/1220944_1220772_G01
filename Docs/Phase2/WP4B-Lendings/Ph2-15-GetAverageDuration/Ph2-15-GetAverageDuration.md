@@ -18,31 +18,32 @@ As Librarian I want to know the Average lending duration.
 
 
 ### 1.3. Acceptance Criteria
-- AC
-- 
+- The Librarian is shown the average lending duration
+ 
 ### 1.4. Found out Dependencies
+- A Librarian must be logged into the system.
+- To get meaningfull data, at least one lending needs to be registered.
+
 ### 1.5 Input and Output Data
 
 **Input Data:**
 
 * Typed data:
-  * (...)
+  * NA
 
 **Output Data:**
+* Average lending duration
 
-* (In)success of the operation
-
-
-### 1.6. System Sequence Diagram (SSD)
-### 1.7. Functionality
-### 1.8 Other Relevant Remarks
 ## 2. OO Analysis
 ### 2.1. Relevant Domain Model Excerpt
+
+<img src="../WP4B-Lendings-DM.svg" alt="Domain Model Excerpt">
+
 ### 2.2. Other Remarks
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
 
-[//]: # (<img src="Ph1-15-LendBook-SD-WP_4A_15_Lend_Book.svg" alt="WP_4A_15_Lend_Book">)
+<img src="Ph2-15-GetAverageDuration-SD.svg" alt="Sequence Diagram">
 
 ### 3.2. Class Diagram (CD)
 ## 4. Tests

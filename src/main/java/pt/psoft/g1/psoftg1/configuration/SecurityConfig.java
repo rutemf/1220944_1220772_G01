@@ -126,7 +126,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/api/authors").hasAnyRole(Role.READER, Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/authors/{authorNumber}/books").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.GET,"/api/authors/top5").hasRole(Role.READER)
-
                 //books
                 .requestMatchers(HttpMethod.PUT,"/api/books/{isbn}").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.PATCH,"/api/books/{isbn}").hasRole(Role.LIBRARIAN)
@@ -135,7 +134,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/api/books/top5").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/genres/top5").hasRole(Role.LIBRARIAN)
                 //endBooks
-                .requestMatchers("/api/readers/**").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/readers/{year}/{seq}/lendings").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.GET,"/api/genres/avgLendings").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/lendings/overdue").hasRole(Role.LIBRARIAN)
@@ -145,8 +143,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/api/lendings/overdue").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.PATCH,"/api/readers").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.GET, "/api/readers/top5").hasRole(Role.LIBRARIAN)
-                .requestMatchers(HttpMethod.GET, "/api/authors/**").hasRole(Role.READER)
-                .requestMatchers(HttpMethod.GET, "/api/books/**").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.PATCH,"/api/lendings/{year}/{seq}").hasRole(Role.READER)
                 // Admin has access to all endpoints
                 .requestMatchers("/**").hasRole(Role.ADMIN)
