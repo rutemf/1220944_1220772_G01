@@ -19,6 +19,8 @@ public class AuthorView {
     @NotNull
     private String bio;
 
+    private String photo;
+
 }
 
 
