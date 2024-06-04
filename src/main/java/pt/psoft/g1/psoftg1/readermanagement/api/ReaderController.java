@@ -120,26 +120,36 @@ class ReaderController {
                                                      final Integer year,
                                                  @PathVariable("seq")
                                                      @Parameter(description = "The sequencial of the Reader to find")
-                                                     final Integer seq) {
-        Optional<ReaderDetails> optReaderDetails = readerService.findByReaderNumber(year + "/" + seq);
-        if(optReaderDetails.isEmpty()) {
-            throw new AccessDeniedException("A reader could not be found with provided ID");
+                                                     final Integer seq,
+                                                         Authentication authentication) {
+        User loggedUser = userService.getAuthenticatedUser(authentication);
+
+        //if Librarian is logged in, skip ahead
+        if (!(loggedUser instanceof Librarian)) {
+            final var loggedReaderDetails = readerService.findByUsername(loggedUser.getUsername())
+                    .orElseThrow(() -> new NotFoundException(ReaderDetails.class, loggedUser.getUsername()));
+
+            //if logged Reader matches the one associated with the lending, skip ahead
+            if (!loggedReaderDetails.getReaderNumber().equals(year + "/" + seq)) {
+                throw new AccessDeniedException("Reader does not have permission to view another reader's photo");
+            }
         }
 
-        ReaderDetails readerDetails = optReaderDetails.get();
+
+        ReaderDetails readerDetails = readerService.findByReaderNumber(year + "/" + seq).orElseThrow(() -> new NotFoundException(ReaderDetails.class, loggedUser.getUsername()));
 
         //In case the user has no photo, just return a 200 OK without body
         if(readerDetails.getPhoto() == null) {
             return ResponseEntity.ok().build();
         }
 
-        byte[] image = this.fileStorageService.getFile(readerDetails.getPhoto().getPhotoFile());
+        String photoFile = readerDetails.getPhoto().getPhotoFile();
+        byte[] image = this.fileStorageService.getFile(photoFile);
+        String fileFormat = this.fileStorageService.getExtension(readerDetails.getPhoto().getPhotoFile()).orElseThrow(() -> new ValidationException("Unable to get file extension"));
 
         if(image == null) {
             return ResponseEntity.ok().build();
         }
-
-        String fileFormat = this.fileStorageService.getExtension(readerDetails.getPhoto().getPhotoFile()).orElseThrow(() -> new ValidationException("Unable to get file extension"));
 
         return ResponseEntity.ok().contentType(fileFormat.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG).body(image);
     }
@@ -178,7 +188,6 @@ class ReaderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ReaderView> createReader(@Valid CreateReaderRequest readerRequest) throws ValidationException {
-        UploadFileResponse up = null;
 
         //Guarantee that the client doesn't provide a link on the body, null = no photo or error
         readerRequest.setPhotoURI(null);

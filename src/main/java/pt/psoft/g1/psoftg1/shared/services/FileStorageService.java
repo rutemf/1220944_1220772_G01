@@ -68,7 +68,9 @@ public class FileStorageService {
     }
 
     public String storeFile(final String prefix, final MultipartFile file) {
-        final String fileName = prefix + "_" + determineFileName(file);
+        //final String fileName = prefix + "_" + determineFileName(file);
+        //files will contain only the generated uuid passed as prefix
+        final String fileName = prefix + "." + getExtension(file.getOriginalFilename()).orElse("");
 
         // Copy file to the target location (Replacing existing file with the same name)
         try {
@@ -87,7 +89,9 @@ public class FileStorageService {
         byte[] image = null;
         try {
             image = Files.readAllBytes(photoPath);
-        } catch(IOException e) {}
+        } catch(IOException e) {
+            return null;
+        }
 
         return image;
     }
@@ -129,7 +133,9 @@ public class FileStorageService {
                 //throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
-            String fileFormat = validImageFormats[formatIndex].split("/")[1];
+            //String fileFormat = validImageFormats[formatIndex].split("/")[1];
+            String originalFileName = file.getOriginalFilename();
+            String fileFormat = originalFileName.substring(originalFileName.lastIndexOf('.')+1);
             return photoUUID+"."+fileFormat;
         }
 

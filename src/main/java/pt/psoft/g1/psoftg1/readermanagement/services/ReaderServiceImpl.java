@@ -12,6 +12,7 @@ import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.shared.repositories.ForbiddenNameRepository;
+import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
@@ -28,6 +29,7 @@ public class ReaderServiceImpl implements ReaderService {
     private final ReaderMapper readerMapper;
     private final GenreRepository genreRepo;
     private final ForbiddenNameRepository forbiddenNameRepository;
+    private final PhotoRepository photoRepository;
 
 
     @Override
@@ -70,6 +72,8 @@ public class ReaderServiceImpl implements ReaderService {
         int count = readerRepo.getCountFromCurrentYear();
         Reader reader = readerMapper.createReader(request);
         ReaderDetails rd = readerMapper.createReaderDetails(count+1, reader, request);
+
+        photoRepository.save(rd.getPhoto());
 
         userRepo.save(reader);
         return readerRepo.save(rd);

@@ -1,19 +1,16 @@
 package pt.psoft.g1.psoftg1.readermanagement.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
 import pt.psoft.g1.psoftg1.shared.model.Photo;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -54,8 +51,10 @@ public class ReaderDetails {
     @Getter
     private boolean thirdPartySharingConsent;
 
+    @Nullable
     @Getter
     @OneToOne
+    @JoinColumn(name="photo_id", nullable = true)
     private Photo photo;
 
     @Version
@@ -118,8 +117,19 @@ public class ReaderDetails {
         }
     }
 
-    private void setPhoto(Photo photo) {
-        this.photo = photo;
+    //This method is used by the mapper in order to set the photo. This will call the setPhotoInternal method that
+    //will contain all the logic to set the photo
+    public void setPhoto(String photo) {
+        this.setPhotoInternal(photo);
+    }
+
+    private void setPhotoInternal(String photo) {
+        if(photo == null) {
+            this.photo = null;
+            return;
+        }
+
+        this.photo = new Photo(Paths.get(photo));
     }
 
     //TODO: Edu: Apply Patch method to update the properties we want
@@ -161,10 +171,10 @@ public class ReaderDetails {
 
         if(photoURI != null) {
             try {
-                setPhoto(new Photo(Paths.get(photoURI)));
+                setPhotoInternal(photoURI);
             } catch(InvalidPathException ignored) {}
         } else {
-            setPhoto(null);
+            setPhotoInternal(null);
         }
     }
 
