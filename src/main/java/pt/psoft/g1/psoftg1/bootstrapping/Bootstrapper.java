@@ -1,8 +1,11 @@
 package pt.psoft.g1.psoftg1.bootstrapping;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
@@ -12,8 +15,13 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
+import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.shared.services.ForbiddenNameService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +29,19 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Profile("bootstrap")
+@PropertySource({"classpath:config/library.properties"})
+@Order(2)
 public class Bootstrapper implements CommandLineRunner {
+    @Value("${lendingDurationInDays}")
+    private int lendingDurationInDays;
+    @Value("${fineValuePerDayInCents}")
+    private int fineValuePerDayInCents;
 
     private final GenreRepository genreRepository;
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
+    private final LendingRepository lendingRepository;
+    private final ReaderRepository readerRepository;
 
     private final ForbiddenNameService forbiddenNameService;
 
@@ -36,6 +52,7 @@ public class Bootstrapper implements CommandLineRunner {
         createGenres();
         createBooks();
         loadForbiddenNames();
+        createLendings();
     }
 
     private void createAuthors() {
@@ -158,6 +175,67 @@ public class Bootstrapper implements CommandLineRunner {
     protected void loadForbiddenNames() {
         String fileName = "forbiddenNames.txt";
         forbiddenNameService.loadDataFromFile(fileName);
+    }
+
+    private void createLendings() {
+        int i;
+        final var book1 = bookRepository.findByIsbn("9782722203426");
+        final var book2 = bookRepository.findByIsbn("9782722203402");
+        final var book3 = bookRepository.findByIsbn("9782608153111");
+        final var book4 = bookRepository.findByIsbn("9782826012092");
+        List<Book> books = new ArrayList<>();
+        if(book1.isPresent() && book2.isPresent() && book3.isPresent() && book4.isPresent()){
+            books = List.of(new Book[]{book1.get(), book2.get(), book3.get(), book4.get()});
+        }
+
+        final var readerDetails1 = readerRepository.findByReaderNumber("2024/1");
+        final var readerDetails2 = readerRepository.findByReaderNumber("2024/2");
+        final var readerDetails3 = readerRepository.findByReaderNumber("2024/3");
+        List<ReaderDetails> readers = new ArrayList<>();
+        if(readerDetails1.isPresent() && readerDetails2.isPresent() && readerDetails3.isPresent()){
+            readers = List.of(new ReaderDetails[]{readerDetails1.get(), readerDetails2.get(), readerDetails3.get()});
+        }
+
+        LocalDate startDate = LocalDate.of(2024, 4,1);
+        LocalDate returnedDate;
+        Lending lending;
+
+        //Lendings 1 through 3 (late, returned)
+        for(i = 0; i < 3; i++){
+            if(lendingRepository.findByLendingNumber("2024/" + (1+i)).isEmpty()){
+                startDate = LocalDate.of(2024, 3,31-i);
+                returnedDate = LocalDate.of(2024,4,15+i);
+                lending = Lending.newBootstrappingLending(books.get(i), readers.get(0), 2024, i+1, startDate, returnedDate, lendingDurationInDays, fineValuePerDayInCents);
+                lendingRepository.save(lending);
+            }
+        }
+
+        //Lendings 4 through 6 (overdue, not returned)
+        for(i = 0; i < 3; i++){
+            if(lendingRepository.findByLendingNumber("2024/" + (4+i)).isEmpty()){
+                startDate = LocalDate.of(2024, 5,25+i);
+                lending = Lending.newBootstrappingLending(books.get(1+i), readers.get(1), 2024, (i+4), startDate, null, lendingDurationInDays, fineValuePerDayInCents);
+                lendingRepository.save(lending);
+            }
+        }
+        //Lendings 7 through 9 (late, overdue, not returned)
+        for(i = 0; i < 3; i++){
+            if(lendingRepository.findByLendingNumber("2024/" + (7+i)).isEmpty()){
+                startDate = LocalDate.of(2024, 5,(1+2*i));
+                lending = Lending.newBootstrappingLending(books.get(3/(i+1)), readers.get(2), 2024, (i+7), startDate, null, lendingDurationInDays, fineValuePerDayInCents);
+                lendingRepository.save(lending);
+            }
+        }
+
+        //Lendings 10 through 12 (returned)
+        for(i = 0; i < 3; i++){
+            if(lendingRepository.findByLendingNumber("2024/" + (10+i)).isEmpty()){
+                startDate = LocalDate.of(2024, 6,(i+1));
+                returnedDate = LocalDate.of(2024,6,(i+2));
+                lending = Lending.newBootstrappingLending(books.get(3-i), readers.get(0), 2024, (i+10), startDate, returnedDate, lendingDurationInDays, fineValuePerDayInCents);
+                lendingRepository.save(lending);
+            }
+        }
     }
 }
 

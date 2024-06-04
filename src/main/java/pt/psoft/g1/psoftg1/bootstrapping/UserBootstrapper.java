@@ -3,6 +3,7 @@ package pt.psoft.g1.psoftg1.bootstrapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Profile("bootstrap")
+@Order(1)
 public class UserBootstrapper implements CommandLineRunner {
 
     private final UserRepository userRepository;
