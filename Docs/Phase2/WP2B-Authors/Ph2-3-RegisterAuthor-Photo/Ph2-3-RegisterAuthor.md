@@ -11,7 +11,8 @@ As Librarian I want to register an author (name, short bio).
 >A: Sim
 
 ### 1.3. Acceptance Criteria
-- AC
+- Os mesmos critérios do caso de uso do WP1 contemplando agora a possibilidade de adicionar uma imagem.
+
 ### 1.4. Found out Dependencies
 - The Librarian must be authenticated in the system
 ### 1.5 Input and Output Data

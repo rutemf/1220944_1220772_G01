@@ -8,9 +8,11 @@ As Reader I want to know the Top 5 authors (which have the most lent books)
 
 >[View WP1B](..%2FWP1B-Authors.md)
 
->[Q:  ]()
+>[Q
+O que é esperador retornar? Top 5 dos autores por ordem e ao lado o total de lendings de cada um deles?
+](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=30001)
 >
->A: 
+>A:  Sim
 
 >[Q:]()
 >
@@ -18,7 +20,8 @@ As Reader I want to know the Top 5 authors (which have the most lent books)
 
 
 ### 1.3. Acceptance Criteria
-- AC
+- Deve retornar os 5 autores com o maior numero de livros requisitados no ultimo ano
+
 
 ### 1.4. Found out Dependencies
 - The reader must be authenticated in the system

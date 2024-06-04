@@ -18,11 +18,13 @@ Quando se refere "em termos de recursos rest e em subrecursos"
 > quer dizer o que? Podemos assumir para ambos os casos que o cliente ja tem o link para o autor?
 ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29862)
 >
->A: 
+>A: Exato.
+
 
 
 ### 1.3. Acceptance Criteria
-- AC
+- Deve retornar a lista de livros desse autor ou uma lista vazia. devem ter em consideração paginação se a lista for demasiado longa
+
 
 ### 1.4. Found out Dependencies
 - The reader must be authenticated in the system
