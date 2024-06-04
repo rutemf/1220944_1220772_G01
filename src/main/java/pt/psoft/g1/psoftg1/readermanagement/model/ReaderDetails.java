@@ -70,10 +70,6 @@ public class ReaderDetails {
     @OneToMany
     private List<Genre> interestList;
 
-    @Transient
-    @Value("${file.upload-dir}")
-    private Path uploadDir;
-
     public ReaderDetails(int readerNumber, Reader reader, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty, String photoURI) {
         if(reader == null || phoneNumber == null) {
             throw new IllegalArgumentException("Provided argument resolves to null object");
