@@ -30,7 +30,6 @@ public class Book {
     @Getter
     private Long version;
 
-    @Getter
     @Embedded
     Isbn isbn;
 
@@ -138,5 +137,9 @@ public class Book {
         } else {
             setPhoto(null);
         }
+    }
+
+    public String getIsbn(){
+        return this.isbn.toString();
     }
 }

@@ -24,9 +24,8 @@ public abstract class ReaderViewMapper extends MapperInterface {
     public abstract List<ReaderView> toReaderView(Iterable<ReaderDetails> readerList);
 
     protected String generatePhotoUrl(ReaderDetails readerDetails) {
-        ReaderNumber readerNumber = readerDetails.getReaderNumber();
-        String sReaderNumber = readerNumber.toString();
-        String[] readerNumberSplit = sReaderNumber.split("/");
+        String readerNumber = readerDetails.getReaderNumber();
+        String[] readerNumberSplit = readerNumber.split("/");
         int year = Integer.parseInt(readerNumberSplit[0]);
         int seq = Integer.parseInt(readerNumberSplit[1]);
         return ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/readers/{year}/{seq}/photo").buildAndExpand(year,seq).toUri().toString();

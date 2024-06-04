@@ -35,14 +35,16 @@ class LendingTest {
                 "O Inspetor Max",
                 "conhecido pastor-alemão que trabalha para a Judiciária, vai ser fundamental para resolver um importante caso de uma rede de malfeitores que quer colocar uma bomba num megaconcerto de uma ilustre cantora",
                 new Genre("Romance"),
-                authors);
+                authors,
+                null);
         readerDetails = new ReaderDetails(1,
                 Reader.newReader("manuel@gmail.com", "Manuelino123!", "Manuel Sarapinto das Coives"),
                 "2000/01/01",
                 "919191919",
                 true,
                 true,
-                true);
+                true,
+                null);
     }
 
     @Test

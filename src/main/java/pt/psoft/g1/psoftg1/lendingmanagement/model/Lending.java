@@ -191,10 +191,11 @@ public class Lending {
     }
 
     private void setDaysUntilReturn(){
-        if(returnedDate == null){
-            this.daysUntilReturn = (int) ChronoUnit.DAYS.between(LocalDate.now(), this.limitDate);
-        }else{
+        int daysUntilReturn = (int) ChronoUnit.DAYS.between(LocalDate.now(), this.limitDate);
+        if(this.returnedDate != null || daysUntilReturn < 0){
             this.daysUntilReturn = null;
+        }else{
+            this.daysUntilReturn = daysUntilReturn;
         }
     }
 

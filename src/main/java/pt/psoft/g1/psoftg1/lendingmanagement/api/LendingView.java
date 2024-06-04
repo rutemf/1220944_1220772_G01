@@ -3,8 +3,12 @@ package pt.psoft.g1.psoftg1.lendingmanagement.api;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @Schema(description = "A Lending")
@@ -27,6 +31,15 @@ public class LendingView {
     private Integer daysOverdue;
 
     private Integer fineValueInCents;
+
+    @Setter
+    @Getter
+    private Map<String, String> links = new HashMap<>();
+
+
+    public void addLink(String rel, String href) {
+        this.links.put(rel, href);
+    }
 
 }
 

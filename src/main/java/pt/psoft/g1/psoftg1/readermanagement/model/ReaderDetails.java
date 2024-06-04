@@ -29,7 +29,6 @@ public class ReaderDetails {
     @OneToOne
     private Reader reader;
 
-    @Getter
     private ReaderNumber readerNumber;
 
     @Embedded
@@ -56,7 +55,6 @@ public class ReaderDetails {
     private boolean thirdPartySharingConsent;
 
     @Getter
-    @Setter
     @OneToOne
     private Photo photo;
 
@@ -168,6 +166,10 @@ public class ReaderDetails {
         } else {
             setPhoto(null);
         }
+    }
+
+    public String getReaderNumber(){
+        return this.readerNumber.toString();
     }
 
     protected ReaderDetails() {
