@@ -1,0 +1,33 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
+
+title WP#4B.14 Get Average Lendings Per Genre
+
+actor "Librarian" as Librarian
+participant "System" as System
+participant ":GenreController" as Ctrl
+participant ":GenreService" as Service
+participant ":GenreRepository" as GenreRepo
+participant ":GenreViewMapper" as Mapper
+
+note over Librarian : Librarian is\nauthenticated
+
+Librarian -> System: get average lendings
+
+System -> Ctrl: getAverageLendings(period, start, end);
+
+Ctrl -> Service: getAverageLendings(period, start, end)
+Service -> GenreRepo: getAverageLendings(period, start, end)
+note right
+    (Details ommited)
+end note
+GenreRepo --> Service: (pairList)
+Service --> Ctrl: (pairList)
+Ctrl -> Mapper: toGenreAvgLendingsView(pairList)
+Mapper --> Ctrl: (listView)
+Ctrl --> System: (listView)
+System --> Librarian: (array of genres\nand their lending\naverages)
+
+@enduml
