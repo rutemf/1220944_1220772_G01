@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.coyote.BadRequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
@@ -101,7 +102,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiCallError<>("Conflict", details.entrySet()));
 	}
 
-	@ExceptionHandler({ IllegalArgumentException.class, NumberFormatException.class })
+	@ExceptionHandler({ IllegalArgumentException.class, NumberFormatException.class, })
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ResponseEntity<Object> handleIllegalArgument(final HttpServletRequest request,
 			final IllegalArgumentException ex) {
