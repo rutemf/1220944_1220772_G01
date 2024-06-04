@@ -21,7 +21,7 @@ public class BirthDate {
     LocalDate date;
 
     @Transient
-    private final String dateFormatRegexPattern = "\\d{4}/\\d{2}/\\d{2}";
+    private final String dateFormatRegexPattern = "\\d{4}-\\d{2}-\\d{2}";
 
     @Transient
     @Value("${minimumReaderAge}")
@@ -33,10 +33,10 @@ public class BirthDate {
 
     public BirthDate(String date) {
         if(!date.matches(dateFormatRegexPattern)) {
-            throw new IllegalArgumentException("Provided birth date is not in a valid format. Use yyyy/MM/dd");
+            throw new IllegalArgumentException("Provided birth date is not in a valid format. Use yyyy-MM-dd");
         }
 
-        String[] dateParts = date.split("/");
+        String[] dateParts = date.split("-");
 
         int year = Integer.parseInt(dateParts[0]);
         int month = Integer.parseInt(dateParts[1]);
@@ -56,6 +56,6 @@ public class BirthDate {
     }
 
     public String toString() {
-        return String.format("%d/%d/%d", this.date.getYear(), this.date.getMonthValue(), this.date.getDayOfMonth());
+        return String.format("%d-%d-%d", this.date.getYear(), this.date.getMonthValue(), this.date.getDayOfMonth());
     }
 }

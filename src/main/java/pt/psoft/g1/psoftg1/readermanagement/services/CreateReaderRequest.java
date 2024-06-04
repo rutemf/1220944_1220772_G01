@@ -28,7 +28,7 @@ public class CreateReaderRequest {
 
     @NonNull
     @NotBlank
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private String birthDate;
 
     @NonNull
