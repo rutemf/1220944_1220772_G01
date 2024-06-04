@@ -7,17 +7,17 @@ title GET book details by Isbn as librarian
 
 actor "Librarian" as User
 participant ":Rest" as Rest
-participant "Ctrl:BookController" as Ctrl
-participant "service:BookService" as Service
-participant "repo:BookRepository" as Repo
+participant "Ctrl:ReaderController" as Ctrl
+participant "service:ReaderService" as Service
+participant "repo:ReaderRepository" as Repo
 
 activate User
 
-User -> Rest: requests the top 5 books lent
+User -> Rest: requests the top 5 readers per genre in a certain time
 
-Rest -> Ctrl: Top5();
+Rest -> Ctrl: Top5ByGenre(genre);
 
-Ctrl -> Service: getTop5(BookDTO)
+Ctrl -> Service: getTop5(ReaderDTO)
 Service -> Repo: getTop5(book)
 Repo --> Service: book or error
 Service --> Ctrl: book or error

@@ -15,8 +15,8 @@ interface LendingRepository {
 }
 
 interface LendingService {
-    + create(isbn, readerNumber) : Lending
-    + findById(lendingNumber)
+    + create(CreateLendingRequest resource) : Lending
+    + findByLendingNumber(String lendingNumber) : Optional<Lending>
     + findByReader(readerNumber)
     + findByBook(Isbn)
     + update(lendingNumber)

@@ -13,11 +13,11 @@ participant "repo:BookRepository" as Repo
 
 activate User
 
-User -> Rest: requests the books detail
+User -> Rest: searches books by title
 
-Rest -> Ctrl: getBookDetails(requestBody);
+Rest -> Ctrl: getBookByTitle();
 
-Ctrl -> Service: get(Book)
+Ctrl -> Service: get(book)
 Service -> Repo: get(book)
 Repo --> Service: book or error
 Service --> Ctrl: book or error

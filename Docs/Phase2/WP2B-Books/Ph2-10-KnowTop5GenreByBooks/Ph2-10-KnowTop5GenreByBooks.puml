@@ -1,17 +1,27 @@
 @startuml
-actor Cliente
-participant AuthorController
-participant AuthorServiceImpl as AuthorService
-participant AuthorRepository
-participant AuthorViewMapper
+'https://plantuml.com/sequence-diagram
+autoactivate on
+autonumber
 
-Cliente -> AuthorController: GET /top5
-AuthorController -> AuthorService: findTopAuthorByLendings()
-AuthorService -> AuthorRepository: findtop5()
-AuthorRepository -> AuthorService: [List<AuthorCountDTO>]
-AuthorService -> AuthorController: [List<AuthorCountDTO>]
-AuthorController -> AuthorViewMapper: toAuthorViewList([List<AuthorCountDTO>])
-AuthorViewMapper -> AuthorController: [List<AuthorCountView>]
-AuthorController -> Cliente: [ListResponse<AuthorCountView>]
+title GET book details by Isbn as librarian
+
+actor "Librarian" as User
+participant ":Rest" as Rest
+participant "Ctrl:GenreController" as Ctrl
+participant "service:GenreService" as Service
+participant "repo:GenreRepository" as Repo
+
+activate User
+
+User -> Rest: requests the top 5 genres by books
+
+Rest -> Ctrl: Top5();
+
+Ctrl -> Service: getTop5(GenreDTO)
+Service -> Repo: getTop5(genre)
+Repo --> Service: genre or error
+Service --> Ctrl: genre or error
+Ctrl --> Rest: genre or error
+Rest --> User: get top 5 genre
 
 @enduml
