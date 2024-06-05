@@ -50,5 +50,5 @@ public interface UserRepository {
 	List<User> searchUsers(Page page, SearchUsersQuery query);
 
 	List<User> findByNameName(String name);
-	List<User> findByNameNameLike(String name);
+	List<User> findByNameNameContains(String name);
 }
