@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView;
+import pt.psoft.g1.psoftg1.authormanagement.api.CoAuthorView;
+import pt.psoft.g1.psoftg1.authormanagement.api.CoAuthorViewMapper;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
@@ -13,6 +15,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +26,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final BookRepository bookRepository;
     private final AuthorMapper mapper;
     private final PhotoRepository photoRepository;
+    private final CoAuthorViewMapper coAuthorViewMapper;
 
     @Override
     public Iterable<Author> findAll() {
@@ -104,9 +108,31 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.findTopAuthorByLendings(pageableRules).getContent();
     }
 
-
     @Override
     public List<Book> findBooksByAuthorNumber(Long authorNumber){
         return bookRepository.findBooksByAuthorNumber(authorNumber);
-    }    }
+    }
+    @Override
+    public List<CoAuthorView> findCoAuthorsAndBooks(Long authorNumber) {
+        // Encontre o autor pelo número fornecido
+        Author author = authorRepository.findByAuthorNumber(authorNumber)
+                .orElseThrow(() -> new NotFoundException("Author not found with number: " + authorNumber));
+
+        // Encontre os co-autores do autor fornecido
+        List<Author> coAuthors = authorRepository.findCoAuthorsByAuthorNumber(authorNumber);
+
+        // Mapeie os co-autores e seus respectivos livros
+        List<CoAuthorView> coAuthorViews = new ArrayList<>();
+        for (Author coAuthor : coAuthors) {
+            List<Book> books = bookRepository.findBooksByAuthorNumber(coAuthor.getAuthorNumber());
+            coAuthorViews.add(coAuthorViewMapper.toCoAuthorView(coAuthor, books));
+        }
+
+        // Adicione o próprio autor à lista de co-autores
+        coAuthorViews.add(coAuthorViewMapper.toCoAuthorView(author, bookRepository.findBooksByAuthorNumber(author.getAuthorNumber())));
+
+        return coAuthorViews;
+    }
+
+}
 

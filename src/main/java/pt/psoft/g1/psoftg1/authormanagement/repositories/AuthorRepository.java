@@ -16,5 +16,5 @@ public interface AuthorRepository {
     Author save(Author author);
     Iterable<Author> findAll();
     Page<AuthorLendingView> findTopAuthorByLendings (Pageable pageableRules);
-
+    List<Author> findCoAuthorsByAuthorNumber(Long authorNumber);
 }

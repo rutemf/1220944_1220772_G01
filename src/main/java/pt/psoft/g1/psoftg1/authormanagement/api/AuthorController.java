@@ -180,4 +180,17 @@ public class AuthorController {
 
         return ResponseEntity.ok().contentType(fileFormat.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG).body(image);
     }
+    @Operation(summary = "Get co-authors and their respective books for a specific author")
+    @GetMapping("/{authorNumber}/co-authors")
+    public ListResponse<CoAuthorView> getCoAuthorsAndBooks(
+            @PathVariable("authorNumber")
+            @Parameter(description = "The number of the Author to find") final Long authorNumber) {
+
+        // Verifica se o autor existe com este ID
+        authorService.findByAuthorNumber(authorNumber)
+                .orElseThrow(() -> new NotFoundException(Author.class, authorNumber));
+
+        // Obtenha os co-autores e seus respectivos livros
+        return new ListResponse<>(authorService.findCoAuthorsAndBooks(authorNumber));
+    }
 }
