@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SpringDataForbiddenNameRepository extends ForbiddenNameRepository, CrudRepository<ForbiddenName, Long> {
-    List<ForbiddenName> findByForbiddenNameLike(String pat);
+    List<ForbiddenName> findByForbiddenNameContains(String pat);
 
     @Override
     @Query("SELECT fn " +

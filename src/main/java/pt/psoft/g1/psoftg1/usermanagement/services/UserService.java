@@ -60,7 +60,7 @@ public class UserService implements UserDetailsService {
 	public List<User> findByName(String name){
 		return this.userRepo.findByNameName(name);
 	}
-	public List<User> findByNameLike(String name) { return this.userRepo.findByNameNameLike(name); }
+	public List<User> findByNameLike(String name) { return this.userRepo.findByNameNameContains(name); }
 
 	@Transactional
 	public User create(final CreateUserRequest request) {
@@ -70,7 +70,7 @@ public class UserService implements UserDetailsService {
 
 		Iterable<String> words = List.of(request.getName().split("\\s+"));
 		for (String word : words){
-			if(!forbiddenNameRepository.findByForbiddenNameLike(word).isEmpty()) {
+			if(!forbiddenNameRepository.findByForbiddenNameContains(word).isEmpty()) {
 				throw new IllegalArgumentException("Name contains a forbidden word");
 			}
 		}

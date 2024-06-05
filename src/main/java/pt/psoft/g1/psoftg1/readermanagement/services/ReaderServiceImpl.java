@@ -41,7 +41,7 @@ public class ReaderServiceImpl implements ReaderService {
 
         Iterable<String> words = List.of(request.getFullName().split("\\s+"));
         for (String word : words){
-            if(!forbiddenNameRepository.findByForbiddenNameLike(word).isEmpty()) {
+            if(!forbiddenNameRepository.findByForbiddenNameContains(word).isEmpty()) {
                 throw new IllegalArgumentException("Name contains a forbidden word");
             }
         }

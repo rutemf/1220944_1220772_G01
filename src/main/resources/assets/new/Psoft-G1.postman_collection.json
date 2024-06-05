@@ -257,6 +257,24 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Top5Authors",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}{{baseUrl}}/authors/top5",
+									"host": [
+										"{{host}}{{baseUrl}}"
+									],
+									"path": [
+										"authors",
+										"top5"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"auth": {
@@ -441,8 +459,7 @@
 								"header": [
 									{
 										"key": "If-Match",
-										"value": "{{authorEtag}}",
-										"type": "text"
+										"value": "{{authorEtag}}"
 									}
 								],
 								"body": {
@@ -508,7 +525,117 @@
 			"item": [
 				{
 					"name": "As Reader",
-					"item": [],
+					"item": [
+						{
+							"name": "GetBookByIsbn",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"OK\", function(){\r",
+											"\r",
+											"    pm.response.to.have.status(200); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}{{baseUrl}}/books/9782722203426",
+									"host": [
+										"{{host}}{{baseUrl}}"
+									],
+									"path": [
+										"books",
+										"9782722203426"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "FindBooksByTitle",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"OK\", function(){\r",
+											"\r",
+											"    pm.response.to.have.status(200); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}{{baseUrl}}/books?title=o",
+									"host": [
+										"{{host}}{{baseUrl}}"
+									],
+									"path": [
+										"books"
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": "o"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "FindBooksByGenre",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"OK\", function(){\r",
+											"\r",
+											"    pm.response.to.have.status(200); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}{{baseUrl}}/books?genre=infantil",
+									"host": [
+										"{{host}}{{baseUrl}}"
+									],
+									"path": [
+										"books"
+									],
+									"query": [
+										{
+											"key": "genre",
+											"value": "infantil"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
 					"auth": {
 						"type": "bearer",
 						"bearer": [
@@ -547,50 +674,233 @@
 					"item": [
 						{
 							"name": "GetAverageLendings",
-							"event": [
+							"item": [
 								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"OK\", function(){\r",
-											"\r",
-											"    pm.response.to.have.status(200); \r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{host}}{{baseUrl}}/genres/avgLendings?period=month&start=2024-05-01&end=2024-05-31",
-									"host": [
-										"{{host}}{{baseUrl}}"
-									],
-									"path": [
-										"genres",
-										"avgLendings"
-									],
-									"query": [
+									"name": "GetAverageLendings",
+									"event": [
 										{
-											"key": "period",
-											"value": "month"
-										},
-										{
-											"key": "start",
-											"value": "2024-05-01"
-										},
-										{
-											"key": "end",
-											"value": "2024-05-31"
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"OK\", function(){\r",
+													"\r",
+													"    pm.response.to.have.status(200); \r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
 										}
-									]
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{host}}{{baseUrl}}/genres/avgLendings?period=month&start=2024-05-01&end=2024-05-31",
+											"host": [
+												"{{host}}{{baseUrl}}"
+											],
+											"path": [
+												"genres",
+												"avgLendings"
+											],
+											"query": [
+												{
+													"key": "period",
+													"value": "month"
+												},
+												{
+													"key": "start",
+													"value": "2024-05-01"
+												},
+												{
+													"key": "end",
+													"value": "2024-05-31"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GetAverageLendings - invalid dates",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Bad Request\", function(){\r",
+													"\r",
+													"    pm.response.to.have.status(400); \r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{host}}{{baseUrl}}/genres/avgLendings?period=month&start=2024-06-01&end=2024-05-31",
+											"host": [
+												"{{host}}{{baseUrl}}"
+											],
+											"path": [
+												"genres",
+												"avgLendings"
+											],
+											"query": [
+												{
+													"key": "period",
+													"value": "month"
+												},
+												{
+													"key": "start",
+													"value": "2024-06-01"
+												},
+												{
+													"key": "end",
+													"value": "2024-05-31"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GetAverageLendings - invalid date format",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Bad Request\", function(){\r",
+													"\r",
+													"    pm.response.to.have.status(400); \r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{host}}{{baseUrl}}/genres/avgLendings?period=day&start=2024-35-01&end=2024-05-31",
+											"host": [
+												"{{host}}{{baseUrl}}"
+											],
+											"path": [
+												"genres",
+												"avgLendings"
+											],
+											"query": [
+												{
+													"key": "period",
+													"value": "day"
+												},
+												{
+													"key": "start",
+													"value": "2024-35-01"
+												},
+												{
+													"key": "end",
+													"value": "2024-05-31"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GetAverageLendings - invalid period Copy",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Bad Request\", function(){\r",
+													"\r",
+													"    pm.response.to.have.status(400); \r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{host}}{{baseUrl}}/genres/avgLendings?period=dia&start=2024-05-01&end=2024-05-31",
+											"host": [
+												"{{host}}{{baseUrl}}"
+											],
+											"path": [
+												"genres",
+												"avgLendings"
+											],
+											"query": [
+												{
+													"key": "period",
+													"value": "dia"
+												},
+												{
+													"key": "start",
+													"value": "2024-05-01"
+												},
+												{
+													"key": "end",
+													"value": "2024-05-31"
+												}
+											]
+										}
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
+						},
+						{
+							"name": "GetTop5ReaderByGenre",
+							"item": [
+								{
+									"name": "getTop5ReaderByGenre",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{host}}{{baseUrl}}/readers/top5ByGenre?genre=Romance&startDate=2024-01-01&endDate=2024-06-01",
+											"host": [
+												"{{host}}{{baseUrl}}"
+											],
+											"path": [
+												"readers",
+												"top5ByGenre"
+											],
+											"query": [
+												{
+													"key": "genre",
+													"value": "Romance"
+												},
+												{
+													"key": "startDate",
+													"value": "2024-01-01"
+												},
+												{
+													"key": "endDate",
+													"value": "2024-06-01"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
 						}
 					],
 					"auth": {
@@ -636,24 +946,43 @@
 					"item": [
 						{
 							"name": "GetReaderLendingsByIsbn",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"OK\", function(){\r",
+											"\r",
+											"    pm.response.to.have.status(200); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{host}}{{baseUrl}}/readers/2024/3/lendings?isbn=9782722203402",
+									"raw": "{{host}}{{baseUrl}}/readers/2024/1/lendings?isbn=9782722203402&returned=false",
 									"host": [
 										"{{host}}{{baseUrl}}"
 									],
 									"path": [
 										"readers",
 										"2024",
-										"3",
+										"1",
 										"lendings"
 									],
 									"query": [
 										{
 											"key": "isbn",
 											"value": "9782722203402"
+										},
+										{
+											"key": "returned",
+											"value": "false"
 										}
 									]
 								}
@@ -745,8 +1074,7 @@
 								"header": [
 									{
 										"key": "If-Match",
-										"value": "{{lendingEtag}}",
-										"type": "text"
+										"value": "{{lendingEtag}}"
 									}
 								],
 								"body": {
@@ -759,14 +1087,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{host}}{{baseUrl}}/lendings/2024/13",
+									"raw": "{{host}}{{baseUrl}}/lendings/2024/14",
 									"host": [
 										"{{host}}{{baseUrl}}"
 									],
 									"path": [
 										"lendings",
 										"2024",
-										"13"
+										"14"
 									]
 								}
 							},
@@ -795,14 +1123,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{host}}{{baseUrl}}/lendings/2024/13",
+									"raw": "{{host}}{{baseUrl}}/lendings/2024/3",
 									"host": [
 										"{{host}}{{baseUrl}}"
 									],
 									"path": [
 										"lendings",
 										"2024",
-										"13"
+										"3"
 									]
 								}
 							},
@@ -932,6 +1260,47 @@
 										}
 									},
 									"response": []
+								},
+								{
+									"name": "LendBook - Reader has overdue lendings",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Bad Request\", function(){\r",
+													"\r",
+													"    pm.response.to.have.status(400); \r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"isbn\": \"9782722203402\",\r\n    \"readerNumber\": \"2024/3\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}{{baseUrl}}/lendings",
+											"host": [
+												"{{host}}{{baseUrl}}"
+											],
+											"path": [
+												"lendings"
+											]
+										}
+									},
+									"response": []
 								}
 							]
 						},
@@ -944,13 +1313,13 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{host}}{{baseUrl}}/lendings/avgduration",
+											"raw": "{{host}}{{baseUrl}}/lendings/avgDuration",
 											"host": [
 												"{{host}}{{baseUrl}}"
 											],
 											"path": [
 												"lendings",
-												"avgduration"
+												"avgDuration"
 											]
 										}
 									},
@@ -959,7 +1328,7 @@
 							]
 						},
 						{
-							"name": "GetLending",
+							"name": "GetLending - not returned, not over limit",
 							"event": [
 								{
 									"listen": "test",
@@ -982,14 +1351,88 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{host}}{{baseUrl}}/lendings/2024/7",
+									"raw": "{{host}}{{baseUrl}}/lendings/2024/6",
 									"host": [
 										"{{host}}{{baseUrl}}"
 									],
 									"path": [
 										"lendings",
 										"2024",
-										"7"
+										"6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetLending - returned, not over limit",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"OK\", function(){\r",
+											"\r",
+											"    pm.response.to.have.status(200); \r",
+											"    \r",
+											"    let lending = postman.getResponseHeader(\"ETag\");\r",
+											"    pm.environment.set(\"lendingEtag\", lending); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}{{baseUrl}}/lendings/2024/1",
+									"host": [
+										"{{host}}{{baseUrl}}"
+									],
+									"path": [
+										"lendings",
+										"2024",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetLending - not returned, overdue",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"OK\", function(){\r",
+											"\r",
+											"    pm.response.to.have.status(200); \r",
+											"    \r",
+											"    let lending = postman.getResponseHeader(\"ETag\");\r",
+											"    pm.environment.set(\"lendingEtag\", lending); \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}{{baseUrl}}/lendings/2024/8",
+									"host": [
+										"{{host}}{{baseUrl}}"
+									],
+									"path": [
+										"lendings",
+										"2024",
+										"8"
 									]
 								}
 							},
