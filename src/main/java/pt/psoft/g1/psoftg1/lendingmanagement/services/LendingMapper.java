@@ -32,6 +32,6 @@ public abstract class LendingMapper {
      * LendingMapper class. However, it's generally not recommended to include such business logic directly in
      * the mapper class. Instead, you might consider moving this logic to the service layer where the business
      * operations are performed.*/
-    public abstract void update(SetLendingReturnedDto request, @MappingTarget Lending lending);
+    public abstract void update(SetLendingReturnedRequest request, @MappingTarget Lending lending);
 
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
@@ -57,7 +58,7 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.save(author);
     }
     @Override
-    public List<Author> findTopAuthorByLendings() {
+    public List<AuthorLendingView> findTopAuthorByLendings() {
         Pageable pageableRules = PageRequest.of(0,5);
         return authorRepository.findTopAuthorByLendings(pageableRules).getContent();
     }

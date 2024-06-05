@@ -14,14 +14,15 @@ public interface LendingService {
     Optional<Lending> findByLendingNumber(String lendingNumber);
     /**
      * @param readerNumber - Reader Number of the Reader associated with the lending
-     * @param isbn - ISBN of the book associated with the lending
+     * @param isbn         - ISBN of the book associated with the lending
+     * @param returned     - Wether it's intended to filter by the return status of a lending
      * @return {@code Iterable<Lending>}
      */
-    List<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn);
+    List<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn, Optional<Boolean> returned);
 
     Lending create(CreateLendingRequest resource); //No ID passed, as it is auto generated
 
-    Lending setReturned(String id, SetLendingReturnedDto resource, long desiredVersion);
+    Lending setReturned(String id, SetLendingReturnedRequest resource, long desiredVersion);
 
     String getAverageDuration();
 

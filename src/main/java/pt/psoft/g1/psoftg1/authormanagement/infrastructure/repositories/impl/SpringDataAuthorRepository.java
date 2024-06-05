@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 
@@ -22,19 +23,16 @@ public interface SpringDataAuthorRepository extends AuthorRepository, CrudReposi
     @Override
     @Query("SELECT a " +
             "FROM Author a " +
-            "WHERE a.name.name LIKE %:name% ")
+            "WHERE a.name.name LIKE :name% ")
     List<Author> searchByAuthorNameLike(@Param("name") String name);
 
     @Override
-    @Query(value =
-            "SELECT a.name AS authorname, COUNT(l.LENDING_NUMBER) AS total_Lending " +
-            "FROM Author a " +
-            "JOIN BOOK_AUTHORS on a.AUTHOR_NUMBER = BOOK_AUTHORS.AUTHORS_AUTHOR_NUMBER " +
-            "JOIN Book b on BOOK_AUTHORS.BOOK_PK = b.PK " +
-            "JOIN Lending l ON b.isbn " +
+    @Query("SELECT new pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView(a.name.name, COUNT(l.pk)) " +
+            "FROM Book b " +
+            "JOIN b.authors a " +
+            "JOIN Lending l ON l.book.pk = b.pk " +
             "GROUP BY a.name " +
-            "ORDER BY total_Lending DESC "
-            , nativeQuery = true)
-    Page<Author> findTopAuthorByLendings(Pageable pageable);
+            "ORDER BY COUNT(l) DESC")
+    Page<AuthorLendingView> findTopAuthorByLendings(Pageable pageable);
 
 }

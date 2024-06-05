@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.authormanagement.services;
 
+import pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 
@@ -18,7 +19,7 @@ public interface AuthorService {
 
     Author partialUpdate(Long authorNumber, UpdateAuthorRequest resource, long desiredVersion);
 
-    List<Author> findTopAuthorByLendings();
+    List<AuthorLendingView> findTopAuthorByLendings();
 
     List<Book> findBooksByAuthorNumber(Long authorNumber);
 }

@@ -37,8 +37,19 @@ public class LendingServiceImpl implements LendingService{
     }
 
     @Override
-    public List<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn){
-        return lendingRepository.listByReaderNumberAndIsbn(readerNumber, isbn);
+    public List<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn, Optional<Boolean> returned){
+        List<Lending> lendings = lendingRepository.listByReaderNumberAndIsbn(readerNumber, isbn);
+        if(returned.isEmpty()){
+            return lendings;
+        }else{
+            for(int i = 0; i < lendings.size(); i++){
+                if ((lendings.get(i).getReturnedDate() == null) == returned.get()){
+                    lendings.remove(i);
+                    i--;
+                }
+            }
+        }
+        return lendings;
     }
 
     @Override
@@ -69,7 +80,7 @@ public class LendingServiceImpl implements LendingService{
     }
 
     @Override
-    public Lending setReturned(final String lendingNumber, final SetLendingReturnedDto resource, final long desiredVersion) {
+    public Lending setReturned(final String lendingNumber, final SetLendingReturnedRequest resource, final long desiredVersion) {
 
         var lending = lendingRepository.findByLendingNumber(lendingNumber)
                 .orElseThrow(() -> new NotFoundException("Cannot update lending with this lending number"));

@@ -17,7 +17,7 @@ import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.services.CreateLendingRequest;
 import pt.psoft.g1.psoftg1.lendingmanagement.services.LendingService;
-import pt.psoft.g1.psoftg1.lendingmanagement.services.SetLendingReturnedDto;
+import pt.psoft.g1.psoftg1.lendingmanagement.services.SetLendingReturnedRequest;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
@@ -107,7 +107,7 @@ public class LendingController {
             @PathVariable("seq")
                 @Parameter(description = "The sequential component of the Lending to find")
                 final Integer seq,
-            @Valid @RequestBody final SetLendingReturnedDto resource) {
+            @Valid @RequestBody final SetLendingReturnedRequest resource) {
         final String ifMatchValue = request.getHeader(IF_MATCH);
         if (ifMatchValue == null || ifMatchValue.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,

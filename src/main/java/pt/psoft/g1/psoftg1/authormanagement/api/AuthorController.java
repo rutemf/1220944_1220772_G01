@@ -114,7 +114,7 @@ public class AuthorController {
     //Know the Top 5 authors which have the most lent books
     @Operation(summary = "Know the Top 5 authors which have the most lent books")
     @GetMapping("/top5")
-    public ListResponse<AuthorView> getTop5() {
-        return new ListResponse<>(authorViewMapper.toAuthorView(authorService.findTopAuthorByLendings()));
+    public ListResponse<AuthorLendingView> getTop5() {
+        return new ListResponse<>(authorService.findTopAuthorByLendings());
     }
 }
