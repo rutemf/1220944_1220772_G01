@@ -13,6 +13,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.shared.model.Photo;
 import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 
 import java.time.LocalDate;
@@ -62,7 +63,7 @@ public class BookServiceImpl implements BookService {
 
 		newBook = new Book(isbn, request.getTitle(), request.getDescription(), genre, authors, photoURI);
 
-		photoRepository.save(newBook.getPhoto());
+		Photo savedPhoto = photoRepository.save(newBook.getPhoto());
 
         return bookRepository.save(newBook);
 	}
@@ -109,6 +110,7 @@ public class BookServiceImpl implements BookService {
         }
 
         book.applyPatch(Long.parseLong(currentVersion), request);
+		photoRepository.save(book.getPhoto());
 		bookRepository.save(book);
 
 
@@ -127,7 +129,7 @@ public class BookServiceImpl implements BookService {
 		return this.bookRepository.findTop5BooksLent(oneYearAgo, pageableRules).getContent();
 	}
 	@Override
-	public List<Book> findByGenre(Genre genre) {
+	public List<Book> findByGenre(String genre) {
 		return this.bookRepository.findByGenre(genre.toString());
 	}
 

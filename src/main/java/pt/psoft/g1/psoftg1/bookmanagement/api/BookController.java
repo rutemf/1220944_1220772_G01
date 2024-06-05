@@ -77,14 +77,14 @@ public class BookController {
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        final var savedBook = bookService.save(book);
+        //final var savedBook = bookService.save(book);
         final var newBookUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .pathSegment(savedBook.getIsbn().toString())
+                .pathSegment(book.getIsbn().toString())
                 .build().toUri();
 
         return ResponseEntity.created(newBookUri)
-                .eTag(Long.toString(savedBook.getVersion()))
-                .body(bookViewMapper.toBookView(savedBook));
+                .eTag(Long.toString(book.getVersion()))
+                .body(bookViewMapper.toBookView(book));
     }
 
     @Operation(summary = "Gets a specific Book by isbn")
@@ -179,8 +179,10 @@ public class BookController {
                 throw new NotFoundException(Book.class, title);
             }
         } else if (genre != null) {
-            Optional<Genre> optGenre = genreService.findByString(genre);
-            books = bookService.findByGenre(optGenre.orElseThrow(() -> new NotFoundException(Book.class, genre)));
+            books = bookService.findByGenre(genre);
+            if (books.isEmpty()) {
+                throw new NotFoundException(Book.class, genre);
+            }
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You must provide either a title or a genre to search for books");
         }
