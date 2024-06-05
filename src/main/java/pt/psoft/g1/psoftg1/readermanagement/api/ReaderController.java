@@ -279,7 +279,12 @@ class ReaderController {
                 throw new AccessDeniedException("Reader does not have permission to view these lendings");
             }
         }
-        return lendingViewMapper.toLendingView(lendingService.listByReaderNumberAndIsbn(urlReaderNumber, isbn, returned));
+        final var lendings = lendingService.listByReaderNumberAndIsbn(urlReaderNumber, isbn, returned);
+
+        if(lendings.isEmpty())
+            throw new NotFoundException("No lendings found with provided ISBN");
+
+        return lendingViewMapper.toLendingView(lendings);
     }
 
     //TODO: Modify the mapping accordingly and apply the min top (static of dynamic)
@@ -292,7 +297,13 @@ class ReaderController {
     public ListResponse<ReaderCountView> getTop5ReaderByGenre(
             @RequestParam("genre") String genre,
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return new ListResponse<>(readerViewMapper.toReaderCountViewList(readerService.findTopByGenre(genre,startDate,endDate)));
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)
+    {
+        final var books = readerService.findTopByGenre(genre,startDate,endDate);
+
+        if(books.isEmpty())
+            throw new NotFoundException("No lendings found with provided parameters");
+
+        return new ListResponse<>(readerViewMapper.toReaderCountViewList(books));
     }
 }
