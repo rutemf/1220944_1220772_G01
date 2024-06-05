@@ -27,14 +27,10 @@ public class Author {
     @Embedded
     private Name name;
 
-    @Transient
-    @Value("${file.upload-dir}")
-    private Path uploadDir;
-
     @Nullable
     @Getter
     @OneToOne
-    @JoinColumn(name="photo_id")
+    @JoinColumn(name = "photo_id")
     private Photo photo;
 
     @Embedded
@@ -43,12 +39,13 @@ public class Author {
     public void setName(String name) {
         this.name = new Name(name);
     }
+
     public void setBio(String bio) {
         this.bio = new Bio(bio);
     }
 
     private void setPhotoInternal(String photo) {
-        if(photo == null) {
+        if (photo == null) {
             this.photo = null;
             return;
         }
@@ -56,14 +53,18 @@ public class Author {
         this.photo = new Photo(Paths.get(photo));
     }
 
-    public Long getVersion() { return version;}
+    public Long getVersion() {
+        return version;
+    }
 
-    public Long getId() { return authorNumber;}
+    public Long getId() {
+        return authorNumber;
+    }
 
     public Author(String name, String bio, String photoURI) {
         setName(name);
         setBio(bio);
-        if(photoURI != null) {
+        if (photoURI != null) {
             try {
                 //If the Path object instantiation succeeds, it means that we have a valid Path
                 this.photo = new Photo(Paths.get(photoURI));
@@ -75,6 +76,10 @@ public class Author {
             this.photo = null;
         }
 
+    }
+
+    public void setPhoto(String photo) {
+        setPhotoInternal(photo);
     }
 
     protected Author() {
@@ -94,21 +99,22 @@ public class Author {
         if (request.getBio() != null) {
             setBio(request.getBio());
         }
-        if(request.getPhotoURI() != null) {
+        if (request.getPhotoURI() != null) {
             try {
                 setPhotoInternal(request.getPhotoURI());
-            } catch(InvalidPathException ignored) {}
+            } catch (InvalidPathException ignored) {
+            }
         } else {
             setPhotoInternal(null);
         }
     }
 
 
-    public String getName(){
+    public String getName() {
         return this.name.toString();
     }
 
-    public String getBio(){
+    public String getBio() {
         return this.bio.toString();
     }
 }
