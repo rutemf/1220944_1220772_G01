@@ -34,7 +34,7 @@ public interface SpringDataBookRepository  extends BookRepository, CrudRepositor
     @Override
     @Query("SELECT b " +
             "FROM Book b " +
-            "JOIN Genre g ON b.genre.genre LIKE %:genre% ")
+            "WHERE b.genre.genre LIKE %:genre%")
     List<Book> findByGenre(@Param("genre") String genre);
 
     @Override

@@ -1,6 +1,7 @@
 package pt.psoft.g1.psoftg1.bookmanagement.model;
 
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -33,9 +34,10 @@ public class Book {
     @Embedded
     Isbn isbn;
 
-    @Setter
+    @Nullable
     @Getter
     @OneToOne
+    @JoinColumn(name="photo_id")
     private Photo photo;
 
     @Getter
@@ -102,6 +104,19 @@ public class Book {
         // got ORM only
     }
 
+    public void setPhoto(String photo) {
+        this.setPhotoInternal(photo);
+    }
+
+    private void setPhotoInternal(String photo) {
+        if(photo == null) {
+            this.photo = null;
+            return;
+        }
+
+        this.photo = new Photo(Paths.get(photo));
+    }
+
     public void applyPatch(final Long desiredVersion, UpdateBookRequest request) {
         if (!Objects.equals(this.version, desiredVersion))
             throw new StaleObjectStateException("Object was already modified by another user", this.pk);
@@ -129,10 +144,10 @@ public class Book {
 
         if(photoURI != null) {
             try {
-                setPhoto(new Photo(Paths.get(photoURI)));
+                setPhotoInternal(photoURI);
             } catch(InvalidPathException ignored) {}
         } else {
-            setPhoto(null);
+            setPhotoInternal(null);
         }
     }
 
