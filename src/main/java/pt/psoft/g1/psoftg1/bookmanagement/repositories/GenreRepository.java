@@ -3,6 +3,7 @@ package pt.psoft.g1.psoftg1.bookmanagement.repositories;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
+import pt.psoft.g1.psoftg1.bookmanagement.api.GenreLendingsPerMonthView;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
 
@@ -17,4 +18,5 @@ public interface GenreRepository {
     Genre save(Genre genre);
     Page<GenreBookCountDTO> findTop5GenreByBookCount(Pageable pageable);
     List<Pair<Genre, Double>> getAverageLendings(String period, LocalDate startDate, LocalDate endDate);
+    List<GenreLendingsPerMonthView> getLendingsPerMonthLastYearByGenre();
 }

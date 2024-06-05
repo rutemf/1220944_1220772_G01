@@ -2,6 +2,7 @@ package pt.psoft.g1.psoftg1.bookmanagement.services;
 
 
 import org.springframework.data.util.Pair;
+import pt.psoft.g1.psoftg1.bookmanagement.api.GenreLendingsPerMonthView;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 
 import java.time.LocalDate;
@@ -19,4 +20,7 @@ public interface GenreService {
     List<GenreBookCountDTO> findTopGenreByBooks();
 
     List<Pair<Genre, String>> getAverageLendings(String period, LocalDate startDate, LocalDate endDate);
+
+    List<GenreLendingsPerMonthView> getLendingsPerMonthLastYearByGenre();
+
 }

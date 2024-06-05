@@ -152,18 +152,24 @@ public class AuthorController {
     @Operation(summary = "Know the Top 5 authors which have the most lent books")
     @GetMapping("/top5")
     public ListResponse<AuthorLendingView> getTop5() {
-        return new ListResponse<>(authorService.findTopAuthorByLendings());
+        final var list = authorService.findTopAuthorByLendings();
+
+        if(list.isEmpty())
+            throw new NotFoundException("No authors to show");
+
+        return new ListResponse<>(list);
     }
 
     //Photo
     @Operation(summary= "Gets a author photo")
-    @GetMapping("/{authornumber}/photo")
+    @GetMapping("/{authorNumber}/photo")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<byte[]> getSpecificAuthorPhoto(@PathVariable("authorNumber")
                                                              @Parameter(description = "The number of the Author to find")
                                                              final Long authorNumber) {
 
-        Author authorDetails = authorService.findByAuthorNumber(authorNumber).orElseThrow(() -> new NotFoundException(Author.class, authorNumber));
+        Author authorDetails = authorService.findByAuthorNumber(authorNumber)
+                .orElseThrow(() -> new NotFoundException(Author.class, authorNumber));
 
         //In case the user has no photo, just return a 200 OK without body
         if(authorDetails.getPhoto() == null) {
@@ -172,13 +178,16 @@ public class AuthorController {
 
         String photoFile = authorDetails.getPhoto().getPhotoFile();
         byte[] image = this.fileStorageService.getFile(photoFile);
-        String fileFormat = this.fileStorageService.getExtension(authorDetails.getPhoto().getPhotoFile()).orElseThrow(() -> new ValidationException("Unable to get file extension"));
+        String fileFormat = this.fileStorageService.getExtension(authorDetails.getPhoto().getPhotoFile())
+                .orElseThrow(() -> new ValidationException("Unable to get file extension"));
 
         if(image == null) {
             return ResponseEntity.ok().build();
         }
 
-        return ResponseEntity.ok().contentType(fileFormat.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG).body(image);
+        return ResponseEntity.ok()
+                .contentType(fileFormat.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG)
+                .body(image);
     }
     @Operation(summary = "Get co-authors and their respective books for a specific author")
     @GetMapping("/{authorNumber}/co-authors")

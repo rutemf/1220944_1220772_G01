@@ -5,15 +5,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreService;
+import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
-import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -26,7 +25,6 @@ public class GenreController {
     private final GenreService genreService;
     private final GenreViewMapper genreViewMapper;
 
-    @RolesAllowed(Role.LIBRARIAN)
     @ApiResponse(description = "Success",
             responseCode = "200",
             content = { @Content(mediaType = "application/json",
@@ -59,6 +57,21 @@ public class GenreController {
 
     @GetMapping("/top5")
     public ListResponse<GenreBookCountView> getTop() {
-        return new ListResponse<>(genreViewMapper.toGenreBookCountView(genreService.findTopGenreByBooks()));
+        final var list = genreService.findTopGenreByBooks();
+
+        if(list.isEmpty())
+            throw new NotFoundException("No genres to show");
+
+        return new ListResponse<>(genreViewMapper.toGenreBookCountView(list));
+    }
+
+    @GetMapping("/lendingsPerMonthLastTwelveMonths")
+    public ListResponse<GenreLendingsPerMonthView> getLendingsPerMonthLastYearByGenre() {
+        final var list = genreService.getLendingsPerMonthLastYearByGenre();
+
+        if(list.isEmpty())
+            throw new NotFoundException("No genres to show");
+
+        return new ListResponse<>(list);
     }
 }

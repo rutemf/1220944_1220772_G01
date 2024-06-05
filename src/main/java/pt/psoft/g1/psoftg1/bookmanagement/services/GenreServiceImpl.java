@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import pt.psoft.g1.psoftg1.bookmanagement.api.GenreLendingsPerMonthView;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 
@@ -53,4 +54,8 @@ public class GenreServiceImpl implements GenreService {
         return returnList;
     }
 
+    @Override
+    public List<GenreLendingsPerMonthView> getLendingsPerMonthLastYearByGenre() {
+        return genreRepository.getLendingsPerMonthLastYearByGenre();
+    }
 }
