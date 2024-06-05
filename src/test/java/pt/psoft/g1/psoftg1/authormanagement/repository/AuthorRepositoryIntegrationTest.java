@@ -33,7 +33,7 @@ public class AuthorRepositoryIntegrationTest {
         entityManager.flush();
 
         // when
-        List<Author> list = authorRepository.findByName(alex.getName());
+        List<Author> list = authorRepository.searchByNameName(alex.getName());
 
         // then
         assertThat(list).isNotEmpty();

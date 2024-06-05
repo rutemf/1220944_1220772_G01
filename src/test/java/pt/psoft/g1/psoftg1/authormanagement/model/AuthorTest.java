@@ -12,7 +12,7 @@ class AuthorTest {
     private final String validName = "João Alberto";
     private final String validBio = "O João Alberto nasceu em Chaves e foi pedreiro a maior parte da sua vida.";
 
-    private final UpdateAuthorRequest request = new UpdateAuthorRequest(validName, validBio, null);
+    private final UpdateAuthorRequest request = new UpdateAuthorRequest(validName, validBio, null, null);
 
     @BeforeEach
     void setUp() {
@@ -46,7 +46,7 @@ class AuthorTest {
 
     @Test
     void testUpdateAuthorRequest() {
-        final UpdateAuthorRequest request = new UpdateAuthorRequest(validBio, validName, null);
+        final UpdateAuthorRequest request = new UpdateAuthorRequest(validBio, validName, null, null);
         assertNotNull(request);
     }
 
