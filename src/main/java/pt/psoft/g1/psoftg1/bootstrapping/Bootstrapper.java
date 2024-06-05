@@ -98,11 +98,35 @@ public class Bootstrapper implements CommandLineRunner {
                     null);
             authorRepository.save(author);
         }
+        if (authorRepository.searchByNameName("J R R Tolkien").isEmpty()) {
+            final Author author = new Author("J R R Tolkien",
+                    "J.R.R. Tolkien nasceu a 3 de Janeiro de 1892, em Bloemfontein.\n" +
+                            "Depois de ter combatido na Primeira Guerra Mundial, dedicou-se a uma ilustre carreira académica e foi reconhecido como um dos grandes filólogos do planeta.\n" +
+                            "Foi a criação da Terra Média, porém, a trazer-lhe a celebridade. Autor de extraordinários clássicos da ficção, de que são exemplo O Hobbit, O Senhor dos Anéis e O Silmarillion, os seus livros foram traduzidos em mais de 60 línguas e venderam largos milhões de exemplares no mundo inteiro.\n" +
+                            "Tolkien foi nomeado Comandante da Ordem do Império Britânico e, em 1972, foi-lhe atribuído o título de Doutor Honoris Causa, pela Universidade de Oxford.\n" +
+                            "Morreu em 1973, com 81 anos.",
+                    null);
+            authorRepository.save(author);
+        }
+        if (authorRepository.searchByNameName("Gardner Dozois").isEmpty()) {
+            final Author author = new Author("Gardner Dozois",
+                    "Gardner Raymond Dozois (23 de julho de 1947 – 27 de maio de 2018) foi um autor de ficção científica norte-americano.\n" +
+                            "Foi o fundador e editor do Melhores Do Ano de Ficção científica antologias (1984–2018) e foi editor da revista Asimov Ficção científica (1984-2004), ganhando vários prémios.",
+                    null);
+            authorRepository.save(author);
+        }
+        if (authorRepository.searchByNameName("Lisa Tuttle").isEmpty()) {
+            final Author author = new Author("Lisa Tuttle",
+                    "Lisa Gracia Tuttle (nascida a 16 de setembro de 1952) é uma autora americana de ficção científica, fantasia e terror. Publicou mais de uma dúzia de romances, sete coleções de contos e vários títulos de não-ficção, incluindo um livro de referência sobre feminismo, \"Enciclopédia do Feminismo\" (1986). Também editou várias antologias e fez críticas de livros para diversas publicações. Vive no Reino Unido desde 1981.\n" +
+                            "Tuttle ganhou o Prémio John W. Campbell para Melhor Novo Escritor em 1974, recebeu o Prémio Nebula de Melhor Conto em 1982 por \"The Bone Flute\", que recusou, e o Prémio BSFA de Ficção Curta em 1989 por \"In Translation\".",
+                    null);
+            authorRepository.save(author);
+        }
     }
 
     private void createGenres() {
-        if (genreRepository.findByString("Ação").isEmpty()) {
-            final Genre g1 = new Genre("Ação");
+        if (genreRepository.findByString("Fantasia").isEmpty()) {
+            final Genre g1 = new Genre("Fantasia");
             genreRepository.save(g1);
         }
         if (genreRepository.findByString("Informação").isEmpty()) {
@@ -249,7 +273,103 @@ public class Bootstrapper implements CommandLineRunner {
             if (genre.isPresent() && !author.isEmpty()) {
                 authors.add(author.get(0));
                 Book book = new Book("9789895702756",
-                        " A Criada Está a Ver", "A Sra. Lowell transborda simpatia ao acenar-me através da cerca que separa as nossas casas. “Devem ser os nossos novos vizinhos!” Agarro na mão da minha filha e sorrio de volta. No entanto, assim que vê o meu marido, uma expressão estranha atravessa-lhe o rosto. MILLIE, A MEMORÁVEL PROTAGONISTA DOS BESTSELLERS A CRIADA E O SEGREDO DA CRIADA, ESTÁ DE VOLTA!Eu costumava limpar a casa de outras pessoas. Nem posso acreditar que esta casa é realmente minha...",
+                        "A Criada Está a Ver", "A Sra. Lowell transborda simpatia ao acenar-me através da cerca que separa as nossas casas. “Devem ser os nossos novos vizinhos!” Agarro na mão da minha filha e sorrio de volta. No entanto, assim que vê o meu marido, uma expressão estranha atravessa-lhe o rosto. MILLIE, A MEMORÁVEL PROTAGONISTA DOS BESTSELLERS A CRIADA E O SEGREDO DA CRIADA, ESTÁ DE VOLTA!Eu costumava limpar a casa de outras pessoas. Nem posso acreditar que esta casa é realmente minha...",
+                        genre.get(),
+                        authors,
+                        null);
+
+                bookRepository.save(book);
+            }
+        }
+
+        // 7 - O Hobbit
+        if(bookRepository.findByIsbn("9789897776090").isEmpty()) {
+            List<Author> authors = new ArrayList<>();
+            genre = Optional.ofNullable(genreRepository.findByString("Fantasia"))
+                    .orElseThrow(() -> new NotFoundException("Cannot find genre"));
+            author = authorRepository.searchByNameName("J R R Tolkien");
+            if (genre.isPresent() && !author.isEmpty()) {
+                authors.add(author.get(0));
+                Book book = new Book("9789897776090",
+                        "O Hobbit", "\"Esta é a história de como um Baggins viveu uma aventura e deu por si a fazer e a dizer coisas totalmente inesperadas...\n" +
+                        "Bilbo Baggins goza de uma vida confortável, calma e pouco ambiciosa. Raramente viaja mais longe do que a despensa ou a adega do seu buraco de hobbit, em Fundo-do-Saco.\n" +
+                        "Mas a sua tranquilidade é perturbada quando, um dia, o feiticeiro Gandalf e uma companhia de treze anões aparecem à sua porta, para o levar numa perigosa aventura.\n" +
+                        "Eles têm um plano: saquear o tesouro guardado por Smaug, O Magnífico, um dragão enorme e muito perigoso... Bilbo, embora relutante, junta-se a esta missão, desconhecendo que nesta viagem até à Montanha Solitária vai encontrar um anel mágico e uma estranha criatura conhecida como Gollum. Livro com nova tradução e edição.\n" +
+                        "Inclui mapas e ilustrações originais do autor. Situado no mundo imaginário da Terra Média,\n" +
+                        "O Hobbit, o prelúdio de O Senhor dos Anéis, vendeu milhões de exemplares em todo o mundo desde a sua publicação em 1937, impondo-se como um clássico intemporal e um dos livros mais adorados e influentes do século xx.\" ",
+                        genre.get(),
+                        authors,
+                        null);
+
+                bookRepository.save(book);
+            }
+        }
+
+        // 8 - Histórias de Vigaristas e Canalhas
+        if(bookRepository.findByIsbn("9789896379636").isEmpty()) {
+            List<Author> authors = new ArrayList<>();
+            genre = Optional.ofNullable(genreRepository.findByString("Fantasia"))
+                    .orElseThrow(() -> new NotFoundException("Cannot find genre"));
+            author = authorRepository.searchByNameName("J R R Tolkien");
+            List<Author> author2 = authorRepository.searchByNameName("Gardner Dozois");
+            if (genre.isPresent() && !author.isEmpty() && !author2.isEmpty()) {
+                authors.add(author.get(0));
+                authors.add(author2.get(0));
+                Book book = new Book("9789896379636",
+                        "Histórias de Vigaristas e Canalhas",
+                        "Recomendamos cautela ao ler estes contos: há muitos vigaristas e canalhas à solta.\n" +
+                                "Se gostou de ler \"Histórias de Aventureiros e Patifes\", então não vai querer perder novas histórias com alguns dos maiores vigaristas e canalhas. São personagens infames que se recusam a agir preto no branco, e escolhem trilhar os seus próprios caminhos, à margem das leis dos homens. Personagens carismáticas, eloquentes, sem escrúpulos, que chegam até nós através de um formidável elenco de autores.\n" +
+                                "Com organização de George R. R. Martin, um nome que já dispensa apresentações, e Gardner Dozois, tem nas mãos uma antologia de géneros multifacetados e que reúne algumas das mentes mais perversas da literatura fantástica.",
+                        genre.get(),
+                        authors,
+                        null);
+
+                bookRepository.save(book);
+            }
+        }
+
+        // 9 - Histórias de Aventureiros e Patifes
+        if(bookRepository.findByIsbn("9789896378905").isEmpty()) {
+            List<Author> authors = new ArrayList<>();
+            genre = Optional.ofNullable(genreRepository.findByString("Fantasia"))
+                    .orElseThrow(() -> new NotFoundException("Cannot find genre"));
+            author = authorRepository.searchByNameName("J R R Tolkien");
+            List<Author> author2 = authorRepository.searchByNameName("Gardner Dozois");
+            if (genre.isPresent() && !author.isEmpty() && !author2.isEmpty()) {
+                authors.add(author.get(0));
+                authors.add(author2.get(0));
+                Book book = new Book("9789896378905",
+                        "Histórias de Vigaristas e Canalhas",
+                        "Recomendamos cautela a ler estes contos: Há muitos patifes à solta.\n" +
+                                "\n" +
+                                "Há personagens malandras e sem escrúpulos cujo carisma e presença de espírito nos faz estimá-las mais do que devíamos. São patifes, mercenários e vigaristas com códigos de honra duvidosos mas que fazem de qualquer aventura uma delícia de ler.\n" +
+                                "George R. R. Martin é um grande admirador desse tipo de personagens – ou não fosse ele o autor de \"A Guerra dos Tronos\". Nesta monumental antologia, não só participa com um prefácio e um conto introduzindo uma das personagens mais canalhas da história de Westeros, como também a organiza com Gardner Dozois. Se é fã de literatura fantástica, vai deliciar-se!",
+                        genre.get(),
+                        authors,
+                        null);
+
+                bookRepository.save(book);
+            }
+        }
+        // 10 - Windhaven
+        if(bookRepository.findByIsbn("9789896375225").isEmpty()) {
+            List<Author> authors = new ArrayList<>();
+            genre = Optional.ofNullable(genreRepository.findByString("Fantasia"))
+                    .orElseThrow(() -> new NotFoundException("Cannot find genre"));
+            author = authorRepository.searchByNameName("J R R Tolkien");
+            List<Author> author2 = authorRepository.searchByNameName("Lisa Tuttle");
+            if (genre.isPresent() && !author.isEmpty() && !author2.isEmpty()) {
+                authors.add(author.get(0));
+                authors.add(author2.get(0));
+                Book book = new Book("9789896375225",
+                        "Windhaven",
+                        "Ao descobrirem neste novo planeta a habilidade de voar com asas de metal, os voadores de asas prateadas " +
+                                "tornam-se a elite e levam a todo o lado notícias, canções e histórias. Atravessam oceanos, enfrentam as " +
+                                "tempestades e são heróis lendários que enfrentam a morte a cada golpe traiçoeiro do vento. Maris de Amberly," +
+                                " filha de um pescador, foi criada por um voador e nada mais deseja do que conquistar os céus de Windhaven. " +
+                                "A sua ambição é tão forte que a jovem desafia a tradição para se juntar à elite. Mas cedo irá descobrir que" +
+                                " nem todos os voadores estão dispostos a aceitá-la e terá de lutar e arriscar a vida pelo seu sonho. " +
+                                "Conseguirá Maris vencer ou tornar-se-á uma testemunha do fim de Windhaven?",
                         genre.get(),
                         authors,
                         null);
@@ -273,11 +393,20 @@ public class Bootstrapper implements CommandLineRunner {
         final var book4 = bookRepository.findByIsbn("9782722203402");
         final var book5 = bookRepository.findByIsbn("9789722328296");
         final var book6 = bookRepository.findByIsbn("9789895702756");
+        final var book7 = bookRepository.findByIsbn("9789897776090");
+        final var book8 = bookRepository.findByIsbn("9789896379636");
+        final var book9 = bookRepository.findByIsbn("9789896378905");
+        final var book10 = bookRepository.findByIsbn("9789896375225");
         List<Book> books = new ArrayList<>();
         if(book1.isPresent() && book2.isPresent()
                 && book3.isPresent() && book4.isPresent()
-                && book5.isPresent() && book6.isPresent()){
-            books = List.of(new Book[]{book1.get(), book2.get(), book3.get(), book4.get(), book5.get(), book6.get()});
+                && book5.isPresent() && book6.isPresent()
+                && book7.isPresent() && book8.isPresent()
+                && book9.isPresent() && book10.isPresent())
+        {
+            books = List.of(new Book[]{book1.get(), book2.get(), book3.get(),
+                    book4.get(), book5.get(), book6.get(), book7.get(),
+                    book8.get(), book9.get(), book10.get()});
         }
 
         final var readerDetails1 = readerRepository.findByReaderNumber("2024/1");
@@ -293,7 +422,7 @@ public class Bootstrapper implements CommandLineRunner {
                             readerDetails4.get(), readerDetails5.get(), readerDetails6.get()});
         }
 
-        LocalDate startDate = LocalDate.of(2024, 4,1);
+        LocalDate startDate;
         LocalDate returnedDate;
         Lending lending;
 
@@ -346,10 +475,6 @@ public class Bootstrapper implements CommandLineRunner {
                 returnedDate = LocalDate.of(2024,5,(i+2*2));
                 lending = Lending.newBootstrappingLending(books.get(i), readers.get(i), 2024, seq, startDate, returnedDate, lendingDurationInDays, fineValuePerDayInCents);
                 lendingRepository.save(lending);
-/*                if(i < 5){
-                    lending = Lending.newBootstrappingLending(books.get(i), readers.get(i+1), 2024, seq, startDate, returnedDate, lendingDurationInDays, fineValuePerDayInCents);
-                    lendingRepository.save(lending);
-                }*/
             }
         }
 
@@ -379,8 +504,18 @@ public class Bootstrapper implements CommandLineRunner {
         for(i = 0; i < 6; i++){
             ++seq;
             if(lendingRepository.findByLendingNumber("2024/" + seq).isEmpty()){
-                startDate = LocalDate.of(2024, 6,(i/3));
+                startDate = LocalDate.of(2024, 6,(i/3+1));
                 lending = Lending.newBootstrappingLending(books.get(i), readers.get(i%2+3), 2024, seq, startDate, null, lendingDurationInDays, fineValuePerDayInCents);
+                lendingRepository.save(lending);
+            }
+        }
+
+        //Lendings 36 through 45 (not returned, not overdue)
+        for(i = 0; i < 10; i++){
+            ++seq;
+            if(lendingRepository.findByLendingNumber("2024/" + seq).isEmpty()){
+                startDate = LocalDate.of(2024, 6,(2+i/4));
+                lending = Lending.newBootstrappingLending(books.get(i), readers.get(4-i%4), 2024, seq, startDate, null, lendingDurationInDays, fineValuePerDayInCents);
                 lendingRepository.save(lending);
             }
         }

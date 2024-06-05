@@ -110,7 +110,7 @@ public class UserBootstrapper implements CommandLineRunner {
 
         //Reader5 - Marcelo
         if (userRepository.findByUsername("marcelo@gmail.com").isEmpty()) {
-            final Reader marcelo = Reader.newReader("marcelo@gmail.com", "Marcelosousa!123", "Marcelo Montenegro");
+            final Reader marcelo = Reader.newReader("marcelo@gmail.com", "Marcelosousa!123", "Marcelo Rebelo de Sousa");
             userRepository.save(marcelo);
             Optional<ReaderDetails> readerDetails5 = readerRepository.findByReaderNumber(LocalDate.now().getYear() + "/5");
             if (readerDetails5.isEmpty()) {
