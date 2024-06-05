@@ -54,7 +54,7 @@ public class ReaderDetails {
     @Nullable
     @Getter
     @OneToOne
-    @JoinColumn(name="photo_id", nullable = true)
+    @JoinColumn(name="photo_id")
     private Photo photo;
 
     @Version

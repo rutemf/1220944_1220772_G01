@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.StaleObjectStateException;
 import org.springframework.beans.factory.annotation.Value;
+import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.shared.model.Photo;
 
@@ -20,7 +21,6 @@ public class Author {
     @Getter
     private Long authorNumber;
 
-
     @Version
     private long version;
 
@@ -34,7 +34,7 @@ public class Author {
     @Nullable
     @Getter
     @OneToOne
-    @JoinColumn(name="photo_id", nullable = true)
+    @JoinColumn(name="photo_id")
     private Photo photo;
 
     @Embedded
@@ -77,31 +77,26 @@ public class Author {
 
     }
 
-    @Nullable
-    public Photo getPhoto() {
-        return photo;
-    }
-
     protected Author() {
         // got ORM only
     }
 
 
-    public void applyPatch(final long desiredVersion, final String name, final String bio, String photoURI) {
+    public void applyPatch(final long desiredVersion, final UpdateAuthorRequest request) {
 
         if (this.version != desiredVersion) {
             throw new StaleObjectStateException("Object was already modified by another user", this.authorNumber);
         }
-        if (name != null) {
-            setName(name);
+        if (request.getName() != null) {
+            setName(request.getName());
         }
 
-        if (bio != null) {
-            setBio(bio);
+        if (request.getBio() != null) {
+            setBio(request.getBio());
         }
-        if(photoURI != null) {
+        if(request.getPhotoURI() != null) {
             try {
-                setPhotoInternal(photoURI);
+                setPhotoInternal(request.getPhotoURI());
             } catch(InvalidPathException ignored) {}
         } else {
             setPhotoInternal(null);

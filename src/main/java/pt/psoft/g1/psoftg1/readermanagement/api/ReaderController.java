@@ -41,6 +41,7 @@ import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Tag(name = "Readers", description = "Endpoints to manage readers")
@@ -242,37 +243,40 @@ class ReaderController {
     }
 
     @Operation(summary = "Gets the lendings of this reader by ISBN")
-    @GetMapping(value = "/{year}/{seq}/lendings", params = {"isbn"})
+    @GetMapping(value = "/{year}/{seq}/lendings")
     public List<LendingView> getReaderLendingsByIsbn(
             Authentication authentication,
             @PathVariable("year")
-            @Parameter(description = "The year of the Reader to find")
-            final Integer year,
+                @Parameter(description = "The year of the Reader to find")
+                final Integer year,
             @PathVariable("seq")
-            @Parameter(description = "The sequencial of the Reader to find")
-            final Integer seq,
+                @Parameter(description = "The sequencial of the Reader to find")
+                final Integer seq,
             @RequestParam("isbn")
-            @Parameter(description = "The ISBN of the Book to find")
-            final String isbn)
+                @Parameter(description = "The ISBN of the Book to find")
+                final String isbn,
+            @RequestParam(value = "returned", required = false)
+                @Parameter(description = "Filter by returned")
+                final Optional<Boolean> returned)
     {
-        User loggedUser = userService.getAuthenticatedUser(authentication);
-
         String urlReaderNumber = year + "/" + seq;
 
         final var urlReaderDetails = readerService.findByReaderNumber(urlReaderNumber)
                 .orElseThrow(() -> new NotFoundException(Lending.class, urlReaderNumber));
 
-        if(!(loggedUser instanceof Librarian)){
-            //if Librarian is logged in, skip ahead
-            Optional<ReaderDetails> loggedReaderDetails = readerService.findByUsername(loggedUser.getUsername());
-            if(loggedReaderDetails.isPresent()){
-                if(loggedReaderDetails.get().getReaderNumber() != urlReaderDetails.getReaderNumber()){
-                    //if logged Reader matches the one associated with the lendings, skip ahead
-                    throw new AccessDeniedException("Reader does not have permission to view these lendings");
-                }
+        User loggedUser = userService.getAuthenticatedUser(authentication);
+
+        //if Librarian is logged in, skip ahead
+        if (!(loggedUser instanceof Librarian)) {
+            final var loggedReaderDetails = readerService.findByUsername(loggedUser.getUsername())
+                    .orElseThrow(() -> new NotFoundException(ReaderDetails.class, loggedUser.getUsername()));
+
+            //if logged Reader matches the one associated with the lendings, skip ahead
+            if(!Objects.equals(loggedReaderDetails.getReaderNumber(), urlReaderDetails.getReaderNumber())){
+                throw new AccessDeniedException("Reader does not have permission to view these lendings");
             }
         }
-        return lendingViewMapper.toLendingView(lendingService.listByReaderNumberAndIsbn(urlReaderNumber, isbn));
+        return lendingViewMapper.toLendingView(lendingService.listByReaderNumberAndIsbn(urlReaderNumber, isbn, returned));
     }
 
     //TODO: Modify the mapping accordingly and apply the min top (static of dynamic)

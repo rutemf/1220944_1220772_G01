@@ -59,19 +59,19 @@ public class Bootstrapper implements CommandLineRunner {
     private void createAuthors() {
         if (authorRepository.findByName("Manuel Antonio Pina").isEmpty()) {
             final Author a1 = new Author("Manuel Antonio Pina",
-                    "Manuel António Pina foi um jornalista e escritor português, premiado em 2011 com o Prémio Camões");
+                    "Manuel António Pina foi um jornalista e escritor português, premiado em 2011 com o Prémio Camões", null);
             authorRepository.save(a1);
         }
         if (authorRepository.findByName("Author2").isEmpty()) {
-            final Author a2 = new Author("Author2", "Bio do Author 2");
+            final Author a2 = new Author("Author2", "Bio do Author 2", null);
             authorRepository.save(a2);
         }
         if (authorRepository.findByName("Author3").isEmpty()) {
-            final Author a3 = new Author("Author3", "Bio do Author 3");
+            final Author a3 = new Author("Author3", "Bio do Author 3", null);
             authorRepository.save(a3);
         }
         if (authorRepository.findByName("Author4").isEmpty()) {
-            final Author a4 = new Author("Author4", "Bio do Author 4");
+            final Author a4 = new Author("Author4", "Bio do Author 4", null);
             authorRepository.save(a4);
         }
     }
