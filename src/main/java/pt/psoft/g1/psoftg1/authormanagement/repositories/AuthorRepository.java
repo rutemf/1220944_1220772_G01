@@ -11,8 +11,8 @@ import java.util.Optional;
 public interface AuthorRepository {
 
     Optional<Author> findByAuthorNumber(Long authorNumber);
-    List<Author> searchByAuthorNameStartsWith(String name);
-    List<Author> findByName(String name);
+    List<Author> searchByNameNameStartsWith(String name);
+    List<Author> searchByNameName(String name);
     Author save(Author author);
     Iterable<Author> findAll();
     Page<AuthorLendingView> findTopAuthorByLendings (Pageable pageableRules);

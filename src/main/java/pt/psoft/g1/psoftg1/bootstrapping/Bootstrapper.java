@@ -20,7 +20,6 @@ import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.shared.services.ForbiddenNameService;
-import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -57,20 +56,20 @@ public class Bootstrapper implements CommandLineRunner {
     }
 
     private void createAuthors() {
-        if (authorRepository.findByName("Manuel Antonio Pina").isEmpty()) {
+        if (authorRepository.searchByNameName("Manuel Antonio Pina").isEmpty()) {
             final Author a1 = new Author("Manuel Antonio Pina",
                     "Manuel António Pina foi um jornalista e escritor português, premiado em 2011 com o Prémio Camões", null);
             authorRepository.save(a1);
         }
-        if (authorRepository.findByName("Author2").isEmpty()) {
+        if (authorRepository.searchByNameName("Author2").isEmpty()) {
             final Author a2 = new Author("Author2", "Bio do Author 2", null);
             authorRepository.save(a2);
         }
-        if (authorRepository.findByName("Author3").isEmpty()) {
+        if (authorRepository.searchByNameName("Author3").isEmpty()) {
             final Author a3 = new Author("Author3", "Bio do Author 3", null);
             authorRepository.save(a3);
         }
-        if (authorRepository.findByName("Author4").isEmpty()) {
+        if (authorRepository.searchByNameName("Author4").isEmpty()) {
             final Author a4 = new Author("Author4", "Bio do Author 4", null);
             authorRepository.save(a4);
         }
@@ -98,7 +97,7 @@ public class Bootstrapper implements CommandLineRunner {
     protected void createBooks() {
         Optional<Genre> genre = Optional.ofNullable(genreRepository.findByString("Ação"))
                 .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-        List<Author> author = authorRepository.findByName("Manuel Antonio Pina");
+        List<Author> author = authorRepository.searchByNameName("Manuel Antonio Pina");
 
         // O Inspetor Max
         if(bookRepository.findByIsbn("9782826012092").isEmpty()) {
@@ -120,7 +119,7 @@ public class Bootstrapper implements CommandLineRunner {
             List<Author> authors2 = new ArrayList<>();
             genre = Optional.ofNullable(genreRepository.findByString("Informação"))
                     .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-            author = authorRepository.findByName("Author2");
+            author = authorRepository.searchByNameName("Author2");
             if (genre.isPresent() && !author.isEmpty()) {
                 authors2.add(author.get(0));
                 Book b2 = new Book("9782608153111",
@@ -141,7 +140,7 @@ public class Bootstrapper implements CommandLineRunner {
             List<Author> authors3 = new ArrayList<>();
             genre = Optional.ofNullable(genreRepository.findByString("Romance"))
                     .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-            author = authorRepository.findByName("Author3");
+            author = authorRepository.searchByNameName("Author3");
             if (genre.isPresent() && !author.isEmpty()) {
                 authors3.add(author.get(0));
                 Book b3 = new Book("9782722203402",
@@ -160,8 +159,8 @@ public class Bootstrapper implements CommandLineRunner {
             List<Author> authors4 = new ArrayList<>();
             genre = Optional.ofNullable(genreRepository.findByString("Infantil"))
                     .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-            author = authorRepository.findByName("Author3");
-            List<Author> author2 = authorRepository.findByName("Author4");
+            author = authorRepository.searchByNameName("Author3");
+            List<Author> author2 = authorRepository.searchByNameName("Author4");
             if (genre.isPresent() && !author.isEmpty() && !author2.isEmpty()) {
                 authors4.add(author.get(0));
                 authors4.add(author2.get(0));

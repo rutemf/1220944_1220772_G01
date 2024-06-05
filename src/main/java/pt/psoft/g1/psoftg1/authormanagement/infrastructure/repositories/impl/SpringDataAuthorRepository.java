@@ -15,11 +15,6 @@ import java.util.Optional;
 public interface SpringDataAuthorRepository extends AuthorRepository, CrudRepository<Author, Long> {
     @Override
     Optional<Author> findByAuthorNumber(Long authorNumber);
-    @Override
-    @Query("SELECT a " +
-            "FROM Author a " +
-            "WHERE a.name.name = :name")
-    List<Author> findByName(String name);
 
     @Override
     @Query("SELECT new pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView(a.name.name, COUNT(l.pk)) " +
