@@ -1,0 +1,25 @@
+@startuml
+actor Reader
+participant "AuthorController" as AuthorController
+participant "AuthorService" as AuthorService
+participant "AuthorRepository" as AuthorRepository
+participant "BookRepository" as BookRepository
+participant "CoAuthorViewMapper" as CoAuthorViewMapper
+
+Reader -> AuthorController: GET /api/authors/{authorNumber}/co-authors
+AuthorController -> AuthorService: findByAuthorNumber(authorNumber)
+AuthorService -> AuthorRepository: findByAuthorNumber(authorNumber)
+AuthorRepository --> AuthorService: author
+AuthorService --> AuthorController: author exists
+AuthorController -> AuthorService: findCoAuthorsAndBooks(authorNumber)
+AuthorService -> AuthorRepository: findCoAuthorsByAuthorNumber(authorNumber)
+AuthorRepository --> AuthorService: coAuthors
+loop for each co-author
+    AuthorService -> BookRepository: findBooksByAuthorNumber(coAuthor.id)
+    BookRepository --> AuthorService: books
+end loop
+AuthorService -> CoAuthorViewMapper: toCoAuthorView(coAuthor, books)
+CoAuthorViewMapper --> AuthorService: coAuthorView
+AuthorService --> AuthorController: coAuthorsAndBooks
+AuthorController --> Reader: ListResponse<CoAuthorView>
+@enduml
