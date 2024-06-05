@@ -120,6 +120,8 @@ public class ReaderServiceImpl implements ReaderService {
 
         readerDetails.applyPatch(desiredVersion, request);
 
+        photoRepository.save(readerDetails.getPhoto());
+
         userRepo.save(readerDetails.getReader());
         return readerRepo.save(readerDetails);
     }
