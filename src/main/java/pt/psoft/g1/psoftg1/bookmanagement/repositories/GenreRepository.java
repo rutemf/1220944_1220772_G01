@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
-import pt.psoft.g1.psoftg1.bookmanagement.model.GenreBookCountDTO;
+import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
 
 import java.time.LocalDate;
 import java.util.List;

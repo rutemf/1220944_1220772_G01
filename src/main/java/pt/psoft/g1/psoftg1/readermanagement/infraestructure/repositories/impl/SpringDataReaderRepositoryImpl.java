@@ -9,8 +9,9 @@ import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 
 import org.springframework.data.domain.Pageable;
+import pt.psoft.g1.psoftg1.readermanagement.services.ReaderBookCountDTO;
 
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Optional;
 
 
@@ -49,4 +50,18 @@ public interface SpringDataReaderRepositoryImpl extends ReaderRepository, CrudRe
             "GROUP BY rd " +
             "ORDER BY COUNT(l) DESC")
     Page<ReaderDetails> findTopReaders(Pageable pageable);
+
+    @Override
+    @Query("SELECT NEW pt.psoft.g1.psoftg1.readermanagement.services.ReaderBookCountDTO(rd, count(l)) " +
+            "FROM ReaderDetails rd " +
+            "JOIN Lending l ON l.readerDetails.pk = rd.pk " +
+            "JOIN Book b ON b.pk = l.book.pk " +
+            "JOIN Genre g ON g.pk = b.genre.pk " +
+            "WHERE g.genre = :genre " +
+            "AND l.startDate >= :startDate " +
+            "AND l.startDate <= :endDate " +
+            "GROUP BY rd.pk " +
+            "ORDER BY COUNT(l.pk) DESC")
+    Page<ReaderBookCountDTO> findTopByGenre(Pageable pageable, String genre, LocalDate startDate, LocalDate endDate);
 }
+

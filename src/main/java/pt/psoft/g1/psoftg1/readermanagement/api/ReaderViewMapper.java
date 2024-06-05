@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderNumber;
+import pt.psoft.g1.psoftg1.readermanagement.services.ReaderBookCountDTO;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 
 import java.util.List;
@@ -22,6 +22,12 @@ public abstract class ReaderViewMapper extends MapperInterface {
     public abstract ReaderView toReaderView(ReaderDetails readerDetails);
 
     public abstract List<ReaderView> toReaderView(Iterable<ReaderDetails> readerList);
+
+   @Mapping(target = "readerView", source = "readerDetails")
+    public abstract ReaderCountView toReaderCountView(ReaderBookCountDTO readerBookCountDTO);
+
+    public abstract List<ReaderCountView> toReaderCountViewList(List<ReaderBookCountDTO> readerBookCountDTOList);
+
 
     protected String generatePhotoUrl(ReaderDetails readerDetails) {
         String readerNumber = readerDetails.getReaderNumber();

@@ -16,6 +16,7 @@ import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +78,15 @@ public class ReaderServiceImpl implements ReaderService {
 
         userRepo.save(reader);
         return readerRepo.save(rd);
+    }
+
+    @Override
+    public List<ReaderBookCountDTO> findTopByGenre(String genre, LocalDate startDate, LocalDate endDate){
+        if(startDate.isAfter(endDate)){
+            throw new IllegalArgumentException("Start date cannot be after end date");
+        }
+        Pageable pageableRules = PageRequest.of(0,5);
+        return this.readerRepo.findTopByGenre(pageableRules, genre, startDate, endDate).getContent();
     }
 
     @Override

@@ -3,7 +3,6 @@ package pt.psoft.g1.psoftg1.bookmanagement.services;
 
 import org.springframework.data.util.Pair;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
-import pt.psoft.g1.psoftg1.bookmanagement.model.GenreBookCountDTO;
 
 import java.time.LocalDate;
 import java.util.List;

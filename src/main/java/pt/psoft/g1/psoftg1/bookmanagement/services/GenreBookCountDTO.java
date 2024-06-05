@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1.bookmanagement.model;
+package pt.psoft.g1.psoftg1.bookmanagement.services;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

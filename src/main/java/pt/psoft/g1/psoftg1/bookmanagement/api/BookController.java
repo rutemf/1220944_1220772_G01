@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +31,7 @@ import pt.psoft.g1.psoftg1.shared.api.UploadFileResponse;
 import pt.psoft.g1.psoftg1.shared.model.FileUtils;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
+import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -51,25 +53,13 @@ public class BookController {
     private final ConcurrencyService concurrencyService;
     private final FileStorageService fileStorageService;
 
-
     private final BookViewMapper bookViewMapper;
-    private final GenreViewMapper genreViewMapper;
-
-    @Value("${file.upload-dir}")
-    private String uploadDir;
-
-    @Value("${file.photo.max_size}")
-    private long photoMaxSize;
-
-    private final String[] validImageFormats = {"image/png", "image/jpeg"};
-
 
     @Operation(summary = "Register a new Book")
     @PutMapping(value = "/{isbn}")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<BookView> create(@Valid CreateBookRequest resource, @PathVariable("isbn") String isbn) {
 
-        UploadFileResponse up = null;
 
         //Guarantee that the client doesn't provide a link on the body, null = no photo or error
         resource.setPhotoURI(null);
@@ -128,19 +118,17 @@ public class BookController {
             return ResponseEntity.ok().build();
         }
 
-        String photoPathString = uploadDir + "/" + book.getPhoto().getPhotoFile();
-        Path photoPath = Paths.get(photoPathString);
-        String fileFormat = photoPathString.split("\\.")[1];
-        byte[] image = null;
-        try {
-            image = Files.readAllBytes(photoPath);
-        } catch(IOException e) {
-            throw new NotFoundException("Could not get book photo");
+        String photoFile = book.getPhoto().getPhotoFile();
+        byte[] image = this.fileStorageService.getFile(photoFile);
+        String fileFormat = this.fileStorageService.getExtension(book.getPhoto().getPhotoFile()).orElseThrow(() -> new ValidationException("Unable to get file extension"));
+
+        if(image == null) {
+            return ResponseEntity.ok().build();
         }
 
         return ResponseEntity.ok().contentType(fileFormat.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG).body(image);
-    }
 
+    }
 
 
     @Operation(summary = "Updates a specific Book")
@@ -157,13 +145,13 @@ public class BookController {
 
         MultipartFile file = resource.getPhoto();
 
-        String fileName = this.getRequestPhoto(file);
+        String fileName = this.fileStorageService.getRequestPhoto(file);
 
         if (fileName != null) {
             resource.setPhotoURI(fileName);
         }
 
-        Book  book;
+        Book book;
         resource.setIsbn(isbn);
         try {
             book = bookService.update(resource, String.valueOf(concurrencyService.getVersionFromIfMatchHeader(ifMatchValue)));
@@ -203,49 +191,6 @@ public class BookController {
     @GetMapping("top5")
     public ListResponse<BookCountView> getTop5BooksLent() {
         return new ListResponse<>(bookViewMapper.toBookCountViewList(bookService.findTop5BooksLent()));
-    }
-
-    private String getRequestPhoto(MultipartFile file) {
-        UploadFileResponse up = null;
-        if(file != null) {
-            if(file.getSize() > photoMaxSize) {
-                throw new ValidationException("Attached photo can't be bigger than " + photoMaxSize + " bytes");
-            }
-
-            int formatIndex = -1;
-            String fileContentHeader = file.getContentType();
-
-            if(fileContentHeader == null) {
-                throw new ValidationException("Unknown file content header");
-            }
-
-            for(int i = 0; i < validImageFormats.length; i++) {
-                if(!fileContentHeader.equals(validImageFormats[i])) {
-                    continue;
-                }
-
-                formatIndex = i;
-                break;
-            }
-
-            if(formatIndex == -1) {
-                throw new ValidationException("Images can only be png or jpeg");
-            }
-
-            String photoUUID = UUID.randomUUID().toString();
-
-            try {
-                up = FileUtils.doUploadFile(fileStorageService, photoUUID, file);
-            } catch (Exception e) {
-                return null;
-                //throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-
-            String fileFormat = validImageFormats[formatIndex].split("/")[1];
-            return photoUUID+"."+fileFormat;
-        }
-
-        return null;
     }
 }
 

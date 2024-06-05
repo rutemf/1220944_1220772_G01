@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookCountDTO;
+import pt.psoft.g1.psoftg1.bookmanagement.services.BookCountDTO;
 
 import java.time.LocalDate;
 import java.util.List;

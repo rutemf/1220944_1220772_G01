@@ -1,6 +1,5 @@
 package pt.psoft.g1.psoftg1.bookmanagement.services;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class BookServiceImpl implements BookService {
 	private final BookRepository bookRepository;
 	private final GenreRepository genreRepository;
 	private final AuthorRepository authorRepository;
-
+	private final PhotoRepository photoRepository;
 
 	@Override
 	public Book create(CreateBookRequest request, String isbn) {
@@ -62,7 +62,9 @@ public class BookServiceImpl implements BookService {
 
 		newBook = new Book(isbn, request.getTitle(), request.getDescription(), genre, authors, photoURI);
 
-        return newBook;
+		photoRepository.save(newBook.getPhoto());
+
+        return bookRepository.save(newBook);
 	}
 
 

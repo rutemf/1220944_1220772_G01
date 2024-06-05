@@ -118,8 +118,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/public/**").permitAll() // public assets & end-points
                 .requestMatchers(HttpMethod.POST, "/api/readers").permitAll() //unregistered should be able to register
                 // Our private endpoints
-                .requestMatchers(HttpMethod.GET,"/api/readers/{year}/{seq}/photo").hasAnyRole(Role.READER,Role.LIBRARIAN)
-                .requestMatchers(HttpMethod.GET,"/api/readers/photo").hasRole(Role.READER)
+                //authors
                 .requestMatchers(HttpMethod.POST,"/api/authors").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.PATCH,"/api/authors").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/authors/{authorNumber}").hasAnyRole(Role.READER, Role.LIBRARIAN)
@@ -128,25 +127,34 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/api/authors/top5").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.GET,"/api/authors/photo").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/authors/{authornumber}/photo").hasRole(Role.LIBRARIAN)
-
+                //end authors
                 //books
                 .requestMatchers(HttpMethod.PUT,"/api/books/{isbn}").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.PATCH,"/api/books/{isbn}").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/books").hasAnyRole(Role.LIBRARIAN, Role.READER)
                 .requestMatchers(HttpMethod.GET,"/api/books/{isbn}").hasAnyRole(Role.READER,Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/books/top5").hasRole(Role.LIBRARIAN)
-                .requestMatchers(HttpMethod.GET,"/api/genres/top5").hasRole(Role.LIBRARIAN)
                 //endBooks
+                //readers
+                .requestMatchers(HttpMethod.PATCH,"/api/readers").hasRole(Role.READER)
+                .requestMatchers(HttpMethod.GET, "/api/readers/top5").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/readers/{year}/{seq}/photo").hasAnyRole(Role.READER,Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/readers/photo").hasRole(Role.READER)
+                .requestMatchers(HttpMethod.GET,"/api/readers/top5ByGenre").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/readers/{year}/{seq}/lendings").hasRole(Role.READER)
+                //end readers
+                //genders
+                .requestMatchers(HttpMethod.GET,"/api/genres/top5").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/genres/avgLendings").hasRole(Role.LIBRARIAN)
+                //end genders
+                //lendings
                 .requestMatchers(HttpMethod.GET,"/api/lendings/overdue").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/lendings/{year}/{seq}").hasAnyRole(Role.READER, Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.POST,"/api/lendings").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/lendings/avgDuration").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/lendings/overdue").hasRole(Role.LIBRARIAN)
-                .requestMatchers(HttpMethod.PATCH,"/api/readers").hasRole(Role.READER)
-                .requestMatchers(HttpMethod.GET, "/api/readers/top5").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.PATCH,"/api/lendings/{year}/{seq}").hasRole(Role.READER)
+                //end lendings
                 // Admin has access to all endpoints
                 .requestMatchers("/**").hasRole(Role.ADMIN)
                 .anyRequest().authenticated()

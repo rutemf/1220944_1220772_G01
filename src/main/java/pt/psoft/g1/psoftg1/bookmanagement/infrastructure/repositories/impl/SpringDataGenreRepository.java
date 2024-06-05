@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.util.Pair;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
-import pt.psoft.g1.psoftg1.bookmanagement.model.GenreBookCountDTO;
+import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 
@@ -33,7 +33,7 @@ public interface SpringDataGenreRepository extends GenreRepository, GenreRepoCus
     Optional<Genre> findByString(@Param("genreName")@NotNull String genre);
 
     @Override
-    @Query("SELECT new pt.psoft.g1.psoftg1.bookmanagement.model.GenreBookCountDTO(g.genre, COUNT(b))" +
+    @Query("SELECT new pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO(g.genre, COUNT(b))" +
             "FROM Genre g " +
             "JOIN Book b ON b.genre.pk = g.pk " +
             "GROUP BY g " +

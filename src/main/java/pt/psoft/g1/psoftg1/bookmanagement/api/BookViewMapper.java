@@ -4,8 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookCountDTO;
-import pt.psoft.g1.psoftg1.bookmanagement.model.GenreBookCountDTO;
+import pt.psoft.g1.psoftg1.bookmanagement.services.BookCountDTO;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 
 import java.util.List;

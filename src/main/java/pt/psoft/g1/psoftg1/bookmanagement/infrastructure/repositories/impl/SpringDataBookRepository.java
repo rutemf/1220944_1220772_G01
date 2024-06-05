@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookCountDTO;
+import pt.psoft.g1.psoftg1.bookmanagement.services.BookCountDTO;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 
@@ -22,7 +22,7 @@ public interface SpringDataBookRepository  extends BookRepository, CrudRepositor
     Optional<Book> findByIsbn(@Param("isbn") String isbn);
 
     @Override
-    @Query("SELECT new pt.psoft.g1.psoftg1.bookmanagement.model.BookCountDTO(b, COUNT(l)) " +
+    @Query("SELECT new pt.psoft.g1.psoftg1.bookmanagement.services.BookCountDTO(b, COUNT(l)) " +
                 "FROM Book b " +
                 "JOIN Lending l ON l.book = b " +
                 "WHERE l.startDate > :oneYearAgo " +

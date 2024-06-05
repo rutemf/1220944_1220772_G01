@@ -11,6 +11,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pt.psoft.g1.psoftg1.bookmanagement.api.BookCountView;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.api.LendingView;
 import pt.psoft.g1.psoftg1.lendingmanagement.api.LendingViewMapper;
@@ -39,6 +41,7 @@ import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -285,4 +288,11 @@ class ReaderController {
         return new ListResponse<>(readerViewMapper.toReaderView(readerService.findTopReaders(5)));
     }
 
+    @GetMapping("/top5ByGenre")
+    public ListResponse<ReaderCountView> getTop5ReaderByGenre(
+            @RequestParam("genre") String genre,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return new ListResponse<>(readerViewMapper.toReaderCountViewList(readerService.findTopByGenre(genre,startDate,endDate)));
+    }
 }

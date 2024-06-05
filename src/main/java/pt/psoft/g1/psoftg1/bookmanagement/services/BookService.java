@@ -1,10 +1,7 @@
 package pt.psoft.g1.psoftg1.bookmanagement.services;
 
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookCountDTO;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
 
 import java.util.List;

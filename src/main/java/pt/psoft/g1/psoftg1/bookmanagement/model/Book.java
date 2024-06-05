@@ -33,8 +33,8 @@ public class Book {
     @Embedded
     Isbn isbn;
 
-    @Getter
     @Setter
+    @Getter
     @OneToOne
     private Photo photo;
 
@@ -61,9 +61,6 @@ public class Book {
         this.isbn = new Isbn(isbn);
     }
 
-    private void setPhoto(Photo photo) {
-        this.photo = photo;
-    }
 
     private void setDescription(String description) {this.description = new Description(description); }
 

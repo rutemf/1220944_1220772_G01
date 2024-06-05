@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -47,6 +48,7 @@ import pt.psoft.g1.psoftg1.shared.model.FileUtils;
  *
  *
  */
+@RequiredArgsConstructor
 @Service
 public class FileStorageService {
 
