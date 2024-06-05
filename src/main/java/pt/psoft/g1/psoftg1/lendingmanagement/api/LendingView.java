@@ -34,13 +34,7 @@ public class LendingView {
 
     @Setter
     @Getter
-    private Map<String, String> links = new HashMap<>();
-
-
-    public void addLink(String rel, String href) {
-        this.links.put(rel, href);
-    }
-
+    private Map<String, String> _links = new HashMap<>();
 }
 
 /*>

@@ -22,7 +22,7 @@ public abstract class LendingViewMapper extends MapperInterface {
     @Mapping(target = "lendingNumber", source = "lendingNumber")
     @Mapping(target = "bookTitle", source = "book.title")
     @Mapping(target = "fineValueInCents", expression = "java(lending.getFineValueInCents().orElse(null))")
-    @Mapping(target = "links", expression = "java(mapLinks(lending))")
+    @Mapping(target = "_links", expression = "java(mapLinks(lending))")
     public abstract LendingView toLendingView(Lending lending);
 
     public abstract List<LendingView> toLendingView(List<Lending> lendings);

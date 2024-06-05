@@ -1,29 +1,34 @@
 package pt.psoft.g1.psoftg1.bookmanagement.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
-import pt.psoft.g1.psoftg1.authormanagement.api.AuthorView;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Schema(description = "A Book")
 public class BookView {
-
-    @NotNull
-    private String genre;
-
-    @NotNull
-    private String isbn;
-
-    private String description;
-
     @NotNull
     private String title;
 
     @NotNull
     private List<String> authors;
+
+    @NotNull
+    private String genre;
+
+    private String description;
+
+    @NotNull
+    private String isbn;
+
+    @Setter
+    @Getter
+    private Map<String, Object> _links = new HashMap<>();
+
 }
