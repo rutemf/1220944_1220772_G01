@@ -4,11 +4,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
@@ -18,8 +24,19 @@ import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookView;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookViewMapper;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
+import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
+import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
+import pt.psoft.g1.psoftg1.usermanagement.model.User;
+import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 
 @Tag(name = "Author", description = "Endpoints for managing Authors")
 @RestController
@@ -33,12 +50,23 @@ public class AuthorController {
     private final AuthorViewMapper authorViewMapper;
     private final BookViewMapper bookViewMapper;
     private final ConcurrencyService concurrencyService;
+    private final FileStorageService fileStorageService;
+
 
     //Create
     @Operation(summary = "Creates a new Author")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AuthorView> create(@Valid @RequestBody final CreateAuthorRequest resource) {
+    public ResponseEntity<AuthorView> create(@Valid CreateAuthorRequest resource) {
+        //Guarantee that the client doesn't provide a link on the body, null = no photo or error
+        resource.setPhotoURI(null);
+        MultipartFile file = resource.getPhoto();
+
+        String fileName = this.fileStorageService.getRequestPhoto(file);
+
+        if (fileName != null) {
+            resource.setPhotoURI(fileName);
+        }
 
         final var author = authorService.create(resource);
 
@@ -47,6 +75,7 @@ public class AuthorController {
 
         return ResponseEntity.created(newauthorUri).eTag(Long.toString(author.getVersion()))
                 .body(authorViewMapper.toAuthorView(author));
+
     }
 
 
@@ -57,12 +86,20 @@ public class AuthorController {
             @PathVariable("authorNumber")
             @Parameter(description = "The number of the Author to find") final Long authorNumber,
             final WebRequest request,
-            @Valid @RequestBody final UpdateAuthorRequest resource) {
+            @Valid UpdateAuthorRequest resource) {
 
         final String ifMatchValue = request.getHeader(IF_MATCH);
         if (ifMatchValue == null || ifMatchValue.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must issue a conditional PATCH using 'if-match'");
+        }
+
+        MultipartFile file = resource.getPhoto();
+
+        String fileName = this.fileStorageService.getRequestPhoto(file);
+
+        if (fileName != null) {
+            resource.setPhotoURI(fileName);
         }
         Author author = authorService.partialUpdate(authorNumber, resource, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
 
@@ -116,5 +153,31 @@ public class AuthorController {
     @GetMapping("/top5")
     public ListResponse<AuthorLendingView> getTop5() {
         return new ListResponse<>(authorService.findTopAuthorByLendings());
+    }
+
+    //Photo
+    @Operation(summary= "Gets a author photo")
+    @GetMapping("/{authornumber}/photo")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> getSpecificAuthorPhoto(@PathVariable("authorNumber")
+                                                             @Parameter(description = "The number of the Author to find")
+                                                             final Long authorNumber) {
+
+        Author authorDetails = authorService.findByAuthorNumber(authorNumber).orElseThrow(() -> new NotFoundException(Author.class, authorNumber));
+
+        //In case the user has no photo, just return a 200 OK without body
+        if(authorDetails.getPhoto() == null) {
+            return ResponseEntity.ok().build();
+        }
+
+        String photoFile = authorDetails.getPhoto().getPhotoFile();
+        byte[] image = this.fileStorageService.getFile(photoFile);
+        String fileFormat = this.fileStorageService.getExtension(authorDetails.getPhoto().getPhotoFile()).orElseThrow(() -> new ValidationException("Unable to get file extension"));
+
+        if(image == null) {
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.ok().contentType(fileFormat.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG).body(image);
     }
 }
