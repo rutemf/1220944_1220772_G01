@@ -7,7 +7,7 @@ class LendingController {
     + create(createLendingRequest) : LendingView
     + findByLendingNumber(readerNumber) : LendingView
     + setLendingReturned(lendingNumber, setLendingReturnedRequest) : LendingView
-    + getAvgDuration() : String
+    + getAvgDuration() : LendingsAverageDurationView
     + getOverdueLendings(page) : List<LendingView>
 }
 
@@ -24,6 +24,10 @@ class LendingView {
     - daysUntilReturn : Integer
     - daysOverdue : Integer
     - fineValueInCents : Integer
+}
+
+class LendingsAverageDurationView {
+    - lendingsAverageDuration : String
 }
 
 interface LendingService {
@@ -159,5 +163,8 @@ LendingServiceImpl .right.> BookRepository
 
 LendingServiceImpl .up.> LendingMapper
 LendingMapper .left.> SetLendingReturnedRequest
+
+LendingViewMapper ..> LendingView
+LendingViewMapper ..> LendingsAverageDurationView
 
 @enduml

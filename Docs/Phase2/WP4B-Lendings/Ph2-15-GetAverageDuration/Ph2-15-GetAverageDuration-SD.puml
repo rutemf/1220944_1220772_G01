@@ -10,6 +10,8 @@ participant "System" as System
 participant ":LendingController" as Ctrl
 participant ":LendingService" as Service
 participant ":LendingRepository" as LendingRepo
+participant ":LendingViewMapper" as Mapper
+
 
 note over Librarian : Librarian is\nauthenticated
 
@@ -21,7 +23,9 @@ Ctrl -> Service: getAverageDuration()
 Service -> LendingRepo: getAverageDuration()
 LendingRepo --> Service: (average)
 Service --> Ctrl: (averageString)
-Ctrl --> System: (averageString)
-System --> Librarian: (averageString)
+Ctrl -> Mapper: toLendingsAverageDurationView(overdueLendings)
+Mapper --> Ctrl: (view)
+Ctrl --> System: (view)
+System --> Librarian: (average lending duration)
 
 @enduml

@@ -20,10 +20,12 @@ import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
@@ -161,18 +163,35 @@ public class LendingRepositoryIntegrationTest {
 
     @Test
     public void testGetAverageDuration() {
-        var lending2 = Lending.newBootstrappingLending(book,
+        double lendingDuration1 = ChronoUnit.DAYS.between(lending.getStartDate(), lending.getReturnedDate());
+        Double averageDuration = lendingRepository.getAverageDuration();
+        assertNotNull(averageDuration);
+        assertEquals(lendingDuration1, lendingRepository.getAverageDuration(), 0.001);
+
+        var lending2 = lendingRepository.save(Lending.newBootstrappingLending(book,
                 readerDetails,
                 2024,
                 998,
-                LocalDate.of(2024, 1,1),
-                LocalDate.of(2024, 1,31),
+                LocalDate.of(2024, 2,1),
+                LocalDate.of(2024, 4,4),
                 15,
-                300);
-        lendingRepository.save(lending2);
-        Double averageDuration = lendingRepository.getAverageDuration();
-        assertThat(averageDuration).isNotNull();
-        assertThat(averageDuration).isEqualTo(20);
+                300));
+        double lendingDuration2 = ChronoUnit.DAYS.between(lending2.getStartDate(), lending2.getReturnedDate());
+        double expectedAvg = (lendingDuration1 + lendingDuration2) / 2 ;
+        assertEquals(expectedAvg, lendingRepository.getAverageDuration(), 0.001);
+
+        var lending3 = lendingRepository.save(Lending.newBootstrappingLending(book,
+                readerDetails,
+                2024,
+                997,
+                LocalDate.of(2024, 3,1),
+                LocalDate.of(2024, 4,25),
+                15,
+                300));
+        double lendingDuration3 = ChronoUnit.DAYS.between(lending3.getStartDate(), lending3.getReturnedDate());
+        expectedAvg = (lendingDuration1 + lendingDuration2 + lendingDuration3) / 3 ;
+        assertEquals(expectedAvg, lendingRepository.getAverageDuration(), 0.001);
+
     }
 
     @Test

@@ -134,10 +134,11 @@ public class LendingController {
                 .body(lendingViewMapper.toLendingView(lending));
     }
 
-    @Operation(summary = "Get average lending duration")
+    @Operation(summary = "Get average lendings duration")
     @GetMapping(value = "/avgDuration")
-    public @ResponseBody String getAvgDuration() {
-        return lendingService.getAverageDuration();
+    public @ResponseBody ResponseEntity<LendingsAverageDurationView> getAvgDuration() {
+
+        return ResponseEntity.ok().body(lendingViewMapper.toLendingsAverageDurationView(lendingService.getAverageDuration()));
     }
 
     @Operation(summary = "Get list of overdue lendings")
