@@ -1,5 +1,6 @@
-package pt.psoft.g1.psoftg1.lendingmanagement.repositories;
+package pt.psoft.g1.psoftg1.lendingmanagement.services;
 
+import org.hibernate.StaleObjectStateException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,25 +11,28 @@ import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
+import pt.psoft.g1.psoftg1.exceptions.LendingForbiddenException;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
+import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
-import pt.psoft.g1.psoftg1.shared.services.Page;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @Transactional
 @SpringBootTest
-public class LendingRepositoryIntegrationTest {
-
+class LendingServiceImplTest {
+    @Autowired
+    private LendingService lendingService;
     @Autowired
     private LendingRepository lendingRepository;
     @Autowired
@@ -50,7 +54,7 @@ public class LendingRepositoryIntegrationTest {
     private Genre genre;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         author = new Author("Manuel Antonio Pina",
                 "Manuel António Pina foi um jornalista e escritor português, premiado em 2011 com o Prémio Camões",
                 null);
@@ -91,10 +95,11 @@ public class LendingRepositoryIntegrationTest {
                 15,
                 300);
         lendingRepository.save(lending);
+        
     }
 
     @AfterEach
-    public void tearDown(){
+    void tearDown() {
         lendingRepository.delete(lending);
         readerRepository.delete(readerDetails);
         userRepository.delete(reader);
@@ -104,88 +109,32 @@ public class LendingRepositoryIntegrationTest {
     }
 
     @Test
-    public void testSave() {
-        Lending newLending = new Lending(lending.getBook(), lending.getReaderDetails(), 2, 14, 50);
-        Lending savedLending = lendingRepository.save(newLending);
-        assertThat(savedLending).isNotNull();
-        assertThat(savedLending.getLendingNumber()).isEqualTo(newLending.getLendingNumber());
-        lendingRepository.delete(savedLending);
+    void testFindByLendingNumber() {
+        assertThat(lendingService.findByLendingNumber(LocalDate.now().getYear() + "/999")).isPresent();
+        assertThat(lendingService.findByLendingNumber(LocalDate.now().getYear() + "/1")).isEmpty();
     }
-
+/*
     @Test
-    public void testFindByLendingNumber() {
-        String ln = lending.getLendingNumber();
-        Optional<Lending> found = lendingRepository.findByLendingNumber(ln);
-        assertThat(found).isPresent();
-        assertThat(found.get().getLendingNumber()).isEqualTo(ln);
+    void testListByReaderNumberAndIsbn() {
+
     }
-
+ */
     @Test
-    public void testListByReaderNumberAndIsbn() {
-        List<Lending> lendings = lendingRepository.listByReaderNumberAndIsbn(lending.getReaderDetails().getReaderNumber(), lending.getBook().getIsbn());
-        assertThat(lendings).isNotEmpty();
-        assertThat(lendings).contains(lending);
-    }
+    void testCreate() {
+        var request = new CreateLendingRequest("9782826012092",
+                LocalDate.now().getYear() + "/1");
+        var lending1 = lendingService.create(request);
+        assertThat(lending1).isNotNull();
+        var lending2 = lendingService.create(request);
+        assertThat(lending2).isNotNull();
+        var lending3 = lendingService.create(request);
+        assertThat(lending3).isNotNull();
 
-    @Test
-    public void testGetCountFromCurrentYear() {
-        int count = lendingRepository.getCountFromCurrentYear();
-        assertThat(count).isEqualTo(1);
-        var lending2 = Lending.newBootstrappingLending(book,
-                readerDetails,
-                LocalDate.now().getYear(),
-                998,
-                LocalDate.of(LocalDate.now().getYear(), 5,31),
-                null,
-                15,
-                300);
-        lendingRepository.save(lending2);
-        count = lendingRepository.getCountFromCurrentYear();
-        assertThat(count).isEqualTo(2);
-    }
+        // 4th lending
+        assertThrows(LendingForbiddenException.class, () -> lendingService.create(request));
 
-    @Test
-    public void testListOutstandingByReaderNumber() {
-        var lending2 = Lending.newBootstrappingLending(book,
-                readerDetails,
-                2024,
-                998,
-                LocalDate.of(2024, 5,31),
-                null,
-                15,
-                300);
-        lendingRepository.save(lending2);
-        List<Lending> outstandingLendings = lendingRepository.listOutstandingByReaderNumber(lending.getReaderDetails().getReaderNumber());
-        assertThat(outstandingLendings).contains(lending2);
-    }
-
-    @Test
-    public void testGetAverageDuration() {
-        var lending2 = Lending.newBootstrappingLending(book,
-                readerDetails,
-                2024,
-                998,
-                LocalDate.of(2024, 1,1),
-                LocalDate.of(2024, 1,31),
-                15,
-                300);
-        lendingRepository.save(lending2);
-        Double averageDuration = lendingRepository.getAverageDuration();
-        assertThat(averageDuration).isNotNull();
-        assertThat(averageDuration).isEqualTo(20);
-    }
-
-    @Test
-    public void testGetOverdue() {
-        var returnedLateLending = lendingRepository.save(Lending.newBootstrappingLending(book,
-                readerDetails,
-                2024,
-                998,
-                LocalDate.of(2024, 1,1),
-                LocalDate.of(2024, 2,1),
-                15,
-                300));
-        var notReturnedLending = lendingRepository.save(Lending.newBootstrappingLending(book,
+        lendingRepository.delete(lending3);
+        lendingRepository.save(Lending.newBootstrappingLending(book,
                 readerDetails,
                 2024,
                 997,
@@ -193,18 +142,38 @@ public class LendingRepositoryIntegrationTest {
                 null,
                 15,
                 300));
-        var notReturnedAndNotOverdueLending = lendingRepository.save(Lending.newBootstrappingLending(book,
+
+        // Having an overdue lending
+        assertThrows(LendingForbiddenException.class, () -> lendingService.create(request));
+
+    }
+
+    @Test
+    void testSetReturned() {
+        int year = 2024, seq = 888;
+        var notReturnedLending = lendingRepository.save(Lending.newBootstrappingLending(book,
                 readerDetails,
-                2024,
-                996,
-                LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(),LocalDate.now().getDayOfMonth()),
+                year,
+                seq,
+                LocalDate.of(2024, 3,1),
                 null,
                 15,
                 300));
-        Page page = new Page(1, 10);
-        List<Lending> overdueLendings = lendingRepository.getOverdue(page);
-        assertThat(overdueLendings).doesNotContain(returnedLateLending);
-        assertThat(overdueLendings).contains(notReturnedLending);
-        assertThat(overdueLendings).doesNotContain(notReturnedAndNotOverdueLending);
+        var request = new SetLendingReturnedRequest(null);
+        assertThrows(StaleObjectStateException.class,
+                () -> lendingService.setReturned(year + "/" + seq, request, (notReturnedLending.getVersion()-1)));
+
+        assertDoesNotThrow(
+                () -> lendingService.setReturned(year + "/" + seq, request, notReturnedLending.getVersion()));
     }
+/*
+    @Test
+    void testGetAverageDuration() {
+    }
+
+    @Test
+    void testGetOverdue() {
+    }
+
+ */
 }
