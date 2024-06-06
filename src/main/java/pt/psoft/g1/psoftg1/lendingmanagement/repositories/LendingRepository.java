@@ -22,4 +22,6 @@ public interface LendingRepository {
 
     List<Lending> getOverdue(Page page);
 
+    void delete(Lending lending);
+
 }

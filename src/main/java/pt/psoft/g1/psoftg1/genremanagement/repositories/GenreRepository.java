@@ -19,4 +19,5 @@ public interface GenreRepository {
     Page<GenreBookCountDTO> findTop5GenreByBookCount(Pageable pageable);
     List<Pair<Genre, Double>> getAverageLendings(String period, LocalDate startDate, LocalDate endDate);
     List<GenreLendingsPerMonthDTO> getLendingsPerMonthLastYearByGenre();
+    void delete(Genre genre);
 }

@@ -1,7 +1,6 @@
 package pt.psoft.g1.psoftg1.usermanagement.model;
 
 import jakarta.persistence.Entity;
-import pt.psoft.g1.psoftg1.shared.model.Name;
 
 @Entity
 public class Reader extends User {
@@ -27,7 +26,6 @@ public class Reader extends User {
     public static Reader newReader(final String username, final String password, final String name) {
         final var u = new Reader(username, password);
         u.setName(name);
-        u.addAuthority(new Role(Role.READER));
         return u;
     }
 }

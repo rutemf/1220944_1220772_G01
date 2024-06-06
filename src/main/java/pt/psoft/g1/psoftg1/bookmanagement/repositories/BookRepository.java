@@ -28,4 +28,5 @@ public interface BookRepository {
     Book save(Book book);
 
     List<Book> findBooksByAuthorNumber(Long authorNumber);
+    void delete(Book book);
 }
