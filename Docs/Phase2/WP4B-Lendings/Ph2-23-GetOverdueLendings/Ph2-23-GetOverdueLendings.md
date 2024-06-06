@@ -36,12 +36,18 @@ As Librarian I want to list overdue lending sorted by their tardiness.
 ### 1.8 Other Relevant Remarks
 ## 2. OO Analysis
 ### 2.1. Relevant Domain Model Excerpt
+
+<img src="../WP4B-Lendings-DM.svg" alt="Domain Model Excerpt">
+
 ### 2.2. Other Remarks
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
 
-[//]: # (<img src="Ph1-15-LendBook-SD-WP_4A_15_Lend_Book.svg" alt="WP_4A_15_Lend_Book">)
+<img src="WP4B-Lendings-SD.svg" alt="Sequence Diagram">
 
 ### 3.2. Class Diagram (CD)
+
+<img src="WP4B-Lendings-CD.svg" alt="Class Diagram">
+
 ## 4. Tests
 ## 5. Observations

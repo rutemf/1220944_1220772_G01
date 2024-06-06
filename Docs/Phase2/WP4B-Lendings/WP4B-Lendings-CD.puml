@@ -4,26 +4,62 @@
 skinparam classAttributeIconSize 0
 
 class LendingController {
-    + createLending(isbn, readerNumber)
-    + returnBook(isbn, readerNumber)
-    + getLending(lendingNumber)
+    + create(createLendingRequest) : LendingView
+    + findByLendingNumber(readerNumber) : LendingView
+    + setLendingReturned(lendingNumber, setLendingReturnedRequest) : LendingView
+    + getAvgDuration() : String
+    + getOverdueLendings(page) : List<LendingView>
 }
 
-interface LendingRepository {
-    + findById(lendingNumber) : Lending
-    + save(lending) : Lending
+abstract class LendingViewMapper {
+    + toLendingView(lending) : LendingView
+    + toLendingView(lendingList) : List<LendingView>
+}
+
+class LendingView {
+    - lendingNumber : String
+    - bookTitle : String
+    - startDate : LocalDate
+    - limitDate : LocalDate
+    - daysUntilReturn : Integer
+    - daysOverdue : Integer
+    - fineValueInCents : Integer
 }
 
 interface LendingService {
     + create(CreateLendingRequest resource) : Lending
     + findByLendingNumber(String lendingNumber) : Optional<Lending>
-    + findByReader(readerNumber)
-    + findByBook(Isbn)
-    + update(lendingNumber)
+    + setReturned(lendingNumber, setLendingReturnedRequest, desiredVersion) : Lending
+    + getAverageDuration() : String
+    + getOverdue(page) : List<Lending>
 }
 
 class LendingServiceImpl implements LendingService{
 }
+
+interface UserService {
+    + getAuthenticatedUser(authentication) : User
+}
+
+interface ReaderService {
+    + findByUsername(username) : Optional<ReaderDetails>
+}
+
+class ConcurrencyService {
+    + getVersionFromIfMatchHeader(ifMatchHeader) : Long
+}
+
+
+interface LendingRepository {
+    + create(createLendingRequest) : Lending
+    + findByLendingNumber(lendingNumber) : Optional<Lending>
+    + listOutstandingByReaderNumber(readerNumber) : List<Lending>
+    + save(lending) : Lending
+    + getCountFromCurrentYear() : int
+    + getAverageDuration() : Double
+    + getOverdue(page) : List<Lending>
+}
+
 
 interface ReaderRepository {
     + findById(readerNumber)
@@ -33,15 +69,31 @@ interface BookRepository {
     + findById(isbn)
 }
 
+interface FineRepository {
+    + save(fine) : Fine
+}
+
 class Lending <<entity>>{
+    - pk : Long
     - startDate : Date
     - limitDate : Date
     - returnDate : Date
-    + getNumber() : Lending
-    + getOverdueDays() : int
-    + isOverdue() : bool
-    + isReturned() : bool
-    + hasFine() : bool
+    - version : long
+    - commentary : String
+    - daysUntilReturn : Integer
+    - daysOverdue : Integer
+    - fineValueInCents : int
+
+    - setReturnedDate() : void
+    - setDaysUntilReturn() : void
+    - setDaysOverdue() : void
+    + getDaysDelayed() : int
+    + getDaysUntilReturn() : Optional<Integer>
+    + getDaysOverdue() : Optional<Integer>
+    + getFineValueInCents() : Optional<Integer>
+    + getLendingNumber() : String
+    + setReturned(desiredVersion, commentary) : void
+    + getReaderDetails() : ReaderDetails
 }
 
 class LendingNumber <<value>> {
@@ -52,6 +104,10 @@ class LendingNumber <<value>> {
 
 class Isbn <<value>>{
     - isbn: string
+}
+
+class ReaderDetails <<entity>>{
+    + getReaderNumber() : String
 }
 
 class ReaderNumber <<value>>{
@@ -68,8 +124,8 @@ class Fine <<entity>>{
     + isPaid() : bool
 }
 
-class LendingDTO{
-
+class SetLendingReturnedRequest{
+    - commentary : String
 }
 
 class LendingMapper{
@@ -83,15 +139,25 @@ Lending o- Isbn
 Lending o-left- ReaderNumber
 Lending *-down- LendingNumber
 LendingNumber -right-o Fine
+ReaderDetails *- ReaderNumber
+
+LendingController ..> LendingViewMapper
+LendingController ...> LendingService
+LendingController .up.> UserService
+LendingController .left.> ReaderService
+LendingController .> ConcurrencyService
 
 LendingServiceImpl ..> Lending
+LendingServiceImpl ..> FineRepository
 
-LendingController ..> LendingService
+ReaderService ..> ReaderDetails
+LendingController .left.> ReaderDetails
+
 LendingServiceImpl .left.> LendingRepository
 LendingServiceImpl ..> ReaderRepository
 LendingServiceImpl .right.> BookRepository
 
-LendingServiceImpl <.up. LendingMapper
-LendingMapper .left.> LendingDTO
+LendingServiceImpl .up.> LendingMapper
+LendingMapper .left.> SetLendingReturnedRequest
 
 @enduml
