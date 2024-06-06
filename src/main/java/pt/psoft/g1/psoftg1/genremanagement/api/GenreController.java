@@ -72,6 +72,8 @@ public class GenreController {
         if(list.isEmpty())
             throw new NotFoundException("No genres to show");
 
-        return new ListResponse<>(list);
+        final var viewList = genreViewMapper.toGenreLendingsPerMonthView(list);
+
+        return new ListResponse<>(viewList);
     }
 }

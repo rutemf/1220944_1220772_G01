@@ -12,11 +12,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.util.Pair;
-import pt.psoft.g1.psoftg1.genremanagement.api.GenreLendingsPerMonthView;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
+import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
+import pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsPerMonthDTO;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 
 import java.time.LocalDate;
@@ -47,7 +47,7 @@ public interface SpringDataGenreRepository extends GenreRepository, GenreRepoCus
 interface GenreRepoCustom{
     List<Pair<Genre, Double>> getAverageLendings(String period, LocalDate startDate, LocalDate endDate);
 
-    List<GenreLendingsPerMonthView> getLendingsPerMonthLastYearByGenre();
+    List<GenreLendingsPerMonthDTO> getLendingsPerMonthLastYearByGenre();
 }
 
 @RequiredArgsConstructor
@@ -99,7 +99,7 @@ class GenreRepoCustomImpl implements GenreRepoCustom {
     }
 
     @Override
-    public List<GenreLendingsPerMonthView> getLendingsPerMonthLastYearByGenre(){
+    public List<GenreLendingsPerMonthDTO> getLendingsPerMonthLastYearByGenre(){
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> cq = cb.createTupleQuery();
         Root<Lending> lendingRoot = cq.from(Lending.class);
@@ -127,13 +127,13 @@ class GenreRepoCustomImpl implements GenreRepoCustom {
         TypedQuery<Tuple> query = entityManager.createQuery(cq);
         List<Tuple> results = query.getResultList();
 
-        List<GenreLendingsPerMonthView> lendingsPerMonth = new ArrayList<>();
+        List<GenreLendingsPerMonthDTO> lendingsPerMonth = new ArrayList<>();
         for (Tuple result : results) {
             String genre = result.get(0, String.class);
             int resultYear = result.get(1, Integer.class);
             int resultMonth = result.get(2, Integer.class);
             long count = result.get(3, Long.class);
-            lendingsPerMonth.add(new GenreLendingsPerMonthView(genre,resultYear, resultMonth, count));
+            lendingsPerMonth.add(new GenreLendingsPerMonthDTO(genre,resultYear, resultMonth, count));
         }
 
         return lendingsPerMonth;

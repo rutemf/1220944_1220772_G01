@@ -142,8 +142,10 @@ public class LendingController {
 
     @Operation(summary = "Get list of overdue lendings")
     @GetMapping(value = "/overdue")
-    public ListResponse<LendingView> getOverdueLendings(@RequestBody final Page page) {
+    public ListResponse<LendingView> getOverdueLendings(@Valid @RequestBody Page page) {
         final List<Lending> overdueLendings = lendingService.getOverdue(page);
+        if(overdueLendings.isEmpty())
+            throw new NotFoundException("No lendings to show");
         return new ListResponse<>(lendingViewMapper.toLendingView(overdueLendings));
     }
 

@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 import org.springframework.data.util.Pair;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
+import pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsPerMonthDTO;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 
 import java.util.List;
@@ -27,4 +28,9 @@ public abstract class GenreViewMapper extends MapperInterface{
     public abstract GenreAvgLendingsView toGenreAvgLendingsView(Pair<Genre, String> pair);
 
     public abstract List<GenreAvgLendingsView> toGenreAvgLendingsView(List<Pair<Genre, String>> pairList);
+
+    public abstract GenreLendingsPerMonthView toGenreLendingsPerMonthView(GenreLendingsPerMonthDTO dto);
+
+    public abstract List<GenreLendingsPerMonthView> toGenreLendingsPerMonthView(List<GenreLendingsPerMonthDTO> dtos);
+
 }
