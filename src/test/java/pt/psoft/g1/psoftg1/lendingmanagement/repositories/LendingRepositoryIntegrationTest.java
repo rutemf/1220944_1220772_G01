@@ -4,10 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
@@ -22,15 +19,14 @@ import pt.psoft.g1.psoftg1.shared.services.Page;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
 @Transactional
-@WithMockUser(username = "testuser")
+@SpringBootTest
 public class LendingRepositoryIntegrationTest {
 
     @Autowired
@@ -86,7 +82,14 @@ public class LendingRepositoryIntegrationTest {
         readerRepository.save(readerDetails);
 
         // Create and save the lending
-        lending = new Lending(book, readerDetails, 999, 14, 50);
+        lending = Lending.newBootstrappingLending(book,
+                readerDetails,
+                LocalDate.now().getYear(),
+                999,
+                LocalDate.of(LocalDate.now().getYear(), 1,1),
+                LocalDate.of(LocalDate.now().getYear(), 1,11),
+                15,
+                300);
         lendingRepository.save(lending);
     }
 
@@ -108,13 +111,13 @@ public class LendingRepositoryIntegrationTest {
         assertThat(savedLending.getLendingNumber()).isEqualTo(newLending.getLendingNumber());
         lendingRepository.delete(savedLending);
     }
-/*
+
     @Test
     public void testFindByLendingNumber() {
         String ln = lending.getLendingNumber();
         Optional<Lending> found = lendingRepository.findByLendingNumber(ln);
         assertThat(found).isPresent();
-        assertThat(found.get().getLendingNumber()).isEqualTo(lending.getLendingNumber());
+        assertThat(found.get().getLendingNumber()).isEqualTo(ln);
     }
 
     @Test
@@ -127,26 +130,81 @@ public class LendingRepositoryIntegrationTest {
     @Test
     public void testGetCountFromCurrentYear() {
         int count = lendingRepository.getCountFromCurrentYear();
-        assertThat(count).isGreaterThan(0);
+        assertThat(count).isEqualTo(1);
+        var lending2 = Lending.newBootstrappingLending(book,
+                readerDetails,
+                LocalDate.now().getYear(),
+                998,
+                LocalDate.of(LocalDate.now().getYear(), 5,31),
+                null,
+                15,
+                300);
+        lendingRepository.save(lending2);
+        count = lendingRepository.getCountFromCurrentYear();
+        assertThat(count).isEqualTo(2);
     }
 
     @Test
     public void testListOutstandingByReaderNumber() {
+        var lending2 = Lending.newBootstrappingLending(book,
+                readerDetails,
+                2024,
+                998,
+                LocalDate.of(2024, 5,31),
+                null,
+                15,
+                300);
+        lendingRepository.save(lending2);
         List<Lending> outstandingLendings = lendingRepository.listOutstandingByReaderNumber(lending.getReaderDetails().getReaderNumber());
-        assertThat(outstandingLendings).contains(lending);
+        assertThat(outstandingLendings).contains(lending2);
     }
 
     @Test
     public void testGetAverageDuration() {
+        var lending2 = Lending.newBootstrappingLending(book,
+                readerDetails,
+                2024,
+                998,
+                LocalDate.of(2024, 1,1),
+                LocalDate.of(2024, 1,31),
+                15,
+                300);
+        lendingRepository.save(lending2);
         Double averageDuration = lendingRepository.getAverageDuration();
         assertThat(averageDuration).isNotNull();
+        assertThat(averageDuration).isEqualTo(20);
     }
 
     @Test
     public void testGetOverdue() {
-        // Assuming a Page implementation
-        Page page = new Page(0, 10);
+        var returnedLateLending = lendingRepository.save(Lending.newBootstrappingLending(book,
+                readerDetails,
+                2024,
+                998,
+                LocalDate.of(2024, 1,1),
+                LocalDate.of(2024, 2,1),
+                15,
+                300));
+        var notReturnedLending = lendingRepository.save(Lending.newBootstrappingLending(book,
+                readerDetails,
+                2024,
+                997,
+                LocalDate.of(2024, 3,1),
+                null,
+                15,
+                300));
+        var notReturnedAndNotOverdueLending = lendingRepository.save(Lending.newBootstrappingLending(book,
+                readerDetails,
+                2024,
+                996,
+                LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(),LocalDate.now().getDayOfMonth()),
+                null,
+                15,
+                300));
+        Page page = new Page(1, 10);
         List<Lending> overdueLendings = lendingRepository.getOverdue(page);
-        assertThat(overdueLendings).isNotNull();
-    }*/
+        assertThat(overdueLendings).doesNotContain(returnedLateLending);
+        assertThat(overdueLendings).contains(notReturnedLending);
+        assertThat(overdueLendings).doesNotContain(notReturnedAndNotOverdueLending);
+    }
 }
