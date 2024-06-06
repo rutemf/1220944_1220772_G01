@@ -339,7 +339,7 @@ public class Bootstrapper implements CommandLineRunner {
                 authors.add(author.get(0));
                 authors.add(author2.get(0));
                 Book book = new Book("9789896378905",
-                        "Histórias de Vigaristas e Canalhas",
+                        "Histórias de Aventureiros e Patifes",
                         "Recomendamos cautela a ler estes contos: Há muitos patifes à solta.\n" +
                                 "\n" +
                                 "Há personagens malandras e sem escrúpulos cujo carisma e presença de espírito nos faz estimá-las mais do que devíamos. São patifes, mercenários e vigaristas com códigos de honra duvidosos mas que fazem de qualquer aventura uma delícia de ler.\n" +
