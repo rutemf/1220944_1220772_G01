@@ -190,7 +190,7 @@ public class AuthorController {
                 .body(image);
     }
     @Operation(summary = "Get co-authors and their respective books for a specific author")
-    @GetMapping("/{authorNumber}/co-authors")
+    @GetMapping("/{authorNumber}/coauthors")
     public ListResponse<CoAuthorView> getCoAuthorsAndBooks(
             @PathVariable("authorNumber")
             @Parameter(description = "The number of the Author to find") final Long authorNumber) {
