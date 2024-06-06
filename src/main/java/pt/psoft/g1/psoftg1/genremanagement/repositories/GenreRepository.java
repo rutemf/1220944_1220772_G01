@@ -1,10 +1,10 @@
-package pt.psoft.g1.psoftg1.bookmanagement.repositories;
+package pt.psoft.g1.psoftg1.genremanagement.repositories;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
-import pt.psoft.g1.psoftg1.bookmanagement.api.GenreLendingsPerMonthView;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
+import pt.psoft.g1.psoftg1.genremanagement.api.GenreLendingsPerMonthView;
+import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
 
 import java.time.LocalDate;

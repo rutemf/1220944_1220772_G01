@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1.bookmanagement.api;
+package pt.psoft.g1.psoftg1.genremanagement.api;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pt.psoft.g1.psoftg1.bookmanagement.services.GenreService;
+import pt.psoft.g1.psoftg1.genremanagement.services.GenreService;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 

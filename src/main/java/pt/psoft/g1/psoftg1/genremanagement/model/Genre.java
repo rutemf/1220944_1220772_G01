@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1.bookmanagement.model;
+package pt.psoft.g1.psoftg1.genremanagement.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;

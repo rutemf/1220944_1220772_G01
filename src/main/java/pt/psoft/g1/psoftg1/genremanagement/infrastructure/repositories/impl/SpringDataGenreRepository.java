@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1.bookmanagement.infrastructure.repositories.impl;
+package pt.psoft.g1.psoftg1.genremanagement.infrastructure.repositories.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
@@ -12,11 +12,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.util.Pair;
-import pt.psoft.g1.psoftg1.bookmanagement.api.GenreLendingsPerMonthView;
+import pt.psoft.g1.psoftg1.genremanagement.api.GenreLendingsPerMonthView;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
+import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
-import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
+import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 
 import java.time.LocalDate;

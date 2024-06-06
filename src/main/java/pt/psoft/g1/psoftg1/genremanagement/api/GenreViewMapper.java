@@ -1,9 +1,9 @@
-package pt.psoft.g1.psoftg1.bookmanagement.api;
+package pt.psoft.g1.psoftg1.genremanagement.api;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.data.util.Pair;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
+import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 

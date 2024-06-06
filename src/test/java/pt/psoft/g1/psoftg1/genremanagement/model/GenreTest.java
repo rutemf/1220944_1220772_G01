@@ -1,6 +1,7 @@
-package pt.psoft.g1.psoftg1.bookmanagement.model;
+package pt.psoft.g1.psoftg1.genremanagement.model;
 
 import org.junit.jupiter.api.Test;
+import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 
 import static org.junit.jupiter.api.Assertions.*;
 

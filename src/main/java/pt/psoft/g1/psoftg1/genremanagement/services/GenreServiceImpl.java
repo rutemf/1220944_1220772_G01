@@ -1,13 +1,14 @@
-package pt.psoft.g1.psoftg1.bookmanagement.services;
+package pt.psoft.g1.psoftg1.genremanagement.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-import pt.psoft.g1.psoftg1.bookmanagement.api.GenreLendingsPerMonthView;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Genre;
-import pt.psoft.g1.psoftg1.bookmanagement.repositories.GenreRepository;
+import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
+import pt.psoft.g1.psoftg1.genremanagement.api.GenreLendingsPerMonthView;
+import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
+import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
