@@ -70,7 +70,7 @@ public class UserService implements UserDetailsService {
 
 		Iterable<String> words = List.of(request.getName().split("\\s+"));
 		for (String word : words){
-			if(!forbiddenNameRepository.findByForbiddenNameContains(word).isEmpty()) {
+			if(!forbiddenNameRepository.findByForbiddenNameIsContained(word).isEmpty()) {
 				throw new IllegalArgumentException("Name contains a forbidden word");
 			}
 		}

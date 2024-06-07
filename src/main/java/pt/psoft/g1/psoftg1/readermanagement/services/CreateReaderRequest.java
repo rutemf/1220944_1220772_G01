@@ -59,11 +59,6 @@ public class CreateReaderRequest {
     @Setter
     private List<Genre> interestList;
 
-    @Nullable
-    @Getter
-    @Setter
-    private String photoURI;
-
     public boolean getThirdParty() {
         return thirdParty;
     }

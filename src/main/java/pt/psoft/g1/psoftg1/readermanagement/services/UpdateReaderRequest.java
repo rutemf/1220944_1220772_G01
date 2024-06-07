@@ -49,10 +49,6 @@ public class UpdateReaderRequest {
     private boolean thirdParty;
 
     @Nullable
-    @Setter
-    private String photoURI;
-
-    @Nullable
     @Getter
     @Setter
     private List<String> stringInterestList;

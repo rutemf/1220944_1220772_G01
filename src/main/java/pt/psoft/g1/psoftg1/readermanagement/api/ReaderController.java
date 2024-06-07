@@ -35,7 +35,6 @@ import pt.psoft.g1.psoftg1.readermanagement.services.CreateReaderRequest;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
-import pt.psoft.g1.psoftg1.shared.api.UploadFileResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
@@ -159,7 +158,7 @@ class ReaderController {
 
         //In case the user has no photo, just return a 200 OK without body
         if(readerDetails.getPhoto() == null) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         String photoFile = readerDetails.getPhoto().getPhotoFile();
@@ -189,7 +188,7 @@ class ReaderController {
 
         //In case the user has no photo, just return a 200 OK without body
         if(readerDetails.getPhoto() == null) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         byte[] image = this.fileStorageService.getFile(readerDetails.getPhoto().getPhotoFile());
@@ -207,18 +206,11 @@ class ReaderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ReaderView> createReader(@Valid CreateReaderRequest readerRequest) throws ValidationException {
-
-        //Guarantee that the client doesn't provide a link on the body, null = no photo or error
-        readerRequest.setPhotoURI(null);
         MultipartFile file = readerRequest.getPhoto();
 
         String fileName = this.fileStorageService.getRequestPhoto(file);
 
-        if (fileName != null) {
-            readerRequest.setPhotoURI(fileName);
-        }
-
-        ReaderDetails readerDetails = readerService.create(readerRequest);
+        ReaderDetails readerDetails = readerService.create(readerRequest, fileName);
 
         final var newReaderUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .pathSegment(readerDetails.getReaderNumber().toString())
@@ -227,6 +219,28 @@ class ReaderController {
         return ResponseEntity.created(newReaderUri)
                 .eTag(Long.toString(readerDetails.getVersion()))
                 .body(readerViewMapper.toReaderView(readerDetails));
+    }
+
+    @Operation(summary = "Deletes a reader photo")
+    @DeleteMapping("/photo")
+    public ResponseEntity<Void> deleteReaderPhoto(Authentication authentication) {
+        User loggedUser = userService.getAuthenticatedUser(authentication);
+
+        Optional<ReaderDetails> optReaderDetails = readerService.findByUsername(loggedUser.getUsername());
+        if(optReaderDetails.isEmpty()) {
+            throw new AccessDeniedException("Could not find a valid reader from current auth");
+        }
+
+        ReaderDetails readerDetails = optReaderDetails.get();
+
+        if(readerDetails.getPhoto() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        this.fileStorageService.deleteFile(readerDetails.getPhoto().getPhotoFile());
+        readerService.removeReaderPhoto(readerDetails.getReaderNumber(), readerDetails.getVersion());
+
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Updates a reader")
@@ -247,13 +261,9 @@ class ReaderController {
 
         String fileName = this.fileStorageService.getRequestPhoto(file);
 
-        if (fileName != null) {
-            readerRequest.setPhotoURI(fileName);
-        }
-
         User loggedUser = userService.getAuthenticatedUser(authentication);
         ReaderDetails readerDetails = readerService
-                .update(loggedUser.getId(), readerRequest, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
+                .update(loggedUser.getId(), readerRequest, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue), fileName);
 
         return ResponseEntity.ok()
                 .eTag(Long.toString(readerDetails.getVersion()))

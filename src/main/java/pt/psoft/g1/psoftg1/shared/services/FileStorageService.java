@@ -85,6 +85,19 @@ public class FileStorageService {
         }
     }
 
+    public void deleteFile(String file) {
+        if(file == null) {
+            throw new IllegalArgumentException("Received null reference to file path");
+        }
+
+        Path filePath = Paths.get(this.fileStorageLocation + "/" + file);
+        try {
+            Files.delete(filePath);
+        } catch (IOException e) {
+            throw new NotFoundException("Reader photo could not be deleted as his photo file doesn't exist.");
+        }
+    }
+
     public byte[] getFile(final String fileName) {
         String photoPathString = this.fileStorageLocation + "/" + fileName;
         Path photoPath = Paths.get(photoPathString);

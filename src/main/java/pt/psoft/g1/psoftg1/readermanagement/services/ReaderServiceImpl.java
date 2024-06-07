@@ -3,16 +3,16 @@ package pt.psoft.g1.psoftg1.readermanagement.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import pt.psoft.g1.psoftg1.exceptions.ConflictException;
-import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
+import pt.psoft.g1.psoftg1.exceptions.ConflictException;
+import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.shared.repositories.ForbiddenNameRepository;
+import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -29,16 +30,18 @@ public class ReaderServiceImpl implements ReaderService {
     private final ReaderMapper readerMapper;
     private final GenreRepository genreRepo;
     private final ForbiddenNameRepository forbiddenNameRepository;
+    private final PhotoRepository photoRepository;
+
 
     @Override
-    public ReaderDetails create(CreateReaderRequest request) {
+    public ReaderDetails create(CreateReaderRequest request, String photoURI) {
         if (userRepo.findByUsername(request.getUsername()).isPresent()) {
             throw new ConflictException("Username already exists!");
         }
 
         Iterable<String> words = List.of(request.getFullName().split("\\s+"));
         for (String word : words){
-            if(!forbiddenNameRepository.findByForbiddenNameContains(word).isEmpty()) {
+            if(!forbiddenNameRepository.findByForbiddenNameIsContained(word).isEmpty()) {
                 throw new IllegalArgumentException("Name contains a forbidden word");
             }
         }
@@ -61,15 +64,13 @@ public class ReaderServiceImpl implements ReaderService {
          * */
 
         MultipartFile photo = request.getPhoto();
-        String photoURI = request.getPhotoURI();
         if(photo == null && photoURI != null || photo != null && photoURI == null) {
             request.setPhoto(null);
-            request.setPhotoURI(null);
         }
 
         int count = readerRepo.getCountFromCurrentYear();
         Reader reader = readerMapper.createReader(request);
-        ReaderDetails rd = readerMapper.createReaderDetails(count+1, reader, request);
+        ReaderDetails rd = readerMapper.createReaderDetails(count+1, reader, request, photoURI);
 
         userRepo.save(reader);
         return readerRepo.save(rd);
@@ -85,7 +86,7 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public ReaderDetails update(final Long id, final UpdateReaderRequest request, final long desiredVersion){
+    public ReaderDetails update(final Long id, final UpdateReaderRequest request, final long desiredVersion, String photoURI){
         final ReaderDetails readerDetails = readerRepo.findByUserId(id)
                 .orElseThrow(() -> new NotFoundException("Cannot find reader"));
 
@@ -107,13 +108,11 @@ public class ReaderServiceImpl implements ReaderService {
          * */
 
         MultipartFile photo = request.getPhoto();
-        String photoURI = request.getPhotoURI();
         if(photo == null && photoURI != null || photo != null && photoURI == null) {
             request.setPhoto(null);
-            request.setPhotoURI(null);
         }
 
-        readerDetails.applyPatch(desiredVersion, request);
+        readerDetails.applyPatch(desiredVersion, request, photoURI);
 
         userRepo.save(readerDetails.getReader());
         return readerRepo.save(readerDetails);
@@ -164,5 +163,17 @@ public class ReaderServiceImpl implements ReaderService {
         }
 
         return genreList;
+    }
+
+    @Override
+    public Optional<ReaderDetails> removeReaderPhoto(String readerNumber, long desiredVersion) {
+        ReaderDetails readerDetails = readerRepo.findByReaderNumber(readerNumber)
+                .orElseThrow(() -> new NotFoundException("Cannot find reader"));
+
+        String photoFile = readerDetails.getPhoto().getPhotoFile();
+        readerDetails.removePhoto(desiredVersion);
+        Optional<ReaderDetails> updatedReader = Optional.of(readerRepo.save(readerDetails));
+        photoRepository.deleteByPhotoFile(photoFile);
+        return updatedReader;
     }
 }

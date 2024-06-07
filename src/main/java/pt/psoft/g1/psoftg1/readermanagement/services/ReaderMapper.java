@@ -3,6 +3,7 @@ package pt.psoft.g1.psoftg1.readermanagement.services;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.springframework.web.multipart.MultipartFile;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.model.Photo;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
@@ -22,6 +23,6 @@ public abstract class ReaderMapper {
     @Mapping(target = "name", source = "fullName")
     public abstract Reader createReader(CreateReaderRequest request);
 
-    @Mapping(target = "photo", source = "request.photoURI")
-    public abstract ReaderDetails createReaderDetails(int readerNumber, Reader reader, CreateReaderRequest request);
+    @Mapping(target = "photo", source = "photoURI")
+    public abstract ReaderDetails createReaderDetails(int readerNumber, Reader reader, CreateReaderRequest request, String photoURI);
 }

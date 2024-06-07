@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.readermanagement.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
 import pt.psoft.g1.psoftg1.shared.model.EntityWithPhoto;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 
+import java.nio.file.InvalidPathException;
 import java.util.List;
 
 @Entity
@@ -97,7 +99,7 @@ public class ReaderDetails extends EntityWithPhoto {
     }
 
     //TODO: Edu: Apply Patch method to update the properties we want
-    public void applyPatch(final long currentVersion, final UpdateReaderRequest request) {
+    public void applyPatch(final long currentVersion, final UpdateReaderRequest request, String photoURI) {
         if(currentVersion != this.version) {
             throw new ConflictException("Provided version does not match latest version of this object");
         }
@@ -107,7 +109,6 @@ public class ReaderDetails extends EntityWithPhoto {
         boolean thirdParty = request.getThirdParty();
         String username = request.getUsername();
         String password = request.getPassword();
-        String photoURI = request.getPhotoURI();
 
         if(username != null) {
             this.reader.setUsername(username);
@@ -133,9 +134,19 @@ public class ReaderDetails extends EntityWithPhoto {
             setThirdPartySharingConsent(thirdParty);
         }
 
-        if(photoURI != null){
-            setPhotoInternal(photoURI);
+        if(photoURI != null) {
+            try {
+                setPhotoInternal(photoURI);
+            } catch(InvalidPathException ignored) {}
         }
+    }
+
+    public void removePhoto(long desiredVersion) {
+        if(desiredVersion != this.version) {
+            throw new ConflictException("Provided version does not match latest version of this object");
+        }
+
+        setPhotoInternal(null);
     }
 
     public String getReaderNumber(){
