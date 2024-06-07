@@ -126,6 +126,11 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
+    public List<ReaderDetails> findByPhoneNumber(String phoneNumber) {
+        return this.readerRepo.findByPhoneNumber(phoneNumber);
+    }
+
+    @Override
     public Optional<ReaderDetails> findByUsername(final String username) {
         return this.readerRepo.findByUsername(username);
     };

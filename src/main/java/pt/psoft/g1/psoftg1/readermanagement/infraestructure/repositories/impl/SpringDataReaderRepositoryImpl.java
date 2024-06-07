@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderBookCountDTO;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -21,6 +22,12 @@ public interface SpringDataReaderRepositoryImpl extends ReaderRepository, CrudRe
             "FROM ReaderDetails r " +
             "WHERE r.readerNumber.readerNumber = :readerNumber")
     Optional<ReaderDetails> findByReaderNumber(@Param("readerNumber") @NotNull String readerNumber);
+
+    @Override
+    @Query("SELECT r " +
+            "FROM ReaderDetails r " +
+            "WHERE r.phoneNumber.number = :phoneNumber")
+    List<ReaderDetails> findByPhoneNumber(@Param("phoneNumber") @NotNull String phoneNumber);
 
     @Override
     @Query("SELECT r " +

@@ -31,4 +31,6 @@ public class BookView {
     @Getter
     private Map<String, Object> _links = new HashMap<>();
 
+    private String photo;
+
 }

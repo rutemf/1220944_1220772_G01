@@ -8,6 +8,7 @@ import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderBookCountDTO;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,6 +16,7 @@ import java.util.Optional;
  */
 public interface ReaderRepository {
     Optional<ReaderDetails> findByReaderNumber(@Param("readerNumber") @NotNull String readerNumber);
+    List<ReaderDetails> findByPhoneNumber(@Param("phoneNumber") @NotNull String phoneNumber);
     Optional<ReaderDetails> findByUsername(@Param("username") @NotNull String username);
     Optional<ReaderDetails> findByUserId(@Param("userId") @NotNull Long userId);
     int getCountFromCurrentYear();

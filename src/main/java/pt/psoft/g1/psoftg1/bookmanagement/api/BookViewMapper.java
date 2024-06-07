@@ -6,6 +6,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.services.BookCountDTO;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 
 import java.util.HashMap;
@@ -21,6 +22,8 @@ public abstract class BookViewMapper extends MapperInterface {
     @Mapping(target = "title", source = "title")
     @Mapping(target = "authors", expression = "java(mapAuthors(book.getAuthors()))")
     @Mapping(target = "_links", expression = "java(mapLinks(book))")
+    @Mapping(target = "photo", expression = "java(generatePhotoUrl(book))")
+
     public abstract BookView toBookView(Book book);
 
     public abstract List<BookView> toBookView(List<Book> bookList);
@@ -37,6 +40,7 @@ public abstract class BookViewMapper extends MapperInterface {
                 .map(Author::getName)
                 .collect(Collectors.toList());
     }
+
 
     public Map<String, Object> mapLinks(final Book book) {
         String bookUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -60,7 +64,14 @@ public abstract class BookViewMapper extends MapperInterface {
                 .collect(Collectors.toList());
 
         links.put("authors", authorLinks);
+        links.put("photo", generatePhotoUrl(book));
+
 
         return links;
+    }
+
+    protected String generatePhotoUrl(Book book) {
+        String isbn = book.getIsbn();
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/books/{isbn}/photo").buildAndExpand(isbn).toUri().toString();
     }
 }

@@ -45,7 +45,7 @@ public class BookController {
     @Operation(summary = "Register a new Book")
     @PutMapping(value = "/{isbn}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<BookView> create(@Valid CreateBookRequest resource, @PathVariable("isbn") String isbn) {
+    public ResponseEntity<BookView> create( CreateBookRequest resource, @PathVariable("isbn") String isbn) {
 
 
         //Guarantee that the client doesn't provide a link on the body, null = no photo or error
@@ -91,7 +91,7 @@ public class BookController {
     @Operation(summary= "Gets a book photo")
     @GetMapping("/{isbn}/photo")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<byte[]> getSpecificBookPhoto(@PathVariable final String isbn){
+    public ResponseEntity<byte[]> getSpecificBookPhoto(@PathVariable("isbn") final String isbn){
 
         Optional<Book> optBook = bookService.findByIsbn(isbn);
         if(optBook.isEmpty()) {

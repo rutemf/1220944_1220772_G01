@@ -23,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookCountView;
+import pt.psoft.g1.psoftg1.bookmanagement.api.BookView;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.api.LendingView;
 import pt.psoft.g1.psoftg1.lendingmanagement.api.LendingViewMapper;
@@ -94,6 +96,19 @@ class ReaderController {
         }
 
         return new ResponseEntity<>(readerViewMapper.toReaderView(readerDetailsOpt.get()), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Gets a list of Readers by phoneNumber")
+    @GetMapping(params = "phoneNumber")
+    public ListResponse<ReaderView> findByPhoneNumber(@RequestParam(name = "phoneNumber", required = false) final String phoneNumber) {
+
+        List<ReaderDetails> readerDetailsList  = readerService.findByPhoneNumber(phoneNumber);
+
+        if(readerDetailsList.isEmpty()) {
+            throw new NotFoundException(ReaderDetails.class, phoneNumber);
+        }
+
+        return new ListResponse<>(readerViewMapper.toReaderView(readerDetailsList));
     }
 
     @RolesAllowed(Role.LIBRARIAN)

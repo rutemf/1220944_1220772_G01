@@ -14,6 +14,7 @@ public interface ReaderService {
     ReaderDetails update(Long id, UpdateReaderRequest request, long desireVersion);
     Optional<ReaderDetails> findByUsername(final String username);
     Optional<ReaderDetails> findByReaderNumber(String readerNumber);
+    List<ReaderDetails> findByPhoneNumber(String phoneNumber);
     Iterable<ReaderDetails> findAll();
     List<ReaderDetails> findTopReaders(int minTop);
     List<ReaderBookCountDTO> findTopByGenre(String genre, LocalDate startDate, LocalDate endDate);
