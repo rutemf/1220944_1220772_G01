@@ -28,6 +28,9 @@ down by genre
 ### 1.8 Other Relevant Remarks
 ## 2. OO Analysis
 ### 2.1. Relevant Domain Model Excerpt
+
+<img src="Ph2-16-LendingsPerMonthLast12MonthsByGenre-DM.svg" alt="Domain Model Excerpt">
+
 ### 2.2. Other Remarks
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)

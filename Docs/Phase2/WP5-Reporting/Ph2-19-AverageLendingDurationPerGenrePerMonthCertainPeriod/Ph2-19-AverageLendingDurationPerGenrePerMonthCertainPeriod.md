@@ -6,10 +6,9 @@ As Librarian I want to know the Average lending duration Per genre per month for
 
 ### 1.2. Customer Specifications and Clarifications
 
-
 ### 1.3. Acceptance Criteria
-- AC
-- 
+- Lista ordenada por mês e género com a duração média dos empréstimos nesse mês para esse género, para um dado período
+
 ### 1.4. Found out Dependencies
 ### 1.5 Input and Output Data
 
