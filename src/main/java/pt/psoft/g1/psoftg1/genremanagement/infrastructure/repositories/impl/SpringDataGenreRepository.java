@@ -11,16 +11,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.util.Pair;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
+import pt.psoft.g1.psoftg1.genremanagement.services.GenreAverageLendingsDTO;
 import pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsPerMonthDTO;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,58 +44,14 @@ public interface SpringDataGenreRepository extends GenreRepository, GenreRepoCus
 
 
 interface GenreRepoCustom{
-    List<Pair<Genre, Double>> getAverageLendings(String period, LocalDate startDate, LocalDate endDate);
-
     List<GenreLendingsPerMonthDTO> getLendingsPerMonthLastYearByGenre();
+    List<GenreAverageLendingsDTO> getAverageLendings(LocalDate month, pt.psoft.g1.psoftg1.shared.services.Page page);
 }
 
 @RequiredArgsConstructor
 class GenreRepoCustomImpl implements GenreRepoCustom {
 
     private final EntityManager entityManager;
-
-    @Override
-    public List<Pair<Genre, Double>> getAverageLendings(String period, LocalDate startDate, LocalDate endDate) {
-
-        int diff = switch (period.toLowerCase()) {
-            case "days", "day" -> (int) ChronoUnit.DAYS.between(startDate, endDate)+1;
-            case "weeks", "week" -> (int) ChronoUnit.WEEKS.between(startDate, endDate)+1;
-            case "months", "month" -> (int) ChronoUnit.MONTHS.between(startDate, endDate)+1;
-            case "years", "year" -> (int) ChronoUnit.YEARS.between(startDate, endDate)+1;
-            default -> 1;
-        };
-
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Tuple> query = cb.createQuery(Tuple.class);
-
-        Root<Lending> lendingRoot = query.from(Lending.class);
-        Join<Lending, Book> bookJoin = lendingRoot.join("book", JoinType.LEFT);
-        Join<Book, Genre> genreJoin = bookJoin.join("genre", JoinType.LEFT);
-
-        Expression<Long> loanCount = cb.count(lendingRoot.get("pk"));
-        Expression<Number> dailyAvgLoans = cb.quot(cb.toDouble(loanCount), cb.literal(diff));
-
-        query.multiselect(genreJoin, dailyAvgLoans);
-        query.groupBy(genreJoin.get("pk"));
-
-        Predicate startDatePredicate = cb.greaterThanOrEqualTo(lendingRoot.get("startDate"), startDate);
-        Predicate endDatePredicate = cb.lessThanOrEqualTo(lendingRoot.get("startDate"), endDate);
-
-        Predicate finalPredicate = cb.and(startDatePredicate, endDatePredicate);
-
-        query.where(finalPredicate);
-
-        List<Tuple> results = entityManager.createQuery(query).getResultList();
-        List<Pair<Genre, Double>> avgLendings = new ArrayList<>();
-
-        for (Tuple result : results) {
-            Genre genre = result.get(0, Genre.class);
-            Double avg = result.get(1, Double.class);
-            avgLendings.add(Pair.of(genre, avg));
-        }
-
-        return avgLendings;
-    }
 
     @Override
     public List<GenreLendingsPerMonthDTO> getLendingsPerMonthLastYearByGenre(){
@@ -138,5 +93,38 @@ class GenreRepoCustomImpl implements GenreRepoCustom {
 
         return lendingsPerMonth;
     }
+
+    public List<GenreAverageLendingsDTO> getAverageLendings(LocalDate month, pt.psoft.g1.psoftg1.shared.services.Page page){
+        int days = month.lengthOfMonth();
+        LocalDate firstOfMonth = LocalDate.of(month.getYear(), month.getMonth(), 1);
+        LocalDate lastOfMonth = LocalDate.of(month.getYear(), month.getMonth(), days);
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<GenreAverageLendingsDTO> cq = cb.createQuery(GenreAverageLendingsDTO.class);
+
+        Root<Lending> lendingRoot = cq.from(Lending.class);
+        Join<Lending, Book> bookJoin = lendingRoot.join("book", JoinType.LEFT);
+        Join<Book, Genre> genreJoin = bookJoin.join("genre", JoinType.LEFT);
+
+        Expression<Long> loanCount = cb.count(lendingRoot.get("pk"));
+        Expression<Number> dailyAvgLoans = cb.quot(cb.toDouble(loanCount), cb.literal(days));
+
+        cq.multiselect(genreJoin, dailyAvgLoans);
+        cq.groupBy(genreJoin.get("pk"));
+
+        Predicate startDatePredicate = cb.greaterThanOrEqualTo(lendingRoot.get("startDate"), firstOfMonth);
+        Predicate endDatePredicate = cb.lessThanOrEqualTo(lendingRoot.get("startDate"), lastOfMonth);
+
+        Predicate finalPredicate = cb.and(startDatePredicate, endDatePredicate);
+
+        cq.where(finalPredicate);
+
+        final TypedQuery<GenreAverageLendingsDTO> q = entityManager.createQuery(cq);
+        q.setFirstResult((page.getNumber() - 1) * page.getLimit());
+        q.setMaxResults(page.getLimit());
+
+        return q.getResultList();
+    }
+
 
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
+import pt.psoft.g1.psoftg1.shared.services.Page;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -42,20 +43,18 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public List<Pair<Genre, String>> getAverageLendings(String period, LocalDate startDate, LocalDate endDate){
-        if(startDate.isAfter(endDate)){
-            throw new IllegalArgumentException("Start date cannot be after end date");
-        }
-        List<Pair<Genre, Double>> repoList = genreRepository.getAverageLendings(period,startDate,endDate);
-        List<Pair<Genre, String>> returnList = new ArrayList<>();
-        for(int i = 0; i < repoList.size(); i++){
-            returnList.add(Pair.of(repoList.get(i).getFirst(), String.format("%.1f", repoList.get(i).getSecond())));
-        }
-        return returnList;
-    }
-
-    @Override
     public List<GenreLendingsPerMonthDTO> getLendingsPerMonthLastYearByGenre() {
         return genreRepository.getLendingsPerMonthLastYearByGenre();
     }
+
+    @Override
+    public List<GenreAverageLendingsDTO> getAverageLendings(GetAverageLendingsQuery query, Page page){
+        if (page == null)
+            page = new Page(1, 10);
+
+        final var month = LocalDate.of(query.getYear(), query.getMonth(), 1);
+
+        return genreRepository.getAverageLendings(month, page);
+    }
+
 }

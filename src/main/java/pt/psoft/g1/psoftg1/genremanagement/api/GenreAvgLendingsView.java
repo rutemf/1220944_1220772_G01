@@ -10,5 +10,5 @@ public class GenreAvgLendingsView {
     @NotNull
     private String genre;
 
-    private String avgLendings;
+    private String averageLendings;
 }

@@ -1,21 +1,14 @@
 package pt.psoft.g1.psoftg1.genremanagement.api;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import pt.psoft.g1.psoftg1.genremanagement.services.GenreService;
+import org.springframework.web.bind.annotation.*;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.genremanagement.services.GenreService;
+import pt.psoft.g1.psoftg1.genremanagement.services.GetAverageLendingsQuery;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
+import pt.psoft.g1.psoftg1.shared.services.SearchRequest;
 
 @Tag(name = "Genres", description = "Endpoints for managing Genres")
 @RestController
@@ -25,34 +18,11 @@ public class GenreController {
     private final GenreService genreService;
     private final GenreViewMapper genreViewMapper;
 
-    @ApiResponse(description = "Success",
-            responseCode = "200",
-            content = { @Content(mediaType = "application/json",
-            // Use the `array` property instead of `schema`
-            array = @ArraySchema(schema = @Schema(implementation = GenreAvgLendingsView.class))) })
-    @GetMapping(value="/avgLendings", params = {"period", "start", "end"})
+    @PostMapping(value="/avgLendingsPerGenre")
     public ListResponse<GenreAvgLendingsView> getAverageLendings(
-            @RequestParam("period") final String period,
-            @RequestParam("start") final String start,
-            @RequestParam("end") final String end) {
-
-        LocalDate startDate;
-        LocalDate endDate;
-
-        try {
-            startDate = LocalDate.parse(start);
-            endDate = LocalDate.parse(end);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Expected format is YYYY-MM-DD");
-        }
-
-        if (!period.equalsIgnoreCase("day") &&
-                !period.equalsIgnoreCase("week") &&
-                !period.equalsIgnoreCase("month") &&
-                !period.equalsIgnoreCase("year")) {
-            throw new IllegalArgumentException("Possible average periods - day, week, month, year");
-        }
-        return new ListResponse<>(genreViewMapper.toGenreAvgLendingsView(genreService.getAverageLendings(period, startDate, endDate)));
+            @Valid @RequestBody final SearchRequest<GetAverageLendingsQuery> query){
+        final var list = genreService.getAverageLendings(query.getQuery(), query.getPage());
+        return new ListResponse<>(genreViewMapper.toGenreAvgLendingsView(list));
     }
 
     @GetMapping("/top5")

@@ -14,20 +14,18 @@ participant ":GenreViewMapper" as Mapper
 
 note over Librarian : Librarian is\nauthenticated
 
-Librarian -> System: get average lendings
-
-System -> Ctrl: getAverageLendings(period, start, end);
-
-Ctrl -> Service: getAverageLendings(period, start, end)
-Service -> GenreRepo: getAverageLendings(period, start, end)
+Librarian -> System: get average lendings\nfor specified month
+System -> Ctrl: getAverageLendings(query);
+Ctrl -> Service: getAverageLendings(query, page)
+Service -> GenreRepo: getAverageLendings(month, page)
 note right
     (Details ommited)
 end note
-GenreRepo --> Service: (pairList)
-Service --> Ctrl: (pairList)
-Ctrl -> Mapper: toGenreAvgLendingsView(pairList)
-Mapper --> Ctrl: (listView)
-Ctrl --> System: (listView)
+GenreRepo --> Service: (genreAverageLendingsDtoList)
+Service --> Ctrl: (genreAverageLendingsDtoList)
+Ctrl -> Mapper: toGenreAvgLendingsView(genreAverageLendingsDtoList)
+Mapper --> Ctrl: (genreAvgLendingsViewList)
+Ctrl --> System: (genreAvgLendingsViewList)
 System --> Librarian: (array of genres\nand their lending\naverages)
 
 @enduml
