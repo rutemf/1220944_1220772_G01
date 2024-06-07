@@ -43,11 +43,11 @@ As Librarian I want to list overdue lending sorted by their tardiness.
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
 
-<img src="WP4B-Lendings-SD.svg" alt="Sequence Diagram">
+<img src="Ph2-23-GetOverdueLendings-SD.svg" alt="Sequence Diagram">
 
 ### 3.2. Class Diagram (CD)
 
-<img src="WP4B-Lendings-CD.svg" alt="Class Diagram">
+<img src="../WP4B-Lendings-CD.svg" alt="Class Diagram">
 
 ## 4. Tests
 ## 5. Observations
