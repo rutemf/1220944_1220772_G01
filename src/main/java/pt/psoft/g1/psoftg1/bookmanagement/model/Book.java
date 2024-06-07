@@ -1,7 +1,6 @@
 package pt.psoft.g1.psoftg1.bookmanagement.model;
 
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -9,10 +8,8 @@ import org.hibernate.StaleObjectStateException;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
-import pt.psoft.g1.psoftg1.shared.model.Photo;
+import pt.psoft.g1.psoftg1.shared.model.EntityWithPhoto;
 
-import java.nio.file.InvalidPathException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +18,7 @@ import java.util.Objects;
 @Table(name = "Book", uniqueConstraints = {
         @UniqueConstraint(name = "uc_book_isbn", columnNames = {"ISBN"})
 })
-public class Book {
+public class Book extends EntityWithPhoto {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     long pk;
@@ -32,12 +29,6 @@ public class Book {
 
     @Embedded
     Isbn isbn;
-
-    @Nullable
-    @Getter
-    @OneToOne
-    @JoinColumn(name="photo_id")
-    private Photo photo;
 
     @Getter
     @Embedded
@@ -62,7 +53,6 @@ public class Book {
         this.isbn = new Isbn(isbn);
     }
 
-
     private void setDescription(String description) {this.description = new Description(description); }
 
     private void setGenre(Genre genre) {this.genre = genre; }
@@ -85,35 +75,11 @@ public class Book {
             throw new IllegalArgumentException("Author list is empty");
 
         setAuthors(authors);
-
-        if(photoURI != null) {
-            try {
-                //If the Path object instantiation succeeds, it means that we have a valid Path
-                this.photo = new Photo(Paths.get(photoURI));
-            } catch (InvalidPathException e) {
-                //For some reason it failed, let's set to null to avoid invalid references to photos
-                this.photo = null;
-            }
-        } else {
-            this.photo = null;
-        }
+        setPhotoInternal(photoURI);
     }
 
     protected Book() {
         // got ORM only
-    }
-
-    public void setPhoto(String photo) {
-        this.setPhotoInternal(photo);
-    }
-
-    private void setPhotoInternal(String photo) {
-        if(photo == null) {
-            this.photo = null;
-            return;
-        }
-
-        this.photo = new Photo(Paths.get(photo));
     }
 
     public void applyPatch(final Long desiredVersion, UpdateBookRequest request) {
@@ -141,13 +107,9 @@ public class Book {
             setAuthors(authors);
         }
 
-        if(photoURI != null) {
-            try {
-                setPhotoInternal(photoURI);
-            } catch(InvalidPathException ignored) {}
-        } else {
-            setPhotoInternal(null);
-        }
+        if(photoURI != null)
+            setPhotoInternal(photoURI);
+
     }
 
     public String getIsbn(){

@@ -14,8 +14,6 @@ import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
-import pt.psoft.g1.psoftg1.shared.model.Photo;
-import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,7 +27,6 @@ public class BookServiceImpl implements BookService {
 	private final BookRepository bookRepository;
 	private final GenreRepository genreRepository;
 	private final AuthorRepository authorRepository;
-	private final PhotoRepository photoRepository;
 
 	@Override
 	public Book create(CreateBookRequest request, String isbn) {
@@ -63,8 +60,6 @@ public class BookServiceImpl implements BookService {
 				.orElseThrow(() -> new NotFoundException("Genre not found"));
 
 		newBook = new Book(isbn, request.getTitle(), request.getDescription(), genre, authors, photoURI);
-
-		Photo savedPhoto = photoRepository.save(newBook.getPhoto());
 
         return bookRepository.save(newBook);
 	}
@@ -111,7 +106,7 @@ public class BookServiceImpl implements BookService {
         }
 
         book.applyPatch(Long.parseLong(currentVersion), request);
-		photoRepository.save(book.getPhoto());
+
 		bookRepository.save(book);
 
 

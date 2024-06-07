@@ -1,11 +1,13 @@
 package pt.psoft.g1.psoftg1.shared.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Entity
 public class Photo {
@@ -19,8 +21,8 @@ public class Photo {
 
     protected Photo (){}
 
-    public Photo (Path photoUri){
-        setPhotoFile(photoUri.toString());
+    public Photo (Path photoPath){
+        setPhotoFile(photoPath.toString());
     }
 }
 

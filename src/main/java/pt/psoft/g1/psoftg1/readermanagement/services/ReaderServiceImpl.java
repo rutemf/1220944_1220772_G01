@@ -3,16 +3,16 @@ package pt.psoft.g1.psoftg1.readermanagement.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
-import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
+import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.shared.repositories.ForbiddenNameRepository;
-import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +29,6 @@ public class ReaderServiceImpl implements ReaderService {
     private final ReaderMapper readerMapper;
     private final GenreRepository genreRepo;
     private final ForbiddenNameRepository forbiddenNameRepository;
-    private final PhotoRepository photoRepository;
-
 
     @Override
     public ReaderDetails create(CreateReaderRequest request) {
@@ -73,8 +70,6 @@ public class ReaderServiceImpl implements ReaderService {
         int count = readerRepo.getCountFromCurrentYear();
         Reader reader = readerMapper.createReader(request);
         ReaderDetails rd = readerMapper.createReaderDetails(count+1, reader, request);
-
-        photoRepository.save(rd.getPhoto());
 
         userRepo.save(reader);
         return readerRepo.save(rd);
@@ -119,8 +114,6 @@ public class ReaderServiceImpl implements ReaderService {
         }
 
         readerDetails.applyPatch(desiredVersion, request);
-
-        photoRepository.save(readerDetails.getPhoto());
 
         userRepo.save(readerDetails.getReader());
         return readerRepo.save(readerDetails);

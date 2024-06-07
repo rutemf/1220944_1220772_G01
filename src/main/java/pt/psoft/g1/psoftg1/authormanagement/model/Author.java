@@ -1,20 +1,14 @@
 package pt.psoft.g1.psoftg1.authormanagement.model;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.StaleObjectStateException;
-import org.springframework.beans.factory.annotation.Value;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
+import pt.psoft.g1.psoftg1.shared.model.EntityWithPhoto;
 import pt.psoft.g1.psoftg1.shared.model.Name;
-import pt.psoft.g1.psoftg1.shared.model.Photo;
-
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Entity
-public class Author {
+public class Author extends EntityWithPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "AUTHOR_NUMBER")
@@ -27,12 +21,6 @@ public class Author {
     @Embedded
     private Name name;
 
-    @Nullable
-    @Getter
-    @OneToOne
-    @JoinColumn(name = "photo_id")
-    private Photo photo;
-
     @Embedded
     private Bio bio;
 
@@ -42,15 +30,6 @@ public class Author {
 
     public void setBio(String bio) {
         this.bio = new Bio(bio);
-    }
-
-    private void setPhotoInternal(String photo) {
-        if (photo == null) {
-            this.photo = null;
-            return;
-        }
-
-        this.photo = new Photo(Paths.get(photo));
     }
 
     public Long getVersion() {
@@ -64,22 +43,7 @@ public class Author {
     public Author(String name, String bio, String photoURI) {
         setName(name);
         setBio(bio);
-        if (photoURI != null) {
-            try {
-                //If the Path object instantiation succeeds, it means that we have a valid Path
-                this.photo = new Photo(Paths.get(photoURI));
-            } catch (InvalidPathException e) {
-                //For some reason it failed, let's set to null to avoid invalid references to photos
-                this.photo = null;
-            }
-        } else {
-            this.photo = null;
-        }
-
-    }
-
-    public void setPhoto(String photo) {
-        setPhotoInternal(photo);
+        setPhotoInternal(photoURI);
     }
 
     protected Author() {
@@ -88,27 +52,15 @@ public class Author {
 
 
     public void applyPatch(final long desiredVersion, final UpdateAuthorRequest request) {
-
-        if (this.version != desiredVersion) {
+        if (this.version != desiredVersion)
             throw new StaleObjectStateException("Object was already modified by another user", this.authorNumber);
-        }
-        if (request.getName() != null) {
+        if (request.getName() != null)
             setName(request.getName());
-        }
-
-        if (request.getBio() != null) {
+        if (request.getBio() != null)
             setBio(request.getBio());
-        }
-        if (request.getPhotoURI() != null) {
-            try {
-                setPhotoInternal(request.getPhotoURI());
-            } catch (InvalidPathException ignored) {
-            }
-        } else {
-            setPhotoInternal(null);
-        }
+        if(request.getPhotoURI() != null)
+            setPhotoInternal(request.getPhotoURI());
     }
-
 
     public String getName() {
         return this.name.toString();

@@ -126,8 +126,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/api/authors/{authorNumber}/books").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.GET,"/api/authors/top5").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.GET,"/api/authors/photo").hasRole(Role.LIBRARIAN)
-                .requestMatchers(HttpMethod.GET,"/api/authors/{authornumber}/photo").hasRole(Role.LIBRARIAN)
-                .requestMatchers(HttpMethod.GET,"/api/authors/{authornumber}/coauthors").hasRole(Role.READER)
+                .requestMatchers(HttpMethod.GET,"/api/authors/{authorNumber}/photo").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/authors/{authorNumber}/coauthors").hasRole(Role.READER)
                 //end authors
                 //books
                 .requestMatchers(HttpMethod.PUT,"/api/books/{isbn}").hasRole(Role.LIBRARIAN)

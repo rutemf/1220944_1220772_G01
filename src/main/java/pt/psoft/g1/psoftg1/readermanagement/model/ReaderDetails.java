@@ -1,22 +1,19 @@
 package pt.psoft.g1.psoftg1.readermanagement.model;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
+import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
-import pt.psoft.g1.psoftg1.shared.model.Photo;
+import pt.psoft.g1.psoftg1.shared.model.EntityWithPhoto;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 
-import java.nio.file.InvalidPathException;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Entity
 @Table(name = "READER_DETAILS")
-public class ReaderDetails {
+public class ReaderDetails extends EntityWithPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long pk;
@@ -51,20 +48,13 @@ public class ReaderDetails {
     @Getter
     private boolean thirdPartySharingConsent;
 
-    @Nullable
-    @Getter
-    @OneToOne
-    @JoinColumn(name="photo_id")
-    private Photo photo;
-
     @Version
     @Getter
     private Long version;
 
     @Getter
     @Setter
-    //TODO: Fica many to many ou one to many?
-    @OneToMany
+    @ManyToMany
     private List<Genre> interestList;
 
     public ReaderDetails(int readerNumber, Reader reader, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty, String photoURI) {
@@ -83,18 +73,7 @@ public class ReaderDetails {
         //By the client specifications, gdpr can only have the value of true. A setter will be created anyways in case we have accept no gdpr consent later on the project
         setGdprConsent(true);
 
-        if(photoURI != null) {
-            try {
-                //If the Path object instantiation succeeds, it means that we have a valid Path
-                this.photo = new Photo(Paths.get(photoURI));
-            } catch (InvalidPathException e) {
-                //For some reason it failed, let's set to null to avoid invalid references to photos
-                this.photo = null;
-            }
-        } else {
-            this.photo = null;
-        }
-
+        setPhotoInternal(photoURI);
         setMarketingConsent(marketing);
         setThirdPartySharingConsent(thirdParty);
     }
@@ -115,21 +94,6 @@ public class ReaderDetails {
         if(date != null) {
             this.birthDate = date;
         }
-    }
-
-    //This method is used by the mapper in order to set the photo. This will call the setPhotoInternal method that
-    //will contain all the logic to set the photo
-    public void setPhoto(String photo) {
-        this.setPhotoInternal(photo);
-    }
-
-    private void setPhotoInternal(String photo) {
-        if(photo == null) {
-            this.photo = null;
-            return;
-        }
-
-        this.photo = new Photo(Paths.get(photo));
     }
 
     //TODO: Edu: Apply Patch method to update the properties we want
@@ -169,12 +133,8 @@ public class ReaderDetails {
             setThirdPartySharingConsent(thirdParty);
         }
 
-        if(photoURI != null) {
-            try {
-                setPhotoInternal(photoURI);
-            } catch(InvalidPathException ignored) {}
-        } else {
-            setPhotoInternal(null);
+        if(photoURI != null){
+            setPhotoInternal(photoURI);
         }
     }
 

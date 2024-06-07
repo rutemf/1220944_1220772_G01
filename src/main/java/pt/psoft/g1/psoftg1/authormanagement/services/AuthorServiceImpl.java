@@ -13,7 +13,6 @@ import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
-import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,6 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
     private final AuthorMapper mapper;
-    private final PhotoRepository photoRepository;
     private final CoAuthorViewMapper coAuthorViewMapper;
 
     @Override
@@ -65,8 +63,6 @@ public class AuthorServiceImpl implements AuthorService {
         }
         final Author author = mapper.create(resource);
         return authorRepository.save(author);
-
-
     }
 
     @Override
