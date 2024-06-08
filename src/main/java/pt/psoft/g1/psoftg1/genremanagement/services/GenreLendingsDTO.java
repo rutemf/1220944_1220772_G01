@@ -29,8 +29,7 @@ public class GenreLendingsDTO {
 
     public GenreLendingsDTO(Genre genre, Double value){
         this.genre = genre.toString();
-        this.value = Double.valueOf(String.format("%.1f", value));
-//        this.value = String.format("%.1f", value);
+        this.value = Double.valueOf(String.format(Locale.US, "%.1f", value));
     }
 
     public GenreLendingsDTO(Genre genre, Long value){
