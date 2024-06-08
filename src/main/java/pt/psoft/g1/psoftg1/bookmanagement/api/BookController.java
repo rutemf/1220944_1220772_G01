@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,9 +22,11 @@ import pt.psoft.g1.psoftg1.genremanagement.services.GenreService;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
+import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -86,6 +89,25 @@ public class BookController {
         return ResponseEntity.ok()
                 .eTag(Long.toString(book.getVersion()))
                 .body(bookView);
+    }
+
+    @Operation(summary = "Deletes a book photo")
+    @DeleteMapping("/{isbn}/photo")
+    public ResponseEntity<Void> deleteBookPhoto(@PathVariable("isbn") final String isbn) {
+
+        Optional<Book> optBook = bookService.findByIsbn(isbn);
+        if(optBook.isEmpty()) {
+            throw new AccessDeniedException("A book could not be found with provided isbn");
+        }
+        Book book = optBook.get();
+        if(book.getPhoto() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        this.fileStorageService.deleteFile(book.getPhoto().getPhotoFile());
+        bookService.removeBookPhoto(book.getIsbn(), book.getVersion());
+
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary= "Gets a book photo")

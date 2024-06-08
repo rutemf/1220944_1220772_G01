@@ -14,6 +14,8 @@ import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class BookServiceImpl implements BookService {
 	private final BookRepository bookRepository;
 	private final GenreRepository genreRepository;
 	private final AuthorRepository authorRepository;
+	private final PhotoRepository photoRepository;
 
 	@Override
 	public Book create(CreateBookRequest request, String isbn) {
@@ -124,6 +127,19 @@ public class BookServiceImpl implements BookService {
 		Pageable pageableRules = PageRequest.of(0,5);
 		return this.bookRepository.findTop5BooksLent(oneYearAgo, pageableRules).getContent();
 	}
+
+	@Override
+	public Optional<Book> removeBookPhoto(String isbn, long desiredVersion) {
+		Book book = bookRepository.findByIsbn(isbn)
+				.orElseThrow(() -> new NotFoundException("Cannot find reader"));
+
+		String photoFile = book.getPhoto().getPhotoFile();
+		book.removePhoto(desiredVersion);
+		Optional<Book> updatedBook = Optional.of(bookRepository.save(book));
+		photoRepository.deleteByPhotoFile(photoFile);
+		return updatedBook;
+	}
+
 	@Override
 	public List<Book> findByGenre(String genre) {
 		return this.bookRepository.findByGenre(genre.toString());
