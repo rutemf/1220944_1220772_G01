@@ -21,7 +21,7 @@ public class AuthorView {
     private String photo;
     @Setter
     @Getter
-    private Map<String, String> _links = new HashMap<>();
+    private Map<String, Object> _links = new HashMap<>();
 
 
 }

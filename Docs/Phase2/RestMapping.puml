@@ -39,7 +39,7 @@ class "/authors" extends Resource{
     POST : create an entity in the collection (A3/B3)
 }
 
-class "/{id}" as AuthorID extends "/authors"{
+class "/{authorNumber}" as AuthorID extends "/authors"{
     GET : get specific author (A5)
     PATCH : update specific\n author details (A4)
 }
