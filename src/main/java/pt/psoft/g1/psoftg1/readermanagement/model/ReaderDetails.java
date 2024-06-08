@@ -59,7 +59,7 @@ public class ReaderDetails extends EntityWithPhoto {
     @ManyToMany
     private List<Genre> interestList;
 
-    public ReaderDetails(int readerNumber, Reader reader, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty, String photoURI) {
+    public ReaderDetails(int readerNumber, Reader reader, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty, String photoURI, List<Genre> interestList) {
         if(reader == null || phoneNumber == null) {
             throw new IllegalArgumentException("Provided argument resolves to null object");
         }
@@ -78,6 +78,7 @@ public class ReaderDetails extends EntityWithPhoto {
         setPhotoInternal(photoURI);
         setMarketingConsent(marketing);
         setThirdPartySharingConsent(thirdParty);
+        setInterestList(interestList);
     }
 
     private void setPhoneNumber(PhoneNumber number) {
@@ -99,7 +100,7 @@ public class ReaderDetails extends EntityWithPhoto {
     }
 
     //TODO: Edu: Apply Patch method to update the properties we want
-    public void applyPatch(final long currentVersion, final UpdateReaderRequest request, String photoURI) {
+    public void applyPatch(final long currentVersion, final UpdateReaderRequest request, String photoURI, List<Genre> interestList) {
         if(currentVersion != this.version) {
             throw new ConflictException("Provided version does not match latest version of this object");
         }
@@ -138,6 +139,10 @@ public class ReaderDetails extends EntityWithPhoto {
             try {
                 setPhotoInternal(photoURI);
             } catch(InvalidPathException ignored) {}
+        }
+
+        if(interestList != null) {
+            this.interestList = interestList;
         }
     }
 

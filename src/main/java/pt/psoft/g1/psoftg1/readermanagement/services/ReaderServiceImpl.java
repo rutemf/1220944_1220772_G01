@@ -46,10 +46,11 @@ public class ReaderServiceImpl implements ReaderService {
             }
         }
 
-        List<String> stringInterestList = request.getStringInterestList();
-        if(stringInterestList != null && !stringInterestList.isEmpty()) {
+        List<String> stringInterestList = request.getInterestList();
+        List<Genre> interestList = this.getGenreListFromStringList(stringInterestList);
+        /*if(stringInterestList != null && !stringInterestList.isEmpty()) {
             request.setInterestList(this.getGenreListFromStringList(stringInterestList));
-        }
+        }*/
 
         /*
          * Since photos can be null (no photo uploaded) that means the URI can be null as well.
@@ -70,7 +71,7 @@ public class ReaderServiceImpl implements ReaderService {
 
         int count = readerRepo.getCountFromCurrentYear();
         Reader reader = readerMapper.createReader(request);
-        ReaderDetails rd = readerMapper.createReaderDetails(count+1, reader, request, photoURI);
+        ReaderDetails rd = readerMapper.createReaderDetails(count+1, reader, request, photoURI, interestList);
 
         userRepo.save(reader);
         return readerRepo.save(rd);
@@ -90,10 +91,8 @@ public class ReaderServiceImpl implements ReaderService {
         final ReaderDetails readerDetails = readerRepo.findByUserId(id)
                 .orElseThrow(() -> new NotFoundException("Cannot find reader"));
 
-        List<String> stringInterestList = request.getStringInterestList();
-        if(stringInterestList != null && !stringInterestList.isEmpty()) {
-            request.setInterestList(this.getGenreListFromStringList(stringInterestList));
-        }
+        List<String> stringInterestList = request.getInterestList();
+        List<Genre> interestList = this.getGenreListFromStringList(stringInterestList);
 
          /*
          * Since photos can be null (no photo uploaded) that means the URI can be null as well.
@@ -112,7 +111,7 @@ public class ReaderServiceImpl implements ReaderService {
             request.setPhoto(null);
         }
 
-        readerDetails.applyPatch(desiredVersion, request, photoURI);
+        readerDetails.applyPatch(desiredVersion, request, photoURI, interestList);
 
         userRepo.save(readerDetails.getReader());
         return readerRepo.save(readerDetails);
@@ -152,6 +151,14 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     private List<Genre> getGenreListFromStringList(List<String> interestList) {
+        if(interestList == null) {
+            return null;
+        }
+
+        if(interestList.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         List<Genre> genreList = new ArrayList<>();
         for(String interest : interestList) {
             Optional<Genre> optGenre = genreRepo.findByString(interest);

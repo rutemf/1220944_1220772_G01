@@ -52,12 +52,7 @@ public class CreateReaderRequest {
     @Nullable
     @Getter
     @Setter
-    private List<String> stringInterestList;
-
-    @Nullable
-    @Getter
-    @Setter
-    private List<Genre> interestList;
+    private List<String> interestList;
 
     public boolean getThirdParty() {
         return thirdParty;
