@@ -18,11 +18,8 @@ import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.services.AuthorService;
 import pt.psoft.g1.psoftg1.authormanagement.services.CreateAuthorRequest;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
-import pt.psoft.g1.psoftg1.bookmanagement.api.BookShortView;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookView;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookViewMapper;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.services.BookService;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
@@ -129,7 +126,7 @@ public class AuthorController {
     //Know the books of an Author
     @Operation(summary = "Know the books of an author")
     @GetMapping("/{authorNumber}/books")
-    public ListResponse<BookView> getBooksByAuthorNumber(      //TODO: decidir se é necessário uma view nova
+    public ListResponse<BookView> getBooksByAuthorNumber(
            @PathVariable("authorNumber")
              @Parameter(description = "The number of the Author to find")
              final Long authorNumber) {
@@ -153,7 +150,7 @@ public class AuthorController {
         return new ListResponse<>(list);
     }
 
-    //Photo
+    //get - Photo
     @Operation(summary= "Gets a author photo")
     @GetMapping("/{authorNumber}/photo")
     @ResponseStatus(HttpStatus.OK)
@@ -182,6 +179,7 @@ public class AuthorController {
                 .contentType(fileFormat.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG)
                 .body(image);
     }
+    //Co-authors and their respective books
     @Operation(summary = "Get co-authors and their respective books for a specific author")
     @GetMapping("/{authorNumber}/coauthors")
     public AuthorCoAuthorBooksView getAuthorWithCoAuthors(@PathVariable("authorNumber")Long authorNumber) {

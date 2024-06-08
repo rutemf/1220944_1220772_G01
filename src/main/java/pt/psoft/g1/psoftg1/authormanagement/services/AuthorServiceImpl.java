@@ -12,7 +12,6 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

@@ -44,6 +44,6 @@ O que é esperador retornar? Top 5 dos autores por ordem e ao lado o total de le
 ### 3.1. Sequence Diagram (SD)
 ![Ph2-6-KnowTop5Authors.svg](Ph2-6-KnowTop5Authors.svg)
 ### 3.2. Class Diagram (CD)
-![ClassDiagram.svg](..%2FClassDiagram.svg)
+![Ph2-6-CD-KnowTop5Authors.svg](Ph2-6-CD-KnowTop5Authors.svg)
 ## 4. Tests
 
