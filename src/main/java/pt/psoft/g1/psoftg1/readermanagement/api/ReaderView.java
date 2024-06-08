@@ -3,6 +3,8 @@ package pt.psoft.g1.psoftg1.readermanagement.api;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Schema(description = "A Reader")
 public class ReaderView {
@@ -15,4 +17,5 @@ public class ReaderView {
     private boolean gdprConsent;
     private boolean marketingConsent;
     private boolean thirdPartySharingConsent;
+    private List<String> interestList;
 }

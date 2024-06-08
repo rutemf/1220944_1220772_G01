@@ -3,10 +3,12 @@ package pt.psoft.g1.psoftg1.readermanagement.api;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderBookCountDTO;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -19,6 +21,7 @@ public abstract class ReaderViewMapper extends MapperInterface {
     @Mapping(target = "gdprConsent", source = "gdprConsent")
     @Mapping(target = "readerNumber", source = "readerNumber")
     @Mapping(target = "photo", expression = "java(generatePhotoUrl(readerDetails))")
+    @Mapping(target = "interestList", expression = "java(mapInterestList(readerDetails.getInterestList()))")
     public abstract ReaderView toReaderView(ReaderDetails readerDetails);
 
     public abstract List<ReaderView> toReaderView(Iterable<ReaderDetails> readerList);
@@ -35,5 +38,19 @@ public abstract class ReaderViewMapper extends MapperInterface {
         int year = Integer.parseInt(readerNumberSplit[0]);
         int seq = Integer.parseInt(readerNumberSplit[1]);
         return ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/readers/{year}/{seq}/photo").buildAndExpand(year,seq).toUri().toString();
+    }
+
+    protected List<String> mapInterestList(List<Genre> interestList) {
+        List<String> stringInterestList = new ArrayList<>();
+
+        if(interestList == null || interestList.isEmpty()) {
+            return stringInterestList;
+        }
+
+        for(Genre genre : interestList) {
+            stringInterestList.add(genre.getGenre());
+        }
+
+        return stringInterestList;
     }
 }

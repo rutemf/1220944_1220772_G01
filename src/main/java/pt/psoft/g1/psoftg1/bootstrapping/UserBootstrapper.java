@@ -46,6 +46,7 @@ public class UserBootstrapper implements CommandLineRunner {
                         true,
                         true,
                         true,
+                        null,
                         null);
                 readerRepository.save(r1);
             }
@@ -65,6 +66,7 @@ public class UserBootstrapper implements CommandLineRunner {
                         true,
                         false,
                         false,
+                        null,
                         null);
                 readerRepository.save(r2);
             }
@@ -84,6 +86,7 @@ public class UserBootstrapper implements CommandLineRunner {
                         true,
                         false,
                         true,
+                        null,
                         null);
                 readerRepository.save(r3);
             }
@@ -103,6 +106,7 @@ public class UserBootstrapper implements CommandLineRunner {
                         true,
                         false,
                         true,
+                        null,
                         null);
                 readerRepository.save(r4);
             }
@@ -122,6 +126,7 @@ public class UserBootstrapper implements CommandLineRunner {
                         true,
                         false,
                         true,
+                        null,
                         null);
                 readerRepository.save(r5);
             }
@@ -141,6 +146,7 @@ public class UserBootstrapper implements CommandLineRunner {
                         true,
                         false,
                         true,
+                        null,
                         null);
                 readerRepository.save(r6);
             }
@@ -160,6 +166,7 @@ public class UserBootstrapper implements CommandLineRunner {
                         true,
                         false,
                         true,
+                        null,
                         null);
                 readerRepository.save(r7);
             }
@@ -179,6 +186,7 @@ public class UserBootstrapper implements CommandLineRunner {
                         true,
                         false,
                         true,
+                        null,
                         null);
                 readerRepository.save(r5);
             }

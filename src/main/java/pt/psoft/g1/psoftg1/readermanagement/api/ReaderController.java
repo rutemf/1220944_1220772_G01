@@ -234,7 +234,7 @@ class ReaderController {
         ReaderDetails readerDetails = optReaderDetails.get();
 
         if(readerDetails.getPhoto() == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new NotFoundException("Reader has no photo to delete");
         }
 
         this.fileStorageService.deleteFile(readerDetails.getPhoto().getPhotoFile());
