@@ -47,7 +47,6 @@ não se trata de um novo atributo "coautor"
 ### 2.1. Sequence Diagram (SD)
 ![Ph2-4-KnowCoAuthors.svg](Ph2-4-KnowCoAuthors.svg)
 ### 2.2. Class Diagram (CD)
-![ClassDiagram.svg](..%2FClassDiagram.svg)
-## 3. Tests
-## 4. Observations
+![Ph2-4-CD-KnowCoAuthors.svg](Ph2-4-CD-KnowCoAuthors.svg)
+
 
