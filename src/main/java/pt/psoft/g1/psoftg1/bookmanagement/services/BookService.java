@@ -19,4 +19,5 @@ public interface BookService {
     List<Book> findByTitle(String title);
     List<BookCountDTO> findTop5BooksLent();
     Optional<Book> removeBookPhoto(String isbn, long desiredVersion);
+    List<Book> getBooksSuggestionsForReader(String readerNumber);
 }

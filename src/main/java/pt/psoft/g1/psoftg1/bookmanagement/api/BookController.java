@@ -23,10 +23,14 @@ import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
+import pt.psoft.g1.psoftg1.usermanagement.model.User;
+import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +46,8 @@ public class BookController {
     private final GenreService genreService;
     private final ConcurrencyService concurrencyService;
     private final FileStorageService fileStorageService;
+    private final UserService userService;
+    private final ReaderService readerService;
 
     private final BookViewMapper bookViewMapper;
 
@@ -199,9 +205,20 @@ public class BookController {
         return new ListResponse<>(bookViewMapper.toBookView(books));
     }
 
+    @Operation(summary = "Gets the top 5 books lent")
     @GetMapping("top5")
     public ListResponse<BookCountView> getTop5BooksLent() {
         return new ListResponse<>(bookViewMapper.toBookCountViewList(bookService.findTop5BooksLent()));
+    }
+
+    @Operation(summary = "Gets some books suggestions based on the reader's interests")
+    @GetMapping("suggestions")
+    public ListResponse<BookView> getBooksSuggestions(Authentication authentication) {
+        User loggedUser = userService.getAuthenticatedUser(authentication);
+        ReaderDetails readerDetails = readerService.findByUsername(loggedUser.getUsername())
+                .orElseThrow(() -> new NotFoundException(ReaderDetails.class, loggedUser.getUsername()));
+
+        return new ListResponse<>(bookViewMapper.toBookView(bookService.getBooksSuggestionsForReader(readerDetails.getReaderNumber())));
     }
 }
 
