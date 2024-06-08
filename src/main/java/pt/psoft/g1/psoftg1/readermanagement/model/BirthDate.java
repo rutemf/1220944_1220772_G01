@@ -18,7 +18,7 @@ public class BirthDate {
     @Getter
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.DATE)
-    LocalDate date;
+    LocalDate birthDate;
 
     @Transient
     private final String dateFormatRegexPattern = "\\d{4}-\\d{2}-\\d{2}";
@@ -28,34 +28,34 @@ public class BirthDate {
     private int minimumAge;
 
     public BirthDate(int year, int month, int day) {
-        setDate(year, month, day);
+        setBirthDate(year, month, day);
     }
 
-    public BirthDate(String date) {
-        if(!date.matches(dateFormatRegexPattern)) {
+    public BirthDate(String birthDate) {
+        if(!birthDate.matches(dateFormatRegexPattern)) {
             throw new IllegalArgumentException("Provided birth date is not in a valid format. Use yyyy-MM-dd");
         }
 
-        String[] dateParts = date.split("-");
+        String[] dateParts = birthDate.split("-");
 
         int year = Integer.parseInt(dateParts[0]);
         int month = Integer.parseInt(dateParts[1]);
         int day = Integer.parseInt(dateParts[2]);
 
-        setDate(year, month, day);
+        setBirthDate(year, month, day);
     }
 
-    private void setDate(int year, int month, int day) {
+    private void setBirthDate(int year, int month, int day) {
         LocalDate minimumAgeDate = LocalDate.now().minusYears(minimumAge);
         LocalDate userDate = LocalDate.of(year, month, day);
         if(userDate.isAfter(minimumAgeDate)) {
             throw new AccessDeniedException("User must be, at least, " + minimumAge + "years old");
         }
 
-        this.date = userDate;
+        this.birthDate = userDate;
     }
 
     public String toString() {
-        return String.format("%d-%d-%d", this.date.getYear(), this.date.getMonthValue(), this.date.getDayOfMonth());
+        return String.format("%d-%d-%d", this.birthDate.getYear(), this.birthDate.getMonthValue(), this.birthDate.getDayOfMonth());
     }
 }

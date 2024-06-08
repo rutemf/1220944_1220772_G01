@@ -12,7 +12,7 @@ public interface GenreService {
     Genre save(Genre genre);
     Optional<Genre> findByString(String name);
     List<GenreBookCountDTO> findTopGenreByBooks();
-    List<GenreAverageLendingsDTO> getAverageLendings(GetAverageLendingsQuery query, Page page);
+    List<GenreLendingsDTO> getAverageLendings(GetAverageLendingsQuery query, Page page);
     List<GenreLendingsPerMonthDTO> getLendingsPerMonthLastYearByGenre();
-
+    List<GenreLendingsPerMonthDTO> getLendingsAverageDurationPerMonth(String startDate, String endDate);
 }

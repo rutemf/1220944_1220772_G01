@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
-import pt.psoft.g1.psoftg1.genremanagement.services.GenreAverageLendingsDTO;
+import pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsDTO;
 import pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsPerMonthDTO;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 
@@ -22,10 +22,17 @@ public abstract class GenreViewMapper extends MapperInterface{
     public abstract GenreBookCountView toGenreBookCountView(GenreBookCountDTO genreBookCountView);
     public abstract List<GenreBookCountView> toGenreBookCountView(List<GenreBookCountDTO> genreBookCountView);
 
-    public abstract GenreLendingsPerMonthView toGenreLendingsPerMonthView(GenreLendingsPerMonthDTO dto);
-    public abstract List<GenreLendingsPerMonthView> toGenreLendingsPerMonthView(List<GenreLendingsPerMonthDTO> dtos);
+    public abstract GenreLendingsView toGenreAvgLendingsView(GenreLendingsDTO dto);
+    public abstract List<GenreLendingsView> toGenreAvgLendingsView(List<GenreLendingsDTO> dtos);
 
-    public abstract GenreAvgLendingsView toGenreAvgLendingsView(GenreAverageLendingsDTO dto);
-    public abstract List<GenreAvgLendingsView> toGenreAvgLendingsView(List<GenreAverageLendingsDTO> dtos);
+    @Mapping(target = "lendingsCount", source = "values")
+    public abstract GenreLendingsCountPerMonthView toGenreLendingsCountPerMonthView(GenreLendingsPerMonthDTO dto);
+    public abstract List<GenreLendingsCountPerMonthView> toGenreLendingsCountPerMonthView(List<GenreLendingsPerMonthDTO> dtos);
+
+
+    @Mapping(target = "durationAverages", source = "values")
+    public abstract GenreLendingsAvgPerMonthView toGenreLendingsAveragePerMonthView(GenreLendingsPerMonthDTO dto);
+    public abstract List<GenreLendingsAvgPerMonthView> toGenreLendingsAveragePerMonthView(List<GenreLendingsPerMonthDTO> dtos);
+
 
 }

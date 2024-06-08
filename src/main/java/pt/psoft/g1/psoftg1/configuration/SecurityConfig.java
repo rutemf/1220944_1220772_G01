@@ -140,6 +140,7 @@ public class SecurityConfig {
                 //readers
                 .requestMatchers(HttpMethod.PATCH,"/api/readers").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.GET,"/api/readers").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/readers/top5ByGenre").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET, "/api/readers/top5").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/readers/{year}/{seq}/photo").hasAnyRole(Role.READER,Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/readers/photo").hasRole(Role.READER)
@@ -152,6 +153,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/api/genres/avgLendings").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.POST,"/api/genres/avgLendingsPerGenre").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/genres/lendingsPerMonthLastTwelveMonths").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET, "/api/genres/lendingsAverageDurationPerMonth").hasRole(Role.LIBRARIAN)
                 //end genres
                 //lendings
                 .requestMatchers(HttpMethod.GET,"/api/lendings/overdue").hasRole(Role.LIBRARIAN)

@@ -1,4 +1,4 @@
-# WP#5.18 Get Monthly Lending Per Reader
+# WP#5.16 Get Lendings Per Month Per Genre Last 12 Months
 ## 1. Requirements Engineering
 ### 1.1. User Story Description
 
@@ -8,8 +8,8 @@ down by genre
 ### 1.2. Customer Specifications and Clarifications
 
 ### 1.3. Acceptance Criteria
-- AC
-- 
+- Lista ordenada por mês e por género com o número total de empréstimos desse género nesse mês
+
 ### 1.4. Found out Dependencies
 ### 1.5 Input and Output Data
 

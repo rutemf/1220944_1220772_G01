@@ -1,18 +1,18 @@
-# Work Planning
+# Work Planning - Phase 2
 
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |
 |:----------------------------------------|:---------|:----------|:---------------|:------------|:---------------|:----------|:-----------------------|
 | 3 - RegisterAuthor-Photo                |          |           |                |             |                |           |                        |
-| 4 - KnowBooksAnAuthor                   |          |           |                |             |                |           |                        |
-| 5 - KnowCoAuthor                        |          |           |                |             |                |           |                        |
-| 6 - Ph2-6-KnowTop5Authors               |          |           |                |             |                |           |                        |
+| 4 - KnowBooksAnAuthor                   |          | Check     |                |             |                |           |                        |
+| 5 - KnowCoAuthor                        |          | Check     |                |             |                |           |                        |
+| 6 - KnowTop5Authors                     |          | Check     |                |             |                |           |                        |
 |                                         |          |           |                |             |                |           |                        |
 | 7 - RegisterBook-Photo                  |          |           |                |             |                |           |                        |
-| 8 - SearchBooksByTItle                  |          |           |                |             |                |           |                        |
-| 9 - KnowTop5BooksLent                   |          |           |                |             |                |           |                        |
-| 10 - KnowTop5GenreByBooks               |          |           |                |             |                |           |                        |
+| 8 - SearchBooksByTItle                  |          | Check     |                |             |                |           |                        |
+| 9 - KnowTop5BooksLent                   |          | Check     |                |             |                |           |                        |
+| 10 - KnowTop5GenreByBooks               |          | Check     |                |             |                |           |                        |
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |
-| 11 - Top5Readers                        |          |           |                |             |                |           |                        |
+| 11 - Top5Readers                        |          | Check     |                |             |                |           |                        |
 | 12 - RegisterReader-Photo               |          |           |                |             |                |           |                        |
 | 13 - GetBookSuggestions                 |          |           |                |             |                |           |                        |
 |                                         |          |           |                |             |                |           |                        |
@@ -20,14 +20,14 @@
 | 14 - GetAverageLendings                 | Check    | Check     | Check          | Check       | Check          |           | Check                  |
 | 15 - GetAverageDuration                 |          | Check     | Check          | Check       | Check          | Check     | Check                  |
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |
-| 16 - LendingsMonthLast12MonthsByGenre   |          |           |                |             |                |           |                        |
-| 17 - Top5ReaderGenreCertainTime         |          |           |                |             |                |           |                        |
-| 18 - GetMonthlyLendingReader            |          |           |                |             |                |           |                        |
-| 19 - AvgLendingDurationGenreMonthPeriod |          |           |                |             |                |           |                        |
+| 16 - LendingsMonthLast12MonthsByGenre   |          | Check     | Check          | Check       | Check          |           | Check                  |
+| 17 - Top5ReaderGenreCertainTime         |          | Check     |                |             |                |           |                        |
+| 18 - GetMonthlyLendingReader            |          | Check     |                |             |                |           |                        |
+| 19 - AvgLendingDurationGenreMonthPeriod |          | Check     | Check          | Check       | Check          |           | Check                  |
 |                                         |          |           |                |             |                |           |                        |
 | 26 - FunnyQuote                         |          |           |                |             |                |           |                        |
-| 27 - SearchBooksByAuthor                |          |           |                |             |                |           |                        |
-| 28 - SearchReaderPhoneNumber            |          |           |                |             |                |           |                        |
-| 29 - SearchReaderEmail                  |          |           |                |             |                |           |                        |
-| 30 - AvgLendingDurationBook             |          |           |                |             |                |           |                        |
+| 27 - SearchBooksByAuthor                |          | Check     |                |             |                |           |                        |
+| 28 - SearchReaderPhoneNumber            |          | Check     |                |             |                |           |                        |
+| 29 - SearchReaderEmail                  |          | Check     |                |             |                |           |                        |
+| 30 - AvgLendingDurationBook             |          | Check     |                |             |                |           |                        |
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |

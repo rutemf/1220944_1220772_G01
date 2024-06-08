@@ -26,7 +26,7 @@ public interface SpringDataReaderRepositoryImpl extends ReaderRepository, CrudRe
     @Override
     @Query("SELECT r " +
             "FROM ReaderDetails r " +
-            "WHERE r.phoneNumber.number = :phoneNumber")
+            "WHERE r.phoneNumber.phoneNumber = :phoneNumber")
     List<ReaderDetails> findByPhoneNumber(@Param("phoneNumber") @NotNull String phoneNumber);
 
     @Override

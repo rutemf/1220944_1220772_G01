@@ -1,14 +1,13 @@
 package pt.psoft.g1.psoftg1.readermanagement.model;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class PhoneNumber {
-    String number;
+    String phoneNumber;
 
-    public PhoneNumber(String number) {
-        setPhoneNumber(number);
+    public PhoneNumber(String phoneNumber) {
+        setPhoneNumber(phoneNumber);
     }
 
     protected PhoneNumber() {}
@@ -18,10 +17,10 @@ public class PhoneNumber {
             throw new IllegalArgumentException("Phone number is not valid: " + number);
         }
 
-        this.number = number;
+        this.phoneNumber = number;
     }
 
     public String toString() {
-        return this.number;
+        return this.phoneNumber;
     }
 }

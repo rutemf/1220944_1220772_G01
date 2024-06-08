@@ -1,4 +1,4 @@
-# WP#5.19 Get Monthly Lending Per Reader
+# WP#5.19 Get Average Lending Duration Per Genre Per Month Over Period
 ## 1. Requirements Engineering
 ### 1.1. User Story Description
 
