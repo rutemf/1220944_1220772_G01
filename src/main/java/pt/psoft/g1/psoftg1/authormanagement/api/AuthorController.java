@@ -6,12 +6,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,22 +18,19 @@ import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.services.AuthorService;
 import pt.psoft.g1.psoftg1.authormanagement.services.CreateAuthorRequest;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
+import pt.psoft.g1.psoftg1.bookmanagement.api.BookShortView;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookView;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookViewMapper;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
+import pt.psoft.g1.psoftg1.bookmanagement.services.BookService;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
-import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
-import pt.psoft.g1.psoftg1.usermanagement.model.User;
-import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Tag(name = "Author", description = "Endpoints for managing Authors")
 @RestController
@@ -48,9 +42,9 @@ public class AuthorController {
 
     private final AuthorService authorService;
     private final AuthorViewMapper authorViewMapper;
-    private final BookViewMapper bookViewMapper;
     private final ConcurrencyService concurrencyService;
     private final FileStorageService fileStorageService;
+    private final BookViewMapper bookViewMapper;
 
 
     //Create
@@ -114,7 +108,6 @@ public class AuthorController {
     public ResponseEntity<AuthorView> findByAuthorNumber(
             @PathVariable("authorNumber")
             @Parameter(description = "The number of the Author to find") final Long authorNumber) {
-
 
         final var author = authorService.findByAuthorNumber(authorNumber)
                 .orElseThrow(() -> new NotFoundException(Author.class, authorNumber));
@@ -191,15 +184,16 @@ public class AuthorController {
     }
     @Operation(summary = "Get co-authors and their respective books for a specific author")
     @GetMapping("/{authorNumber}/coauthors")
-    public ListResponse<CoAuthorView> getCoAuthorsAndBooks(
-            @PathVariable("authorNumber")
-            @Parameter(description = "The number of the Author to find") final Long authorNumber) {
-
-        // Verifica se o autor existe com este ID
-        authorService.findByAuthorNumber(authorNumber)
-                .orElseThrow(() -> new NotFoundException(Author.class, authorNumber));
-
-        // Obtenha os co-autores e seus respectivos livros
-        return new ListResponse<>(authorService.findCoAuthorsAndBooks(authorNumber));
+    public AuthorCoAuthorBooksView getAuthorWithCoAuthors(@PathVariable("authorNumber")Long authorNumber) {
+        var author = authorService.findByAuthorNumber(authorNumber)
+                .orElseThrow(() -> new NotFoundException("Author not found"));
+        var coAuthors = authorService.findCoAuthorsByAuthorNumber(authorNumber);
+        List<CoAuthorView> coAuthorViews = new ArrayList<>();
+        for (Author coAuthor : coAuthors ) {
+            var books = authorService.findBooksByAuthorNumber(coAuthor.getAuthorNumber());
+            var coAuthorView = authorViewMapper.toCoAuthorView(coAuthor,books);
+            coAuthorViews.add(coAuthorView);
+        }
+        return authorViewMapper.toAuthorCoAuthorBooksView(author, coAuthorViews);
     }
 }

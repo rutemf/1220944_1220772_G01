@@ -33,6 +33,12 @@ public abstract class BookViewMapper extends MapperInterface {
 
     public abstract List<BookCountView> toBookCountView(List<BookCountView> bookCountView);
 
+    @Mapping(target = "_links", expression = "java(mapLinks(book))")
+    @Mapping(target = "authors", expression = "java(mapAuthors(book.getAuthors()))")
+    public abstract BookShortView toBookShortView(Book book);
+
+    public abstract List<BookShortView> toBookShortView(List<Book> books);
+
     public abstract List<BookCountView> toBookCountViewList(List<BookCountDTO> bookCountDTOList);
 
     protected List<String> mapAuthors(List<Author> authors) {
