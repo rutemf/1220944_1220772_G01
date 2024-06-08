@@ -30,7 +30,6 @@ class Author {
     - name
     - photo
     - short bio
-    /'perguntar '/
    }
 
 class Reader{
@@ -38,11 +37,10 @@ class Reader{
     - name
     - email
     - phoneNumber
-    - birthDate /'limite inferior/superior? '/
-    - gdprConsent /'que implicações tem?'/
+    - birthDate
+    - gdprConsent
     - marketingConsent
     - thirdPartySharing
-    - booksOutstanding : int /'TODO: Perguntar se faz sentido contar no Reader'/
 }
 
 
