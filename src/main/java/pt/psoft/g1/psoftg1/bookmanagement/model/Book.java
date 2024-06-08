@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.hibernate.StaleObjectStateException;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
+import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.shared.model.EntityWithPhoto;
 
@@ -80,6 +81,14 @@ public class Book extends EntityWithPhoto {
 
     protected Book() {
         // got ORM only
+    }
+
+    public void removePhoto(long desiredVersion) {
+        if(desiredVersion != this.version) {
+            throw new ConflictException("Provided version does not match latest version of this object");
+        }
+
+        setPhotoInternal(null);
     }
 
     public void applyPatch(final Long desiredVersion, UpdateBookRequest request) {

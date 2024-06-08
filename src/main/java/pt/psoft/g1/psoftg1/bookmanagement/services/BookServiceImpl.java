@@ -1,5 +1,7 @@
 package pt.psoft.g1.psoftg1.bookmanagement.services;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,10 @@ import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,11 +28,17 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@PropertySource({"classpath:config/library.properties"})
 public class BookServiceImpl implements BookService {
 
 	private final BookRepository bookRepository;
 	private final GenreRepository genreRepository;
 	private final AuthorRepository authorRepository;
+	private final PhotoRepository photoRepository;
+	private final ReaderRepository readerRepository;
+
+	@Value("${suggestionsLimitPerGenre}")
+	private long suggestionsLimitPerGenre;
 
 	@Override
 	public Book create(CreateBookRequest request, String isbn) {
@@ -124,6 +136,19 @@ public class BookServiceImpl implements BookService {
 		Pageable pageableRules = PageRequest.of(0,5);
 		return this.bookRepository.findTop5BooksLent(oneYearAgo, pageableRules).getContent();
 	}
+
+	@Override
+	public Optional<Book> removeBookPhoto(String isbn, long desiredVersion) {
+		Book book = bookRepository.findByIsbn(isbn)
+				.orElseThrow(() -> new NotFoundException("Cannot find reader"));
+
+		String photoFile = book.getPhoto().getPhotoFile();
+		book.removePhoto(desiredVersion);
+		Optional<Book> updatedBook = Optional.of(bookRepository.save(book));
+		photoRepository.deleteByPhotoFile(photoFile);
+		return updatedBook;
+	}
+
 	@Override
 	public List<Book> findByGenre(String genre) {
 		return this.bookRepository.findByGenre(genre.toString());
@@ -135,5 +160,36 @@ public class BookServiceImpl implements BookService {
 
 	public Optional<Book> findByIsbn(String isbn) {
 		return this.bookRepository.findByIsbn(isbn);
+	}
+
+	public List<Book> getBooksSuggestionsForReader(String readerNumber) {
+		List<Book> books = new ArrayList<>();
+
+		ReaderDetails readerDetails = readerRepository.findByReaderNumber(readerNumber).orElseThrow(() -> new NotFoundException("Reader not found with provided login"));
+		List<Genre> interestList = readerDetails.getInterestList();
+
+		if(interestList.isEmpty()) {
+			throw new NotFoundException("Reader has no interests");
+		}
+
+		for(Genre genre : interestList) {
+			List<Book> tempBooks = bookRepository.findByGenre(genre.toString());
+			if(tempBooks.isEmpty()) {
+				continue;
+			}
+
+			long genreBookCount = 0;
+
+            for (Book loopBook : tempBooks) {
+                if (genreBookCount >= suggestionsLimitPerGenre) {
+                    break;
+                }
+
+                books.add(loopBook);
+				genreBookCount++;
+            }
+		}
+
+		return books;
 	}
 }
