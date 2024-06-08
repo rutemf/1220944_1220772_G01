@@ -45,6 +45,7 @@ class LendingTest {
                 true,
                 true,
                 true,
+                null,
                 null);
     }
 

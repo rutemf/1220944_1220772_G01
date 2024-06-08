@@ -80,6 +80,7 @@ public class LendingRepositoryIntegrationTest {
                 true,
                 true,
                 true,
+                null,
                 null);
         readerRepository.save(readerDetails);
 

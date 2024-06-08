@@ -82,7 +82,7 @@ class LendingServiceImplTest {
                 true,
                 true,
                 true,
-                null);
+                null,null);
         readerRepository.save(readerDetails);
 
         // Create and save the lending
@@ -95,7 +95,7 @@ class LendingServiceImplTest {
                 15,
                 300);
         lendingRepository.save(lending);
-        
+
     }
 
     @AfterEach
