@@ -28,17 +28,14 @@ public class UpdateReaderRequest {
     private String password;
 
     @Getter
-    @NotBlank
     @Nullable
     private String fullName;
 
     @Getter
-    @NotBlank
     @Nullable
     private String birthDate;
 
     @Getter
-    @NotBlank
     @Nullable
     private String phoneNumber;
 

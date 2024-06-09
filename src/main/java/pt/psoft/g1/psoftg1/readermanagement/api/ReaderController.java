@@ -72,12 +72,11 @@ class ReaderController {
         return new ListResponse<>(readerViewMapper.toReaderView(readerService.findAll()));
     }
 
-    @RolesAllowed(Role.LIBRARIAN)
     @Operation(summary = "Gets reader by number")
     @ApiResponse(description = "Success", responseCode = "200", content = { @Content(mediaType = "application/json",
             // Use the `array` property instead of `schema`
             array = @ArraySchema(schema = @Schema(implementation = ReaderView.class))) })
-    @GetMapping(value="{year}/{seq}")
+    @GetMapping(value="/{year}/{seq}")
     //This is just for testing purposes, therefore admin role has been set
     //@RolesAllowed(Role.LIBRARIAN)
     public ResponseEntity<ReaderView> findByReaderNumber(@PathVariable("year")
@@ -92,7 +91,10 @@ class ReaderController {
             throw new NotFoundException("Could not find reader from specified reader number");
         }
 
-        return new ResponseEntity<>(readerViewMapper.toReaderView(readerDetailsOpt.get()), HttpStatus.OK);
+        //return new ResponseEntity<>(readerViewMapper.toReaderView(readerDetailsOpt.get()), HttpStatus.OK);
+        return ResponseEntity.ok()
+                .eTag(Long.toString(readerDetailsOpt.get().getVersion()))
+                .body(readerViewMapper.toReaderView(readerDetailsOpt.get()));
     }
 
     @Operation(summary = "Gets a list of Readers by phoneNumber")

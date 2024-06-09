@@ -103,10 +103,12 @@ public class ReaderDetails extends EntityWithPhoto {
         if(currentVersion != this.version) {
             throw new ConflictException("Provided version does not match latest version of this object");
         }
+
         String birthDate = request.getBirthDate();
         String phoneNumber = request.getPhoneNumber();
         boolean marketing = request.getMarketing();
         boolean thirdParty = request.getThirdParty();
+        String fullName = request.getFullName();
         String username = request.getUsername();
         String password = request.getPassword();
 
@@ -116,6 +118,10 @@ public class ReaderDetails extends EntityWithPhoto {
 
         if(password != null) {
             this.reader.setPassword(password);
+        }
+
+        if(fullName != null) {
+            this.reader.setName(fullName);
         }
 
         if(birthDate != null) {
