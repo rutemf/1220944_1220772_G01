@@ -58,6 +58,15 @@ public interface SpringDataLendingRepository extends LendingRepository, LendingR
             , nativeQuery = true)
     Double getAverageDuration();
 
+    @Override
+    @Query(value =
+            "SELECT AVG(DATEDIFF(day, l.start_date, l.returned_date)) " +
+                    "FROM Lending l " +
+                    "JOIN BOOK b ON l.BOOK_PK = b.PK " +
+                    "WHERE b.ISBN = :isbn"
+            , nativeQuery = true)
+    Double getAvgLendingDurationByIsbn(@Param("isbn") String isbn);
+
 
 }
 

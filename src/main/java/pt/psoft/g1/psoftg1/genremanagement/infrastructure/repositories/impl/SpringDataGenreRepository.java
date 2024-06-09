@@ -156,7 +156,7 @@ class GenreRepoCustomImpl implements GenreRepoCustom {
         Expression<Integer> yearExpr = cb.function("YEAR", Integer.class, lendingRoot.get("startDate"));
         Expression<Integer> monthExpr = cb.function("MONTH", Integer.class, lendingRoot.get("startDate"));
         Expression<Long> lendingDurationInDays = cb.diff(lendingRoot.get("returnedDate"), lendingRoot.get("startDate"));
-        double nanoSecondsInADay = 86400.0*10E9;
+        double nanoSecondsInADay = 86400.0*1E9;
         Expression<Number> durationInDays = cb.quot(cb.toDouble(lendingDurationInDays),nanoSecondsInADay);
         Expression<Double> averageDuration = cb.avg(cb.toDouble(durationInDays));
 

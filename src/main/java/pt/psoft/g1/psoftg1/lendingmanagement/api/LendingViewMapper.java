@@ -27,7 +27,7 @@ public abstract class LendingViewMapper extends MapperInterface {
 
     public abstract List<LendingView> toLendingView(List<Lending> lendings);
 
-    public abstract LendingsAverageDurationView toLendingsAverageDurationView(String lendingsAverageDuration);
+    public abstract LendingsAverageDurationView toLendingsAverageDurationView(Double lendingsAverageDuration);
 
     public Map<String, String> mapLinks(final Lending lending){
         String lendingUri = ServletUriComponentsBuilder.fromCurrentContextPath()

@@ -18,7 +18,6 @@ import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 
 import java.time.LocalDate;
@@ -42,9 +41,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Book create(CreateBookRequest request, String isbn) {
-		Book newBook = null;
-
-		if(bookRepository.findByIsbn(isbn).isPresent()) {
+		if(this.findByIsbn(isbn) != null) {
 			throw new ConflictException("A book with provided Isbn is already registered");
 		}
 
@@ -71,7 +68,7 @@ public class BookServiceImpl implements BookService {
 		final var genre = genreRepository.findByString(request.getGenre())
 				.orElseThrow(() -> new NotFoundException("Genre not found"));
 
-		newBook = new Book(isbn, request.getTitle(), request.getDescription(), genre, authors, photoURI);
+		Book newBook = new Book(isbn, request.getTitle(), request.getDescription(), genre, authors, photoURI);
 
         return bookRepository.save(newBook);
 	}
@@ -79,13 +76,8 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Book update(UpdateBookRequest request, String currentVersion) {
-		Book book;
 
-		Optional<Book> tempBook = findByIsbn(request.getIsbn());
-		if(tempBook.isEmpty()) {
-			throw new NotFoundException("A book with provided Isbn was not found");
-		}
-        book = tempBook.get();
+        var book = findByIsbn(request.getIsbn());
         if(request.getAuthors()!= null) {
             List<Long> authorNumbers = request.getAuthors();
             List<Author> authors = new ArrayList<>();
@@ -138,34 +130,40 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public Optional<Book> removeBookPhoto(String isbn, long desiredVersion) {
-		Book book = bookRepository.findByIsbn(isbn)
-				.orElseThrow(() -> new NotFoundException("Cannot find reader"));
+	public Book removeBookPhoto(String isbn, long desiredVersion) {
+		Book book = this.findByIsbn(isbn);
+		String photoFile;
+		try {
+			photoFile = book.getPhoto().getPhotoFile();
+		}catch (NullPointerException e){
+			throw new NotFoundException("Book did not have a photo assigned to it.");
+		}
 
-		String photoFile = book.getPhoto().getPhotoFile();
 		book.removePhoto(desiredVersion);
-		Optional<Book> updatedBook = Optional.of(bookRepository.save(book));
+		var updatedBook = bookRepository.save(book);
 		photoRepository.deleteByPhotoFile(photoFile);
 		return updatedBook;
 	}
 
 	@Override
 	public List<Book> findByGenre(String genre) {
-		return this.bookRepository.findByGenre(genre.toString());
+		return this.bookRepository.findByGenre(genre);
 	}
 
 	public List<Book> findByTitle(String title) {
 		return bookRepository.findByTitle(title);
 	}
 
-	public Optional<Book> findByIsbn(String isbn) {
-		return this.bookRepository.findByIsbn(isbn);
+	public Book findByIsbn(String isbn) {
+		return this.bookRepository.findByIsbn(isbn)
+				.orElseThrow(() -> new NotFoundException(Book.class, isbn));
 	}
 
 	public List<Book> getBooksSuggestionsForReader(String readerNumber) {
 		List<Book> books = new ArrayList<>();
 
-		ReaderDetails readerDetails = readerRepository.findByReaderNumber(readerNumber).orElseThrow(() -> new NotFoundException("Reader not found with provided login"));
+		ReaderDetails readerDetails = readerRepository.findByReaderNumber(readerNumber)
+				.orElseThrow(() -> new NotFoundException("Reader not found with provided login"));
 		List<Genre> interestList = readerDetails.getInterestList();
 
 		if(interestList.isEmpty()) {

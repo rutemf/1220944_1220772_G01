@@ -1,4 +1,4 @@
-# WP2B Authors
+# WP1B Authors
 ## 1. Requirements Engineering
 ### 1.1. Customer Specifications and Clarifications
 
@@ -38,12 +38,11 @@ deve retornar uma lista com os autores que escreveram livros em conjunto com um 
 deve retornar os 5 autores com o maior numero de livros requisitados no ultimo ano
 
 
-### 1.3. Functionality
-### 1.8. Other Relevant Remarks
-## 2. OO Analysis
-### 2.1. Relevant Domain Model Excerpt
-### 2.2. Other Remarks
-## 3. Design
-### 3.2. Class Diagram (CD)
-## 4. Tests
-## 5. Observations
+
+## 2. Design
+### 2.1. Class Diagram (CD)
+![WP1B - Authors - ClassDiagram.svg](WP1B%20-%20Authors%20-%20ClassDiagram.svg)
+## 3. Tests
+[Click to go directly to the author's unit tests](..%2F..%2F..%2Fsrc%2Ftest%2Fjava%2Fpt%2Fpsoft%2Fg1%2Fpsoftg1%2Fauthormanagement)
+- Results :
+![img.png](img.png)

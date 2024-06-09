@@ -1,12 +1,13 @@
 package pt.psoft.g1.psoftg1.bookmanagement.api;
 
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.services.BookCountDTO;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 
 import java.util.HashMap;
@@ -23,23 +24,27 @@ public abstract class BookViewMapper extends MapperInterface {
     @Mapping(target = "authors", expression = "java(mapAuthors(book.getAuthors()))")
     @Mapping(target = "_links", expression = "java(mapLinks(book))")
     @Mapping(target = "photo", expression = "java(generatePhotoUrl(book))")
-
     public abstract BookView toBookView(Book book);
 
     public abstract List<BookView> toBookView(List<Book> bookList);
 
     @Mapping(target = "bookView", source = "book")
-    public abstract BookCountView toBookCountView(BookCountDTO bookCountView);
+    public abstract BookCountView toBookCountView(BookCountDTO bookCountDto);
 
-    public abstract List<BookCountView> toBookCountView(List<BookCountView> bookCountView);
+    public abstract List<BookCountView> toBookCountView(List<BookCountDTO> bookCountDtos);
 
-    @Mapping(target = "_links", expression = "java(mapLinks(book))")
-    @Mapping(target = "authors", expression = "java(mapAuthors(book.getAuthors()))")
+    @Named(value = "toBookShortView")
+    @Mapping(target = "_links", source = "book", qualifiedByName = "mapBookShortLink")
+//    @Mapping(target = "_links", expression = "java(mapLinks(book))")
     public abstract BookShortView toBookShortView(Book book);
 
+    @IterableMapping(qualifiedByName = "toBookShortView")
     public abstract List<BookShortView> toBookShortView(List<Book> books);
 
     public abstract List<BookCountView> toBookCountViewList(List<BookCountDTO> bookCountDTOList);
+
+
+    public abstract BookAverageLendingDurationView toBookAverageLendingDurationView(Book book, Double averageLendingDuration);
 
     protected List<String> mapAuthors(List<Author> authors) {
         return authors.stream()
@@ -47,7 +52,7 @@ public abstract class BookViewMapper extends MapperInterface {
                 .collect(Collectors.toList());
     }
 
-
+    @Named(value = "mapBookLinks")
     public Map<String, Object> mapLinks(final Book book) {
         String bookUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/books/")
@@ -74,6 +79,14 @@ public abstract class BookViewMapper extends MapperInterface {
 
 
         return links;
+    }
+
+    @Named(value = "mapBookShortLink")
+    public String mapShortBookLink(final Book book) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/books/")
+                .path(book.getIsbn())
+                .toUriString();
     }
 
     protected String generatePhotoUrl(Book book) {

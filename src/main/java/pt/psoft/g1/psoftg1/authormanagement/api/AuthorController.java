@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,18 +20,19 @@ import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.services.AuthorService;
 import pt.psoft.g1.psoftg1.authormanagement.services.CreateAuthorRequest;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
-import pt.psoft.g1.psoftg1.bookmanagement.api.BookShortView;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookView;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookViewMapper;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.services.BookService;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
+import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Tag(name = "Author", description = "Endpoints for managing Authors")
@@ -129,7 +132,7 @@ public class AuthorController {
     //Know the books of an Author
     @Operation(summary = "Know the books of an author")
     @GetMapping("/{authorNumber}/books")
-    public ListResponse<BookView> getBooksByAuthorNumber(      //TODO: decidir se é necessário uma view nova
+    public ListResponse<BookView> getBooksByAuthorNumber(
            @PathVariable("authorNumber")
              @Parameter(description = "The number of the Author to find")
              final Long authorNumber) {
@@ -153,7 +156,7 @@ public class AuthorController {
         return new ListResponse<>(list);
     }
 
-    //Photo
+    //get - Photo
     @Operation(summary= "Gets a author photo")
     @GetMapping("/{authorNumber}/photo")
     @ResponseStatus(HttpStatus.OK)
@@ -182,6 +185,7 @@ public class AuthorController {
                 .contentType(fileFormat.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG)
                 .body(image);
     }
+    //Co-authors and their respective books
     @Operation(summary = "Get co-authors and their respective books for a specific author")
     @GetMapping("/{authorNumber}/coauthors")
     public AuthorCoAuthorBooksView getAuthorWithCoAuthors(@PathVariable("authorNumber")Long authorNumber) {
@@ -195,5 +199,25 @@ public class AuthorController {
             coAuthorViews.add(coAuthorView);
         }
         return authorViewMapper.toAuthorCoAuthorBooksView(author, coAuthorViews);
+    }
+
+    //Delete a foto
+    @Operation(summary = "Deletes a author photo")
+    @DeleteMapping("/{authorNumber}/photo")
+    public ResponseEntity<Void> deleteBookPhoto(@PathVariable("authorNumber") final Long authorNumber) {
+
+        Optional<Author> optionalAuthor = authorService.findByAuthorNumber(authorNumber);
+        if(optionalAuthor.isEmpty()) {
+            throw new AccessDeniedException("A author could not be found with provided authorNumber");
+        }
+        Author author = optionalAuthor.get();
+        if(author.getPhoto() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        this.fileStorageService.deleteFile(author.getPhoto().getPhotoFile());
+        authorService.removeAuthorPhoto(author.getAuthorNumber(), author.getVersion());
+
+        return ResponseEntity.ok().build();
     }
 }

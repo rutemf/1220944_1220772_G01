@@ -32,7 +32,6 @@ public class ReaderDetails extends EntityWithPhoto {
     private BirthDate birthDate;
 
     @Embedded
-    @Getter
     private PhoneNumber phoneNumber;
 
     @Setter
@@ -157,6 +156,8 @@ public class ReaderDetails extends EntityWithPhoto {
     public String getReaderNumber(){
         return this.readerNumber.toString();
     }
+
+    public String getPhoneNumber() { return this.phoneNumber.toString();}
 
     protected ReaderDetails() {
         // for ORM only

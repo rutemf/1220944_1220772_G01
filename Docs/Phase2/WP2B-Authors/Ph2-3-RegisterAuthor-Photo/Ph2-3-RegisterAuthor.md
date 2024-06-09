@@ -31,4 +31,4 @@ As Librarian I want to register an author (name, short bio).
 ### 2.1. Sequence Diagram (SD)
 ![Ph2-3-RegisterAuthorPhoto.svg](Ph2-3-RegisterAuthorPhoto.svg)
 ### 2.2. Class Diagram (CD)
-![ClassDiagram.svg](..%2FClassDiagram.svg)
+![Ph2-4-CD-KnowBooksAnAuthors.svg](..%2FPh2-4-KnowBooksAnAuthor%2FPh2-4-CD-KnowBooksAnAuthors.svg)

@@ -35,15 +35,9 @@ O que é esperador retornar? Top 5 dos autores por ordem e ao lado o total de le
 * Top 5 authors 
 * (In)success of the operation
 
-
-### 1.6. Functionality
-## 2. OO Analysis
-### 2.1. Relevant Domain Model Excerpt
-### 2.2. Other Remarks
-## 3. Design
-### 3.1. Sequence Diagram (SD)
+## 2. Design
+### 2.1. Sequence Diagram (SD)
 ![Ph2-6-KnowTop5Authors.svg](Ph2-6-KnowTop5Authors.svg)
-### 3.2. Class Diagram (CD)
-![ClassDiagram.svg](..%2FClassDiagram.svg)
-## 4. Tests
+### 2.2. Class Diagram (CD)
+![Ph2-6-CD-KnowTop5Authors.svg](Ph2-6-CD-KnowTop5Authors.svg)
 

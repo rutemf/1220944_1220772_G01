@@ -45,9 +45,8 @@ Quando se refere "em termos de recursos rest e em subrecursos"
 ### 2.1. Sequence Diagram (SD)
 ![Ph2-4-KnowBooksAnAuthor.svg](Ph2-4-KnowBooksAnAuthor.svg)
 ### 2.2. Class Diagram (CD)
-![ClassDiagram.svg](..%2FClassDiagram.svg)
-## 3. Tests
-## 4. Observations
+![Ph2-4-CD-KnowBooksAnAuthors.svg](Ph2-4-CD-KnowBooksAnAuthors.svg)
+## 3. Observations
 It was assumed, in response to this user story,
 that the author search was conducted using the
 only unique attribute they have. This attribute is

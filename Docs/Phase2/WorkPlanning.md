@@ -2,10 +2,10 @@
 
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |
 |:----------------------------------------|:---------|:----------|:---------------|:------------|:---------------|:----------|:-----------------------|
-| 3 - RegisterAuthor-Photo                |          |           |                |             |                |           |                        |
-| 4 - KnowBooksAnAuthor                   |          | Check     |                |             |                |           |                        |
+| 3 - RegisterAuthor-Photo                |          | Check     |                |             |                |           |                        |
+| 4 - KnowBooksAnAuthor                   |          | Check     | Check          | Check       | Check          | Check     | Check                  |
 | 5 - KnowCoAuthor                        |          | Check     |                |             |                |           |                        |
-| 6 - KnowTop5Authors                     |          | Check     |                |             |                |           |                        |
+| 6 - KnowTop5Authors                     |          | Check     | Check          | Check       | Check          | Check     | Check                  |
 |                                         |          |           |                |             |                |           |                        |
 | 7 - RegisterBook-Photo                  |          |           |                |             |                |           |                        |
 | 8 - SearchBooksByTItle                  |          | Check     |                |             |                |           |                        |
@@ -27,7 +27,7 @@
 |                                         |          |           |                |             |                |           |                        |
 | 26 - FunnyQuote                         |          |           |                |             |                |           |                        |
 | 27 - SearchBooksByAuthor                |          | Check     |                |             |                |           |                        |
-| 28 - SearchReaderPhoneNumber            |          | Check     |                |             |                |           |                        |
-| 29 - SearchReaderEmail                  |          | Check     |                |             |                |           |                        |
-| 30 - AvgLendingDurationBook             |          | Check     |                |             |                |           |                        |
+| 28 - SearchReaderByPhoneNumber          |          | Check     |                |             |                |           |                        |
+| 29 - SearchReaderByEmail                |          | Check     |                |             |                |           |                        |
+| 30 - AvgLendingDurationBook             |          | Check     | Check          | Check       | Check          |           | Check                  |
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |

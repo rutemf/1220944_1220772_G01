@@ -120,18 +120,18 @@ public class SecurityConfig {
                 // Our private endpoints
                 //authors
                 .requestMatchers(HttpMethod.POST,"/api/authors").hasRole(Role.LIBRARIAN)
-                .requestMatchers(HttpMethod.PATCH,"/api/authors").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.PATCH,"/api/authors/{authorNumber}").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/authors/{authorNumber}").hasAnyRole(Role.READER, Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/authors").hasAnyRole(Role.READER, Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/authors/{authorNumber}/books").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.GET,"/api/authors/top5").hasRole(Role.READER)
-                .requestMatchers(HttpMethod.GET,"/api/authors/photo").hasRole(Role.LIBRARIAN)
-                .requestMatchers(HttpMethod.GET,"/api/authors/{authorNumber}/photo").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/authors/{authorNumber}/photo").hasAnyRole(Role.READER, Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/authors/{authorNumber}/coauthors").hasRole(Role.READER)
                 //end authors
                 //books
                 .requestMatchers(HttpMethod.PUT,"/api/books/{isbn}").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.PATCH,"/api/books/{isbn}").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/books/{isbn}/avgDuration").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/books").hasAnyRole(Role.LIBRARIAN, Role.READER)
                 .requestMatchers(HttpMethod.GET,"/api/books/{isbn}").hasAnyRole(Role.READER,Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/books/top5").hasRole(Role.LIBRARIAN)
@@ -142,6 +142,7 @@ public class SecurityConfig {
                 //readers
                 .requestMatchers(HttpMethod.PATCH,"/api/readers").hasRole(Role.READER)
                 .requestMatchers(HttpMethod.GET,"/api/readers").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.POST,"/api/readers/search").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/readers/top5ByGenre").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET, "/api/readers/top5").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/readers/{year}/{seq}/photo").hasAnyRole(Role.READER,Role.LIBRARIAN)

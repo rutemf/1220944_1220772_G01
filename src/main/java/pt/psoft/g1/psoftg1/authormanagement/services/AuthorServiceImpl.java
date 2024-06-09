@@ -11,8 +11,8 @@ import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +22,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
     private final AuthorMapper mapper;
+    private final PhotoRepository photoRepository;
 
     @Override
     public Iterable<Author> findAll() {
@@ -109,6 +110,17 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public List<Author> findCoAuthorsByAuthorNumber(Long authorNumber) {
         return authorRepository.findCoAuthorsByAuthorNumber(authorNumber);
+    }
+    @Override
+    public Optional<Author> removeAuthorPhoto(Long authorNumber, long desiredVersion) {
+        Author author = authorRepository.findByAuthorNumber(authorNumber)
+                .orElseThrow(() -> new NotFoundException("Cannot find reader"));
+
+        String photoFile = author.getPhoto().getPhotoFile();
+        author.removePhoto(desiredVersion);
+        Optional<Author> updatedAuthor = Optional.of(authorRepository.save(author));
+        photoRepository.deleteByPhotoFile(photoFile);
+        return updatedAuthor;
     }
 
 }

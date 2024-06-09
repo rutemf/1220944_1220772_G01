@@ -19,12 +19,10 @@ public interface LendingService {
      * @return {@code Iterable<Lending>}
      */
     List<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn, Optional<Boolean> returned);
-
     Lending create(CreateLendingRequest resource); //No ID passed, as it is auto generated
-
     Lending setReturned(String id, SetLendingReturnedRequest resource, long desiredVersion);
-
-    String getAverageDuration();
-
+    Double getAverageDuration();
     List<Lending> getOverdue(Page page);
+    Double getAvgLendingDurationByIsbn(String isbn);
+
 }

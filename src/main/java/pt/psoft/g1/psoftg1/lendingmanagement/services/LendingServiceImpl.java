@@ -15,6 +15,7 @@ import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -96,9 +97,9 @@ public class LendingServiceImpl implements LendingService{
     }
 
     @Override
-    public String getAverageDuration(){
+    public Double getAverageDuration(){
         Double avg = lendingRepository.getAverageDuration();
-        return String.format("%.1f", avg);
+        return Double.valueOf(String.format(Locale.US,"%.1f", avg));
     }
 
     @Override
@@ -108,5 +109,12 @@ public class LendingServiceImpl implements LendingService{
         }
         return lendingRepository.getOverdue(page);
     }
+
+    @Override
+    public Double getAvgLendingDurationByIsbn(String isbn){
+        Double avg = lendingRepository.getAvgLendingDurationByIsbn(isbn);
+        return Double.valueOf(String.format(Locale.US,"%.1f", avg));
+    }
+
 
 }
