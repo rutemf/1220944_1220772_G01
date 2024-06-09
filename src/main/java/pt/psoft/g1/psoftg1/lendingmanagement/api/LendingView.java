@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 @Schema(description = "A Lending")
@@ -34,7 +32,7 @@ public class LendingView {
 
     @Setter
     @Getter
-    private Map<String, String> _links = new HashMap<>();
+    private LendingLinksView _links;
 }
 
 /*>

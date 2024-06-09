@@ -2,13 +2,12 @@ package pt.psoft.g1.psoftg1.lendingmanagement.api;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Brief guides:
@@ -22,36 +21,50 @@ public abstract class LendingViewMapper extends MapperInterface {
     @Mapping(target = "lendingNumber", source = "lendingNumber")
     @Mapping(target = "bookTitle", source = "book.title")
     @Mapping(target = "fineValueInCents", expression = "java(lending.getFineValueInCents().orElse(null))")
-    @Mapping(target = "_links", expression = "java(mapLinks(lending))")
+    @Mapping(target = "_links.self", source = ".", qualifiedByName = "self")
+    @Mapping(target = "_links.book", source = ".", qualifiedByName = "book")
+    @Mapping(target = "_links.reader", source = ".", qualifiedByName = "reader")
     public abstract LendingView toLendingView(Lending lending);
 
     public abstract List<LendingView> toLendingView(List<Lending> lendings);
 
     public abstract LendingsAverageDurationView toLendingsAverageDurationView(Double lendingsAverageDuration);
 
-    public Map<String, String> mapLinks(final Lending lending){
+    @Mapping(target = "self", source = ".", qualifiedByName = "self")
+    @Mapping(target = "book", source = ".", qualifiedByName = "book")
+    @Mapping(target = "reader", source = ".", qualifiedByName = "reader")
+    public abstract LendingLinksView toLendingLinksView(Lending lending);
+
+    @Named(value = "self")
+    protected Map<String, String> mapSelfLink(Lending lending){
+        Map<String, String> lendingLink = new HashMap<>();
         String lendingUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/lendings/")
                 .path(lending.getLendingNumber())
                 .toUriString();
+        lendingLink.put("href", lendingUri);
+        return lendingLink;
+    }
 
+    @Named(value = "book")
+    protected Map<String, String> mapBookLink(Lending lending){
+        Map<String, String> bookLink = new HashMap<>();
         String bookUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/books/")
                 .path(lending.getBook().getIsbn())
                 .toUriString();
+        bookLink.put("href", bookUri);
+        return bookLink;
+    }
 
+    @Named(value = "reader")
+    protected Map<String, String> mapReaderLink(Lending lending){
+        Map<String, String> readerLink = new HashMap<>();
         String readerUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/readers/")
                 .path(lending.getReaderDetails().getReaderNumber())
                 .toUriString();
-
-        Map<String, String> links = new HashMap<>();
-
-        links.put("self", lendingUri);
-        links.put("book", bookUri);
-        links.put("reader", readerUri);
-
-        return links;
+        readerLink.put("href", readerUri);
+        return readerLink;
     }
-
 }

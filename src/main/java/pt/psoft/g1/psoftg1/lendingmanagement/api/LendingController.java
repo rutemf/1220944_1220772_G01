@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -57,6 +58,7 @@ public class LendingController {
                 .build().toUri();
 
         return ResponseEntity.created(newlendingUri)
+                .contentType(MediaType.parseMediaType("application/hal+json"))
                 .eTag(Long.toString(lending.getVersion()))
                 .body(lendingViewMapper.toLendingView(lending));
     }
@@ -92,6 +94,7 @@ public class LendingController {
                 .build().toUri();
 
         return ResponseEntity.ok().location(lendingUri)
+                .contentType(MediaType.parseMediaType("application/hal+json"))
                 .eTag(Long.toString(lending.getVersion()))
                 .body(lendingViewMapper.toLendingView(lending));
     }
@@ -130,6 +133,7 @@ public class LendingController {
         final var lending = lendingService.setReturned(ln, resource, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
 
         return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/hal+json"))
                 .eTag(Long.toString(lending.getVersion()))
                 .body(lendingViewMapper.toLendingView(lending));
     }
