@@ -44,7 +44,7 @@ public abstract class BookViewMapper extends MapperInterface {
     public abstract List<BookCountView> toBookCountViewList(List<BookCountDTO> bookCountDTOList);
 
 
-    public abstract BookAverageLendingDurationView toBookAverageLendingDurationView(Book book, String averageLendingDuration);
+    public abstract BookAverageLendingDurationView toBookAverageLendingDurationView(Book book, Double averageLendingDuration);
 
     protected List<String> mapAuthors(List<Author> authors) {
         return authors.stream()

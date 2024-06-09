@@ -212,7 +212,7 @@ public class BookController {
     public @ResponseBody ResponseEntity<BookAverageLendingDurationView>getAvgLendingDurationByIsbn(
             @PathVariable("isbn") final String isbn) {
         final var book = bookService.findByIsbn(isbn);
-        String avgDuration = lendingService.getAvgLendingDurationByIsbn(isbn);
+        Double avgDuration = lendingService.getAvgLendingDurationByIsbn(isbn);
 
         return ResponseEntity.ok().body(bookViewMapper.toBookAverageLendingDurationView(book, avgDuration));
     }
