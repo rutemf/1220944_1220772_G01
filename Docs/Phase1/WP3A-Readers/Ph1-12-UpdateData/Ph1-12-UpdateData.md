@@ -9,8 +9,8 @@ As Reader I want to update my personal data
 [View WP3A](../WP3A-Readers.md)
 
 ### 1.3. Acceptance Criteria
-- AC
--
+- Only the reader itself can change his data
+- 
 ### 1.4. Found out Dependencies
 ### 1.5 Input and Output Data
 
