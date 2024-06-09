@@ -1,23 +1,24 @@
-# WP#3A.13 Get Reader Details
+# WP#3B.13 Get Book Suggestions
 ## 1. Requirements Engineering
 ### 1.1. User Story Description
 
-As Librarian I want to know a user’s detail given its reader number
+As Reader I want a list of book suggestions based on my interest list
 
 ### 1.2. Customer Specifications and Clarifications
 
-[View WP3A](../WP3A-Readers.md)
+[View WP3B](../WP3B-Readers.md)
 
 ### 1.3. Acceptance Criteria
-- AC
--
-### 1.4. Found out Dependencies
-### 1.5 Input and Output Data
+- The list of interests must contain genres that exist on the system
+- List of suggestions must have X amount of books configurable
+- Book suggestion, per genre, is random
+
+### 1.4 Input and Output Data
 
 **Input Data:**
 
 * Typed data:
-    * Number of reader
+    * None
 
 **Output Data:**
 
@@ -31,7 +32,7 @@ As Librarian I want to know a user’s detail given its reader number
 ![SD](SD.svg)
 ### 3.2. Class Diagram (CD)
 
-![CD](../WP3A-Readers-CD.svg)
+![CD](../WP3B-Readers-CD.svg)
 
 ## 4. Tests
 ## 5. Observations

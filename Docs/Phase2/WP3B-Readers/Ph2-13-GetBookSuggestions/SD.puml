@@ -3,19 +3,34 @@
 autoactivate on
 autonumber
 
-title As Librarian I want to know a user’s detail given its reader number
+title Get Book Suggestions
 
-actor "Librarian" as User
-participant "Ctrl:ReaderController" as Ctrl
-participant "service:ReaderService" as Service
-participant "repo:ReaderRepository" as Repo
-activate User
+actor "Reader" as Reader
+participant ":System" as System
+participant "Ctrl:BookController" as Ctrl
+participant "service:BookService" as BookService
+participant "repo:BookRepository" as BookRepository
+participant "readerService:ReaderService" as ReaderService
+participant "readerRepository:ReaderRepository" as ReaderRepository
+participant "readerDetails:ReaderDetails" as ReaderDetails
 
-User -> Ctrl: Request user details
-Ctrl -> Service: findByReaderNumber(ReaderNumber)
-Service -> Repo: findByReaderNumber(ReaderNumber)
-Repo -> Service: Reader or 404
-Service -> Ctrl: Reader or 404
-Ctrl -> User: Reader or 404
+activate Reader
 
+Reader -> System: requests book suggestions
+
+System -> Ctrl: getBookSuggestions(UpdateReaderRequest);
+Ctrl -> ReaderService: findByUsername(loggedUserUsername)
+ReaderService -> ReaderRepository: findByUsername(loggedUserUsername)
+ReaderRepository --> ReaderService: readerDetails
+ReaderService --> Ctrl: readerDetails
+Ctrl -> BookService: getBookSuggestions(readerNumber)
+BookService -> ReaderService: findByReaderNumber
+ReaderService -> ReaderRepository: findByReaderNumber(readerNumber)
+ReaderRepository --> ReaderService: readerDetails
+ReaderService --> BookService: readerDetails
+BookService -> BookRepository: for readerDetails.getInterestList() - interestGenre loop: findByGenre(interestGenre)
+BookRepository --> BookService: bookList (merged with all genres searches)
+BookService --> Ctrl: bookList
+Ctrl --> System: bookList
+System --> Reader: bookList
 @enduml
