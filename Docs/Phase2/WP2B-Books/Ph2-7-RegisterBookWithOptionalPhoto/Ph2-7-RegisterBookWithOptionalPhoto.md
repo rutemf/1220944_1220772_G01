@@ -30,8 +30,8 @@ As Librarian, I want to register a book with an optional photo (isbn, title, gen
 
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
-![SD](Ph1-7-SD-RegisterBooks.svg)
+![SD](Ph2-7-RegisterBookWithOptionalPhoto.svg)
 ### 3.2. Class Diagram (CD)
-![CD](../WP2A-Books-CD.svg)
+![CD](../WP2B-Books-CD.svg)
 ## 4. Tests
 ## 5. Observations**

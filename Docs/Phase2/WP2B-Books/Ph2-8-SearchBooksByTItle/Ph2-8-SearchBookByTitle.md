@@ -25,8 +25,8 @@ As Librarian, I want to search a book given its title.
 
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
-![SD](Ph1-9-SD-GetBooksDetails.svg)
+![SD](Ph2-8-SearchBooksByTitle.svg)
 ### 3.2. Class Diagram (CD)
-![CD](../WP2A-Books-CD.svg)
+![CD](../WP2B-Books-CD.svg)
 ## 4. Tests
 ## 5. Observations
