@@ -20,6 +20,10 @@ days). When a reader doesn’t return a book on time a fine will be applied per 
 >
 > A: os "5 top readers" são os leitores que mais livros requisitaram no último ano. Não se preve outros métodos no futuro
 
+> Q: "Quais são os critérios para a sugestão de livros?"
+> 
+> A: "A sugestão de livros é feita com base nos géneros que o leitor tem na sua lista de interesses. A sugestão é feita de forma aleatória, mas garantindo que o livro sugerido pertence a um dos géneros da lista de interesses do leitor. Os livros sugeridos são aleatórios"
+
 ### 1.2. Found out Dependencies
 - None
 
@@ -27,7 +31,3 @@ days). When a reader doesn’t return a book on time a fine will be applied per 
 ### 2.1. Class Diagram (CD)
 
 ![CD](./WP3B-Readers-CD.svg)
-## 3. Tests
-- None
-## 4. Observations
-- None

@@ -144,9 +144,31 @@ class UserMapper {
 
 class Photo {
     - id: Long
-    - photo: byte[]
+    - photoFile: String
 
 }
+
+interface BookRepository {
+    + findByGenre(genre): List<Book>
+}
+
+interface BookService {
+    + findByGenre(genre): List<Book>
+    + getBooksSuggestionsForReader(readerNumber): List<Book>
+}
+
+class BookServiceImpl implements BookService {
+    + findByGenre(genre): List<Book>
+    + getBooksSuggestionsForReader(readerNumber): List<Book>
+}
+
+class BookController {
+    + getBookSuggestions(): ListResponse<>
+}
+
+BookController "1" -> "1" BookService
+BookServiceImpl "1" ---> "1" BookRepository
+BookServiceImpl "1" ---> "1" ReaderRepository
 
 UserServiceImpl "1" ---> "1" UserRepository
 ReaderDTO "1" ---> "1" ReaderMapper
