@@ -5,66 +5,23 @@ autonumber
 
 title Register a new reader as anonymous
 
-actor "Anonymous" as Anonymous
+actor "Librarian" as Librarian
 participant ":System" as System
 participant "Ctrl:ReaderController" as Ctrl
-participant "userService:UserService" as UserService
-participant "userRepo:UserRepository" as UserRepository
-participant ":User" as User
-participant "service:ReaderService" as Service
-participant "repo:ReaderRepository" as Repo
-participant "reader:Reader" as Reader
+participant "Service:ReaderService" as ReaderService
+participant "Repository:ReaderRepository" as ReaderRepository
 
-activate Anonymous
+activate Librarian
 
-Anonymous -> System: requests reader registration based on given data
+Librarian -> System: requests top5 readers
 
-System -> Ctrl: registerReader(RegisterReaderRequest);
+System -> Ctrl: getTop(RegisterReaderRequest);
 
-Ctrl -> UserService: create(username, password)
-UserService -> User: User(username, password, ...)
-UserService --> Ctrl: User or exception
-alt If exception is returned
-    Ctrl -> System: Username is duplicate
-end
-
-/'UserService -> UserRepository: save(user);
-UserRepository --> UserService: User or exception
-
-alt If exception is returned
-    Ctrl -> System: Username is duplicate
-end'/
-
-Ctrl -> Service: create(name, dateOfBirth, ...)
-Service -> Reader: Reader(name, dateOfBirth, ...)
-Service --> Ctrl: Reader or exception
-
-alt If exception is returned
-    Ctrl -> System: Reader is duplicate
-end
-
-Ctrl -> UserService: save(user)
-UserService -> UserRepository: save(user)
-UserRepository --> UserService: User or exception
-UserService --> Ctrl: User or exception
-
-alt If exception is returned
-    Ctrl -> System: Username is duplicate
-end
-
-Ctrl -> Service: save(reader)
-Service -> Repo: save(reader)
-Repo --> Service: Reader or exception
-Service --> Ctrl: Reader or exception
-
-alt If exception is returned
-    Ctrl -> UserService: remove(User);
-    UserService -> UserRepository: remove(User);
-    UserService --> Ctrl:
-    Ctrl --> System: Reader is duplicate
-end
-
-Ctrl --> System: reader
-System --> Anonymous: registered reader
+Ctrl -> ReaderService: findTopReaders(5)
+ReaderService -> ReaderRepository: findTopReaders()
+ReaderRepository --> ReaderService: Top5 List
+ReaderService --> Ctrl: Top5 List
+Ctrl --> System: Top5 List
+System --> Librarian: Top5 List
 
 @enduml
