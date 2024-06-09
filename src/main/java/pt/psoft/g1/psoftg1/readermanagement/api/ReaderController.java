@@ -22,9 +22,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pt.psoft.g1.psoftg1.bookmanagement.api.BookCountView;
-import pt.psoft.g1.psoftg1.bookmanagement.api.BookView;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.api.LendingView;
 import pt.psoft.g1.psoftg1.lendingmanagement.api.LendingViewMapper;
@@ -37,6 +34,7 @@ import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
+import pt.psoft.g1.psoftg1.shared.services.SearchRequest;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
@@ -213,7 +211,7 @@ class ReaderController {
         ReaderDetails readerDetails = readerService.create(readerRequest, fileName);
 
         final var newReaderUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .pathSegment(readerDetails.getReaderNumber().toString())
+                .pathSegment(readerDetails.getReaderNumber())
                 .build().toUri();
 
         return ResponseEntity.created(newReaderUri)
@@ -330,5 +328,12 @@ class ReaderController {
             throw new NotFoundException("No lendings found with provided parameters");
 
         return new ListResponse<>(readerViewMapper.toReaderCountViewList(books));
+    }
+
+    @PostMapping("/search")
+    public ListResponse<ReaderView> searchReaders(
+            @RequestBody final SearchRequest<SearchReadersQuery> request) {
+        final var readerList = readerService.searchReaders(request.getPage(), request.getQuery());
+        return new ListResponse<>(readerViewMapper.toReaderView(readerList));
     }
 }

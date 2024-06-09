@@ -17,7 +17,7 @@ participant ":BookViewMapper" as Mapper
 
 note over Librarian : Librarian is\nauthenticated
 
-Librarian -> System: get average Books\nduration for a book
+Librarian -> System: get average lendings\nduration for a book
 
 System -> Ctrl: getAvgLendingDurationByIsbn(Isbn);
 
@@ -31,10 +31,10 @@ Ctrl -> LendingService: getAvgLendingDurationByIsbn(Isbn)
 LendingService -> LendingRepo: getAvgLendingDurationByIsbn(Isbn)
 
 LendingRepo --> LendingService: (averageDurationValue)
-LendingService --> Ctrl: (averageDurationString)
-Ctrl -> Mapper: toBookAverageDurationView(book, (averageDurationString))
+LendingService --> Ctrl: (averageDurationFormatted)
+Ctrl -> Mapper: toBookAverageDurationView(book, (averageDurationFormatted))
 Mapper --> Ctrl: (view)
 Ctrl --> System: (view)
-System --> Librarian: (book details and its\nassociated average\nBook duration)
+System --> Librarian: (book details and its\nassociated average\nlending duration)
 
 @enduml

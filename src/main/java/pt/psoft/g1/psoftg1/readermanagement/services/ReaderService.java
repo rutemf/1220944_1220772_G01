@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import pt.psoft.g1.psoftg1.readermanagement.api.SearchReadersQuery;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+import pt.psoft.g1.psoftg1.shared.services.Page;
 
 /**
  *
@@ -20,4 +22,5 @@ public interface ReaderService {
     List<ReaderBookCountDTO> findTopByGenre(String genre, LocalDate startDate, LocalDate endDate);
     //Optional<Reader> update(UpdateReaderRequest request) throws Exception;
     Optional<ReaderDetails> removeReaderPhoto(String readerNumber, long desiredVersion);
+    List<ReaderDetails> searchReaders(Page page, SearchReadersQuery query);
 }
