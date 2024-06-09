@@ -109,4 +109,11 @@ public class LendingServiceImpl implements LendingService{
         return lendingRepository.getOverdue(page);
     }
 
+    @Override
+    public String getAvgLendingDurationByIsbn(String isbn){
+        Double avg = lendingRepository.getAvgLendingDurationByIsbn(isbn);
+        return String.format("%.1f", avg);
+    }
+
+
 }

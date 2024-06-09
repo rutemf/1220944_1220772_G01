@@ -27,7 +27,7 @@
 |                                         |          |           |                |             |                |           |                        |
 | 26 - FunnyQuote                         |          |           |                |             |                |           |                        |
 | 27 - SearchBooksByAuthor                |          | Check     |                |             |                |           |                        |
-| 28 - SearchReaderPhoneNumber            |          | Check     |                |             |                |           |                        |
-| 29 - SearchReaderEmail                  |          | Check     |                |             |                |           |                        |
-| 30 - AvgLendingDurationBook             |          | Check     |                |             |                |           |                        |
+| 28 - SearchReaderByPhoneNumber          |          | Check     |                |             |                |           |                        |
+| 29 - SearchReaderByEmail                |          | Check     |                |             |                |           |                        |
+| 30 - AvgLendingDurationBook             |          | Check     | Check          | Check       | Check          |           | Check                  |
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |

@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,7 @@ public class Photo {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long pk;
 
+    @NotNull
     @Setter
     @Getter
     private String photoFile;

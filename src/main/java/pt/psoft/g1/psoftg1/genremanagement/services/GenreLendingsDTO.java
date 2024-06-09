@@ -19,7 +19,7 @@ public class GenreLendingsDTO {
         if(value == null) {
             this.value = 0;
         }else{
-            this.value = Double.valueOf(String.format(Locale.US, "%.1f", value));
+            this.value = formatValue(value);
         }
     }
     public GenreLendingsDTO(String genre, Long value){
@@ -29,11 +29,15 @@ public class GenreLendingsDTO {
 
     public GenreLendingsDTO(Genre genre, Double value){
         this.genre = genre.toString();
-        this.value = Double.valueOf(String.format(Locale.US, "%.1f", value));
+        this.value = formatValue(value);
     }
 
     public GenreLendingsDTO(Genre genre, Long value){
         this.genre = genre.toString();
         this.value = value;
+    }
+
+    private Double formatValue(Double value) {
+        return Double.valueOf(String.format(Locale.US, "%.1f", value));
     }
 }

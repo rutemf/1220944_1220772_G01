@@ -2,6 +2,7 @@ package pt.psoft.g1.psoftg1.authormanagement.api;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
@@ -19,10 +20,9 @@ public abstract class AuthorViewMapper extends MapperInterface {
 
     public abstract List<AuthorView> toAuthorView(List<Author> authors);
 
-    @Mapping(target = "_links", expression = "java(mapLinks(author))")
+    @Mapping(target = "_links", source = "author", qualifiedByName = "mapAuthorLinks")
+    @Mapping(target = "books", source = "books")
     public abstract CoAuthorView toCoAuthorView(Author author, List<Book> books);
-
-    public abstract List<CoAuthorView> toCoAuthorView(List<Author> authors);
 
     public abstract AuthorCoAuthorBooksView toAuthorCoAuthorBooksView(Author author, List<CoAuthorView> coauthors);
 
@@ -31,6 +31,7 @@ public abstract class AuthorViewMapper extends MapperInterface {
         return ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/authors/{authorNumber}/photo").buildAndExpand(authorNumber).toUri().toString();
     }
 
+    @Named(value = "mapAuthorLinks")
     public Map<String, Object> mapLinks(final Author author){
         String authorUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/authors/")

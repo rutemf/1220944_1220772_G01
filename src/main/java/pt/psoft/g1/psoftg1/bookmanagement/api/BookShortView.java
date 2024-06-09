@@ -1,18 +1,20 @@
 package pt.psoft.g1.psoftg1.bookmanagement.api;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 @Data
-@Getter
+@Schema(description = "A Book, with details ommited")
 public class BookShortView {
+    @NotNull
     private String title;
+
+    @NotNull
     private String isbn;
-    private List<String> authors;
+
     @Setter
-    private Map<String, Object> _links = new HashMap<>();
+    @Getter
+    private String _links; //TODO: colocar a funcionar
 }

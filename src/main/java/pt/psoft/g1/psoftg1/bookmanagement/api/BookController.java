@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -18,22 +17,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.services.BookService;
 import pt.psoft.g1.psoftg1.bookmanagement.services.CreateBookRequest;
-import pt.psoft.g1.psoftg1.genremanagement.services.GenreService;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.lendingmanagement.services.LendingService;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
-import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Tag(name = "Books", description = "Endpoints for managing Books")
 @RestController
@@ -43,7 +39,7 @@ public class BookController {
 
     private static final String IF_MATCH = "If-Match";
     private final BookService bookService;
-    private final GenreService genreService;
+    private final LendingService lendingService;
     private final ConcurrencyService concurrencyService;
     private final FileStorageService fileStorageService;
     private final UserService userService;
@@ -61,13 +57,13 @@ public class BookController {
         resource.setPhotoURI(null);
         MultipartFile file = resource.getPhoto();
 
-        String fileName = this.fileStorageService.getRequestPhoto(file);
+        String fileName = fileStorageService.getRequestPhoto(file);
 
         if (fileName != null) {
             resource.setPhotoURI(fileName);
         }
 
-        Book book = null;
+        Book book;
         try {
             book = bookService.create(resource, isbn);
         }catch (Exception e){
@@ -75,7 +71,7 @@ public class BookController {
         }
         //final var savedBook = bookService.save(book);
         final var newBookUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .pathSegment(book.getIsbn().toString())
+                .pathSegment(book.getIsbn())
                 .build().toUri();
 
         return ResponseEntity.created(newBookUri)
@@ -87,8 +83,7 @@ public class BookController {
     @GetMapping(value = "/{isbn}")
     public ResponseEntity<BookView> findByIsbn(@PathVariable final String isbn) {
 
-        final var book = bookService.findByIsbn(isbn)
-                .orElseThrow(() -> new NotFoundException(Book.class, isbn));
+        final var book = bookService.findByIsbn(isbn);
 
         BookView bookView = bookViewMapper.toBookView(book);
 
@@ -101,16 +96,12 @@ public class BookController {
     @DeleteMapping("/{isbn}/photo")
     public ResponseEntity<Void> deleteBookPhoto(@PathVariable("isbn") final String isbn) {
 
-        Optional<Book> optBook = bookService.findByIsbn(isbn);
-        if(optBook.isEmpty()) {
-            throw new AccessDeniedException("A book could not be found with provided isbn");
-        }
-        Book book = optBook.get();
+        var book = bookService.findByIsbn(isbn);
         if(book.getPhoto() == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        this.fileStorageService.deleteFile(book.getPhoto().getPhotoFile());
+        fileStorageService.deleteFile(book.getPhoto().getPhotoFile());
         bookService.removeBookPhoto(book.getIsbn(), book.getVersion());
 
         return ResponseEntity.ok().build();
@@ -121,12 +112,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<byte[]> getSpecificBookPhoto(@PathVariable("isbn") final String isbn){
 
-        Optional<Book> optBook = bookService.findByIsbn(isbn);
-        if(optBook.isEmpty()) {
-            throw new AccessDeniedException("A book could not be found with provided isbn");
-        }
-
-        Book book = optBook.get();
+        Book book = bookService.findByIsbn(isbn);
 
         //In case the user has no photo, just return a 200 OK without body
         if(book.getPhoto() == null) {
@@ -134,8 +120,8 @@ public class BookController {
         }
 
         String photoFile = book.getPhoto().getPhotoFile();
-        byte[] image = this.fileStorageService.getFile(photoFile);
-        String fileFormat = this.fileStorageService.getExtension(book.getPhoto().getPhotoFile()).orElseThrow(() -> new ValidationException("Unable to get file extension"));
+        byte[] image = fileStorageService.getFile(photoFile);
+        String fileFormat = fileStorageService.getExtension(book.getPhoto().getPhotoFile()).orElseThrow(() -> new ValidationException("Unable to get file extension"));
 
         if(image == null) {
             return ResponseEntity.ok().build();
@@ -160,7 +146,7 @@ public class BookController {
 
         MultipartFile file = resource.getPhoto();
 
-        String fileName = this.fileStorageService.getRequestPhoto(file);
+        String fileName = fileStorageService.getRequestPhoto(file);
 
         if (fileName != null) {
             resource.setPhotoURI(fileName);
@@ -208,7 +194,7 @@ public class BookController {
     @Operation(summary = "Gets the top 5 books lent")
     @GetMapping("top5")
     public ListResponse<BookCountView> getTop5BooksLent() {
-        return new ListResponse<>(bookViewMapper.toBookCountViewList(bookService.findTop5BooksLent()));
+        return new ListResponse<>(bookViewMapper.toBookCountView(bookService.findTop5BooksLent()));
     }
 
     @Operation(summary = "Gets some books suggestions based on the reader's interests")
@@ -219,6 +205,16 @@ public class BookController {
                 .orElseThrow(() -> new NotFoundException(ReaderDetails.class, loggedUser.getUsername()));
 
         return new ListResponse<>(bookViewMapper.toBookView(bookService.getBooksSuggestionsForReader(readerDetails.getReaderNumber())));
+    }
+
+    @Operation(summary = "Get average lendings duration")
+    @GetMapping(value = "/{isbn}/avgDuration")
+    public @ResponseBody ResponseEntity<BookAverageLendingDurationView>getAvgLendingDurationByIsbn(
+            @PathVariable("isbn") final String isbn) {
+        final var book = bookService.findByIsbn(isbn);
+        String avgDuration = lendingService.getAvgLendingDurationByIsbn(isbn);
+
+        return ResponseEntity.ok().body(bookViewMapper.toBookAverageLendingDurationView(book, avgDuration));
     }
 }
 
