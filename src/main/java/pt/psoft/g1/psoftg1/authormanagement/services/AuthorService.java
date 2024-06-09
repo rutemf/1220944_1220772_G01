@@ -24,4 +24,6 @@ public interface AuthorService {
     List<Book> findBooksByAuthorNumber(Long authorNumber);
 
     List<Author> findCoAuthorsByAuthorNumber(Long authorNumber);
+
+    Optional<Author> removeAuthorPhoto(Long authorNumber, long desiredVersion);
 }

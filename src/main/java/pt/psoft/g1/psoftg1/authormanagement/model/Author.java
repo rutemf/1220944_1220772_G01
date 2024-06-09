@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.StaleObjectStateException;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
+import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.shared.model.EntityWithPhoto;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 
@@ -62,6 +63,13 @@ public class Author extends EntityWithPhoto {
             setPhotoInternal(request.getPhotoURI());
     }
 
+    public void removePhoto(long desiredVersion) {
+        if(desiredVersion != this.version) {
+            throw new ConflictException("Provided version does not match latest version of this object");
+        }
+
+        setPhotoInternal(null);
+    }
     public String getName() {
         return this.name.toString();
     }

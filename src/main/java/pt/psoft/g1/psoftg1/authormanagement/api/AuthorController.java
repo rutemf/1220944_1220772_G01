@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,13 +22,17 @@ import pt.psoft.g1.psoftg1.authormanagement.services.CreateAuthorRequest;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookView;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookViewMapper;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
+import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Tag(name = "Author", description = "Endpoints for managing Authors")
@@ -193,5 +199,25 @@ public class AuthorController {
             coAuthorViews.add(coAuthorView);
         }
         return authorViewMapper.toAuthorCoAuthorBooksView(author, coAuthorViews);
+    }
+
+    //Delete a foto
+    @Operation(summary = "Deletes a author photo")
+    @DeleteMapping("/{authorNumber}/photo")
+    public ResponseEntity<Void> deleteBookPhoto(@PathVariable("authorNumber") final Long authorNumber) {
+
+        Optional<Author> optionalAuthor = authorService.findByAuthorNumber(authorNumber);
+        if(optionalAuthor.isEmpty()) {
+            throw new AccessDeniedException("A author could not be found with provided authorNumber");
+        }
+        Author author = optionalAuthor.get();
+        if(author.getPhoto() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        this.fileStorageService.deleteFile(author.getPhoto().getPhotoFile());
+        authorService.removeAuthorPhoto(author.getAuthorNumber(), author.getVersion());
+
+        return ResponseEntity.ok().build();
     }
 }
