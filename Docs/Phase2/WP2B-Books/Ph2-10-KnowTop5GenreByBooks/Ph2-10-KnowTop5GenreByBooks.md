@@ -33,8 +33,8 @@ As Reader I want to know the Top 5 genre by books
 
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
-![SD](Ph1-9-SD-GetBooksDetails.svg)
+![SD](Ph2-10-KnowTop5GenreByBooks.svg)
 ### 3.2. Class Diagram (CD)
-![CD](../WP2A-Books-CD.svg)
+![CD](../WP2B-Books-CD.svg)
 ## 4. Tests
 ## 5. Observations
