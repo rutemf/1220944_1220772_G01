@@ -19,6 +19,8 @@ import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
+import pt.psoft.g1.psoftg1.shared.model.Photo;
+import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 import pt.psoft.g1.psoftg1.shared.services.ForbiddenNameService;
 
 import java.time.LocalDate;
@@ -42,6 +44,7 @@ public class Bootstrapper implements CommandLineRunner {
     private final AuthorRepository authorRepository;
     private final LendingRepository lendingRepository;
     private final ReaderRepository readerRepository;
+    private final PhotoRepository photoRepository;
 
     private final ForbiddenNameService forbiddenNameService;
 
@@ -53,6 +56,7 @@ public class Bootstrapper implements CommandLineRunner {
         createBooks();
         loadForbiddenNames();
         createLendings();
+        createPhotos();
     }
 
     private void createAuthors() {
@@ -105,7 +109,7 @@ public class Bootstrapper implements CommandLineRunner {
                             "Foi a criação da Terra Média, porém, a trazer-lhe a celebridade. Autor de extraordinários clássicos da ficção, de que são exemplo O Hobbit, O Senhor dos Anéis e O Silmarillion, os seus livros foram traduzidos em mais de 60 línguas e venderam largos milhões de exemplares no mundo inteiro.\n" +
                             "Tolkien foi nomeado Comandante da Ordem do Império Britânico e, em 1972, foi-lhe atribuído o título de Doutor Honoris Causa, pela Universidade de Oxford.\n" +
                             "Morreu em 1973, com 81 anos.",
-                    null);
+                    "authorPhotoTest.jpg");
             authorRepository.save(author);
         }
         if (authorRepository.searchByNameName("Gardner Dozois").isEmpty()) {
@@ -258,7 +262,7 @@ public class Bootstrapper implements CommandLineRunner {
                         "O Principezinho", "Depois de deixar o seu asteroide e embarcar numa viagem pelo espaço, o principezinho chega, finalmente, à Terra. No deserto, o menino de cabelos da cor do ouro conhece um aviador, a quem conta todas as aventuras que viveu e tudo o que viu ao longo da sua jornada.",
                         genre.get(),
                         authors,
-                        null);
+                        "bookPhotoTest.jpg");
 
                 bookRepository.save(book);
             }
@@ -519,6 +523,13 @@ public class Bootstrapper implements CommandLineRunner {
                 lendingRepository.save(lending);
             }
         }
+    }
+
+    private void createPhotos() {
+        /*Optional<Photo> photoJoao = photoRepository.findByPhotoFile("foto-joao.jpg");
+        if(photoJoao.isEmpty()) {
+            Photo photo = new Photo(Paths.get(""))
+        }*/
     }
 }
 
