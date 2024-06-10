@@ -131,11 +131,11 @@ class "?period={month}&count={12}" extends "/lendings"{
 class "/top5readers" extends "/genres"{
     GET : get top 5\nreaders per genre (B17)
 }
-
+class "/monthlyLendings" as MonthlyLendings extends "/lendings"{
+    GET : monthly lending per\nreader of a certain period (B18)
+}
 class "?period={month}&groupBy={genre}&begin={date}&end={date}" extends "/avgDuration"{
     GET : average lending duration (B19)
 }
-
-' TODO:  B18
 
 @enduml
