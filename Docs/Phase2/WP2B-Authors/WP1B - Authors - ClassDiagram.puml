@@ -29,6 +29,7 @@ class AuthorsController {
         + getTop5(): ListResponse<AuthorView>
         + getSpecificAuthorPhoto(authorNumber)
         + getAuthorWithCoAuthors (authorNumber)
+        +ResponseEntity<Void> deleteBookPhoto(Long authorNumber)
 }
 
 class AuthorsServiceImpl implements AuthorsService{

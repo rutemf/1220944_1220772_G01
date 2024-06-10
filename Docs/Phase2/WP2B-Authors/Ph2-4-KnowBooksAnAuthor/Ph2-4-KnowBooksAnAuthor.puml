@@ -1,6 +1,6 @@
 @startuml
 
-actor Client
+actor Reader
 participant Controller
 participant AuthorService
 participant AuthorRepository
@@ -8,7 +8,7 @@ participant BookRepository
 participant BookViewMapper
 participant ListResponse
 
-Client -> Controller: GET /{authorNumber}/books
+Reader -> Controller: GET /{authorNumber}/books
 Controller -> AuthorService: findByAuthorNumber(authorNumber)
 AuthorService -> AuthorRepository: findByAuthorNumber(authorNumber)
 AuthorRepository -> AuthorService: Author or NotFoundException
@@ -25,6 +25,6 @@ BookViewMapper -> Controller: List<BookView>
 Controller -> ListResponse: new ListResponse(List<BookView>)
 ListResponse -> Controller: ListResponse<BookView>
 
-Controller -> Client: ListResponse<BookView>
+Controller -> Reader: ListResponse<BookView>
 
 @enduml

@@ -10,7 +10,7 @@ days). When a reader doesn’t return a book on time a fine will be applied per 
 
 **From the client clarifications:**
 
->[Q: Quais sao os critérios de aceitaçao do work package em questao?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29987)
+>[Q: Quais sao os critérios de aceitaçao do work package em questao para esta 2ª Fase?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29987)
 >
 >A: 
 >3. As Librarian I want to register an author with an optional photo : os mesmos critérios do caso de uso do WP1 contemplando agora a possibilidade de adicionar uma imagem. 
@@ -43,6 +43,6 @@ deve retornar os 5 autores com o maior numero de livros requisitados no ultimo a
 ### 2.1. Class Diagram (CD)
 ![WP1B - Authors - ClassDiagram.svg](WP1B%20-%20Authors%20-%20ClassDiagram.svg)
 ## 3. Tests
-[Click to go directly to the author's unit tests](..%2F..%2F..%2Fsrc%2Ftest%2Fjava%2Fpt%2Fpsoft%2Fg1%2Fpsoftg1%2Fauthormanagement)
+[Click here to go directly to the author's unit tests](..%2F..%2F..%2Fsrc%2Ftest%2Fjava%2Fpt%2Fpsoft%2Fg1%2Fpsoftg1%2Fauthormanagement)
 - Results :
 ![img.png](img.png)
