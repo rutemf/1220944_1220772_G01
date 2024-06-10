@@ -140,7 +140,7 @@ public class SecurityConfig {
                 //endBooks
                 //readers
                 .requestMatchers(HttpMethod.PATCH,"/api/readers").hasRole(Role.READER)
-                .requestMatchers(HttpMethod.GET,"/api/readers").hasRole(Role.LIBRARIAN)
+                .requestMatchers(HttpMethod.GET,"/api/readers").hasAnyRole(Role.READER, Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.POST,"/api/readers/search").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/readers/top5ByGenre").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET, "/api/readers/top5").hasRole(Role.LIBRARIAN)
