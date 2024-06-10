@@ -22,7 +22,8 @@ Service -> Repo: findTopByGenre(genre,endDate,startDate)
 Repo --> Service: list<readersDTO> or error
 Service --> Ctrl: list<readersDTO> or error
 Ctrl -> Mapper: toReaderCountViewList(list<readerDTO>)
-Ctrl --> Rest: list<readerDTO> or error
-Rest --> User: list<readerDTO>
+Mapper --> Ctrl: ListResponse<>
+Ctrl --> Rest: ListResponse<>
+Rest --> User: ListResponse<>
 
 @enduml

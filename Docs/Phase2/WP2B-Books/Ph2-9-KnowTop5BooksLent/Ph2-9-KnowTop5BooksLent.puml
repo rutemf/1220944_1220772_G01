@@ -23,10 +23,10 @@ Rest -> Ctrl: Top5();
 Ctrl -> Mapper: toBookCountView(bookService.findTop5BooksLent()))
 Mapper -> Service: findTop5BooksLent()
 Service -> Repo: getTop5(BookCountDTO)
-Repo --> Service: BookCountDTO
-Service --> Mapper: BookCountDTO
-Mapper --> Ctrl: BookCountDTO
-Ctrl --> Rest: BookCountDTO
-Rest --> User: BookCountDTO
+Repo --> Service: list<BookCountDTO>
+Service --> Mapper: list<BookCountDTO>
+Mapper --> Ctrl: ListResponse<>
+Ctrl --> Rest: ListResponse<>
+Rest --> User: ListResponse<>
 
 @enduml

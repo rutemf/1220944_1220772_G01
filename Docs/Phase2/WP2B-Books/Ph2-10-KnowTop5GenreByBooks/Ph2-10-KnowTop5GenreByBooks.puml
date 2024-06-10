@@ -22,9 +22,9 @@ Ctrl -> Mapper: findTop5Genre()
 Mapper -> Service: findTop5Genre()
 Service -> Repo: findTop5Genre()
 Repo --> Service: list<GenreDTO>
-Service --> Mapper: GenreDTO
-Mapper --> Ctrl: GenreDTO
-Ctrl --> Rest: GenreDTO
-Rest --> User: GenreDTO
+Service --> Mapper: list<GenreDTO>
+Mapper --> Ctrl: ListResponse<>
+Ctrl --> Rest: ListResponse<>
+Rest --> User: ListResponse<>
 
 @enduml
