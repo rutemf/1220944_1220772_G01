@@ -2,10 +2,10 @@
 
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |
 |:----------------------------------------|:---------|:----------|:---------------|:------------|:---------------|:----------|:-----------------------|
-| 3 - RegisterAuthor-Photo                |          | Check     | Check          | Check       | Check          | Check     | Check                  |
-| 4 - KnowBooksAnAuthor                   |          | Check     | Check          | Check       | Check          | Check     | Check                  |
-| 5 - KnowCoAuthor                        |          | Check     |                |             |                |           |                        |
-| 6 - KnowTop5Authors                     |          | Check     | Check          | Check       | Check          | Check     | Check                  |
+| 3 - RegisterAuthor-Photo                | Check    | Check     | Check          | Check       | Check          |           | Check                  |
+| 4 - KnowBooksAnAuthor                   | Check    | Check     | Check          | Check       | Check          |           | Check                  |
+| 5 - KnowCoAuthor                        | Check    | Check     | Check          | Check       | Check          |           | Check                  |
+| 6 - KnowTop5Authors                     | Check    | Check     | Check          | Check       | Check          |           | Check                  |
 |                                         |          |           |                |             |                |           |                        |
 | 7 - RegisterBook-Photo                  |          | Check     | Check          | Check       | Check          | Check     | Check                  |
 | 8 - SearchBooksByTitle                  |          | Check     | Check          | Check       | Check          | Check     | Check                  |
