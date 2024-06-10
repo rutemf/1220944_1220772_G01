@@ -11,9 +11,16 @@ class LendingController {
     + getOverdueLendings(page) : List<LendingView>
 }
 
-abstract class LendingViewMapper {
+interface MapperInterface {
+    + mapLendingLink(lending) : Map<String, String>
+    + mapBookLink(book) : Map<String, String>
+    + mapReaderLink(readerDetails) : Map<String, String>
+}
+
+abstract class LendingViewMapper extends MapperInterface{
     + toLendingView(lending) : LendingView
     + toLendingView(lendingList) : List<LendingView>
+    + toLendingsAverageDurationView(lendingsAverageDuration) : LendingsAverageDurationView
 }
 
 class LendingView {
@@ -26,13 +33,21 @@ class LendingView {
     - fineValueInCents : Integer
 }
 
+class LendingLinksView {
+    - self : Map<String, String>
+    - book : Map<String, String>
+    - reader : Map<String, String>
+}
+
+LendingView *-- LendingLinksView
+
 class LendingsAverageDurationView {
     - lendingsAverageDuration : String
 }
 
 interface LendingService {
-    + create(CreateLendingRequest resource) : Lending
-    + findByLendingNumber(String lendingNumber) : Optional<Lending>
+    + create(createLendingRequest) : Lending
+    + findByLendingNumber(lendingNumber) : Optional<Lending>
     + setReturned(lendingNumber, setLendingReturnedRequest, desiredVersion) : Lending
     + getAverageDuration() : String
     + getOverdue(page) : List<Lending>
@@ -133,9 +148,7 @@ class SetLendingReturnedRequest{
 }
 
 class LendingMapper{
-    - create(lendingDTO) : Lending
-    -
-
+    + create(lendingDTO) : Lending
 }
 
 
@@ -146,10 +159,12 @@ LendingNumber -right-o Fine
 ReaderDetails *- ReaderNumber
 
 LendingController ..> LendingViewMapper
+LendingController ..> LendingView
+LendingController ..> LendingsAverageDurationView
 LendingController ...> LendingService
 LendingController .up.> UserService
 LendingController .left.> ReaderService
-LendingController .> ConcurrencyService
+LendingController .up.> ConcurrencyService
 
 LendingServiceImpl ..> Lending
 LendingServiceImpl ..> FineRepository
@@ -161,8 +176,8 @@ LendingServiceImpl .left.> LendingRepository
 LendingServiceImpl ..> ReaderRepository
 LendingServiceImpl .right.> BookRepository
 
-LendingServiceImpl .up.> LendingMapper
-LendingMapper .left.> SetLendingReturnedRequest
+LendingServiceImpl .down.> LendingMapper
+LendingMapper .down.> SetLendingReturnedRequest
 
 LendingViewMapper ..> LendingView
 LendingViewMapper ..> LendingsAverageDurationView

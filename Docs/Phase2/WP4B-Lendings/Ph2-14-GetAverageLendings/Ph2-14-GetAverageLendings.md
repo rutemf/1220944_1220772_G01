@@ -6,8 +6,6 @@ As Librarian I want to know the average number of lending per genre of a certain
 
 ### 1.2. Customer Specifications and Clarifications
 
->[View WP4B](../WP4B-Lendings.md/#12-customer-specifications-and-clarifications)
-
 >[Q: Para esta US, também são incluídos tanto empréstimos em aberto como devolvidos? ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29835#p37841)
 >
 >A: todos os emprestimos independente do seu estado
