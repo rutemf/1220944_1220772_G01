@@ -1,6 +1,6 @@
- Book
+# WP Books
 
-Is an item stored in the library, and is lent to readers, by librarians.
+## Is an item stored in the library, and is lent to readers, by librarians.
 
 > [Attributes](#attributes)
 >
@@ -14,6 +14,7 @@ Is an item stored in the library, and is lent to readers, by librarians.
 - [Genre](../Entities/Genre.md)
 - [Description](../ValueObjects/Description.md)
 - [Author](Author.md)(s)
+- [Photo](Photo)
 
 ### Relevant Use Cases
 - #### Phase 1
