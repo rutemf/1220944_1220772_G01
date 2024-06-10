@@ -11,10 +11,6 @@ interface ReaderRepository {
     + findByReaderNumber(ReaderNumber): Reader
 }
 
-/'class ReaderFactory {
-    + create: Reader
-}'/
-
 interface ReaderService {
     + create(reader_data): Reader
     + remove(Reader): void
@@ -41,7 +37,7 @@ class ReaderServiceImpl implements ReaderService {
 class ReaderController {
 }
 
-class Reader {
+class ReaderDetails {
     - gdprConsent: bool
     - marketingConsent: bool
     - thirdPartySharingConsent: bool
