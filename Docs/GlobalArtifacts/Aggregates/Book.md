@@ -9,11 +9,12 @@ Is an item stored in the library, and is lent to readers, by librarians.
 > [Customer Clarifications](#Customer-Clarifications)
 
 ### Attributes
-- [ISBN](../ValueObjects/ISBN.md)
+- [ISBN](../ValueObjects/Isbn)
 - [Title](../ValueObjects/Title.md)
 - [Genre](../Entities/Genre.md)
 - [Description](../ValueObjects/Description.md)
 - [Author](Author.md)(s)
+- [Photo](../Entities/Photo.md)
 
 ### Relevant Use Cases
 - #### Phase 1

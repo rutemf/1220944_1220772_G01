@@ -17,6 +17,7 @@ Can request books for lending, and _should_ return them. Is a registered [user](
 - [Reader Number](../ValueObjects/ReaderNumber.md)
 - [Username](../ValueObjects/Username.md)
 - [Password](../ValueObjects/Password.md)
+- [Photo](../Entities/Photo.md)
 
 ### Relevant Use Cases
 - #### Phase 1

@@ -12,7 +12,7 @@ Wrote books that are present in the library. Can be main author, or co-author.
 
 - Author Number
 - [Name](../ValueObjects/Name.md)
-- Photo
+- [Photo](../Entities/Photo.md)
 - [Short bio](../ValueObjects/AuthorBio.md)
 
 ### Relevant Use Cases

@@ -22,12 +22,12 @@
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |
 | 16 - LendingsMonthLast12MonthsByGenre   |          | Check     | Check          | Check       | Check          |           | Check                  |
 | 17 - Top5ReaderGenreCertainTime         |          | Check     |                |             |                |           |                        |
-| 18 - GetMonthlyLendingReader            |          | Check     |                |             |                |           |                        |
+| 18 - GetMonthlyLendingReader            |          | Check     | Check          | Check       | Check          |           | Check                  |
 | 19 - AvgLendingDurationGenreMonthPeriod |          | Check     | Check          | Check       | Check          |           | Check                  |
 |                                         |          |           |                |             |                |           |                        |
 | 26 - FunnyQuote                         |          |           |                |             |                |           |                        |
-| 27 - SearchBooksByAuthor                |          | Check     |                |             |                |           |                        |
-| 28 - SearchReaderByPhoneNumber          |          | Check     |                |             |                |           |                        |
-| 29 - SearchReaderByEmail                |          | Check     |                |             |                |           |                        |
+| 27 - SearchBooksByAuthor                |          | Check     | Check          | Check       | Check          |           |                        |
+| 28 - SearchReaderByPhoneNumber          |          | Check     | Check          | Check       | Check          |           |                        |
+| 29 - SearchReaderByEmail                |          | Check     | Check          | Check       | Check          |           |                        |
 | 30 - AvgLendingDurationBook             |          | Check     | Check          | Check       | Check          |           | Check                  |
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |

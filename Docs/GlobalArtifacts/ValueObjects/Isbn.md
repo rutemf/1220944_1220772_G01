@@ -1,4 +1,4 @@
-# ISBN
+# Isbn
 
 Number that uniquely identifies a book worldwide.
 
@@ -10,7 +10,6 @@ Number that uniquely identifies a book worldwide.
 
 ### Attributes
 - ISBN
-- 10 or 13
 
 ### Relevant Use Cases
 - #### Phase 1
