@@ -46,5 +46,4 @@ public class AuthorServiceImplIntegrationTest {
         found.ifPresent(author -> assertThat(author.getId())
                 .isEqualTo(id));
     }
-
 }
