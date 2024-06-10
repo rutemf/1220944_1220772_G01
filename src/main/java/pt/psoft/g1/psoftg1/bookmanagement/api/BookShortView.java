@@ -16,5 +16,5 @@ public class BookShortView {
 
     @Setter
     @Getter
-    private String _links; //TODO: colocar a funcionar
+    private String _links;
 }
