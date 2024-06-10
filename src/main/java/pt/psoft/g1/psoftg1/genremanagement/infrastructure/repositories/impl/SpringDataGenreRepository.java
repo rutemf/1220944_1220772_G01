@@ -98,7 +98,7 @@ class GenreRepoCustomImpl implements GenreRepoCustom {
                     .add(genreLendingsDTO);
         }
 
-        return getGenreLendingsPerMonthDTOS(groupedResults);
+        return getGenreLendingsPerMonthDtos(groupedResults);
     }
 
 
@@ -178,11 +178,11 @@ class GenreRepoCustomImpl implements GenreRepoCustom {
                     .add(genreLendingsDTO);
         }
 
-        return getGenreLendingsPerMonthDTOS(groupedResults);
+        return getGenreLendingsPerMonthDtos(groupedResults);
     }
 
     @NotNull
-    private List<GenreLendingsPerMonthDTO> getGenreLendingsPerMonthDTOS(Map<Integer, Map<Integer, List<GenreLendingsDTO>>> groupedResults) {
+    private List<GenreLendingsPerMonthDTO> getGenreLendingsPerMonthDtos(Map<Integer, Map<Integer, List<GenreLendingsDTO>>> groupedResults) {
         List<GenreLendingsPerMonthDTO> lendingsPerMonth = new ArrayList<>();
         for (Map.Entry<Integer, Map<Integer, List<GenreLendingsDTO>>> yearEntry : groupedResults.entrySet()) {
             int yearValue = yearEntry.getKey();

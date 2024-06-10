@@ -6,8 +6,6 @@ As Librarian I want to list overdue lending sorted by their tardiness.
 
 ### 1.2. Customer Specifications and Clarifications
 
->[View WP4B](../WP4B-Lendings.md/#12-customer-specifications-and-clarifications)
-
 >[Q: A listagem de empréstimos em atraso diz respeito a livros que se encontram emprestados, livros que já foram devolvidos ou ambos? ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29818#p37822)
 >
 >A: livros emprestados e que ainda nao foram devolvidos
@@ -26,14 +24,12 @@ As Librarian I want to list overdue lending sorted by their tardiness.
 **Input Data:**
 
 * Typed data:
-  * N/A
+  * Page number
+  * Max items per page
 
 **Output Data:**
   * List of overdue lendings (not returned), sorted by tardiness.
 
-### 1.6. System Sequence Diagram (SSD)
-### 1.7. Functionality
-### 1.8 Other Relevant Remarks
 ## 2. OO Analysis
 ### 2.1. Relevant Domain Model Excerpt
 
@@ -50,4 +46,9 @@ As Librarian I want to list overdue lending sorted by their tardiness.
 <img src="../WP4B-Lendings-CD.svg" alt="Class Diagram">
 
 ## 4. Tests
+
+<img src="../lending-tests1.png" alt="Tests 1">
+<img src="../lending-tests2.png" alt="Tests 2">
+<img src="../lending-tests3.png" alt="Tests 3">
+
 ## 5. Observations

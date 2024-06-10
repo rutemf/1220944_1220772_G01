@@ -30,9 +30,4 @@ public abstract class LendingViewMapper extends MapperInterface {
     public abstract List<LendingView> toLendingView(List<Lending> lendings);
 
     public abstract LendingsAverageDurationView toLendingsAverageDurationView(Double lendingsAverageDuration);
-
-    @Mapping(target = "self", source = ".", qualifiedByName = "lendingLink")
-    @Mapping(target = "book", source = "book", qualifiedByName = "bookLink")
-    @Mapping(target = "reader", source = "readerDetails", qualifiedByName = "readerLink")
-    public abstract LendingLinksView toLendingLinksView(Lending lending);
 }

@@ -6,8 +6,6 @@ As Librarian I want to know the Average lending duration.
 
 ### 1.2. Customer Specifications and Clarifications
 
->[View WP4B](../WP4B-Lendings.md/#12-customer-specifications-and-clarifications)
-
 >[Q: Também são incluídos tanto empréstimos em aberto como devolvidos? ](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29835#p37841)
 >
 >A: todos os emprestimos independente do seu estado
@@ -18,7 +16,7 @@ As Librarian I want to know the Average lending duration.
 
 
 ### 1.3. Acceptance Criteria
-- The Librarian is shown the average lending duration
+- The Librarian is shown the average lending duration, with one decimal place, in JSON format (as indicated in person)
  
 ### 1.4. Found out Dependencies
 - A Librarian must be logged into the system.
@@ -39,7 +37,6 @@ As Librarian I want to know the Average lending duration.
 
 <img src="../WP4B-Lendings-DM.svg" alt="Domain Model Excerpt">
 
-### 2.2. Other Remarks
 ## 3. Design
 ### 3.1. Sequence Diagram (SD)
 
@@ -50,4 +47,9 @@ As Librarian I want to know the Average lending duration.
 <img src="../WP4B-Lendings-CD.svg" alt="Class Diagram">
 
 ## 4. Tests
+
+<img src="../lending-tests1.png" alt="Tests 1">
+<img src="../lending-tests2.png" alt="Tests 2">
+<img src="../lending-tests3.png" alt="Tests 3">
+
 ## 5. Observations

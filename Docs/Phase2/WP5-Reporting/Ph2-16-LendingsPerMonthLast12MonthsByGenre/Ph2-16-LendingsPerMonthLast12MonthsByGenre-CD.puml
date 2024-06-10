@@ -4,7 +4,7 @@
 skinparam classAttributeIconSize 0
 
 class GenreController {
-    + getLendingsPerMonthLastYearByGenre() : ListResponse<GenreLendingsPerMonthView>
+    + getLendingsPerMonthLastYearByGenre() : ListResponse<GenreLendingsCountPerMonthView>
 }
 
 interface GenreRepoCustom {
@@ -12,21 +12,19 @@ interface GenreRepoCustom {
 }
 
 class GenreRepoCustomImpl implements GenreRepoCustom {
-    + getAverageLendings(String period, LocalDate startDate, LocalDate endDate);
 }
 
 interface GenreRepository {
-    + getAverageLendings(String period, LocalDate startDate, LocalDate endDate): List<Pair<Genre, Double>>
+    + getLendingsPerMonthLastYearByGenre(); : List<GenreLendingsPerMonthDTO>
 }
 
 
 
 interface GenreService {
-    + getAverageLendings(String period, LocalDate startDate, LocalDate endDate) : List<Pair<Genre, String>>
+    + getLendingsPerMonthLastYearByGenre(); : List<GenreLendingsPerMonthDTO>
 }
 
 class GenreServiceImpl implements GenreService{
-    + getAverageLendings(String period, LocalDate startDate, LocalDate endDate) :List<Pair<Genre, String>>
 
 }
 
@@ -37,14 +35,21 @@ class Genre <<entity>>{
 }
 
 class GenreViewMapper{
-    + toGenreAvgLendingsView(List<Pair<Genre, String>> pairList) : List<GenreAvgLendingsView>
-    + toGenreAvgLendingsView(Pair<Genre, String> pair) : GenreAvgLendingsView
+    + toGenreLendingsCountPerMonthView(genreLendingsPerMonthDtos) : List<GenreLendingsCountPerMonthView>
+    + toGenreLendingsCountPerMonthView(genreLendingsPerMonthDto) : GenreLendingsCountPerMonthView
 }
 
-class GenreLendingsPerMonthView{
+class GenreLendingsCountPerMonthView{
     - genre: String
     - avgLendings : String
 }
+
+class GenreLendingsView{
+    - genre - String
+    - value - Number
+}
+
+GenreLendingsCountPerMonthView "1" *-- "*" GenreLendingsView
 
 GenreServiceImpl .right.> Genre
 
@@ -52,7 +57,7 @@ GenreController ..> GenreService
 GenreServiceImpl .down.> GenreRepository
 
 GenreController .up.> GenreViewMapper
-GenreViewMapper .right.> GenreLendingsPerMonthView
+GenreViewMapper .right.> GenreLendingsCountPerMonthView
 
 GenreRepoCustom .up.> GenreRepository
 

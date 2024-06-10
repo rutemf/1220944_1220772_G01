@@ -12,21 +12,12 @@ days). When a reader doesn’t return a book on time a fine will be applied per 
 
 **From the client clarifications:**
 
-[//]: # (>[Q: O tempo limite de entrega de um livro é expectável que mude? ]&#40;https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=29835#p37841&#41;)
-
-[//]: # (>)
-
-[//]: # (>A: o numero de dias que um livro pode ser requisitado é um valor fixo que deve ser facilmente configuravel &#40;ex., ficheiro de propriedades, bootstraping&#41;)
-
-
-### 1.4. Found out Dependencies
-
-### 1.7. Functionality
-### 1.8. Other Relevant Remarks
 ## 2. OO Analysis
 ### 2.1. Relevant Domain Model Excerpt
-### 2.2. Other Remarks
+
+<img src="WP4B-Lendings-DM.svg" alt="Domain Model Excerpt">
+
 ## 3. Design
 ### 3.2. Class Diagram (CD)
-## 4. Tests
-## 5. Observations
+
+<img src="WP4B-Lendings-CD.svg" alt="Class Diagram">
