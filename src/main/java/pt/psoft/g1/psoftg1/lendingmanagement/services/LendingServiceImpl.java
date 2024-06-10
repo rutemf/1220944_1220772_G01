@@ -14,6 +14,8 @@ import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -115,6 +117,40 @@ public class LendingServiceImpl implements LendingService{
         Double avg = lendingRepository.getAvgLendingDurationByIsbn(isbn);
         return Double.valueOf(String.format(Locale.US,"%.1f", avg));
     }
+
+    @Override
+    public List<Lending> searchLendings(Page page, SearchLendingQuery query){
+        LocalDate startDate = null;
+        LocalDate endDate = null;
+
+        if (page == null) {
+            page = new Page(1, 10);
+        }
+        if (query == null)
+            query = new SearchLendingQuery("",
+                    "",
+                    null,
+                    LocalDate.now().minusDays(10L).toString(),
+                    null);
+
+        try {
+            if(query.getStartDate()!=null)
+                startDate = LocalDate.parse(query.getStartDate());
+            if(query.getEndDate()!=null)
+                endDate = LocalDate.parse(query.getEndDate());
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Expected format is YYYY-MM-DD");
+        }
+
+        return lendingRepository.searchLendings(page,
+                query.getReaderNumber(),
+                query.getIsbn(),
+                query.getReturned(),
+                startDate,
+                endDate);
+
+    }
+
 
 
 }
