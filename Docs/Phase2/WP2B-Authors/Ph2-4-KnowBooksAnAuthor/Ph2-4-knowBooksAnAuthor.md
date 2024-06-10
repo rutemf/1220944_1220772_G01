@@ -23,12 +23,13 @@ Quando se refere "em termos de recursos rest e em subrecursos"
 
 
 ### 1.3. Acceptance Criteria
-- Deve retornar a lista de livros desse autor ou uma lista vazia. devem ter em consideração paginação se a lista for demasiado longa
+- Deve retornar a lista de livros desse autor ou uma lista vazia. Devem ter em consideração paginação se a lista for demasiado longa
 
 
 ### 1.4. Found out Dependencies
 - The reader must be authenticated in the system
 - Books repository
+- Authors repository
 ### 1.5 Input and Output Data
 
 **Input Data:**

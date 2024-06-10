@@ -22,7 +22,7 @@ Augment the reader profile with a funny quote based on the date of birth of the 
 ### 1.4. Found out Dependencies
 - The requested reader needs to be registered in the system
 - The user needs to be authenticated and with permissions to access the reader's profile
-- 
+
 ### 1.5 Input and Output Data
 
 **Input Data:**
