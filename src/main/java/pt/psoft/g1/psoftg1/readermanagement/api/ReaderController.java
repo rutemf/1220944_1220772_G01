@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
+import pt.psoft.g1.psoftg1.external.service.ApiNinjasService;
 import pt.psoft.g1.psoftg1.lendingmanagement.api.LendingView;
 import pt.psoft.g1.psoftg1.lendingmanagement.api.LendingViewMapper;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
@@ -59,6 +60,7 @@ class ReaderController {
     private final LendingViewMapper lendingViewMapper;
     private final ConcurrencyService concurrencyService;
     private final FileStorageService fileStorageService;
+    private final ApiNinjasService apiNinjasService;
 
     private static final String IF_MATCH = "If-Match";
 
@@ -80,22 +82,26 @@ class ReaderController {
     @GetMapping(value="/{year}/{seq}")
     //This is just for testing purposes, therefore admin role has been set
     //@RolesAllowed(Role.LIBRARIAN)
-    public ResponseEntity<ReaderView> findByReaderNumber(@PathVariable("year")
+    public ResponseEntity<ReaderQuoteView> findByReaderNumber(@PathVariable("year")
                                                            @Parameter(description = "The year of the Reader to find")
                                                            final Integer year,
                                                        @PathVariable("seq")
                                                            @Parameter(description = "The sequencial of the Reader to find")
                                                            final Integer seq) {
         String readerNumber = year+"/"+seq;
-        Optional<ReaderDetails> readerDetailsOpt = readerService.findByReaderNumber(readerNumber);
-        if(readerDetailsOpt.isEmpty()) {
-            throw new NotFoundException("Could not find reader from specified reader number");
-        }
+        final var readerDetails = readerService.findByReaderNumber(readerNumber)
+                .orElseThrow(() -> new NotFoundException("Could not find reader from specified reader number"));
 
-        //return new ResponseEntity<>(readerViewMapper.toReaderView(readerDetailsOpt.get()), HttpStatus.OK);
+        var readerQuoteView = readerViewMapper.toReaderQuoteView(readerDetails);
+
+        int birthYear = readerDetails.getBirthDate().getBirthDate().getYear();
+        int birhMonth = readerDetails.getBirthDate().getBirthDate().getMonthValue();
+
+        readerQuoteView.setQuote(apiNinjasService.getRandomEventFromYearMonth(birthYear, birhMonth));
+
         return ResponseEntity.ok()
-                .eTag(Long.toString(readerDetailsOpt.get().getVersion()))
-                .body(readerViewMapper.toReaderView(readerDetailsOpt.get()));
+                .eTag(Long.toString(readerDetails.getVersion()))
+                .body(readerQuoteView);
     }
 
     @Operation(summary = "Gets a list of Readers by phoneNumber")
@@ -209,7 +215,7 @@ class ReaderController {
     public ResponseEntity<ReaderView> createReader(@Valid CreateReaderRequest readerRequest) throws ValidationException {
         MultipartFile file = readerRequest.getPhoto();
 
-        String fileName = this.fileStorageService.getRequestPhoto(file);
+        String fileName = fileStorageService.getRequestPhoto(file);
 
         ReaderDetails readerDetails = readerService.create(readerRequest, fileName);
 
