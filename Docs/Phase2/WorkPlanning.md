@@ -12,9 +12,9 @@
 | 9 - KnowTop5BooksLent                   |          | Check     | Check          | Check       | Check          | Check     | Check                  |
 | 10 - KnowTop5GenreByBooks               |          | Check     | Check          | Check       | Check          | Check     | Check                  |
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |
-| 11 - Top5Readers                        |          | Check     |                |             |                |           |                        |
-| 12 - RegisterReader-Photo               |          |           |                |             |                |           |                        |
-| 13 - GetBookSuggestions                 |          |           |                |             |                |           |                        |
+| 11 - Top5Readers                        | Check    | Check     | Check          | Check       | Check          |           | Check                  |
+| 12 - RegisterReader-Photo               | Check    | Check     | Check          | Check       | Check          |           | Check                  |
+| 13 - GetBookSuggestions                 | Check    | Check     | Check          | Check       | Check          |           | Check                  |
 |                                         |          |           |                |             |                |           |                        |
 | 23 - GetOverdueLendings                 |          | Check     | Check          | Check       | Check          | Check     | Check                  |
 | 14 - GetAverageLendings                 | Check    | Check     | Check          | Check       | Check          |           | Check                  |
