@@ -40,6 +40,10 @@ class ReaderController {
 class ReaderDetails <<entity>>{
     - pk : Long
     - version : Long
+    - birthDate: BirthDate
+    - phoneNumber : PhoneNumber
+    - interestList : List<Genre>
+    - photo : Photo
     - gdprConsent - boolean
     - marketingConsent - boolean
     - thirdPartySharingConsent - boolean
@@ -55,6 +59,8 @@ class Reader extends User
 
 class ReaderViewMapper{
  + toReaderQuoteView(ReaderDetails readerDetails) : ReaderQuoteView
+ + toReaderView(ReaderDetails readerDetails): ReaderView
+ + toReaderView(List<ReaderDetails> readerDetails): List<ReaderView>
 }
 
 class ReaderView{
