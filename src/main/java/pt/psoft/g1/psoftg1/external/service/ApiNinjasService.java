@@ -6,6 +6,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
+/**
+ * Based on https://www.baeldung.com/spring-5-webclient
+ */
 @Service
 @RequiredArgsConstructor
 public class ApiNinjasService {

@@ -42,8 +42,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("/api/books")
 public class BookController {
-
-    private static final String IF_MATCH = "If-Match";
     private final BookService bookService;
     private final LendingService lendingService;
     private final ConcurrencyService concurrencyService;
@@ -144,7 +142,7 @@ public class BookController {
                                                final WebRequest request,
                                                @Valid final UpdateBookRequest resource) {
 
-        final String ifMatchValue = request.getHeader(IF_MATCH);
+        final String ifMatchValue = request.getHeader(ConcurrencyService.IF_MATCH);
         if (ifMatchValue == null || ifMatchValue.isEmpty() || ifMatchValue.equals("null")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must issue a conditional PATCH using 'if-match'");

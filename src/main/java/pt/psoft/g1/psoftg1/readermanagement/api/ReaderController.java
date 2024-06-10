@@ -62,8 +62,6 @@ class ReaderController {
     private final FileStorageService fileStorageService;
     private final ApiNinjasService apiNinjasService;
 
-    private static final String IF_MATCH = "If-Match";
-
     @Operation(summary = "Gets all readers")
     @ApiResponse(description = "Success", responseCode = "200", content = { @Content(mediaType = "application/json",
             // Use the `array` property instead of `schema`
@@ -258,7 +256,7 @@ class ReaderController {
             Authentication authentication,
             final WebRequest request) {
 
-        final String ifMatchValue = request.getHeader(IF_MATCH);
+        final String ifMatchValue = request.getHeader(ConcurrencyService.IF_MATCH);
         if (ifMatchValue == null || ifMatchValue.isEmpty() || ifMatchValue.equals("null")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must issue a conditional PATCH using 'if-match'");

@@ -8,7 +8,7 @@
 | 6 - KnowTop5Authors                     |          | Check     | Check          | Check       | Check          | Check     | Check                  |
 |                                         |          |           |                |             |                |           |                        |
 | 7 - RegisterBook-Photo                  |          |           |                |             |                |           |                        |
-| 8 - SearchBooksByTItle                  |          | Check     |                |             |                |           |                        |
+| 8 - SearchBooksByTitle                  |          | Check     |                |             |                |           |                        |
 | 9 - KnowTop5BooksLent                   |          | Check     |                |             |                |           |                        |
 | 10 - KnowTop5GenreByBooks               |          | Check     |                |             |                |           |                        |
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |
@@ -25,7 +25,7 @@
 | 18 - GetMonthlyLendingReader            |          | Check     | Check          | Check       | Check          |           | Check                  |
 | 19 - AvgLendingDurationGenreMonthPeriod |          | Check     | Check          | Check       | Check          |           | Check                  |
 |                                         |          |           |                |             |                |           |                        |
-| 26 - FunnyQuote                         |          |           |                |             |                |           |                        |
+| 26 - FunnyQuote                         |          | Check     | Check          | Check       | Check          |           | Check                  |
 | 27 - SearchBooksByAuthor                |          | Check     | Check          | Check       | Check          |           |                        |
 | 28 - SearchReaderByPhoneNumber          |          | Check     | Check          | Check       | Check          |           |                        |
 | 29 - SearchReaderByEmail                |          | Check     | Check          | Check       | Check          |           |                        |

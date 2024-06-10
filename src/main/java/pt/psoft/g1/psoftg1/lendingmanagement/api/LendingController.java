@@ -36,9 +36,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @RequestMapping("/api/lendings")
 public class LendingController {
-
-    private static final String IF_MATCH = "If-Match";
-
     private final LendingService lendingService;
     private final ReaderService readerService;
     private final UserService userService;
@@ -111,7 +108,7 @@ public class LendingController {
                 @Parameter(description = "The sequential component of the Lending to find")
                 final Integer seq,
             @Valid @RequestBody final SetLendingReturnedRequest resource) {
-        final String ifMatchValue = request.getHeader(IF_MATCH);
+        final String ifMatchValue = request.getHeader(ConcurrencyService.IF_MATCH);
         if (ifMatchValue == null || ifMatchValue.isEmpty() || ifMatchValue.equals("null")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must issue a conditional PATCH using 'if-match'");

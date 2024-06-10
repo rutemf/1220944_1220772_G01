@@ -40,9 +40,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/api/authors")
 public class AuthorController {
-
-    private static final String IF_MATCH = "If-Match";
-
     private final AuthorService authorService;
     private final AuthorViewMapper authorViewMapper;
     private final ConcurrencyService concurrencyService;
@@ -85,7 +82,7 @@ public class AuthorController {
             final WebRequest request,
             @Valid UpdateAuthorRequest resource) {
 
-        final String ifMatchValue = request.getHeader(IF_MATCH);
+        final String ifMatchValue = request.getHeader(ConcurrencyService.IF_MATCH);
         if (ifMatchValue == null || ifMatchValue.isEmpty() || ifMatchValue.equals("null")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must issue a conditional PATCH using 'if-match'");
