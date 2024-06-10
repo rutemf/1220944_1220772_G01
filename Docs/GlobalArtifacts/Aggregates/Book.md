@@ -1,6 +1,6 @@
-# Book
+# WP Books
 
-Is an item stored in the library, and is lent to readers, by librarians.
+## Is an item stored in the library, and is lent to readers, by librarians.
 
 > [Attributes](#attributes)
 >
@@ -14,6 +14,7 @@ Is an item stored in the library, and is lent to readers, by librarians.
 - [Genre](../Entities/Genre.md)
 - [Description](../ValueObjects/Description.md)
 - [Author](Author.md)(s)
+- [Photo](Photo)
 
 ### Relevant Use Cases
 - #### Phase 1
@@ -34,7 +35,7 @@ Is an item stored in the library, and is lent to readers, by librarians.
   - WP#2B.8 : As Reader I want to search books by title
   - WP#2B.9 : As Librarian I want to know the Top 5 books lent
   - WP#3B.13 : As Reader I want a list of book suggestions based on my interest list
-
+  - WP#2B.10 : As Librarian I want to know the Top 5 genres
 ### Customer Clarifications
 >[Q: Quais são os critério de aceitação (acceptance criteria) da us07?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28891#p36487)
 >
@@ -54,3 +55,20 @@ Is an item stored in the library, and is lent to readers, by librarians.
 >[Q: Sobre a pergunta 3, creio que ainda não ficou claro se os 'genre's são escolhidos pelo 'librarian' (na hora de registar um livro) de uma lista existente (e eventualmente mutável), ou se são escritos manualmente pelo 'librarian'.](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28911#p36699)
 >
 >A: Quando o Librarian regista um novo livro vai indicar **em que genéro** esse livro se classifica. só poderá indicar um dos géneros previamente registados no sistema
+
+>[Q: Quais são as aceptance criteria das USs da WPA2B ? ][...]
+>
+>[Q: As Librarian, I want to register a book with a book cover photo] [...]
+>
+>A: this is a refinement of the existing use case. the user may choose to add a photo of the book cover. the photo must be in the jpeg or png format and at most 20 KB
+>
+> [Q: As Reader I want to search books by title] [...]
+>
+>A: The ability to search by title entering the first letters of the title
+> [Q: As Librarian I want to know the Top 5 books lent] [...]
+>
+>A: returns the list of the 5 books that have been lent the most in the last year. it must return for each book, the number of times the book has been lent. the result must be sorted descending order.
+>
+> [Q: As Librarian I want to know the Top 5 genres] [...]
+>
+>A: returns the 5 genres that the librarian possesses more books of. it must return the number of books per genre. the result must be sorted descending order

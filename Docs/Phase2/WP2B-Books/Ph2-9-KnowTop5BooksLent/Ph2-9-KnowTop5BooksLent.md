@@ -6,7 +6,8 @@
 As Reader I want to know the Top 5 Book Lent (which have the most lent books)
 ### 1.2. Customer Specifications and Clarifications
 
->[View WP2B](../Book.md/)
+>[View WP2B](../../../GlobalArtifacts/Aggregates/Book.md)
+
 
 ### 1.3. Acceptance Criteria
 - returns the list of the 5 books that have been lent the most in the last year. it must return for each book, the number of times the book has been lent. the result must be sorted descending order.
