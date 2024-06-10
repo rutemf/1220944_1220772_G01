@@ -17,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.services.BookService;
 import pt.psoft.g1.psoftg1.bookmanagement.services.CreateBookRequest;
+import pt.psoft.g1.psoftg1.bookmanagement.services.SearchBooksQuery;
 import pt.psoft.g1.psoftg1.bookmanagement.services.UpdateBookRequest;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
@@ -26,10 +27,15 @@ import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
+import pt.psoft.g1.psoftg1.shared.services.SearchRequest;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Tag(name = "Books", description = "Endpoints for managing Books")
 @RestController
@@ -167,26 +173,38 @@ public class BookController {
     @Operation(summary = "Gets Books by title or genre")
     @GetMapping
     public ListResponse<BookView> findBooks(@RequestParam(value = "title", required = false) final String title,
-                                            @RequestParam(value = "genre", required = false) final String genre) {
+                                            @RequestParam(value = "genre", required = false) final String genre,
+                                            @RequestParam(value = "authorName", required = false) final String authorName) {
 
-        if (title != null && genre != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only search by title or genre, not both");
-        }
+        //Este método, como está, faz uma junção 'OR'.
+        //Para uma junção 'AND', ver o "/search"
 
-        List<Book> books;
-        if (title != null) {
-            books = bookService.findByTitle(title);
-            if (books.isEmpty()) {
-                throw new NotFoundException(Book.class, title);
-            }
-        } else if (genre != null) {
-            books = bookService.findByGenre(genre);
-            if (books.isEmpty()) {
-                throw new NotFoundException(Book.class, genre);
-            }
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You must provide either a title or a genre to search for books");
-        }
+        List<Book> booksByTitle = null;
+        if (title != null)
+            booksByTitle = bookService.findByTitle(title);
+
+        List<Book> booksByGenre = null;
+        if (genre != null)
+            booksByGenre = bookService.findByGenre(genre);
+
+        List<Book> booksByAuthorName = null;
+        if (authorName != null)
+            booksByAuthorName = bookService.findByAuthorName(authorName);
+
+        Set<Book> bookSet = new HashSet<>();
+        if (booksByTitle!= null)
+            bookSet.addAll(booksByTitle);
+        if(booksByGenre != null)
+            bookSet.addAll(booksByGenre);
+        if(booksByAuthorName != null)
+            bookSet.addAll(booksByAuthorName);
+
+        List<Book> books = bookSet.stream()
+                .sorted(Comparator.comparing(b -> b.getTitle().toString()))
+                .collect(Collectors.toList());
+
+        if(books.isEmpty())
+            throw new NotFoundException("No books found with the provided criteria");
 
         return new ListResponse<>(bookViewMapper.toBookView(books));
     }
@@ -215,6 +233,13 @@ public class BookController {
         Double avgDuration = lendingService.getAvgLendingDurationByIsbn(isbn);
 
         return ResponseEntity.ok().body(bookViewMapper.toBookAverageLendingDurationView(book, avgDuration));
+    }
+
+    @PostMapping("/search")
+    public ListResponse<BookView> searchBooks(
+            @RequestBody final SearchRequest<SearchBooksQuery> request) {
+        final var bookList = bookService.searchBooks(request.getPage(), request.getQuery());
+        return new ListResponse<>(bookViewMapper.toBookView(bookList));
     }
 }
 

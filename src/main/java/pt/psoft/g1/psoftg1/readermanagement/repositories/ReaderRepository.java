@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
-import pt.psoft.g1.psoftg1.readermanagement.api.SearchReadersQuery;
+import pt.psoft.g1.psoftg1.readermanagement.services.SearchReadersQuery;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderBookCountDTO;
 

@@ -22,7 +22,6 @@ public abstract class BookViewMapper extends MapperInterface {
     @Mapping(target = "title", source = "title")
     @Mapping(target = "authors", expression = "java(mapAuthors(book.getAuthors()))")
     @Mapping(target = "_links", expression = "java(mapLinks(book))")
-    @Mapping(target = "photo", expression = "java(generatePhotoUrl(book))")
     public abstract BookView toBookView(Book book);
 
     public abstract List<BookView> toBookView(List<Book> bookList);

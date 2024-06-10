@@ -19,6 +19,7 @@ import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
+import pt.psoft.g1.psoftg1.shared.services.Page;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -154,6 +155,11 @@ public class BookServiceImpl implements BookService {
 		return bookRepository.findByTitle(title);
 	}
 
+	@Override
+	public List<Book> findByAuthorName(String authorName) {
+		return bookRepository.findByAuthorName(authorName + "%");
+	}
+
 	public Book findByIsbn(String isbn) {
 		return this.bookRepository.findByIsbn(isbn)
 				.orElseThrow(() -> new NotFoundException(Book.class, isbn));
@@ -189,5 +195,16 @@ public class BookServiceImpl implements BookService {
 		}
 
 		return books;
+	}
+
+	@Override
+	public List<Book> searchBooks(Page page, SearchBooksQuery query) {
+		if (page == null) {
+			page = new Page(1, 10);
+		}
+		if (query == null) {
+			query = new SearchBooksQuery("", "", "");
+		}
+		return bookRepository.searchBooks(page, query);
 	}
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
 
 @Embeddable
 public class Title {
@@ -13,6 +14,7 @@ public class Title {
     @NotBlank(message = "Title cannot be blank")
     @Size(min = 1, max = TITLE_MAX_LENGTH)
     @Column(name="TITLE", length = TITLE_MAX_LENGTH)
+    @Getter
     String title;
 
     protected Title() {}

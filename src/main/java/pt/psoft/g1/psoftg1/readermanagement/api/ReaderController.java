@@ -30,6 +30,7 @@ import pt.psoft.g1.psoftg1.lendingmanagement.services.LendingService;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.services.CreateReaderRequest;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
+import pt.psoft.g1.psoftg1.readermanagement.services.SearchReadersQuery;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;

@@ -106,9 +106,6 @@ public class SecurityConfig {
                 exceptions -> exceptions.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
 
-
-        //TODO: Setup permissions if required (see how it has to be done and which methods need permissions)!!!!
-
         // Set permissions on endpoints
         http.authorizeHttpRequests()
                 // Swagger endpoints must be publicly accessible
@@ -138,6 +135,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/api/books/{isbn}/photo").hasAnyRole(Role.LIBRARIAN, Role.READER)
                 .requestMatchers(HttpMethod.DELETE,"/api/books/{isbn}/photo").hasRole(Role.LIBRARIAN)
                 .requestMatchers(HttpMethod.GET,"/api/books/suggestions").hasRole(Role.READER)
+                .requestMatchers(HttpMethod.POST,"/api/books/search").hasAnyRole(Role.LIBRARIAN, Role.READER)
                 //endBooks
                 //readers
                 .requestMatchers(HttpMethod.PATCH,"/api/readers").hasRole(Role.READER)

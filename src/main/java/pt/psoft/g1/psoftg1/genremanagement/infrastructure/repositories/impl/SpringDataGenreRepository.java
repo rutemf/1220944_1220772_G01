@@ -98,18 +98,9 @@ class GenreRepoCustomImpl implements GenreRepoCustom {
                     .add(genreLendingsDTO);
         }
 
-        List<GenreLendingsPerMonthDTO> lendingsPerMonth = new ArrayList<>();
-        for (Map.Entry<Integer, Map<Integer, List<GenreLendingsDTO>>> yearEntry : groupedResults.entrySet()) {
-            int yearValue = yearEntry.getKey();
-            for (Map.Entry<Integer, List<GenreLendingsDTO>> monthEntry : yearEntry.getValue().entrySet()) {
-                int monthValue = monthEntry.getKey();
-                List<GenreLendingsDTO> values = monthEntry.getValue();
-                lendingsPerMonth.add(new GenreLendingsPerMonthDTO(yearValue, monthValue, values));
-            }
-        }
-
-        return lendingsPerMonth;
+        return getGenreLendingsPerMonthDTOS(groupedResults);
     }
+
 
     @Override
     public List<GenreLendingsDTO> getAverageLendingsInMonth(LocalDate month, pt.psoft.g1.psoftg1.shared.services.Page page){
@@ -187,16 +178,21 @@ class GenreRepoCustomImpl implements GenreRepoCustom {
                     .add(genreLendingsDTO);
         }
 
-        List<GenreLendingsPerMonthDTO> lendingAverages = new ArrayList<>();
+        return getGenreLendingsPerMonthDTOS(groupedResults);
+    }
+
+    @NotNull
+    private List<GenreLendingsPerMonthDTO> getGenreLendingsPerMonthDTOS(Map<Integer, Map<Integer, List<GenreLendingsDTO>>> groupedResults) {
+        List<GenreLendingsPerMonthDTO> lendingsPerMonth = new ArrayList<>();
         for (Map.Entry<Integer, Map<Integer, List<GenreLendingsDTO>>> yearEntry : groupedResults.entrySet()) {
             int yearValue = yearEntry.getKey();
             for (Map.Entry<Integer, List<GenreLendingsDTO>> monthEntry : yearEntry.getValue().entrySet()) {
                 int monthValue = monthEntry.getKey();
                 List<GenreLendingsDTO> values = monthEntry.getValue();
-                lendingAverages.add(new GenreLendingsPerMonthDTO(yearValue, monthValue, values));
+                lendingsPerMonth.add(new GenreLendingsPerMonthDTO(yearValue, monthValue, values));
             }
         }
 
-        return lendingAverages;
+        return lendingsPerMonth;
     }
 }

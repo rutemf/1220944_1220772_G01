@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1.readermanagement.api;
+package pt.psoft.g1.psoftg1.readermanagement.services;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
