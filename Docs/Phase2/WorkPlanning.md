@@ -7,10 +7,10 @@
 | 5 - KnowCoAuthor                        |          | Check     |                |             |                |           |                        |
 | 6 - KnowTop5Authors                     |          | Check     | Check          | Check       | Check          | Check     | Check                  |
 |                                         |          |           |                |             |                |           |                        |
-| 7 - RegisterBook-Photo                  |          |           |                |             |                |           |                        |
-| 8 - SearchBooksByTItle                  |          | Check     |                |             |                |           |                        |
-| 9 - KnowTop5BooksLent                   |          | Check     |                |             |                |           |                        |
-| 10 - KnowTop5GenreByBooks               |          | Check     |                |             |                |           |                        |
+| 7 - RegisterBook-Photo                  |          | Check     | Check          | Check       | Check          | Check     | Check                  |
+| 8 - SearchBooksByTItle                  |          | Check     | Check          | Check       | Check          | Check     | Check                  |
+| 9 - KnowTop5BooksLent                   |          | Check     | Check          | Check       | Check          | Check     | Check                  |
+| 10 - KnowTop5GenreByBooks               |          | Check     | Check          | Check       | Check          | Check     | Check                  |
 | **US**                                  | **Docs** | **Model** | **Repository** | **Service** | **Controller** | **Tests** | **Postman Collection** |
 | 11 - Top5Readers                        |          | Check     |                |             |                |           |                        |
 | 12 - RegisterReader-Photo               |          |           |                |             |                |           |                        |

@@ -56,3 +56,6 @@ days). When a reader doesn’t return a book on time a fine will be applied per 
 ### 2.1. Class Diagram (CD)
 
 ![CD](./WP2B-Books-CD.svg)
+
+## 3. Tests 
+![Tests](./tests.png)
