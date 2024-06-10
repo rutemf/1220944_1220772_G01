@@ -34,7 +34,7 @@ public abstract class BookViewMapper extends MapperInterface {
     public abstract List<BookCountView> toBookCountView(List<BookCountDTO> bookCountDtos);
 
     @Named(value = "toBookShortView")
-    @Mapping(target = "_links", source = "book", qualifiedByName = "mapBookShortLink")
+    @Mapping(target = "_links", source = ".", qualifiedByName = "mapBookShortLink")
 //    @Mapping(target = "_links", expression = "java(mapLinks(book))")
     public abstract BookShortView toBookShortView(Book book);
 

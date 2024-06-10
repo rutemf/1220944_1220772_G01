@@ -24,6 +24,8 @@ public class LendingView {
     @NotNull
     private LocalDate limitDate;
 
+    private LocalDate returnedDate;
+
     private Integer daysUntilReturn;
 
     private Integer daysOverdue;

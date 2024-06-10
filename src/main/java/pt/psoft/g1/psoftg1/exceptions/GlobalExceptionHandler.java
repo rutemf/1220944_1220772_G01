@@ -168,7 +168,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.badRequest().body(new ApiCallError<>("Method argument validation failed", details));
 	}
 
-	@ExceptionHandler(AccessDeniedException.class)
+	@ExceptionHandler({AccessDeniedException.class})
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public ResponseEntity<ApiCallError<String>> handleAccessDeniedException(final HttpServletRequest request,
 			final AccessDeniedException ex) {
@@ -176,6 +176,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return ResponseEntity.status(HttpStatus.FORBIDDEN)
 				.body(new ApiCallError<>("Access denied!", List.of(ex.getMessage())));
+	}
+
+	@ExceptionHandler({LendingForbiddenException.class})
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	public ResponseEntity<ApiCallError<String>> handleLendingForbiddenException(final HttpServletRequest request,
+																			final LendingForbiddenException ex) {
+		logger.error("handleLendingForbiddenException {}\n", request.getRequestURI(), ex);
+
+		return ResponseEntity.status(HttpStatus.FORBIDDEN)
+				.body(new ApiCallError<>("Lending forbidden!", List.of(ex.getMessage())));
 	}
 
 	@Data

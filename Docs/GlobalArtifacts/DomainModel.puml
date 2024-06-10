@@ -7,6 +7,7 @@ hide methods
 class User{
     - password
     - username
+    - name
 }
 
 
@@ -15,7 +16,6 @@ class Librarian{
 
 
 class Genre{
-/'escolhido de uma lista?'/
     - genre: string
 }
 
@@ -23,6 +23,7 @@ class Book {
     - isbn
     - title
     - description
+    - photo
 }
 
 class Author {
@@ -34,13 +35,13 @@ class Author {
 
 class Reader{
     - readerNumber
-    - name
     - email
     - phoneNumber
     - birthDate
     - gdprConsent
     - marketingConsent
     - thirdPartySharing
+    - photo
 }
 
 
@@ -49,13 +50,12 @@ class Lending {
     - lendingNumber
     - startDate
     - limitDate
-    - returnDate
-    - returned
+    - returnedDate
+    - fineValuePerDay
 }
 
 class Fine {
     - value
-    - paid
 }
 
 Librarian "1" - "0..*" Author : registers/updates

@@ -90,7 +90,7 @@ public class Lending {
      * */
     @Temporal(TemporalType.DATE)
     @Getter
-    private LocalDate returnedDate = null;
+    private LocalDate returnedDate;
 
     // optimistic-lock
     /**
@@ -139,24 +139,14 @@ public class Lending {
         this.lendingNumber = new LendingNumber(seq);
         this.startDate = LocalDate.now();
         this.limitDate = LocalDate.now().plusDays(lendingDuration);
+        this.returnedDate = null;
         this.fineValuePerDayInCents = fineValuePerDayInCents;
         setDaysUntilReturn();
         setDaysOverdue();
     }
 
     /**
-     * <p>Sets the current date as {@code returnedDate}</p>
-     * @throws     IllegalArgumentException  if {@code returnedDate} already has a value
-     */
-    private void setReturnedDate(){
-        if (this.returnedDate != null){
-            throw new IllegalArgumentException("book has already been returned!");
-        }
-        this.returnedDate = LocalDate.now();
-    }
-
-    /**
-     * <p>Sets {@code commentary} and {@code returnedDate}.
+     * <p>Sets {@code commentary} and the current date as {@code returnedDate}.
      * <p>If {@code returnedDate} is after {@code limitDate}, fine is applied with corresponding value.
      *
      * @param       desiredVersion to prevent editing a stale object.
@@ -165,6 +155,10 @@ public class Lending {
      * @throws      IllegalArgumentException  if {@code returnedDate} already has a value.
      */
     public void setReturned(final long desiredVersion, final String commentary){
+
+        if (this.returnedDate != null)
+            throw new IllegalArgumentException("book has already been returned!");
+
         // check current version
         if (this.version != desiredVersion)
             throw new StaleObjectStateException("Object was already modified by another user", this.pk);
@@ -172,7 +166,7 @@ public class Lending {
         if(commentary != null)
             this.commentary = commentary;
 
-        setReturnedDate();
+        this.returnedDate = LocalDate.now();
     }
 
     /**

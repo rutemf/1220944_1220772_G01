@@ -86,7 +86,7 @@ public class AuthorController {
             @Valid UpdateAuthorRequest resource) {
 
         final String ifMatchValue = request.getHeader(IF_MATCH);
-        if (ifMatchValue == null || ifMatchValue.isEmpty()) {
+        if (ifMatchValue == null || ifMatchValue.isEmpty() || ifMatchValue.equals("null")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You must issue a conditional PATCH using 'if-match'");
         }
