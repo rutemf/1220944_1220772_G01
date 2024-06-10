@@ -77,7 +77,7 @@ public class UserBootstrapper implements CommandLineRunner {
                         true,
                         true,
                         true,
-                        null,
+                        "readerPhotoTest.jpg",
                         interestList);
                 readerRepository.save(r1);
             }
