@@ -17,7 +17,7 @@ As Librarian, I want to search a book given its title.
 - The librarian or Reader needs to give the title of the book
   **Input Data:**
 * Typed data:
-    * ISBN
+    * Title
 
 **Output Data:**
 

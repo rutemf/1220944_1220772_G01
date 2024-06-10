@@ -8,12 +8,11 @@ As Reader I want to know the Top 5 genre by books
 
 >>[View WP2B](../Book.md/)
 
-
-
 ### 1.3. Acceptance Criteria
 - AC
 
 ### 1.4. Found out Dependencies
+
 - Books 
 - Genres
 

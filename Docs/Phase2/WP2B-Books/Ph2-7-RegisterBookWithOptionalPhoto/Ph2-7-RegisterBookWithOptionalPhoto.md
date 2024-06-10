@@ -6,7 +6,7 @@
 As Librarian, I want to register a book with an optional photo (isbn, title, genre, description, author(s), photo)
 ### 1.2. Customer Specifications and Clarifications
 
-[View WP2A](../Book.md/)
+[View WP2B](../Book.md/)
 
 ### 1.3. Acceptance Criteria
 - AC

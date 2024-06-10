@@ -57,11 +57,17 @@ Is an item stored in the library, and is lent to readers, by librarians.
 
 >[Q: Quais são as aceptance criteria das USs da WPA2B ? ][...]
 > 
-> A: As Librarian, I want to register a book with a book cover photo:
->this is a refinement of the existing use case. the user may choose to add a photo of the book cover. the photo must be in the jpeg or png format and at most 20 KB 
-> As Reader I want to search books by title  
-> The ability to search by title entering the first letters of the title 
-> As Librarian I want to know the Top 5 books lent
-> returns the list of the 5 books that have been lent the most in the last year. it must return for each book, the number of times the book has been lent. the result must be sorted descending order. 
-> As Librarian I want to know the Top 5 genres
-> returns the 5 genres that the librarian possesses more books of. it must return the number of books per genre. the result must be sorted descending order
+>[Q: As Librarian, I want to register a book with a book cover photo] [...]
+>
+>A: this is a refinement of the existing use case. the user may choose to add a photo of the book cover. the photo must be in the jpeg or png format and at most 20 KB 
+> 
+> [Q: As Reader I want to search books by title] [...]  
+> 
+>A: The ability to search by title entering the first letters of the title
+> [Q: As Librarian I want to know the Top 5 books lent] [...]
+>
+>A: returns the list of the 5 books that have been lent the most in the last year. it must return for each book, the number of times the book has been lent. the result must be sorted descending order. 
+> 
+> [Q: As Librarian I want to know the Top 5 genres] [...]
+> 
+>A: returns the 5 genres that the librarian possesses more books of. it must return the number of books per genre. the result must be sorted descending order
