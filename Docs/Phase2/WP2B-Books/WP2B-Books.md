@@ -1,42 +1,16 @@
-# Book
+# WP2B Books
+## 1. Requirements Engineering
 
-Is an item stored in the library, and is lent to readers, by librarians.
+### 1.1. Customer Specifications and Clarifications
 
-> [Attributes](#attributes)
->
-> [Relevant Use Cases](#Relevant-Use-Cases)
->
-> [Customer Clarifications](#Customer-Clarifications)
+**From the [specifications document:](https://moodle.isep.ipp.pt/pluginfile.php/372607/mod_resource/content/0/PSOFT_LETI_assignment_2023-2024.pdf)**
+>Central City library needs a system to manage their library, readers and book lending. The library consists
+of thousands of books (no other media formats are available) organized by genre (e.g., Science-fiction,
+mistery, Law, Medicine, etc.) that the readers can lend, take home and return after a period (typically 15
+days). When a reader doesn’t return a book on time a fine will be applied per day of delay
 
-### Attributes
-- [ISBN](../ValueObjects/Isbn)
-- [Title](../ValueObjects/Title.md)
-- [Genre](../Entities/Genre.md)
-- [Description](../ValueObjects/Description.md)
-- [Author](Author.md)(s)
-- [Photo](../Entities/Photo.md)
+**From the client clarifications:**
 
-### Relevant Use Cases
-- #### Phase 1
-  - WP#2A.7 : As Librarian, I want to register a book (isbn, title, genre, description, author(s))
-  - WP#2A.8 : As Librarian I want to update a book’s data
-  - WP#2A.9 : As Librarian or Reader I want to know the details of a book given its ISBN
-  - WP#2A.10 : As Librarian or Reader I want to search books by genre
-  - WP#4A.15 : As Librarian I want to lend a book to a reader. The lending can only be done if the reader has no
-    overdue books and the reader can have at most 3 books lent. The return date must be presented
-    to the Librarian
-  - WP#4A.16 : As Reader I want to return a book. If the return is overdue I’m fined by the library.
-- #### Phase 2
-  - WP#1B.4 : As Reader I want to know the books of an Author
-  - WP#1B.5 : As Reader I want to know the co-authors of an author and their respective books
-  - WP#1B.6 : As Reader I want to know the Top 5 authors (which have the most lent books)
-  - WP#2B.7 : As Librarian, I want to register a book with a book cover photo
-    - Refinement of use case from phase 1
-  - WP#2B.8 : As Reader I want to search books by title
-  - WP#2B.9 : As Librarian I want to know the Top 5 books lent
-  - WP#3B.13 : As Reader I want a list of book suggestions based on my interest list
-  - WP#2B.10 : As Librarian I want to know the Top 5 genres
-### Customer Clarifications
 >[Q: Quais são os critério de aceitação (acceptance criteria) da us07?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=28891#p36487)
 >
 >A: Se tentar registar um livro com um ISBN já existente deve ser indicado um erro.
@@ -72,3 +46,13 @@ Is an item stored in the library, and is lent to readers, by librarians.
 > [Q: As Librarian I want to know the Top 5 genres] [...]
 >
 >A: returns the 5 genres that the librarian possesses more books of. it must return the number of books per genre. the result must be sorted descending order
+
+### 1.2. Found out Dependencies
+
+- Genre
+- Lendings 
+
+## 2. Design
+### 2.1. Class Diagram (CD)
+
+![CD](./WP2B-Books-CD.svg)

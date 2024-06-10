@@ -6,7 +6,8 @@
 As Reader I want to know the Top 5 genre by books 
 ### 1.2. Customer Specifications and Clarifications
 
->>[View WP2B](../Book.md/)
+>>[View WP2B](../../../GlobalArtifacts/Aggregates/Book.md)
+
 
 ### 1.3. Acceptance Criteria
 - AC
