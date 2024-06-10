@@ -11,10 +11,6 @@ interface ReaderRepository {
     + findByReaderNumber(ReaderNumber): Reader
 }
 
-/'class ReaderFactory {
-    + create: Reader
-}'/
-
 interface ReaderService {
     + create(reader_data): Reader
     + remove(Reader): void
@@ -41,20 +37,37 @@ class ReaderServiceImpl implements ReaderService {
 class ReaderController {
 }
 
-class Reader {
-    - gdprConsent: bool
-    - marketingConsent: bool
-    - thirdPartySharingConsent: bool
-    - booksOutstanding: int
-    + setThirdPartySharingConsent(bool): void
-    + setMarketingConsent(bool): void
-    + getThirdPartySharingConsent(): bool
-    + getMarketingConsent(): bool
-    + getOutstandingBooks(): int
-    /'Min: 0 | Max: 3'/
-    + getPhoto(): byte[]
-    + setPhoto(byte[]): void
-    + setOutstandingBooks(int): void
+class ReaderDetails <<entity>>{
+    - pk : Long
+    - version : Long
+    - gdprConsent - boolean
+    - marketingConsent - boolean
+    - thirdPartySharingConsent - boolean
+    + getBirthDate() : LocalDate
+    + getVersion() : Long
+}
+
+class User <<entity>>{
+    - userName : String
+}
+
+class Reader extends User
+
+class ReaderViewMapper{
+ + toReaderQuoteView(ReaderDetails readerDetails) : ReaderQuoteView
+}
+
+class ReaderView{
+    - readerNumber : String
+    - email : String
+    - fullName : String
+    - birthDate : String
+    - phoneNumber : String
+    - photo : String
+    - gdprConsent : boolean
+    - marketingConsent : boolean
+    - thirdPartySharingConsent : boolean
+    - interestList : List<String>
 }
 
 class Name {
@@ -67,12 +80,6 @@ class ReaderNumber {
     - registryYear: int
     - number: int
     + toString(): string;
-}
-
-class Email {
-    - email: string
-    + setEmail(string): void
-    + getEmail(): string
 }
 
 class PhoneNumber {
@@ -93,16 +100,6 @@ class BirthDate {
     + getDate(): int[3]
 }
 
-class User {
-    - username: string
-    /'TODO: Falta obter resposta do prof quando à alteração do username. Para já, fica o método como privado e é chamado unicamente no construtor'/
-    - setUsername(): string
-    + getUsername(): string
-    - password: string
-    /'TODO: Falta obter resposta do professor, no moodle, quando à possibilidade da password ser alterada pelo Reader. Método, para já, privado e chamado unicamente no construtor'/
-    - setPassword(string): void
-    + getPassword(void): string
-}
 
 interface UserRepository {
     + remove(User): void
@@ -126,20 +123,6 @@ class UserServiceImpl implements UserService {
     + save(User): User
     + getAll(): List<User>
     + findByUsername(string): User
-}
-
-class ReaderMapper {
-    + toDTO(Reader): ReaderDTO
-    + toObject(ReaderDTO): Reader
-}
-
-class ReaderDTO {}
-
-class UserDTO {}
-
-class UserMapper {
-    + toDTO(User): UserDTO
-    + toObject(UserDTO): User
 }
 
 class Photo {
@@ -171,25 +154,23 @@ BookServiceImpl "1" ---> "1" BookRepository
 BookServiceImpl "1" ---> "1" ReaderRepository
 
 UserServiceImpl "1" ---> "1" UserRepository
-ReaderDTO "1" ---> "1" ReaderMapper
 
 ReaderMapper "1" ---> "1" ReaderController
 
-UserDTO "1" ---> "1" UserMapper
-UserMapper "1" ---> "1" ReaderController
+ReaderController .up.> ReaderViewMapper
+ReaderViewMapper .right.> ReaderView
 
 ReaderController "1" ---> "1" ReaderService
 ReaderController "1" ---> "1" UserService
-Reader "1" o-down- "1" User
-Reader "1" o- "1" Name
-Reader "1" o-down- "1" ReaderNumber
-User "1" o-up- "1" Email
-Reader "1" o-down- "1" PhoneNumber
-Reader "1" o-down- "1" BirthDate
-'ReaderFactory "1" -> "1" ReaderRepository
-'ReaderService "1" -up-> "1" ReaderFactory
+ReaderDetails "1" o-up- "1" Reader
+ReaderDetails "1" *- "1" ReaderNumber
+ReaderDetails "1" *-- "1" BirthDate
+ReaderDetails "1" *-- "1" PhoneNumber
+ReaderDetails "1" *-- "1..*" Genre
+ReaderDetails "1" o-- "1" Photo
 ReaderServiceImpl "1" --> "0..*" Reader
 ReaderServiceImpl "1" --> "1" ReaderRepository
+User "1" --> "1" Name
 
 
 @enduml

@@ -25,7 +25,7 @@
 | 18 - GetMonthlyLendingReader            |          | Check     | Check          | Check       | Check          |           | Check                  |
 | 19 - AvgLendingDurationGenreMonthPeriod |          | Check     | Check          | Check       | Check          |           | Check                  |
 |                                         |          |           |                |             |                |           |                        |
-| 26 - FunnyQuote                         |          | Check     | Check          | Check       | Check          |           | Check                  |
+| 26 - FunnyQuote                         | Check    | Check     | Check          | Check       | Check          |           | Check                  |
 | 27 - SearchBooksByAuthor                |          | Check     | Check          | Check       | Check          |           |                        |
 | 28 - SearchReaderByPhoneNumber          |          | Check     | Check          | Check       | Check          |           |                        |
 | 29 - SearchReaderByEmail                |          | Check     | Check          | Check       | Check          |           |                        |
