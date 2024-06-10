@@ -62,15 +62,22 @@ class ReaderController {
     private final FileStorageService fileStorageService;
     private final ApiNinjasService apiNinjasService;
 
-    @Operation(summary = "Gets all readers")
+    @Operation(summary = "Gets the reader data if authenticated as Reader or all readers if authenticated as Librarian")
     @ApiResponse(description = "Success", responseCode = "200", content = { @Content(mediaType = "application/json",
             // Use the `array` property instead of `schema`
             array = @ArraySchema(schema = @Schema(implementation = ReaderView.class))) })
     @GetMapping
-    //This is just for testing purposes, therefore admin role has been set
-    @RolesAllowed(Role.ADMIN)
-    public ListResponse<ReaderView> findAll() {
-        return new ListResponse<>(readerViewMapper.toReaderView(readerService.findAll()));
+    public ResponseEntity<?> getData(Authentication authentication) {
+        User loggedUser = userService.getAuthenticatedUser(authentication);
+
+        if (!(loggedUser instanceof Librarian)) {
+            ReaderDetails readerDetails = readerService.findByUsername(loggedUser.getUsername())
+                    .orElseThrow(() -> new NotFoundException(ReaderDetails.class, loggedUser.getUsername()));
+            //return new ListResponse<>(readerViewMapper.toReaderView(readerService.findAll()));
+            return ResponseEntity.ok().eTag(Long.toString(readerDetails.getVersion())).body(readerViewMapper.toReaderView(readerDetails));
+        }
+
+        return ResponseEntity.ok().body(readerViewMapper.toReaderView(readerService.findAll()));
     }
 
     @Operation(summary = "Gets reader by number")
