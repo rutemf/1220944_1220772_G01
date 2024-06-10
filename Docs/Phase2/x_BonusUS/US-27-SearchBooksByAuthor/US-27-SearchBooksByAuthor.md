@@ -32,6 +32,6 @@ As Reader I want to search books by author
 
 ## 2. Design
 ### 2.1. Sequence Diagram (SD)
-
+![US-27-SearchBooksByAuthorName.svg](US-27-SearchBooksByAuthorName.svg)
 ### 2.2. Class Diagram (CD)
 ![CD.svg](CD.svg)
