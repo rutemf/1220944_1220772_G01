@@ -42,8 +42,9 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Book create(CreateBookRequest request, String isbn) {
-		if(this.findByIsbn(isbn) != null) {
-			throw new ConflictException("A book with provided Isbn is already registered");
+
+		if(bookRepository.findByIsbn(isbn).isPresent()){
+			throw new ConflictException("Book with ISBN " + isbn + " already exists");
 		}
 
 		List<Long> authorNumbers = request.getAuthors();
