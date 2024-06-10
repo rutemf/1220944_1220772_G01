@@ -30,5 +30,6 @@ As Librarian I want to search Readers by phone number
 
 ## 2. Design
 ### 2.1. Sequence Diagram (SD)
+![US-28-SD-SearchReadersByPhoneNumber.svg](US-28-SD-SearchReadersByPhoneNumber.svg)
 ### 2.2. Class Diagram (CD)
-## 3. Observations
+![CD.svg](CD.svg)

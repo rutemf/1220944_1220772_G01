@@ -32,5 +32,6 @@ As Reader I want to search books by author
 
 ## 2. Design
 ### 2.1. Sequence Diagram (SD)
+
 ### 2.2. Class Diagram (CD)
-## 3. Observations
+![CD.svg](CD.svg)

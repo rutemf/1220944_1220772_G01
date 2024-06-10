@@ -30,5 +30,6 @@ As Librarian I want to search Readers by email
 
 ## 2. Design
 ### 2.1. Sequence Diagram (SD)
+![US-28-SD-SearchReadersByEmail.svg](..%2FUS-29-SearchReadersByEmail%2FUS-28-SD-SearchReadersByEmail.svg)
 ### 2.2. Class Diagram (CD)
-## 3. Observations
+![CD.svg](CD.svg)
