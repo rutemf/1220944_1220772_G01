@@ -284,7 +284,7 @@ class ReaderController {
 
     @Operation(summary = "Gets the lendings of this reader by ISBN")
     @GetMapping(value = "/{year}/{seq}/lendings")
-    public List<LendingView> getReaderLendingsByIsbn(
+    public List<LendingView> getReaderLendings(
             Authentication authentication,
             @PathVariable("year")
                 @Parameter(description = "The year of the Reader to find")

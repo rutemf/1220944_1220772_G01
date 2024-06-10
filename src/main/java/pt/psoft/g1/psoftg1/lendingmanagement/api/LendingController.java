@@ -18,12 +18,14 @@ import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.services.CreateLendingRequest;
 import pt.psoft.g1.psoftg1.lendingmanagement.services.LendingService;
+import pt.psoft.g1.psoftg1.lendingmanagement.services.SearchLendingQuery;
 import pt.psoft.g1.psoftg1.lendingmanagement.services.SetLendingReturnedRequest;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.Page;
+import pt.psoft.g1.psoftg1.shared.services.SearchRequest;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
@@ -149,6 +151,13 @@ public class LendingController {
         if(overdueLendings.isEmpty())
             throw new NotFoundException("No lendings to show");
         return new ListResponse<>(lendingViewMapper.toLendingView(overdueLendings));
+    }
+
+    @PostMapping("/search")
+    public ListResponse<LendingView> searchReaders(
+            @RequestBody final SearchRequest<SearchLendingQuery> request) {
+        final var readerList = lendingService.searchLendings(request.getPage(), request.getQuery());
+        return new ListResponse<>(lendingViewMapper.toLendingView(readerList));
     }
 
 }
