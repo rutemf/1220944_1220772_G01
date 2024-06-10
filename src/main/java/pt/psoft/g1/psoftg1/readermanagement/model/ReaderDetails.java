@@ -98,7 +98,6 @@ public class ReaderDetails extends EntityWithPhoto {
         }
     }
 
-    //TODO: Edu: Apply Patch method to update the properties we want
     public void applyPatch(final long currentVersion, final UpdateReaderRequest request, String photoURI, List<Genre> interestList) {
         if(currentVersion != this.version) {
             throw new ConflictException("Provided version does not match latest version of this object");

@@ -53,7 +53,7 @@ public class LendingNumber implements Serializable {
             throw new IllegalArgumentException("Lending number cannot be null");
 
         int year, sequential;
-        try { //TODO: Ricardo: Should this logic be here?
+        try {
             year        = Integer.parseInt(lendingNumber, 0, 4, 10);
             sequential  = Integer.parseInt(lendingNumber, 5, lendingNumber.length(), 10);
             if(lendingNumber.charAt(4) != '/')

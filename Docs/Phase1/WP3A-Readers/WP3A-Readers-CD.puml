@@ -93,11 +93,9 @@ class BirthDate {
 
 class User {
     - username: string
-    /'TODO: Falta obter resposta do prof quando à alteração do username. Para já, fica o método como privado e é chamado unicamente no construtor'/
     - setUsername(): string
     + getUsername(): string
     - password: string
-    /'TODO: Falta obter resposta do professor, no moodle, quando à possibilidade da password ser alterada pelo Reader. Método, para já, privado e chamado unicamente no construtor'/
     - setPassword(string): void
     + getPassword(void): string
 }

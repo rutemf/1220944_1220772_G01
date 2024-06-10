@@ -86,7 +86,6 @@ public class BookServiceImpl implements BookService {
             for (Long authorNumber : authorNumbers) {
                 Optional<Author> temp = authorRepository.findByAuthorNumber(authorNumber);
                 if (temp.isEmpty()) {
-                    //TODO: É suposto passar à frente e ignorar os que não foram encontrados ou damos erro?
                     continue;
                 }
                 Author author = temp.get();

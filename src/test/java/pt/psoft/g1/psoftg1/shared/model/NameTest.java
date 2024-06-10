@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class NameTest {
-    //TODO: Testar presença de palavras proibidas, quando tivermos o ficheiro de props
-
     @Test
     void ensureNameMustNotBeNull() {
         assertThrows(IllegalArgumentException.class, () -> new Name(null));

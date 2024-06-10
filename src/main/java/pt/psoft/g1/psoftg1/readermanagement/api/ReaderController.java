@@ -324,7 +324,6 @@ class ReaderController {
         return lendingViewMapper.toLendingView(lendings);
     }
 
-    //TODO: Modify the mapping accordingly and apply the min top (static of dynamic)
     @GetMapping("/top5")
     public ListResponse<ReaderView> getTop() {
         return new ListResponse<>(readerViewMapper.toReaderView(readerService.findTopReaders(5)));

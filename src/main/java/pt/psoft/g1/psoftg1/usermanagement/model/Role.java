@@ -38,7 +38,6 @@ public class Role implements GrantedAuthority {
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	//TODO: Modify this to our needs
 	public static final String ADMIN = "ADMIN";
 	public static final String LIBRARIAN = "LIBRARIAN";
 	public static final String READER = "READER";
