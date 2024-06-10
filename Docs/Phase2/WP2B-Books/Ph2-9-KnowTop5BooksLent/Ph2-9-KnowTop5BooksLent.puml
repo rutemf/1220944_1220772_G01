@@ -10,6 +10,8 @@ participant ":Rest" as Rest
 participant "Ctrl:BookController" as Ctrl
 participant "service:BookService" as Service
 participant "repo:BookRepository" as Repo
+participant ":BookViewMapper" as Mapper
+
 
 activate User
 
@@ -17,11 +19,14 @@ User -> Rest: requests the top 5 books lent
 
 Rest -> Ctrl: Top5();
 
-Ctrl -> Service: getTop5(BookDTO)
-Service -> Repo: getTop5(book)
-Repo --> Service: book or error
-Service --> Ctrl: book or error
-Ctrl --> Rest: book or error
-Rest --> User: get top 5 books
+
+Ctrl -> Mapper: toBookCountView(bookService.findTop5BooksLent()))
+Mapper -> Service: findTop5BooksLent()
+Service -> Repo: getTop5(BookCountDTO)
+Repo --> Service: list<BookCountDTO>
+Service --> Mapper: list<BookCountDTO>
+Mapper --> Ctrl: ListResponse<>
+Ctrl --> Rest: ListResponse<>
+Rest --> User: ListResponse<>
 
 @enduml

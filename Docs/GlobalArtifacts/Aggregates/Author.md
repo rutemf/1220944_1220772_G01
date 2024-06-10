@@ -22,6 +22,12 @@ Wrote books that are present in the library. Can be main author, or co-author.
     - (WP#1A.4 : As Librarian I want to update an author’s data)
     - (WP#1A.5 : As Librarian or Reader I want to know an author’s detail given its author number)
     - (WP#1A.6 : As Librarian or Reader I want to search authors by name)
+- ### Phase 2
+    - (WP#1B.3 : As Librarian I want to register an author with an optional photo)
+    - (WP#1B.4 : As Reader I want to know the books of an Author)
+    - (WP#1B.5 : As Reader I want to know the co-authors of an author and their respective books)
+    - (WP#1B.6 : As Reader I want to know the Top 5 authors (which have the most lent books))
+
 
 ### Customer Clarifications
 

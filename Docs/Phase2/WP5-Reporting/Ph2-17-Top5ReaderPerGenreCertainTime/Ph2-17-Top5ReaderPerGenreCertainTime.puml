@@ -10,18 +10,20 @@ participant ":Rest" as Rest
 participant "Ctrl:ReaderController" as Ctrl
 participant "service:ReaderService" as Service
 participant "repo:ReaderRepository" as Repo
-
+participant ":ReaderViewMapper" as Mapper
 activate User
 
 User -> Rest: requests the top 5 readers per genre in a certain time
 
-Rest -> Ctrl: Top5ByGenre(genre);
+Rest -> Ctrl: Top5ByGenre(genre,endDate,startDate);
 
-Ctrl -> Service: getTop5(ReaderDTO)
-Service -> Repo: getTop5(book)
-Repo --> Service: book or error
-Service --> Ctrl: book or error
-Ctrl --> Rest: book or error
-Rest --> User: get top 5 books
+Ctrl -> Service: findTopByGenre(genre,endDate,startDate)
+Service -> Repo: findTopByGenre(genre,endDate,startDate)
+Repo --> Service: list<readersDTO> or error
+Service --> Ctrl: list<readersDTO> or error
+Ctrl -> Mapper: toReaderCountViewList(list<readerDTO>)
+Mapper --> Ctrl: ListResponse<>
+Ctrl --> Rest: ListResponse<>
+Rest --> User: ListResponse<>
 
 @enduml

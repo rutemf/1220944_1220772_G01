@@ -17,23 +17,20 @@ As Librarian I want to know the Top 5 readers per genre of a certain period
 
 * Typed data:
   * Genre
+  * Start Date
+  * End Date
 
 **Output Data:**
 
 * (In)success of the operation
 
+## 2. Design
+### 2.1. Sequence Diagram (SD)
 
-### 1.6. System Sequence Diagram (SSD)
-### 1.7. Functionality
-### 1.8 Other Relevant Remarks
-## 2. OO Analysis
-### 2.1. Relevant Domain Model Excerpt
-### 2.2. Other Remarks
-## 3. Design
-### 3.1. Sequence Diagram (SD)
+![SD](Ph2-17-Top5ReaderPerGenreCertainTime.svg)
 
 [//]: # (<img src="Ph1-15-LendBook-SD-WP_4A_15_Lend_Book.svg" alt="WP_4A_15_Lend_Book">)
 
-### 3.2. Class Diagram (CD)
+
 ## 4. Tests
 ## 5. Observations
