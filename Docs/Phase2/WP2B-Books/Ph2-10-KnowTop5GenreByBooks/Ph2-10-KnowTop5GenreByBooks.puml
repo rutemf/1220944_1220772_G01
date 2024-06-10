@@ -10,6 +10,7 @@ participant ":Rest" as Rest
 participant "Ctrl:GenreController" as Ctrl
 participant "service:GenreService" as Service
 participant "repo:GenreRepository" as Repo
+participant ":GenreViewMapper" as Mapper
 
 activate User
 
@@ -17,11 +18,13 @@ User -> Rest: requests the top 5 genres by books
 
 Rest -> Ctrl: Top5();
 
-Ctrl -> Service: getTop5(GenreDTO)
-Service -> Repo: getTop5(genre)
-Repo --> Service: genre or error
-Service --> Ctrl: genre or error
-Ctrl --> Rest: genre or error
-Rest --> User: get top 5 genre
+Ctrl -> Mapper: findTop5Genre()
+Mapper -> Service: findTop5Genre()
+Service -> Repo: findTop5Genre()
+Repo --> Service: list<GenreDTO>
+Service --> Mapper: GenreDTO
+Mapper --> Ctrl: GenreDTO
+Ctrl --> Rest: GenreDTO
+Rest --> User: GenreDTO
 
 @enduml
