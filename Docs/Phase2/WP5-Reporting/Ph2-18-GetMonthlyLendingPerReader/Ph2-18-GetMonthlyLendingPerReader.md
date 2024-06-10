@@ -17,6 +17,10 @@ As Librarian I want to know the Monthly lending per reader of a certain period
 >
 >A: sim
 
+>[Q: Quais são os critérios de aceitação destas USs?](https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=30099#p38213)
+>
+>A: lista com o número de empréstimos de um dado leitor para um dado período
+
 
 ### 1.3. Acceptance Criteria
 - AC
