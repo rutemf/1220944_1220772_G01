@@ -55,7 +55,7 @@ public class Bootstrapper implements CommandLineRunner {
         createGenres();
         createBooks();
         loadForbiddenNames();
-        createLendings();
+        //createLendings();
         createPhotos();
     }
 
