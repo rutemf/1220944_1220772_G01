@@ -1,0 +1,48 @@
+@startuml
+skinparam packageStyle rectangle
+
+skinparam rectangle {
+    BorderColor black
+}
+
+left to right direction
+
+skinparam actor {
+    BackgroundColor LightBlue
+    BorderColor Blue
+    FontColor Black
+}
+
+title "Use Case Diagram"
+
+actor "Unsigned User" as UU #LightBlue
+actor "Admin" as A #LightBlue
+actor "Library User" as LU #LightBlue
+
+rectangle "Library Management" as SYS {
+
+    usecase "UC01 - Register into the system" as UC01
+    usecase "UC02 - Login into the system" as UC02
+
+    usecase "UC03 - Manage Users" as UC03
+
+    usecase "UC04 - Manage Authors" as UC04
+    usecase "UC05 - Manage Books" as UC05
+    usecase "UC06 - Manage Genres" as UC06
+    usecase "UC07 - Manage Lends" as UC07
+    usecase "UC08 - Manage Readers" as UC08
+
+
+    UU --> UC01
+    UU --> UC02
+
+    A --> UC03
+
+    LU --> UC04
+    LU --> UC05
+    LU --> UC06
+    LU --> UC07
+    LU --> UC08
+}
+
+@enduml

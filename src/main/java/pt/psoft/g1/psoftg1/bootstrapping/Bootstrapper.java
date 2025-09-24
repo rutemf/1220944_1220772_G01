@@ -60,101 +60,58 @@ public class Bootstrapper implements CommandLineRunner {
     }
 
     private void createAuthors() {
-        if (authorRepository.searchByNameName("Manuel Antonio Pina").isEmpty()) {
-            final Author author = new Author("Manuel Antonio Pina",
-                    "Manuel António Pina foi um jornalista e escritor português, premiado em 2011 com o Prémio Camões",
-                    null);
-            authorRepository.save(author);
-        }
-        if (authorRepository.searchByNameName("Antoine de Saint Exupéry").isEmpty()) {
-            final Author author = new Author("Antoine de Saint Exupéry",
-                    "Antoine de Saint-Exupéry nasceu a 29 de junho de 1900 em Lyon. Faz o seu batismo de voo aos 12 anos, aos 22 torna-se piloto militar e é como capitão que em 1939 se junta à Força Aérea francesa em luta contra a ocupação nazi. A aviação e a guerra viriam a revelar-se elementos centrais de toda a sua obra literária, onde se destacam títulos como Correio do Sul (1929), o seu primeiro romance, Voo Noturno (1931), que logo se tornou um êxito de vendas internacional, e Piloto de Guerra (1942), retrato da sua participação na Segunda Guerra Mundial. Em 1943 publicaria aquela que é reconhecida como a sua obra-prima, O Principezinho, um dos livros mais traduzidos em todo o mundo. A sua morte, aos 44 anos, num acidente de aviação durante uma missão de reconhecimento no sul de França, permanece ainda hoje um mistério.",
-                    null);
-            authorRepository.save(author);
-        }
-        if (authorRepository.searchByNameName("Alexandre Pereira").isEmpty()) {
-            final Author author = new Author("Alexandre Pereira",
-                    "Alexandre Pereira é licenciado e mestre em Engenharia Electrotécnica e de Computadores, pelo Instituto Superior Técnico. É, também, licenciado em Antropologia, pela Faculdade de Ciências Sociais e Humanas da Universidade Nova de Lisboa.\n" +
-                            "É Professor Auxiliar Convidado na Universidade Lusófona de Humanidades e Tecnologias, desde Março de 1993, onde lecciona diversas disciplinas na Licenciatura de Informática e lecciona uma cadeira de introdução ao SPSS na Licenciatura de Psicologia.\n" +
-                            "Tem também leccionado cursos de formação na área da aplicação da informática ao cálculo estatístico e processamento de dados utilizando o SPSS, em diversas instituições, nomeadamente no Instituto Nacional de Estatística.\n" +
-                            "Para além disso, desenvolve aplicações informáticas na área da Psicologia Cognitiva, no âmbito de projectos de investigação do departamento de Psicologia Cognitiva da Faculdade de Psicologia da Universidade de Lisboa.\n" +
-                            "Está ainda ligado a projectos de ensino à distância desenvolvidos na Faculdade de Motricidade Humana da Universidade Técnica de Lisboa.\n" +
-                            "Paralelamente, tem desenvolvido aplicações de software comercial, área onde continua em actividade. ",
-                    null);
-            authorRepository.save(author);
-        }
-        if (authorRepository.searchByNameName("Filipe Portela").isEmpty()) {
-            final Author author = new Author("Filipe Portela",
-                    " «Docente convidado na Escola de Engenharia da Universidade do Minho. Investigador integrado do Centro Algoritmi. CEO e fundador da startup tecnológica IOTech - Innovation on Technology. Coautor do livro Introdução ao Desenvolvimento Moderno para a Web. ",
-                    null);
-            authorRepository.save(author);
-        }
-        if (authorRepository.searchByNameName("Ricardo Queirós").isEmpty()) {
-            final Author author = new Author("Ricardo Queirós",
-                    "Docente na Escola Superior de Media Artes e Design do Politécnico do Porto. Diretor da uniMAD (ESMAD) e membro efetivo do CRACS (INESC TEC). Autor de vários livros sobre tecnologias Web e programação móvel, publicados pela FCA. Coautor do livro Introdução ao Desenvolvimento Moderno para a Web.",
-                    null);
-            authorRepository.save(author);
-        }
-        if (authorRepository.searchByNameName("Freida Mcfadden").isEmpty()) {
-            final Author author = new Author("Freida Mcfadden",
-                    "Freida McFadden é médica e especialista em lesões cerebrais. Autora de diversos thrillers psicológicos, todos eles bestsellers, já traduzidos para mais de 30 idiomas. As suas obras foram selecionadas para «O Melhor Livro do Ano» na Amazon e também para «Melhor Thriller» dos Goodreads Choice Awards.\n" +
-                            "Freida vive com a sua família e o gato preto numa casa de três andares com vista para o oceano, com escadas que rangem e gemem a cada passo, e ninguém conseguiria ouvi-la se gritasse. A menos que gritasse muito alto, talvez.",
-                    null);
-            authorRepository.save(author);
-        }
-        if (authorRepository.searchByNameName("J R R Tolkien").isEmpty()) {
-            final Author author = new Author("J R R Tolkien",
-                    "J.R.R. Tolkien nasceu a 3 de Janeiro de 1892, em Bloemfontein.\n" +
-                            "Depois de ter combatido na Primeira Guerra Mundial, dedicou-se a uma ilustre carreira académica e foi reconhecido como um dos grandes filólogos do planeta.\n" +
-                            "Foi a criação da Terra Média, porém, a trazer-lhe a celebridade. Autor de extraordinários clássicos da ficção, de que são exemplo O Hobbit, O Senhor dos Anéis e O Silmarillion, os seus livros foram traduzidos em mais de 60 línguas e venderam largos milhões de exemplares no mundo inteiro.\n" +
-                            "Tolkien foi nomeado Comandante da Ordem do Império Britânico e, em 1972, foi-lhe atribuído o título de Doutor Honoris Causa, pela Universidade de Oxford.\n" +
-                            "Morreu em 1973, com 81 anos.",
-                    "authorPhotoTest.jpg");
-            authorRepository.save(author);
-        }
-        if (authorRepository.searchByNameName("Gardner Dozois").isEmpty()) {
-            final Author author = new Author("Gardner Dozois",
-                    "Gardner Raymond Dozois (23 de julho de 1947 – 27 de maio de 2018) foi um autor de ficção científica norte-americano.\n" +
-                            "Foi o fundador e editor do Melhores Do Ano de Ficção científica antologias (1984–2018) e foi editor da revista Asimov Ficção científica (1984-2004), ganhando vários prémios.",
-                    null);
-            authorRepository.save(author);
-        }
-        if (authorRepository.searchByNameName("Lisa Tuttle").isEmpty()) {
-            final Author author = new Author("Lisa Tuttle",
-                    "Lisa Gracia Tuttle (nascida a 16 de setembro de 1952) é uma autora americana de ficção científica, fantasia e terror. Publicou mais de uma dúzia de romances, sete coleções de contos e vários títulos de não-ficção, incluindo um livro de referência sobre feminismo, \"Enciclopédia do Feminismo\" (1986). Também editou várias antologias e fez críticas de livros para diversas publicações. Vive no Reino Unido desde 1981.\n" +
-                            "Tuttle ganhou o Prémio John W. Campbell para Melhor Novo Escritor em 1974, recebeu o Prémio Nebula de Melhor Conto em 1982 por \"The Bone Flute\", que recusou, e o Prémio BSFA de Ficção Curta em 1989 por \"In Translation\".",
-                    null);
-            authorRepository.save(author);
+        Iterable<Author> authors = authorRepository.findAll();
+
+        if (!authors.iterator().hasNext()) {
+
+            final Author author1 = new Author("JK Rowling", "British author best known for the Harry Potter series.", null);
+            authorRepository.save(author1);
+
+            final Author author2 = new Author("George RR Martin", "American novelist, creator of A Song of Ice and Fire.", null);
+            authorRepository.save(author2);
+
+            final Author author3 = new Author("JRR Tolkien", "English writer and philologist, author of The Lord of the Rings.", null);
+            authorRepository.save(author3);
+
+            final Author author4 = new Author("Agatha Christie", "English novelist, famous for detective stories like Poirot.", null);
+            authorRepository.save(author4);
+
+            final Author author5 = new Author("Ernest Hemingway", "American novelist and Nobel Prize winner in Literature.", null);
+            authorRepository.save(author5);
+
+            final Author author6 = new Author("Jane Austen", "English novelist known for Pride and Prejudice.", null);
+            authorRepository.save(author6);
+
+            final Author author7 = new Author("Stephen King", "American author of horror and supernatural fiction.", null);
+            authorRepository.save(author7);
         }
     }
 
     private void createGenres() {
-        if (genreRepository.findByString("Fantasia").isEmpty()) {
-            final Genre g1 = new Genre("Fantasia");
-            genreRepository.save(g1);
-        }
-        if (genreRepository.findByString("Informação").isEmpty()) {
-            final Genre g2 = new Genre("Informação");
-            genreRepository.save(g2);
-        }
-        if (genreRepository.findByString("Romance").isEmpty()) {
-            final Genre g3 = new Genre("Romance");
-            genreRepository.save(g3);
-        }
-        if (genreRepository.findByString("Infantil").isEmpty()) {
-            final Genre g4 = new Genre("Infantil");
-            genreRepository.save(g4);
-        }
-        if (genreRepository.findByString("Thriller").isEmpty()) {
-            final Genre g5 = new Genre("Thriller");
-            genreRepository.save(g5);
+        Iterable<Genre> genres = genreRepository.findAll();
+
+        if (!genres.iterator().hasNext()) {
+            final Genre genre1 = new Genre("Fantasy");
+            genreRepository.save(genre1);
+
+            final Genre genre2 = new Genre("Science Fiction");
+            genreRepository.save(genre2);
+
+            final Genre genre3 = new Genre("Mystery");
+            genreRepository.save(genre3);
+
+            final Genre genre4 = new Genre("Romance");
+            genreRepository.save(genre4);
+
+            final Genre genre5 = new Genre("Non-Fiction");
+            genreRepository.save(genre5);
         }
     }
 
-    protected void createBooks() {
-        Optional<Genre> genre = Optional.ofNullable(genreRepository.findByString("Infantil"))
+    private void createBooks() {
+        Optional<Genre> genre = Optional.ofNullable(genreRepository.findByString("Romance"))
                 .orElseThrow(() -> new NotFoundException("Cannot find genre"));
-        List<Author> author = authorRepository.searchByNameName("Manuel Antonio Pina");
+        List<Author> author = authorRepository.searchByNameName("Stephen King");
 
         // 1 - O País das Pessoas de Pernas Para o Ar
         if(bookRepository.findByIsbn("9789720706386").isEmpty()) {
