@@ -131,7 +131,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book removeBookPhoto(String isbn, long desiredVersion) {
+    public void removeBookPhoto(String isbn, long desiredVersion) {
         Book book = this.findByIsbn(isbn);
         String photoFile;
         try {
@@ -143,7 +143,6 @@ public class BookServiceImpl implements BookService {
         book.removePhoto(desiredVersion);
         var updatedBook = bookRepository.save(book);
         photoRepository.deleteByPhotoFile(photoFile);
-        return updatedBook;
     }
 
     @Override

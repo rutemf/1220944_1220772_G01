@@ -9,7 +9,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.services.BookCountDTO;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-09-19T22:16:34+0100",
+    date = "2025-09-25T20:27:11+0100",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.1 (Oracle Corporation)"
 )
 @Component

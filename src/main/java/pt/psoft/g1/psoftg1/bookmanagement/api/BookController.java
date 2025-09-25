@@ -77,35 +77,6 @@ public class BookController {
         return ResponseEntity.created(newBookUri).eTag(Long.toString(book.getVersion())).body(bookViewMapper.toBookView(book));
     }
 
-    @Operation(summary = "Create a new Book")
-    @PostMapping(value = "/{isbn}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<BookView> createNew(@RequestBody CreateBookRequest resource, @PathVariable("isbn") String isbn) {
-
-        // Guarantee that the client doesn't provide a link on the body, null = no photo or error
-        resource.setPhotoURI(null);
-        MultipartFile file = resource.getPhoto();
-
-        String fileName = fileStorageService.getRequestPhoto(file);
-
-        if (fileName != null) {
-            resource.setPhotoURI(fileName);
-        }
-
-        System.out.println("book: " + resource.getTitle() + " isbn: " + isbn);
-
-        Book book;
-        try {
-            book = bookService.create(resource, isbn);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        //final var savedBook = bookService.save(book);
-        final var newBookUri = ServletUriComponentsBuilder.fromCurrentRequestUri().pathSegment(book.getIsbn()).build().toUri();
-
-        return ResponseEntity.created(newBookUri).eTag(Long.toString(book.getVersion())).body(bookViewMapper.toBookView(book));
-    }
-
     @Operation(summary = "Gets a specific Book by isbn")
     @GetMapping(value = "/{isbn}")
     public ResponseEntity<BookView> findByIsbn(@PathVariable final String isbn) {
