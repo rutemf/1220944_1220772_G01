@@ -26,7 +26,6 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-@Profile("bootstrap")
 @Order(1)
 public class UserBootstrapper implements CommandLineRunner {
 
@@ -264,8 +263,5 @@ public class UserBootstrapper implements CommandLineRunner {
     }
 
     private void executeQueries() {
-        for (String query : queriesToExecute) {
-            jdbcTemplate.update(query);
-        }
     }
 }

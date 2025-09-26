@@ -32,6 +32,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -48,6 +49,7 @@ import lombok.RequiredArgsConstructor;
  * Based on https://github.com/Yoh0xFF/java-spring-security-example
  *
  */
+@Profile("default")
 @Repository
 @CacheConfig(cacheNames = "users")
 public interface SpringDataUserRepository extends UserRepository, UserRepoCustom, CrudRepository<User, Long> {

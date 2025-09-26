@@ -168,7 +168,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST,"/api/lendings/search").hasAnyRole(Role.LIBRARIAN)
                 //end lendings
                 // Admin has access to all endpoints
-                .requestMatchers("/**").hasRole(Role.ADMIN)
                 .anyRequest().authenticated()
                 // Set up oauth2 resource server
                 .and().httpBasic(Customizer.withDefaults()).oauth2ResourceServer().jwt();
