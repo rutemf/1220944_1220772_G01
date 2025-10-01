@@ -17,8 +17,6 @@ public class LendingRepositoryNoSQL implements LendingRepository {
 
     private final MongoTemplate mongoTemplate;
 
-    //teste
-
     public LendingRepositoryNoSQL(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
