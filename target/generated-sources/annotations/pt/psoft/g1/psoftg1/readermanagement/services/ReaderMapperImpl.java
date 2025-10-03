@@ -10,8 +10,8 @@ import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-09-28T22:44:48+0100",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.1 (Oracle Corporation)"
+    date = "2025-10-01T22:37:32+0100",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Amazon.com Inc.)"
 )
 @Component
 public class ReaderMapperImpl extends ReaderMapper {
