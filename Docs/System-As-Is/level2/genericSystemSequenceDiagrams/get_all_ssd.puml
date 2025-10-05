@@ -1,0 +1,27 @@
+@startuml
+
+autonumber
+
+title Get All Generic Resources
+
+actor "User" as USER
+participant "BackEnd" as System
+participant "H2 DataBase" as H2DB
+
+activate USER
+
+    USER -> System: /GET /api/generic
+    activate System
+
+         System -> H2DB: SELECT * FROM generic
+        activate H2DB
+
+            H2DB --> System: returns list of resources
+        deactivate H2DB
+
+        System --> USER: returns all data
+    deactivate System
+
+deactivate USER
+
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+
+autonumber
+
+title Get All Generic Resources
+
+actor "User" as USER
+participant ":System" as System
+
+activate USER
+
+    USER -> System: /GET /api/generic
+    activate System
+
+        System --> USER: returns all data
+    deactivate System
+
+deactivate USER
+
+@enduml
