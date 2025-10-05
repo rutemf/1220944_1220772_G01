@@ -1,0 +1,57 @@
+@startuml
+
+autonumber
+
+title Get All Generic Resources
+
+participant "GenericController" as Controller
+participant "IGenericService" as IService
+participant "GenericServiceImpl" as ServiceImpl
+participant "AbstractGenericMapper" as Mapper
+participant "IGenericRepository" as IRepository
+participant "GenericRepositoryImpl" as RepoImpl
+participant "H2 Database" as H2DB
+
+-> Controller: GET /api/generic
+activate Controller
+
+    Controller -> IService: getAllGenerics()
+    activate IService
+
+        IService -> ServiceImpl: getAllGenerics()
+        activate ServiceImpl
+
+            ServiceImpl -> IRepository: findAll()
+            activate IRepository
+
+                IRepository -> RepoImpl: findAll()
+                activate RepoImpl
+
+                    RepoImpl -> H2DB: SELECT * FROM generic
+                    activate H2DB
+
+                        H2DB --> RepoImpl: List<GenericEntity>
+                    deactivate H2DB
+
+                    RepoImpl --> IRepository: List<GenericEntity>
+                deactivate RepoImpl
+
+                IRepository --> ServiceImpl: List<GenericEntity>
+            deactivate IRepository
+
+            ServiceImpl -> Mapper: mapToView(List<GenericDTO>)
+            activate Mapper
+
+                Mapper --> ServiceImpl: List<GenericView>
+            deactivate Mapper
+
+            ServiceImpl --> IService: List<GenericView>
+        deactivate ServiceImpl
+
+        IService --> Controller: List<GenericView>
+    deactivate IService
+
+    <-- Controller: returns all data
+deactivate Controller
+
+@enduml
