@@ -41,10 +41,8 @@ pipeline {
         }
 
         stage('Package') {
-            when {
-                branch 'prod'
-            }
             steps {
+                echo 'Packaging...'
                 sh 'mvn package -DskipTests'
             }
         }
