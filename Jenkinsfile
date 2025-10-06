@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checking Out Repo...'
-                git branch: 'dev', url: 'https://github.com/rutemf/1220944_1220772_G01.git'
+                checkout scm
             }
         }
 
