@@ -68,11 +68,9 @@ public class LendingController {
     public ResponseEntity<LendingView> findByLendingNumber(
             Authentication authentication,
             @PathVariable("year")
-                @Parameter(description = "The year of the Lending to find")
-                final Integer year,
+            @Parameter(description = "The year of the Lending to find") final Integer year,
             @PathVariable("seq")
-                @Parameter(description = "The sequencial of the Lending to find")
-                final Integer seq) {
+            @Parameter(description = "The sequencial of the Lending to find") final Integer seq) {
 
         String ln = year + "/" + seq;
         final var lending = lendingService.findByLendingNumber(ln)
@@ -105,11 +103,9 @@ public class LendingController {
             final WebRequest request,
             final Authentication authentication,
             @PathVariable("year")
-                @Parameter(description = "The year component of the Lending to find")
-                final Integer year,
+            @Parameter(description = "The year component of the Lending to find") final Integer year,
             @PathVariable("seq")
-                @Parameter(description = "The sequential component of the Lending to find")
-                final Integer seq,
+            @Parameter(description = "The sequential component of the Lending to find") final Integer seq,
             @Valid @RequestBody final SetLendingReturnedRequest resource) {
         final String ifMatchValue = request.getHeader(ConcurrencyService.IF_MATCH);
         if (ifMatchValue == null || ifMatchValue.isEmpty() || ifMatchValue.equals("null")) {
@@ -149,7 +145,7 @@ public class LendingController {
     @GetMapping(value = "/overdue")
     public ListResponse<LendingView> getOverdueLendings(@Valid @RequestBody Page page) {
         final List<Lending> overdueLendings = lendingService.getOverdue(page);
-        if(overdueLendings.isEmpty())
+        if (overdueLendings.isEmpty())
             throw new NotFoundException("No lendings to show");
         return new ListResponse<>(lendingViewMapper.toLendingView(overdueLendings));
     }
