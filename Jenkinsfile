@@ -18,6 +18,7 @@ pipeline {
                 sh 'mvn clean compile'
 
                 echo 'Static Code Analysis...'
+                sh 'mvn -B spotbugs:spotbugs spotbugs:check -DskipTests'
             }
         }
 
