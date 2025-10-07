@@ -80,6 +80,11 @@ public class LendingNumber implements Serializable {
     /**Protected empty constructor for ORM only.*/
     public LendingNumber() {}
 
+    public String getValue() {
+        return lendingNumber;
+    }
+
+    @Override
     public String toString() {
         return this.lendingNumber;
     }

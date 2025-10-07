@@ -54,12 +54,11 @@ public class LendingController {
         final var lending = lendingService.create(resource);
 
         final var newlendingUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .pathSegment(lending.getLendingNumber())
+                .pathSegment(lending.getLendingNumber().toString())
                 .build().toUri();
 
         return ResponseEntity.created(newlendingUri)
                 .contentType(MediaType.parseMediaType("application/hal+json"))
-                .eTag(Long.toString(lending.getVersion()))
                 .body(lendingViewMapper.toLendingView(lending));
     }
 
@@ -93,7 +92,6 @@ public class LendingController {
 
         return ResponseEntity.ok().location(lendingUri)
                 .contentType(MediaType.parseMediaType("application/hal+json"))
-                .eTag(Long.toString(lending.getVersion()))
                 .body(lendingViewMapper.toLendingView(lending));
     }
 
@@ -130,7 +128,6 @@ public class LendingController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/hal+json"))
-                .eTag(Long.toString(lending.getVersion()))
                 .body(lendingViewMapper.toLendingView(lending));
     }
 

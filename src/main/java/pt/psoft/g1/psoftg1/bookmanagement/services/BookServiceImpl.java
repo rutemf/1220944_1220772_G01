@@ -70,7 +70,7 @@ public class BookServiceImpl implements BookService {
         final var genre = genreRepository.findByString(request.getGenre())
                 .orElseThrow(() -> new NotFoundException("Genre not found"));
 
-        Book newBook = new Book(isbn, request.getTitle(), request.getDescription(), genre, authors, photoURI);
+        Book newBook = new Book("1", isbn, request.getTitle(), request.getDescription(), genre, authors, photoURI);
 
         return bookRepository.save(newBook);
     }
@@ -110,8 +110,6 @@ public class BookServiceImpl implements BookService {
             request.setGenreObj(genre.get());
         }
 
-        book.applyPatch(Long.parseLong(currentVersion), request);
-
         bookRepository.save(book);
 
 
@@ -140,7 +138,7 @@ public class BookServiceImpl implements BookService {
             throw new NotFoundException("Book did not have a photo assigned to it.");
         }
 
-        book.removePhoto(desiredVersion);
+        book.setPhotoURI(null);
         var updatedBook = bookRepository.save(book);
         photoRepository.deleteByPhotoFile(photoFile);
     }
