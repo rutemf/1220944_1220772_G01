@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
+import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsDTO;
 import pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsPerMonthDTO;
@@ -28,24 +29,32 @@ public class GenreRepositorySQL implements GenreRepository {
 
     @Override
     public Iterable<Genre> findAll() {
-        TypedQuery<Genre> query = entityManager.createQuery(
-        "SELECT g FROM Genre g", Genre.class);
+        TypedQuery<GenreSQL> query = entityManager.createQuery(
+        "SELECT g FROM GenreSQL g", GenreSQL.class);
 
-        return query.getResultList();
+        return query.getResultList().stream().map(GenreSQL::toDomain).toList();
     }
 
     @Override
     public Optional<Genre> findByString(String genreName) {
-        TypedQuery<Genre> query = entityManager.createQuery(
-        "SELECT g FROM Genre g WHERE g.genre = :genreName", Genre.class);
+        TypedQuery<GenreSQL> query = entityManager.createQuery(
+        "SELECT g FROM GenreSQL g WHERE g.genre = :genreName", GenreSQL.class);
 
         query.setParameter("genreName", genreName);
-        return query.getResultStream().findFirst();
+        return query.getResultStream().map(GenreSQL::toDomain).findFirst();
     }
 
     @Override
     public Genre save(Genre genre) {
-        return null;
+        GenreSQL entity = GenreSQL.fromDomain(genre);
+
+        if (!entityManager.contains(entity)) {
+            entityManager.persist(entity);
+        } else {
+            entityManager.merge(entity);
+        }
+
+        return entity.toDomain();
     }
 
     @Override
@@ -70,7 +79,8 @@ public class GenreRepositorySQL implements GenreRepository {
 
     @Override
     public void delete(Genre genre) {
-        Genre managed = entityManager.contains(genre) ? genre : entityManager.merge(genre);
+        GenreSQL entity = GenreSQL.fromDomain(genre);
+        GenreSQL managed = entityManager.contains(entity) ? entity : entityManager.merge(entity);
         entityManager.remove(managed);
     }
 }
