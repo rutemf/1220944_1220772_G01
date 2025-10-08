@@ -59,22 +59,64 @@ public class GenreRepositorySQL implements GenreRepository {
 
     @Override
     public Page<GenreBookCountDTO> findTop5GenreByBookCount(Pageable pageable) {
-        return null;
+        TypedQuery<GenreBookCountDTO> query = entityManager.createQuery(
+        "SELECT new pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO(g.toDomain(), COUNT(b)) " +
+        "FROM BookSQL b JOIN b.genre g " +
+        "GROUP BY g " +
+        "ORDER BY COUNT(b) DESC", GenreBookCountDTO.class);
+
+        query.setFirstResult((int) pageable.getOffset());
+        query.setMaxResults(pageable.getPageSize());
+
+        List<GenreBookCountDTO> results = query.getResultList();
+        return new org.springframework.data.domain.PageImpl<>(results, pageable, results.size());
     }
 
     @Override
     public List<GenreLendingsDTO> getAverageLendingsInMonth(LocalDate month, pt.psoft.g1.psoftg1.shared.services.Page page) {
-        return List.of();
+        TypedQuery<GenreLendingsDTO> query = entityManager.createQuery(
+        "SELECT new pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsDTO(g.genre, COUNT(l)*1.0) " +
+        "FROM LendingSQL l JOIN l.book b JOIN b.genre g " +
+        "WHERE MONTH(l.startDate) = :monthMonth AND YEAR(l.startDate) = :monthYear " +
+        "GROUP BY g.genre", GenreLendingsDTO.class);
+
+        query.setParameter("monthMonth", month.getMonthValue());
+        query.setParameter("monthYear", month.getYear());
+
+        return query.getResultList();
     }
 
     @Override
     public List<GenreLendingsPerMonthDTO> getLendingsPerMonthLastYearByGenre() {
-        return List.of();
+        LocalDate oneYearAgo = LocalDate.now().minusYears(1);
+
+        TypedQuery<GenreLendingsPerMonthDTO> query = entityManager.createQuery(
+        "SELECT new pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsPerMonthDTO(" +
+        "g.genre, FUNCTION('MONTH', l.startDate), COUNT(l)) " +
+        "FROM LendingSQL l JOIN l.book b JOIN b.genre g " +
+        "WHERE l.startDate >= :startDate " +
+        "GROUP BY g.genre, FUNCTION('MONTH', l.startDate) " +
+        "ORDER BY g.genre, FUNCTION('MONTH', l.startDate)", GenreLendingsPerMonthDTO.class);
+
+        query.setParameter("startDate", oneYearAgo);
+
+        return query.getResultList();
     }
 
     @Override
     public List<GenreLendingsPerMonthDTO> getLendingsAverageDurationPerMonth(LocalDate startDate, LocalDate endDate) {
-        return List.of();
+        TypedQuery<GenreLendingsPerMonthDTO> query = entityManager.createQuery(
+        "SELECT new pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsPerMonthDTO(" +
+        "g.genre, FUNCTION('MONTH', l.startDate), AVG(DATEDIFF(COALESCE(l.returnedDate, CURRENT_DATE), l.startDate))) " +
+        "FROM LendingSQL l JOIN l.book b JOIN b.genre g " +
+        "WHERE l.startDate BETWEEN :startDate AND :endDate " +
+        "GROUP BY g.genre, FUNCTION('MONTH', l.startDate) " +
+        "ORDER BY g.genre, FUNCTION('MONTH', l.startDate)", GenreLendingsPerMonthDTO.class);
+
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+
+        return query.getResultList();
     }
 
     @Override
