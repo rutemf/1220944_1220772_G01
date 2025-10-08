@@ -60,9 +60,9 @@ public class GenreRepositorySQL implements GenreRepository {
     @Override
     public Page<GenreBookCountDTO> findTop5GenreByBookCount(Pageable pageable) {
         TypedQuery<GenreBookCountDTO> query = entityManager.createQuery(
-        "SELECT new pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO(g.toDomain(), COUNT(b)) " +
+        "SELECT new pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO(g.genre, COUNT(b)) " +
         "FROM BookSQL b JOIN b.genre g " +
-        "GROUP BY g " +
+        "GROUP BY g.genre " +
         "ORDER BY COUNT(b) DESC", GenreBookCountDTO.class);
 
         query.setFirstResult((int) pageable.getOffset());
@@ -75,9 +75,9 @@ public class GenreRepositorySQL implements GenreRepository {
     @Override
     public List<GenreLendingsDTO> getAverageLendingsInMonth(LocalDate month, pt.psoft.g1.psoftg1.shared.services.Page page) {
         TypedQuery<GenreLendingsDTO> query = entityManager.createQuery(
-        "SELECT new pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsDTO(g.genre, COUNT(l)*1.0) " +
+        "SELECT new pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsDTO(g.genre, COUNT(l)) " +
         "FROM LendingSQL l JOIN l.book b JOIN b.genre g " +
-        "WHERE MONTH(l.startDate) = :monthMonth AND YEAR(l.startDate) = :monthYear " +
+        "WHERE FUNCTION('MONTH', l.startDate) = :monthMonth AND FUNCTION('YEAR', l.startDate) = :monthYear " +
         "GROUP BY g.genre", GenreLendingsDTO.class);
 
         query.setParameter("monthMonth", month.getMonthValue());
@@ -107,7 +107,8 @@ public class GenreRepositorySQL implements GenreRepository {
     public List<GenreLendingsPerMonthDTO> getLendingsAverageDurationPerMonth(LocalDate startDate, LocalDate endDate) {
         TypedQuery<GenreLendingsPerMonthDTO> query = entityManager.createQuery(
         "SELECT new pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsPerMonthDTO(" +
-        "g.genre, FUNCTION('MONTH', l.startDate), AVG(DATEDIFF(COALESCE(l.returnedDate, CURRENT_DATE), l.startDate))) " +
+        "g.genre, FUNCTION('MONTH', l.startDate), " +
+        "AVG(FUNCTION('DATEDIFF', FUNCTION('COALESCE', l.returnedDate, FUNCTION('CURRENT_DATE')), l.startDate))) " +
         "FROM LendingSQL l JOIN l.book b JOIN b.genre g " +
         "WHERE l.startDate BETWEEN :startDate AND :endDate " +
         "GROUP BY g.genre, FUNCTION('MONTH', l.startDate) " +

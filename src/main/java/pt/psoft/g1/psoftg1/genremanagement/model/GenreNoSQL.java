@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
+import pt.psoft.g1.psoftg1.shared.services.Base65Service;
 
 @Getter
 @Setter
@@ -17,20 +18,20 @@ public class GenreNoSQL {
     @Size(min = 1, max = 100)
     private String genre;
 
-    public GenreNoSQL(String id, String genre) {
-        this.id = id;
-        this.genre = genre;
+    public GenreNoSQL(Genre genre) {
+        Base65Service base65Service = new Base65Service();
+        this.id = base65Service.generateIdNoSQL();
+        this.genre = genre.getGenre();
     }
 
     // NoSQL
-    protected GenreNoSQL() {
-    }
+    protected GenreNoSQL() { }
 
     public Genre toDomain() {
-        return new Genre(id, genre);
+        return new Genre(genre);
     }
 
-    public GenreNoSQL fromDomain(Genre genre) {
-        return new GenreNoSQL(genre.getId(), genre.getGenre());
+    public GenreNoSQL fromDomain(Genre domain) {
+        return new GenreNoSQL(domain);
     }
 }

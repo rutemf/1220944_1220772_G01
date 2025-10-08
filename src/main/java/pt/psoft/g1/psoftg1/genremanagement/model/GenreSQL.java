@@ -21,7 +21,7 @@ public class GenreSQL {
 
     public GenreSQL(Genre genre) {
         Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateId();
+        this.id = base65Service.generateIdSQL();
         this.genre = genre.getGenre();
     }
 
@@ -29,7 +29,7 @@ public class GenreSQL {
     protected GenreSQL() {}
 
     public Genre toDomain() {
-        return new Genre(id, genre);
+        return new Genre(genre);
     }
 
     public static GenreSQL fromDomain(Genre domain) {
