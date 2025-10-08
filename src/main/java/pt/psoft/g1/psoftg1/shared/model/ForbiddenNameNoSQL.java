@@ -1,31 +1,29 @@
 package pt.psoft.g1.psoftg1.shared.model;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.shared.services.Base65Service;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "forbidden_name")
-public class ForbiddenNameSQL {
+@Document(collection = "forbidden_names")
+public class ForbiddenNameNoSQL {
 
     @Id
     private String id;
 
     private String forbiddenName;
 
-    public ForbiddenNameSQL(ForbiddenName forbiddenName) {
+    public ForbiddenNameNoSQL(ForbiddenName forbiddenName) {
         Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdSQL();
+        this.id = base65Service.generateIdNoSQL();
         this.forbiddenName = forbiddenName.getForbiddenName();
     }
 
-    // JPA
-    protected ForbiddenNameSQL() {}
+    // MongoDB
+    protected ForbiddenNameNoSQL() {}
 
     public ForbiddenName toDomain() {
         return new ForbiddenName(forbiddenName);
