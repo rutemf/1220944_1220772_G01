@@ -1,11 +1,8 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Objects;
 
 @Entity
 @Getter
@@ -40,7 +37,7 @@ public class FineSQL {
         return fine;
     }
 
-    public FineSQL fromDomain(Fine fine, LendingSQL lendingSQL) {
+    public static FineSQL fromDomain(Fine fine, LendingSQL lendingSQL) {
         return new FineSQL(fine, lendingSQL);
     }
 
