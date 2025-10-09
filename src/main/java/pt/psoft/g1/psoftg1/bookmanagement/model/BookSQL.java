@@ -58,7 +58,7 @@ public class BookSQL {
         );
     }
 
-    public BookSQL fromDomain(Book book, GenreSQL genreSQL) {
+    public static BookSQL fromDomain(Book book, GenreSQL genreSQL) {
         return new BookSQL(book, genreSQL);
     }
 }

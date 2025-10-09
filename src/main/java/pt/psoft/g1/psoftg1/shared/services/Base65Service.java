@@ -14,10 +14,16 @@ public class Base65Service {
 
     private final SecureRandom random = new SecureRandom();
 
-    public String generateId() {
+    public String generateIdSQL() {
         String randomPart = generateRandomBase65();
         long timestamp = Instant.now().toEpochMilli();
         return randomPart + "-" + timestamp;
+    }
+
+    public String generateIdNoSQL() {
+        String randomPart = generateRandomBase65();
+        long timestamp = Instant.now().toEpochMilli();
+        return timestamp + "-" + randomPart;
     }
 
     private String generateRandomBase65() {

@@ -7,12 +7,10 @@ import lombok.Setter;
 @Setter
 public class Genre {
 
-    private final String id;
     private final String genre;
     private final int GENRE_MAX_LENGTH = 100;
 
-    public Genre(String id, String genre) {
-        this.id = id;
+    public Genre(String genre) {
         validateGenre(genre);
         this.genre = genre;
     }
