@@ -31,7 +31,7 @@ public class GenreNoSQL {
         return new Genre(genre);
     }
 
-    public GenreNoSQL fromDomain(Genre domain) {
+    public static GenreNoSQL fromDomain(Genre domain) {
         return new GenreNoSQL(domain);
     }
 }

@@ -13,13 +13,11 @@ import pt.psoft.g1.psoftg1.shared.model.Name;
 public class Author extends EntityWithPhoto {
 
     private Long authorNumber;
-    private long version;
     private Name name;
     private Bio bio;
 
-    public Author(Long authorNumber, long version, Name name, Bio bio) {
+    public Author(Long authorNumber, Name name, Bio bio) {
         this.authorNumber = authorNumber;
-        this.version = version;
         this.name = name;
         this.bio = bio;
     }
@@ -29,8 +27,6 @@ public class Author extends EntityWithPhoto {
     }
 
     public void applyPatch(final long desiredVersion, final UpdateAuthorRequest request) {
-        if (this.version != desiredVersion)
-            throw new StaleObjectStateException("Object was already modified by another user", this.authorNumber);
         if (request.getName() != null)
             setName(new Name(request.getName()));
         if (request.getBio() != null)
@@ -40,10 +36,6 @@ public class Author extends EntityWithPhoto {
     }
 
     public void removePhoto(long desiredVersion) {
-        if (desiredVersion != this.version) {
-            throw new ConflictException("Provided version does not match latest version of this object");
-        }
-
         setPhotoInternal(null);
     }
 }

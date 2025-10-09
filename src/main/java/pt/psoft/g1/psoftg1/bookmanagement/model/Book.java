@@ -12,7 +12,6 @@ import java.util.List;
 @Setter
 public class Book extends EntityWithPhoto {
 
-    private String id;
     private Isbn isbn;
     private Title title;
     private Genre genre;
@@ -20,8 +19,7 @@ public class Book extends EntityWithPhoto {
     private Description description;
     private String photoURI;
 
-    public Book(String id, String isbn, String title, String description, Genre genre, List<Author> authors, String photoURI) {
-        this.id = id;
+    public Book(String isbn, String title, String description, Genre genre, List<Author> authors, String photoURI) {
         this.isbn = new Isbn(isbn);
         this.title = new Title(title);
         this.description = new Description(description);
