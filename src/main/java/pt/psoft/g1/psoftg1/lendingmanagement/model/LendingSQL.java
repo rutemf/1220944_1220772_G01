@@ -78,8 +78,8 @@ public class LendingSQL {
                 fineValuePerDayInCents);
     }
 
-    public static LendingSQL fromDomain(Lending lending, BookSQL bookSQL) {
-        return new LendingSQL(lending, bookSQL);
+    public static LendingSQL fromDomain(Lending lending) {
+        return new LendingSQL(lending, null);
     }
 }
 

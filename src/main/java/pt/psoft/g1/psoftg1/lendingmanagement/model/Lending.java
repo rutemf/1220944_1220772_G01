@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Setter
 public class Lending {
 
-    private String id;
     private LendingNumber lendingNumber;
     private Book book;
     private ReaderDetails readerDetails;
@@ -23,8 +22,7 @@ public class Lending {
     private int fineValuePerDayInCents;
 
     public Lending(Book book, ReaderDetails readerDetails, int lendingDuration, int fineValuePerDayInCents) {
-        this.id = book.getId() + "-";
-        this.lendingNumber = new LendingNumber(book.getId());
+        this.lendingNumber = new LendingNumber(1, 2);
         this.book = book;
         this.readerDetails = readerDetails;
         this.startDate = LocalDate.now();

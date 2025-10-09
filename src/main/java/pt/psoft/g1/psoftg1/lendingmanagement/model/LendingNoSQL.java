@@ -55,7 +55,7 @@ public class LendingNoSQL {
         );
     }
 
-    public LendingNoSQL fromDomain(Lending lending, BookNoSQL book) {
-        return new LendingNoSQL(lending, book);
+    public static LendingNoSQL fromDomain(Lending lending) {
+        return new LendingNoSQL(lending, null);
     }
 }

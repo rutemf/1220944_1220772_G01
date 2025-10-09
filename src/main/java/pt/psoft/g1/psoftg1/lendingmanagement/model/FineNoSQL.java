@@ -3,37 +3,35 @@ package pt.psoft.g1.psoftg1.lendingmanagement.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.shared.services.Base65Service;
 
-@Entity
 @Getter
 @Setter
-@Table(name = "Fine")
-public class FineSQL {
+@Document(collection = "fines")
+public class FineNoSQL {
 
     @Id
     private String id;
 
-    @Column(nullable = false)
     private int fineValuePerDayInCents;
 
-    @Column(nullable = false)
     private int centsValue;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    private LendingSQL lending;
+    @DBRef
+    private LendingNoSQL lending;
 
-    public FineSQL(Fine fine) {
+    public FineNoSQL(Fine fine) {
         Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdSQL();
+        this.id = base65Service.generateIdNoSQL();
         this.fineValuePerDayInCents = fine.getFineValuePerDayInCents();
         this.centsValue = fine.getCentsValue();
-        this.lending = LendingSQL.fromDomain(fine.getLending());
+        this.lending = LendingNoSQL.fromDomain(fine.getLending());
     }
 
-    // JPA
-    protected FineSQL() {
-    }
+    // NoSQL
+    protected FineNoSQL() {}
 
     public Fine toDomain() {
         Fine fine = new Fine(this.lending.toDomain());

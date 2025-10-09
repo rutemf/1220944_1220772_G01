@@ -1,6 +1,5 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.model;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,8 +7,6 @@ import lombok.Setter;
 @Setter
 public class Fine {
 
-    @Id
-    private String id;
     private int fineValuePerDayInCents;
     private int centsValue;
     private Lending lending;
