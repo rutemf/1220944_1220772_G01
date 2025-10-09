@@ -1,29 +1,25 @@
 package pt.psoft.g1.psoftg1.usermanagement.model;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.userdetails.UserDetails;
 import pt.psoft.g1.psoftg1.shared.model.Name;
-
-import lombok.Getter;
-import lombok.Setter;
 import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
-@Entity
-@EntityListeners(AuditingEntityListener.class)
-public class UserSQL implements UserDetails {
+@Document(collection = "users")
+public class UserNoSQL implements UserDetails {
 
     @Id
     private String id;
@@ -41,21 +37,14 @@ public class UserSQL implements UserDetails {
     private String modifiedBy;
 
     private boolean enabled = true;
-
-    @Column(unique = true)
-    @Email
     private String username;
     private String password;
-
-    @Embedded
     private Name name;
-
-    @ElementCollection
     private Set<Role> authorities = new HashSet<>();
 
-    public UserSQL(User user) {
+    public UserNoSQL(User user) {
         Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdSQL();
+        this.id = base65Service.generateIdNoSQL();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.name = user.getName();
@@ -63,8 +52,8 @@ public class UserSQL implements UserDetails {
         this.enabled = user.isEnabled();
     }
 
-    // JPA
-    protected UserSQL() { }
+    // NoSQL
+    protected UserNoSQL() { }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -90,10 +79,11 @@ public class UserSQL implements UserDetails {
         User user = new User(this.username, this.password);
         user.setName(this.name);
         user.getAuthorities().addAll(this.authorities);
+        user.setEnabled(this.enabled);
         return user;
     }
 
-    public static UserSQL fromDomain(User user) {
-        return new UserSQL(user);
+    public static UserNoSQL fromDomain(User user) {
+        return new UserNoSQL(user);
     }
 }

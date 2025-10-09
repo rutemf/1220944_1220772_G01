@@ -34,6 +34,7 @@ import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import pt.psoft.g1.psoftg1.shared.api.MapperInterface;
+import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
@@ -58,6 +59,14 @@ public abstract class EditUserMapper extends MapperInterface {
 			return authorities.stream().map(Role::new).collect(toSet());
 		}
 		return new HashSet<>();
+	}
+
+	protected Name map(String value) {
+		return value != null ? new Name(value) : null;
+	}
+
+	protected String map(Name name) {
+		return name != null ? name.toString() : null;
 	}
 
 }
