@@ -5,6 +5,8 @@ import lombok.Setter;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -39,10 +41,6 @@ public class Lending {
     }
 
     public int getDaysDelayed() {
-        if (returnedDate != null) {
-            return Math.max((int) java.time.temporal.ChronoUnit.DAYS.between(limitDate, returnedDate), 0);
-        } else {
-            return Math.max((int) java.time.temporal.ChronoUnit.DAYS.between(limitDate, LocalDate.now()), 0);
-        }
+        return Math.max((int) ChronoUnit.DAYS.between(limitDate, Objects.requireNonNullElseGet(returnedDate, LocalDate::now)), 0);
     }
 }

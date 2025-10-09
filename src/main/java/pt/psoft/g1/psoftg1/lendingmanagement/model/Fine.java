@@ -3,6 +3,8 @@ package pt.psoft.g1.psoftg1.lendingmanagement.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 public class Fine {
@@ -13,8 +15,8 @@ public class Fine {
 
     public Fine(Lending lending) {
         this.fineValuePerDayInCents = lending.getFineValuePerDayInCents();
-        this.centsValue = fineValuePerDayInCents;
-        this.lending = lending;
+        this.centsValue = fineValuePerDayInCents * lending.getDaysDelayed();
+        this.lending =  Objects.requireNonNull(lending);
     }
 
     @Override

@@ -56,7 +56,7 @@ public class BookNoSQL {
         );
     }
 
-    public BookNoSQL fromDomain(Book book) {
+    public static BookNoSQL fromDomain(Book book) {
         return new BookNoSQL(book);
     }
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+import pt.psoft.g1.psoftg1.shared.services.Base65Service;
 
 import java.time.LocalDate;
 
@@ -53,10 +54,11 @@ public class LendingSQL {
     @Transient
     private Integer daysOverdue;
 
-    public LendingSQL(Lending lending, BookSQL bookSQL) {
-        this.id = lending.getId();
+    public LendingSQL(Lending lending) {
+        Base65Service base65Service = new Base65Service();
+        base65Service.generateIdSQL();
         this.lendingNumber = lending.getLendingNumber();
-        this.book = bookSQL;
+        this.book = lending.getBook() != null ? BookSQL.fromDomain(lending.getBook()) : null;
         this.readerDetails = lending.getReaderDetails();
         this.startDate = lending.getStartDate();
         this.limitDate = lending.getLimitDate();
@@ -79,7 +81,7 @@ public class LendingSQL {
     }
 
     public static LendingSQL fromDomain(Lending lending) {
-        return new LendingSQL(lending, null);
+        return new LendingSQL(lending);
     }
 }
 
