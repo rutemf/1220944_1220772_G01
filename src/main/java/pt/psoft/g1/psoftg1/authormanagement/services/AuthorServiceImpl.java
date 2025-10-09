@@ -124,7 +124,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .orElseThrow(() -> new NotFoundException("Cannot find reader"));
 
         String photoFile = author.getPhoto().getPhotoFile();
-        author.removePhoto(desiredVersion);
+        author.setPhoto(null);
         Optional<Author> updatedAuthor = Optional.of(authorRepository.save(author));
         photoRepository.deleteByPhotoFile(photoFile);
         return updatedAuthor;

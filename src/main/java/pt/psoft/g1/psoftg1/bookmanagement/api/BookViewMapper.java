@@ -35,7 +35,7 @@ public abstract class BookViewMapper extends MapperInterface {
 
     protected List<String> mapAuthors(List<Author> authors) {
         return authors.stream()
-                .map(Author::getName)
+                .map(author -> author.getName().getName())
                 .collect(Collectors.toList());
     }
 

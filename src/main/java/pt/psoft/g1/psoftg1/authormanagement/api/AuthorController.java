@@ -203,7 +203,7 @@ public class AuthorController {
         }
 
         this.fileStorageService.deleteFile(author.getPhoto().getPhotoFile());
-        authorService.removeAuthorPhoto(author.getAuthorNumber(), author.getVersion());
+        authorService.removeAuthorPhoto(author.getAuthorNumber(), 1L);
 
         return ResponseEntity.ok().build();
     }

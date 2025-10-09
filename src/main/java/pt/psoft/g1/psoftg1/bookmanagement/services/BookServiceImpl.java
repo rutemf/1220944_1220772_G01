@@ -70,7 +70,7 @@ public class BookServiceImpl implements BookService {
         final var genre = genreRepository.findByString(request.getGenre())
                 .orElseThrow(() -> new NotFoundException("Genre not found"));
 
-        Book newBook = new Book("1", isbn, request.getTitle(), request.getDescription(), genre, authors, photoURI);
+        Book newBook = new Book(isbn, request.getTitle(), request.getDescription(), genre, authors, photoURI);
 
         return bookRepository.save(newBook);
     }
