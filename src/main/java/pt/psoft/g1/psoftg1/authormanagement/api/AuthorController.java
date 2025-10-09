@@ -64,8 +64,7 @@ public class AuthorController {
 
         final var newAuthorUri = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri();
 
-        return ResponseEntity.created(newAuthorUri).eTag(Long.toString(author.getVersion()))
-        .body(authorViewMapper.toAuthorView(author));
+        return ResponseEntity.created(newAuthorUri).body(authorViewMapper.toAuthorView(author));
     }
 
     //Update
@@ -93,9 +92,7 @@ public class AuthorController {
         }
         Author author = authorService.partialUpdate(authorNumber, resource, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
 
-        return ResponseEntity.ok()
-                .eTag(Long.toString(author.getVersion()))
-                .body(authorViewMapper.toAuthorView(author));
+        return ResponseEntity.ok().body(authorViewMapper.toAuthorView(author));
     }
 
     @Operation(summary = "Know an author’s detail given its author number")
@@ -107,9 +104,7 @@ public class AuthorController {
         final var author = authorService.findByAuthorNumber(authorNumber)
                 .orElseThrow(() -> new NotFoundException(Author.class, authorNumber));
 
-        return ResponseEntity.ok()
-                .eTag(Long.toString(author.getVersion()))
-                .body(authorViewMapper.toAuthorView(author));
+        return ResponseEntity.ok().body(authorViewMapper.toAuthorView(author));
     }
 
     @Operation(summary = "Search authors by name")

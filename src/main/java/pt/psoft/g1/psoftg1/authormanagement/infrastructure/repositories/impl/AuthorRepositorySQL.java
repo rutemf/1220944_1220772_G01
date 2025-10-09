@@ -4,14 +4,17 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
+import pt.psoft.g1.psoftg1.authormanagement.model.AuthorSQL;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @Profile("sql")
@@ -25,56 +28,59 @@ public class AuthorRepositorySQL implements AuthorRepository {
 
     @Override
     public Optional<Author> findByAuthorNumber(Long authorNumber) {
-        TypedQuery<Author> query = entityManager.createQuery(
-        "SELECT a FROM Author a WHERE a.authorNumber = :authorNumber", Author.class);
+        TypedQuery<AuthorSQL> query = entityManager.createQuery(
+        "SELECT a FROM AuthorSQL a WHERE a.authorNumber = :authorNumber", AuthorSQL.class);
 
         query.setParameter("authorNumber", authorNumber);
-        return query.getResultStream().findFirst();
+        return query.getResultStream().findFirst().map(AuthorSQL::toDomain);
     }
 
     @Override
     public List<Author> searchByNameNameStartsWith(String name) {
-        TypedQuery<Author> query = entityManager.createQuery(
-        "SELECT a FROM Author a WHERE a.name.name LIKE :namePattern", Author.class);
+        TypedQuery<AuthorSQL> query = entityManager.createQuery(
+        "SELECT a FROM AuthorSQL a WHERE a.name.name LIKE :namePattern", AuthorSQL.class);
 
         query.setParameter("namePattern", name + "%");
-        return query.getResultList();
+        return query.getResultList().stream().map(AuthorSQL::toDomain).collect(Collectors.toList());
     }
 
     @Override
     public List<Author> searchByNameName(String name) {
-        TypedQuery<Author> query = entityManager.createQuery(
-        "SELECT a FROM Author a WHERE a.name.name = :name", Author.class);
+        TypedQuery<AuthorSQL> query = entityManager.createQuery(
+        "SELECT a FROM AuthorSQL a WHERE a.name.name = :name", AuthorSQL.class);
 
         query.setParameter("name", name);
-        return query.getResultList();
+        return query.getResultList().stream().map(AuthorSQL::toDomain).collect(Collectors.toList());
     }
 
     @Override
     public Author save(Author author) {
-        if (author.getId() == null) {
-            entityManager.persist(author);
-            return author;
+        AuthorSQL authorSQL = AuthorSQL.fromDomain(author);
+
+        if (authorSQL.getId() == null) {
+            entityManager.persist(authorSQL);
+            return authorSQL.toDomain();
         } else {
-            return entityManager.merge(author);
+            AuthorSQL merged = entityManager.merge(authorSQL);
+            return merged.toDomain();
         }
     }
 
     @Override
     public Iterable<Author> findAll() {
-        TypedQuery<Author> query = entityManager.createQuery(
-        "SELECT a FROM Author a", Author.class);
+        TypedQuery<AuthorSQL> query = entityManager.createQuery(
+        "SELECT a FROM AuthorSQL a", AuthorSQL.class);
 
-        return query.getResultList();
+        return query.getResultList().stream().map(AuthorSQL::toDomain).collect(Collectors.toList());
     }
 
     @Override
     public Page<AuthorLendingView> findTopAuthorByLendings(Pageable pageableRules) {
         TypedQuery<AuthorLendingView> query = entityManager.createQuery(
-        "SELECT new pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView(a.name.name, COUNT(l.pk)) " +
-        "FROM Book b " +
+        "SELECT new pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView(a.name.name, COUNT(l.id)) " +
+        "FROM BookSQL b " +
         "JOIN b.authors a " +
-        "JOIN Lending l ON l.book.pk = b.pk " +
+        "JOIN LendingSQL l ON l.book.id = b.id " +
         "GROUP BY a.name " +
         "ORDER BY COUNT(l) DESC", AuthorLendingView.class);
 
@@ -82,24 +88,25 @@ public class AuthorRepositorySQL implements AuthorRepository {
         query.setMaxResults(pageableRules.getPageSize());
 
         List<AuthorLendingView> results = query.getResultList();
-        return new org.springframework.data.domain.PageImpl<>(results, pageableRules, results.size());
+        return new PageImpl<>(results, pageableRules, results.size());
     }
 
     @Override
     public void delete(Author author) {
-        Author managed = entityManager.contains(author) ? author : entityManager.merge(author);
+        AuthorSQL sql = AuthorSQL.fromDomain(author);
+        AuthorSQL managed = entityManager.contains(sql) ? sql : entityManager.merge(sql);
         entityManager.remove(managed);
     }
 
     @Override
     public List<Author> findCoAuthorsByAuthorNumber(Long authorNumber) {
-        TypedQuery<Author> query = entityManager.createQuery(
-        "SELECT DISTINCT coAuthor FROM Book b " +
+        TypedQuery<AuthorSQL> query = entityManager.createQuery(
+        "SELECT DISTINCT coAuthor FROM BookSQL b " +
         "JOIN b.authors coAuthor " +
-        "WHERE b IN (SELECT b FROM Book b JOIN b.authors a WHERE a.authorNumber = :authorNumber) " +
-        "AND coAuthor.authorNumber <> :authorNumber", Author.class);
+        "WHERE b IN (SELECT b FROM BookSQL b JOIN b.authors a WHERE a.authorNumber = :authorNumber) " +
+        "AND coAuthor.authorNumber <> :authorNumber", AuthorSQL.class);
 
         query.setParameter("authorNumber", authorNumber);
-        return query.getResultList();
+        return query.getResultList().stream().map(AuthorSQL::toDomain).collect(Collectors.toList());
     }
 }

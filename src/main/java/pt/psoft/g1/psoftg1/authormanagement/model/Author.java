@@ -2,9 +2,7 @@ package pt.psoft.g1.psoftg1.authormanagement.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.StaleObjectStateException;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
-import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.shared.model.EntityWithPhoto;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 

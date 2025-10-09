@@ -9,6 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
+import pt.psoft.g1.psoftg1.authormanagement.model.Bio;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
@@ -19,6 +20,7 @@ import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
+import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 import pt.psoft.g1.psoftg1.shared.services.ForbiddenNameService;
 
@@ -63,26 +65,24 @@ public class Bootstrapper implements CommandLineRunner {
 
         if (!authors.iterator().hasNext()) {
 
-            final Author author1 = new Author("JK Rowling", "British author best known for the Harry Potter series.", null);
+            final Author author1 = new Author(1L, new Name("JK Rowling"), new Bio("British author best known for the Harry Potter series."));
             authorRepository.save(author1);
 
-            final Author author2 = new Author("George RR Martin", "American novelist, creator of A Song of Ice and Fire.", null);
+            final Author author2 = new Author(2L, new Name("George RR Martin"), new Bio("American novelist, creator of A Song of Ice and Fire."));
             authorRepository.save(author2);
 
-            final Author author3 = new Author("JRR Tolkien", "English writer and philologist, author of The Lord of the Rings.", null);
+            final Author author3 = new Author(3L, new Name("JRR Tolkien"), new Bio("English writer and philologist, author of The Lord of the Rings."));
             authorRepository.save(author3);
 
-            final Author author4 = new Author("Agatha Christie", "English novelist, famous for detective stories like Poirot.", null);
+            final Author author4 = new Author(4L, new Name("Agatha Christie"), new Bio("English novelist, famous for detective stories like Poirot."));
             authorRepository.save(author4);
 
-            final Author author5 = new Author("Ernest Hemingway", "American novelist and Nobel Prize winner in Literature.", null);
+            final Author author5 = new Author(5L, new Name("Ernest Hemingway"), new Bio("American novelist and Nobel Prize winner in Literature."));
             authorRepository.save(author5);
 
-            final Author author6 = new Author("Jane Austen", "English novelist known for Pride and Prejudice.", null);
+            final Author author6 = new Author(6L, new Name("Jane Austen"), new Bio("English novelist known for Pride and Prejudice."));
             authorRepository.save(author6);
 
-            final Author author7 = new Author("Stephen King", "American author of horror and supernatural fiction.", null);
-            authorRepository.save(author7);
         }
     }
 
@@ -90,19 +90,19 @@ public class Bootstrapper implements CommandLineRunner {
         Iterable<Genre> genres = genreRepository.findAll();
 
         if (!genres.iterator().hasNext()) {
-            final Genre genre1 = new Genre("1","Fantasy");
+            final Genre genre1 = new Genre("Fantasy");
             genreRepository.save(genre1);
 
-            final Genre genre2 = new Genre("2","Science Fiction");
+            final Genre genre2 = new Genre("Science Fiction");
             genreRepository.save(genre2);
 
-            final Genre genre3 = new Genre("3","Mystery");
+            final Genre genre3 = new Genre("Mystery");
             genreRepository.save(genre3);
 
-            final Genre genre4 = new Genre("4","Romance");
+            final Genre genre4 = new Genre("Romance");
             genreRepository.save(genre4);
 
-            final Genre genre5 = new Genre("5","Non-Fiction");
+            final Genre genre5 = new Genre("Non-Fiction");
             genreRepository.save(genre5);
         }
     }
