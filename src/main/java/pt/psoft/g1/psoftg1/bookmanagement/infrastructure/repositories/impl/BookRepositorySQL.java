@@ -38,7 +38,7 @@ public class BookRepositorySQL implements BookRepository {
     @Override
     public List<Book> findByTitle(String title) {
         TypedQuery<BookSQL> query = entityManager.createQuery(
-        "SELECT b FROM BookSQL b WHERE b.title.title LIKE :title", BookSQL.class);
+        "SELECT b FROM BookSQL b WHERE b.title LIKE :title", BookSQL.class);
 
         query.setParameter("title", "%" + title + "%");
         return query.getResultList().stream().map(BookSQL::toDomain).toList();
@@ -47,7 +47,7 @@ public class BookRepositorySQL implements BookRepository {
     @Override
     public List<Book> findByAuthorName(String authorName) {
         TypedQuery<BookSQL> query = entityManager.createQuery(
-        "SELECT b FROM BookSQL b JOIN b.authors a WHERE a.name.name LIKE :authorName", BookSQL.class);
+        "SELECT b FROM BookSQL b JOIN b.authors a WHERE a.name LIKE :authorName", BookSQL.class);
 
         query.setParameter("authorName", "%" + authorName + "%");
         return query.getResultList().stream().map(BookSQL::toDomain).toList();

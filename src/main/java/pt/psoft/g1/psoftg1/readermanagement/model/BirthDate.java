@@ -4,7 +4,6 @@ package pt.psoft.g1.psoftg1.readermanagement.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDate;
 
@@ -15,32 +14,33 @@ import java.time.LocalDate;
 public class BirthDate {
 
     @Column(nullable = false, updatable = false)
-    LocalDate birthDate;
+    private LocalDate birthDate;
+    private static final int DEFAULT_MINIMUM_AGE = 0;
 
-    public BirthDate(LocalDate birthDate, int minimumAge) {
-        setBirthDate(birthDate, minimumAge);
+    public BirthDate(LocalDate birthDate) {
+        setBirthDate(birthDate);
     }
 
     public BirthDate(int year, int month, int day, int minimumAge) {
-        setBirthDate(LocalDate.of(year, month, day), minimumAge);
+        setBirthDate(LocalDate.of(year, month, day));
     }
 
-    public BirthDate(String birthDate, int minimumAge) {
+    public BirthDate(String birthDate) {
         if (!birthDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
             throw new IllegalArgumentException("Provided birth date is not in a valid format. Use yyyy-MM-dd");
         }
 
         LocalDate date = LocalDate.parse(birthDate);
-        setBirthDate(date, minimumAge);
+        setBirthDate(date);
     }
 
     protected BirthDate() { }
 
-    private void setBirthDate(LocalDate date, int minimumAge) {
-        if (minimumAge > 0) {
-            LocalDate minimumAgeDate = LocalDate.now().minusYears(minimumAge);
+    private void setBirthDate(LocalDate date) {
+        if (DEFAULT_MINIMUM_AGE > 0) {
+            LocalDate minimumAgeDate = LocalDate.now().minusYears(DEFAULT_MINIMUM_AGE);
             if (date.isAfter(minimumAgeDate)) {
-                throw new IllegalArgumentException("User must be at least " + minimumAge + " years old");
+                throw new IllegalArgumentException("User must be at least " + DEFAULT_MINIMUM_AGE + " years old");
             }
         }
         this.birthDate = date;

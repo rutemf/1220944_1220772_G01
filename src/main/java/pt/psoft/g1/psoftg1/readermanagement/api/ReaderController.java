@@ -74,7 +74,7 @@ class ReaderController {
             ReaderDetails readerDetails = readerService.findByUsername(loggedUser.getUsername())
                     .orElseThrow(() -> new NotFoundException(ReaderDetails.class, loggedUser.getUsername()));
             //return new ListResponse<>(readerViewMapper.toReaderView(readerService.findAll()));
-            return ResponseEntity.ok().eTag(Long.toString(readerDetails.getVersion())).body(readerViewMapper.toReaderView(readerDetails));
+            return ResponseEntity.ok().body(readerViewMapper.toReaderView(readerDetails));
         }
 
         return ResponseEntity.ok().body(readerViewMapper.toReaderView(readerService.findAll()));
@@ -105,7 +105,6 @@ class ReaderController {
         readerQuoteView.setQuote(apiNinjasService.getRandomEventFromYearMonth(birthYear, birhMonth));
 
         return ResponseEntity.ok()
-                .eTag(Long.toString(readerDetails.getVersion()))
                 .body(readerQuoteView);
     }
 
@@ -229,7 +228,6 @@ class ReaderController {
                 .build().toUri();
 
         return ResponseEntity.created(newReaderUri)
-                .eTag(Long.toString(readerDetails.getVersion()))
                 .body(readerViewMapper.toReaderView(readerDetails));
     }
 
@@ -278,7 +276,6 @@ class ReaderController {
                 .update(loggedUser.getId(), readerRequest, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue), fileName);
 
         return ResponseEntity.ok()
-                .eTag(Long.toString(readerDetails.getVersion()))
                 .body(readerViewMapper.toReaderView(readerDetails));
     }
 

@@ -1,7 +1,5 @@
 package pt.psoft.g1.psoftg1.readermanagement.model;
 
-import jakarta.annotation.Nullable;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
@@ -18,41 +16,13 @@ import java.util.List;
 @Setter
 public class ReaderDetails extends EntityWithPhoto {
 
-    @Getter
-    @Setter
-    @OneToOne
     private Reader reader;
-
     private ReaderNumber readerNumber;
-
-    @Embedded
-    @Getter
     private BirthDate birthDate;
-
     private PhoneNumber phoneNumber;
-
-    @Setter
-    @Getter
-    @Basic
     private boolean gdprConsent;
-
-    @Setter
-    @Basic
-    @Getter
     private boolean marketingConsent;
-
-    @Setter
-    @Basic
-    @Getter
     private boolean thirdPartySharingConsent;
-
-    @Version
-    @Getter
-    private Long version;
-
-    @Getter
-    @Setter
-    @ManyToMany
     private List<Genre> interestList;
 
     public ReaderDetails(int readerNumber, Reader reader, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty, String photoURI, List<Genre> interestList) {
@@ -96,9 +66,6 @@ public class ReaderDetails extends EntityWithPhoto {
     }
 
     public void applyPatch(final long currentVersion, final UpdateReaderRequest request, String photoURI, List<Genre> interestList) {
-        if(currentVersion != this.version) {
-            throw new ConflictException("Provided version does not match latest version of this object");
-        }
 
         String birthDate = request.getBirthDate();
         String phoneNumber = request.getPhoneNumber();
@@ -148,9 +115,6 @@ public class ReaderDetails extends EntityWithPhoto {
     }
 
     public void removePhoto(long desiredVersion) {
-        if(desiredVersion != this.version) {
-            throw new ConflictException("Provided version does not match latest version of this object");
-        }
 
         setPhotoInternal(null);
     }

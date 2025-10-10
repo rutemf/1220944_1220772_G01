@@ -43,4 +43,8 @@ public class Lending {
     public int getDaysDelayed() {
         return Math.max((int) ChronoUnit.DAYS.between(limitDate, Objects.requireNonNullElseGet(returnedDate, LocalDate::now)), 0);
     }
+
+    public int getFineValueInCents() {
+        return getDaysDelayed() * fineValuePerDayInCents;
+    }
 }

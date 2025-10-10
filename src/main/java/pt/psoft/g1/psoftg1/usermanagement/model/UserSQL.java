@@ -47,8 +47,7 @@ public class UserSQL implements UserDetails {
     private String username;
     private String password;
 
-    @Embedded
-    private Name name;
+    private String name;
 
     @ElementCollection
     private Set<Role> authorities = new HashSet<>();
@@ -58,7 +57,7 @@ public class UserSQL implements UserDetails {
         this.id = base65Service.generateIdSQL();
         this.username = user.getUsername();
         this.password = user.getPassword();
-        this.name = user.getName();
+        this.name = user.getName().toString();
         this.authorities = new HashSet<>(user.getAuthorities());
         this.enabled = user.isEnabled();
     }
@@ -88,7 +87,7 @@ public class UserSQL implements UserDetails {
 
     public User toDomain() {
         User user = new User(this.username, this.password);
-        user.setName(this.name);
+        user.setName(new Name(this.name));
         user.getAuthorities().addAll(this.authorities);
         return user;
     }

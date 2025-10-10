@@ -97,7 +97,7 @@ public class UserRepositorySQL implements UserRepository {
     @Override
     public List<User> findByNameName(String name) {
         TypedQuery<UserSQL> query = entityManager.createQuery(
-        "SELECT u FROM UserSQL u WHERE u.name.name = :name", UserSQL.class);
+        "SELECT u FROM UserSQL u WHERE u.name = :name", UserSQL.class);
 
         query.setParameter("name", name);
         return query.getResultList().stream().map(UserSQL::toDomain).toList();
@@ -106,7 +106,7 @@ public class UserRepositorySQL implements UserRepository {
     @Override
     public List<User> findByNameNameContains(String name) {
         TypedQuery<UserSQL> query = entityManager.createQuery(
-        "SELECT u FROM UserSQL u WHERE u.name.name LIKE :name", UserSQL.class);
+        "SELECT u FROM UserSQL u WHERE u.name LIKE :name", UserSQL.class);
 
         query.setParameter("name", "%" + name + "%");
         return query.getResultList().stream().map(UserSQL::toDomain).toList();

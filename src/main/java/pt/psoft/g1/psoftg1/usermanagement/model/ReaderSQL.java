@@ -9,7 +9,7 @@ import pt.psoft.g1.psoftg1.shared.services.Base65Service;
 @Entity
 @Getter
 @Setter
-public class ReaderSQL {
+public class ReaderSQL extends UserSQL {
 
     @Id
     private String id;

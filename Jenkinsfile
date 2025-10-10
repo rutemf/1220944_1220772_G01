@@ -65,12 +65,12 @@ pipeline {
             }
         }
 
-        stage('Deploy to DEI') {
+        stage('Deploy Locally') {
             when {
                 branch 'staging'
             }
             steps {
-                echo 'Deploying to DEI...'
+                echo 'Deploying...'
             }
         }
 

@@ -38,7 +38,7 @@ public class AuthorRepositorySQL implements AuthorRepository {
     @Override
     public List<Author> searchByNameNameStartsWith(String name) {
         TypedQuery<AuthorSQL> query = entityManager.createQuery(
-        "SELECT a FROM AuthorSQL a WHERE a.name.name LIKE :namePattern", AuthorSQL.class);
+        "SELECT a FROM AuthorSQL a WHERE a.name LIKE :namePattern", AuthorSQL.class);
 
         query.setParameter("namePattern", name + "%");
         return query.getResultList().stream().map(AuthorSQL::toDomain).collect(Collectors.toList());
@@ -47,7 +47,7 @@ public class AuthorRepositorySQL implements AuthorRepository {
     @Override
     public List<Author> searchByNameName(String name) {
         TypedQuery<AuthorSQL> query = entityManager.createQuery(
-        "SELECT a FROM AuthorSQL a WHERE a.name.name = :name", AuthorSQL.class);
+        "SELECT a FROM AuthorSQL a WHERE a.name = :name", AuthorSQL.class);
 
         query.setParameter("name", name);
         return query.getResultList().stream().map(AuthorSQL::toDomain).collect(Collectors.toList());
@@ -77,7 +77,7 @@ public class AuthorRepositorySQL implements AuthorRepository {
     @Override
     public Page<AuthorLendingView> findTopAuthorByLendings(Pageable pageableRules) {
         TypedQuery<AuthorLendingView> query = entityManager.createQuery(
-        "SELECT new pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView(a.name.name, COUNT(l.id)) " +
+        "SELECT new pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView(a.name, COUNT(l.id)) " +
         "FROM BookSQL b " +
         "JOIN b.authors a " +
         "JOIN LendingSQL l ON l.book.id = b.id " +

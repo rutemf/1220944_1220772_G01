@@ -43,6 +43,10 @@ public class User implements UserDetails {
         this.password = passwordEncoder.encode(password);
     }
 
+    public void addAuthority(final Role role) {
+        this.authorities.add(role);
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return isEnabled();
