@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.shared.model.Name;
-import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Getter
 @Setter
@@ -21,8 +21,8 @@ public class AuthorNoSQL {
     private Bio bio;
 
     public AuthorNoSQL(Author author) {
-        Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdNoSQL();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdNoSQL();
         this.authorNumber = author.getAuthorNumber();
         this.name = author.getName();
         this.bio = author.getBio();

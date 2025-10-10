@@ -17,7 +17,7 @@ import pt.psoft.g1.psoftg1.shared.model.Name;
 
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Getter
 @Setter
@@ -53,8 +53,8 @@ public class UserSQL implements UserDetails {
     private Set<Role> authorities = new HashSet<>();
 
     public UserSQL(User user) {
-        Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdSQL();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdSQL();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.name = user.getName().toString();

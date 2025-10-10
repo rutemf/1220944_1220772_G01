@@ -10,7 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.userdetails.UserDetails;
 import pt.psoft.g1.psoftg1.shared.model.Name;
-import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -43,8 +43,8 @@ public class UserNoSQL implements UserDetails {
     private Set<Role> authorities = new HashSet<>();
 
     public UserNoSQL(User user) {
-        Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdNoSQL();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdNoSQL();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.name = user.getName();

@@ -6,9 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
-import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.time.LocalDate;
 
@@ -56,8 +55,8 @@ public class LendingSQL {
     private Integer daysOverdue;
 
     public LendingSQL(Lending lending) {
-        Base65Service base65Service = new Base65Service();
-        base65Service.generateIdSQL();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        IDGeneratorService.generateIdSQL();
         this.lendingNumber = lending.getLendingNumber();
         this.book = lending.getBook() != null ? BookSQL.fromDomain(lending.getBook()) : null;
         this.readerDetails = lending.getReaderDetails() != null ? ReaderDetailsSQL.fromDomain(lending.getReaderDetails()) : null;

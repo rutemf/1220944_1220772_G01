@@ -6,7 +6,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.nio.file.Paths;
 
@@ -23,8 +23,8 @@ public class PhotoSQL {
     private String photoFile;
 
     public PhotoSQL(Photo photo) {
-        Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdSQL();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdSQL();
         this.photoFile = photo.getPhotoFile();
     }
 

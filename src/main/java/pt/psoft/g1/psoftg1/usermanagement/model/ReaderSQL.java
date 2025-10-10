@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Entity
 @Getter
@@ -15,8 +15,8 @@ public class ReaderSQL extends UserSQL {
     private String id;
 
     public ReaderSQL(Reader reader) {
-        Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdSQL();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdSQL();
     }
 
     protected ReaderSQL() {}

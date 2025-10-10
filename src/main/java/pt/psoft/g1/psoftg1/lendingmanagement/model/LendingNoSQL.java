@@ -5,9 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.bookmanagement.model.BookNoSQL;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
-import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.time.LocalDate;
 
@@ -35,8 +34,8 @@ public class LendingNoSQL {
     private Integer daysOverdue;
 
     public LendingNoSQL(Lending lending) {
-        Base65Service base65Service = new Base65Service();
-        base65Service.generateIdNoSQL();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        IDGeneratorService.generateIdNoSQL();
         this.lendingNumber = lending.getLendingNumber();
         this.book = lending.getBook() != null ? BookNoSQL.fromDomain(lending.getBook()) : null;
         this.readerDetails = lending.getReaderDetails();

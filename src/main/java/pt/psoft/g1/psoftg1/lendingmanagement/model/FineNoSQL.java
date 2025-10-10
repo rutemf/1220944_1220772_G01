@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Getter
 @Setter
@@ -23,8 +23,8 @@ public class FineNoSQL {
     private LendingNoSQL lending;
 
     public FineNoSQL(Fine fine) {
-        Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdNoSQL();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdNoSQL();
         this.fineValuePerDayInCents = fine.getFineValuePerDayInCents();
         this.centsValue = fine.getCentsValue();
         this.lending = LendingNoSQL.fromDomain(fine.getLending());

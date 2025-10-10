@@ -5,7 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Getter
 @Setter
@@ -19,8 +19,8 @@ public class ForbiddenNameSQL {
     private String forbiddenName;
 
     public ForbiddenNameSQL(ForbiddenName forbiddenName) {
-        Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdSQL();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdSQL();
         this.forbiddenName = forbiddenName.getForbiddenName();
     }
 

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
-import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 import pt.psoft.g1.psoftg1.usermanagement.model.ReaderSQL;
 
 import java.util.List;
@@ -39,8 +39,8 @@ public class ReaderDetailsSQL {
     private List<GenreSQL> interestList;
 
     public ReaderDetailsSQL(ReaderDetails readerDetails) {
-        Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdSQL();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdSQL();
 
         this.reader = ReaderSQL.fromDomain(readerDetails.getReader());
         this.readerNumber = readerDetails.getReaderNumber();

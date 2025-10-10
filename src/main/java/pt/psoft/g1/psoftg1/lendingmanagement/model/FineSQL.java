@@ -3,7 +3,7 @@ package pt.psoft.g1.psoftg1.lendingmanagement.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Entity
 @Getter
@@ -24,8 +24,8 @@ public class FineSQL {
     private LendingSQL lending;
 
     public FineSQL(Fine fine) {
-        Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdSQL();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdSQL();
         this.fineValuePerDayInCents = fine.getFineValuePerDayInCents();
         this.centsValue = fine.getCentsValue();
         this.lending = LendingSQL.fromDomain(fine.getLending());

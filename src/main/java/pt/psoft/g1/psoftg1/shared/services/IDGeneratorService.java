@@ -6,7 +6,7 @@ import java.security.SecureRandom;
 import java.time.Instant;
 
 @Service
-public class Base65Service {
+public class IDGeneratorService {
 
     private static final String BASE65_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/#";
     private static final int DEFAULT_LENGTH = 8;
@@ -27,8 +27,8 @@ public class Base65Service {
     }
 
     private String generateRandomBase65() {
-        StringBuilder sb = new StringBuilder(Base65Service.DEFAULT_LENGTH);
-        for (int i = 0; i < Base65Service.DEFAULT_LENGTH; i++) {
+        StringBuilder sb = new StringBuilder(IDGeneratorService.DEFAULT_LENGTH);
+        for (int i = 0; i < IDGeneratorService.DEFAULT_LENGTH; i++) {
             int index = random.nextInt(BASE);
             sb.append(BASE65_ALPHABET.charAt(index));
         }

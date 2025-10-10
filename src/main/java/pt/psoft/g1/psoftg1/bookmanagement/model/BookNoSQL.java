@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.authormanagement.model.AuthorNoSQL;
 import pt.psoft.g1.psoftg1.genremanagement.model.GenreNoSQL;
-import pt.psoft.g1.psoftg1.shared.services.Base65Service;
+import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.util.List;
 
@@ -32,8 +32,8 @@ public class BookNoSQL {
     private String photoURI;
 
     public BookNoSQL(Book book) {
-        Base65Service base65Service = new Base65Service();
-        this.id = base65Service.generateIdNoSQL();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdNoSQL();
         this.isbn = book.getIsbn();
         this.title = book.getTitle();
         this.description = book.getDescription();
