@@ -15,24 +15,41 @@ public class IDGeneratorService {
     private final SecureRandom random = new SecureRandom();
 
     public String generateIdSQL() {
-        String randomPart = generateRandomBase65();
-        long timestamp = Instant.now().toEpochMilli();
-        return randomPart + "-" + timestamp;
+        String randomPart = generateRandomNumeric6();
+        return encodeBase65(randomPart);
     }
 
     public String generateIdNoSQL() {
-        String randomPart = generateRandomBase65();
+        String randomPart = generateRandomHex6();
         long timestamp = Instant.now().toEpochMilli();
         return timestamp + "-" + randomPart;
     }
 
-    private String generateRandomBase65() {
-        StringBuilder sb = new StringBuilder(IDGeneratorService.DEFAULT_LENGTH);
-        for (int i = 0; i < IDGeneratorService.DEFAULT_LENGTH; i++) {
-            int index = random.nextInt(BASE);
-            sb.append(BASE65_ALPHABET.charAt(index));
+    private String generateRandomHex6() {
+        int value = random.nextInt(0x1000000);
+        return String.format("%06X", value);
+    }
+
+    private String generateRandomNumeric6() {
+        int value = random.nextInt(1_000_000);
+        return String.format("%06d", value);
+    }
+
+    private String encodeBase65(String numericString) {
+        long number = Long.parseLong(numericString);
+        StringBuilder encoded = new StringBuilder();
+
+        while (number > 0) {
+            int remainder = (int) (number % BASE);
+            encoded.insert(0, BASE65_ALPHABET.charAt(remainder));
+            number /= BASE;
         }
-        return sb.toString();
+
+        while (encoded.length() < DEFAULT_LENGTH) {
+            encoded.insert(0, BASE65_ALPHABET.charAt(0));
+        }
+
+        return encoded.toString();
     }
 }
 
