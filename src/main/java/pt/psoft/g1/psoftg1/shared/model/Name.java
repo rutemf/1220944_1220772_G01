@@ -26,14 +26,6 @@ public class Name {
             throw new IllegalArgumentException("Name cannot be blank, nor only white spaces");
         if(!StringUtilsCustom.isAlphanumeric(name))
             throw new IllegalArgumentException("Name can only contain alphanumeric characters");
-
-/*
-        //  Logic moved to UserService.java, ReaderService.java
-        for(String forbidden : forbiddenNames){
-            if(name.contains(forbidden))
-                throw new IllegalArgumentException("Name contains forbidden word");
-        }
-*/
         this.name = name;
     }
     public String toString() {

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
+import pt.psoft.g1.psoftg1.usermanagement.model.UserSQL;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 import pt.psoft.g1.psoftg1.usermanagement.services.SearchUsersQuery;
 
@@ -37,17 +38,20 @@ public class UserRepositorySQL implements UserRepository {
 
     @Override
     public <S extends User> S save(S entity) {
-        if (entity.getId() == null) {
-            entityManager.persist(entity);
-            return entity;
+        UserSQL userSQL = UserSQL.fromDomain(entity);
+        if (userSQL.getId() == null) {
+            entityManager.persist(userSQL);
+            return (S) userSQL.toDomain();
         } else {
-            return entityManager.merge(entity);
+            UserSQL merged = entityManager.merge(userSQL);
+            return (S) merged.toDomain();
         }
     }
 
     @Override
     public Optional<User> findById(Long objectId) {
-        return Optional.ofNullable(entityManager.find(User.class, objectId));
+        UserSQL userSQL = entityManager.find(UserSQL.class, objectId);
+        return Optional.ofNullable(userSQL).map(UserSQL::toDomain);
     }
 
     @Override
@@ -58,39 +62,60 @@ public class UserRepositorySQL implements UserRepository {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        TypedQuery<User> query = entityManager.createQuery(
-        "SELECT u FROM User u WHERE u.username = :username", User.class);
+        TypedQuery<UserSQL> query = entityManager.createQuery(
+        "SELECT u FROM UserSQL u WHERE u.username = :username", UserSQL.class);
 
         query.setParameter("username", username);
-        return query.getResultStream().findFirst();
+        return query.getResultStream().findFirst().map(UserSQL::toDomain);
     }
 
     @Override
     public List<User> searchUsers(Page page, SearchUsersQuery query) {
-        return List.of();
+        StringBuilder jpql = new StringBuilder("SELECT u FROM UserSQL u WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (query.getUsername() != null && !query.getUsername().isBlank()) {
+            jpql.append(" AND u.username LIKE ?1").append(1);
+            params.add("%" + query.getUsername() + "%");
+        }
+        if (query.getFullName() != null && !query.getFullName().isBlank()) {
+            jpql.append(" AND u.name.name LIKE ?").append(params.size() + 1);
+            params.add("%" + query.getFullName() + "%");
+        }
+
+        TypedQuery<UserSQL> typedQuery = entityManager.createQuery(jpql.toString(), UserSQL.class);
+        for (int i = 0; i < params.size(); i++) {
+            typedQuery.setParameter(i + 1, params.get(i));
+        }
+
+        typedQuery.setFirstResult((page.getNumber() - 1) * page.getLimit());
+        typedQuery.setMaxResults(page.getLimit());
+
+        return typedQuery.getResultList().stream().map(UserSQL::toDomain).toList();
     }
 
     @Override
     public List<User> findByNameName(String name) {
-        TypedQuery<User> query = entityManager.createQuery(
-        "SELECT u FROM User u WHERE u.name.name = :name", User.class);
+        TypedQuery<UserSQL> query = entityManager.createQuery(
+        "SELECT u FROM UserSQL u WHERE u.name.name = :name", UserSQL.class);
 
         query.setParameter("name", name);
-        return query.getResultList();
+        return query.getResultList().stream().map(UserSQL::toDomain).toList();
     }
 
     @Override
     public List<User> findByNameNameContains(String name) {
-        TypedQuery<User> query = entityManager.createQuery(
-        "SELECT u FROM User u WHERE u.name.name LIKE :name", User.class);
+        TypedQuery<UserSQL> query = entityManager.createQuery(
+        "SELECT u FROM UserSQL u WHERE u.name.name LIKE :name", UserSQL.class);
 
         query.setParameter("name", "%" + name + "%");
-        return query.getResultList();
+        return query.getResultList().stream().map(UserSQL::toDomain).toList();
     }
 
     @Override
     public void delete(User user) {
-        User managed = entityManager.contains(user) ? user : entityManager.merge(user);
+        UserSQL userSQL = UserSQL.fromDomain(user);
+        UserSQL managed = entityManager.contains(userSQL) ? userSQL : entityManager.merge(userSQL);
         entityManager.remove(managed);
     }
 }

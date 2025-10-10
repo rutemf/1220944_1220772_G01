@@ -1,0 +1,43 @@
+@startuml
+
+autonumber
+
+title Get Generic Resource By ID
+
+participant "GenericController" as Controller
+participant "GenericService" as Service
+participant "GenericMapper" as Mapper
+participant "GenericRepository" as Repo
+participant "H2 Database" as H2DB
+
+-> Controller: GET /api/generic/{id}
+activate Controller
+
+    Controller -> Service: get by id
+    activate Service
+
+            Service -> Repo: find by id
+            activate Repo
+
+                Repo -> H2DB: SELECT * FROM generic WHERE id = ?
+                activate H2DB
+
+                    H2DB --> Repo: returns entity
+                deactivate H2DB
+
+                Repo --> Service: returns entity
+            deactivate Repo
+
+            Service -> Mapper: map to DTO
+            activate Mapper
+
+                Mapper --> Service: return DTO
+            deactivate Mapper
+
+            Service --> Controller: return DTO
+        deactivate Service
+
+    <-- Controller: returns data
+deactivate Controller
+
+@enduml
