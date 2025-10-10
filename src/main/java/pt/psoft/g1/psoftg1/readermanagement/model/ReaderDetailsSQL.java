@@ -20,17 +20,12 @@ public class ReaderDetailsSQL {
     private String id;
 
     @OneToOne
+    @JoinColumn(name = "reader_id")
     private ReaderSQL reader;
 
-    @Embedded
     private String readerNumber;
-
-    @Embedded
     private String birthDate;
-
-    @Embedded
     private String phoneNumber;
-
     private boolean gdprConsent;
     private boolean marketingConsent;
     private boolean thirdPartySharingConsent;

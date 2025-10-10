@@ -248,7 +248,7 @@ class ReaderController {
         }
 
         this.fileStorageService.deleteFile(readerDetails.getPhoto().getPhotoFile());
-        readerService.removeReaderPhoto(readerDetails.getReaderNumber(), readerDetails.getVersion());
+        readerService.removeReaderPhoto(readerDetails.getReaderNumber(),1L);
 
         return ResponseEntity.ok().build();
     }
@@ -273,7 +273,7 @@ class ReaderController {
 
         User loggedUser = userService.getAuthenticatedUser(authentication);
         ReaderDetails readerDetails = readerService
-                .update(loggedUser.getId(), readerRequest, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue), fileName);
+                .update(loggedUser.getUsername(), readerRequest, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue), fileName);
 
         return ResponseEntity.ok()
                 .body(readerViewMapper.toReaderView(readerDetails));

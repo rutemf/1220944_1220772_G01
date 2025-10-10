@@ -61,11 +61,11 @@ public abstract class EditUserMapper extends MapperInterface {
 		return new HashSet<>();
 	}
 
-	protected Name map(String value) {
+	protected Name stringToName(String value) {
 		return value != null ? new Name(value) : null;
 	}
 
-	protected String map(Name name) {
+	protected String nameToString(Name name) {
 		return name != null ? name.toString() : null;
 	}
 

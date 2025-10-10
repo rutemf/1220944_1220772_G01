@@ -7,6 +7,7 @@ import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -44,7 +45,7 @@ public class Lending {
         return Math.max((int) ChronoUnit.DAYS.between(limitDate, Objects.requireNonNullElseGet(returnedDate, LocalDate::now)), 0);
     }
 
-    public int getFineValueInCents() {
-        return getDaysDelayed() * fineValuePerDayInCents;
+    public Optional<Integer> getFineValueInCents() {
+        return Optional.of(getDaysDelayed() * fineValuePerDayInCents);
     }
 }
