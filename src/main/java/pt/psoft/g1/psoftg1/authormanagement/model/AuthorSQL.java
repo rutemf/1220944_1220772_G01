@@ -1,6 +1,5 @@
 package pt.psoft.g1.psoftg1.authormanagement.model;
 
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -20,18 +19,16 @@ public class AuthorSQL {
 
     private Long authorNumber;
 
-    @Embedded
-    private Name name;
+    private String name;
 
-    @Embedded
-    private Bio bio;
+    private String bio;
 
     public AuthorSQL(Author author) {
         Base65Service base65Service = new Base65Service();
         this.id = base65Service.generateIdSQL();
         this.authorNumber = author.getAuthorNumber();
-        this.name = author.getName();
-        this.bio = author.getBio();
+        this.name = author.getName().toString();
+        this.bio = author.getBio().toString();
     }
 
     // JPA
@@ -41,8 +38,8 @@ public class AuthorSQL {
     public Author toDomain() {
         return new Author(
                 authorNumber,
-                name,
-                bio != null ? bio : null
+                new Name(name),
+                new Bio(bio)
         );
     }
 

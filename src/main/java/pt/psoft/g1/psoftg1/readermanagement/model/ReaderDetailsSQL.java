@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
 import pt.psoft.g1.psoftg1.shared.services.Base65Service;
-import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
+import pt.psoft.g1.psoftg1.usermanagement.model.ReaderSQL;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,16 +20,16 @@ public class ReaderDetailsSQL {
     private String id;
 
     @OneToOne
-    private Reader reader;
+    private ReaderSQL reader;
 
     @Embedded
-    private ReaderNumber readerNumber;
+    private String readerNumber;
 
     @Embedded
-    private BirthDate birthDate;
+    private String birthDate;
 
     @Embedded
-    private PhoneNumber phoneNumber;
+    private String phoneNumber;
 
     private boolean gdprConsent;
     private boolean marketingConsent;
@@ -42,9 +42,9 @@ public class ReaderDetailsSQL {
         Base65Service base65Service = new Base65Service();
         this.id = base65Service.generateIdSQL();
 
-        this.reader = readerDetails.getReader();
+        this.reader = ReaderSQL.fromDomain(readerDetails.getReader());
         this.readerNumber = readerDetails.getReaderNumber();
-        this.birthDate = readerDetails.getBirthDate();
+        this.birthDate = readerDetails.getBirthDate().toString();
         this.phoneNumber = readerDetails.getPhoneNumber();
         this.gdprConsent = readerDetails.isGdprConsent();
         this.marketingConsent = readerDetails.isMarketingConsent();
@@ -56,7 +56,17 @@ public class ReaderDetailsSQL {
     protected ReaderDetailsSQL() { }
 
     public ReaderDetails toDomain() {
-        return null;
+        return new ReaderDetails(
+                Integer.parseInt(this.readerNumber),
+                this.reader.toDomain(),
+                this.birthDate,
+                this.phoneNumber,
+                this.gdprConsent,
+                this.marketingConsent,
+                this.thirdPartySharingConsent,
+                null,
+                this.interestList.stream().map(GenreSQL::toDomain).collect(Collectors.toList())
+        );
     }
 
     public static ReaderDetailsSQL fromDomain(ReaderDetails readerDetails) {

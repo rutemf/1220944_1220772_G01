@@ -21,11 +21,9 @@ public class BookSQL {
     @Embedded
     private Isbn isbn;
 
-    @Embedded
-    private Title title;
+    private String title;
 
-    @Embedded
-    private Description description;
+    private String description;
 
     @ManyToOne
     private GenreSQL genre;
@@ -39,8 +37,8 @@ public class BookSQL {
         Base65Service base65Service = new Base65Service();
         this.id = base65Service.generateIdSQL();
         this.isbn = book.getIsbn();
-        this.title = book.getTitle();
-        this.description = book.getDescription();
+        this.title = book.getTitle().toString();
+        this.description = book.getDescription().toString();
         this.genre = book.getGenre() != null ? GenreSQL.fromDomain(book.getGenre()) : null;
         this.authors = book.getAuthors().stream().map(AuthorSQL::fromDomain).toList();
         this.photoURI = book.getPhotoURI();
@@ -52,8 +50,8 @@ public class BookSQL {
     public Book toDomain() {
         return new Book(
                 isbn.toString(),
-                title.toString(),
-                description != null ? description.toString() : null,
+                title,
+                description != null ? description : null,
                 genre != null ? genre.toDomain() : null,
                 authors != null ? authors.stream().map(AuthorSQL::toDomain).toList() : null,
                 photoURI

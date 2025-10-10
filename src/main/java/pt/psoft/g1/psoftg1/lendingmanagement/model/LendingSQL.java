@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
 import pt.psoft.g1.psoftg1.shared.services.Base65Service;
 
 import java.time.LocalDate;
@@ -29,7 +30,7 @@ public class LendingSQL {
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    private ReaderDetails readerDetails;
+    private ReaderDetailsSQL readerDetails;
 
     @NotNull
     @Column(nullable = false, updatable = false)
@@ -59,7 +60,7 @@ public class LendingSQL {
         base65Service.generateIdSQL();
         this.lendingNumber = lending.getLendingNumber();
         this.book = lending.getBook() != null ? BookSQL.fromDomain(lending.getBook()) : null;
-        this.readerDetails = lending.getReaderDetails();
+        this.readerDetails = lending.getReaderDetails() != null ? ReaderDetailsSQL.fromDomain(lending.getReaderDetails()) : null;
         this.startDate = lending.getStartDate();
         this.limitDate = lending.getLimitDate();
         this.returnedDate = lending.getReturnedDate();
@@ -75,7 +76,7 @@ public class LendingSQL {
     public Lending toDomain() {
         return new Lending(
                 book != null ? book.toDomain() : null,
-                readerDetails,
+                readerDetails != null ? readerDetails.toDomain() : null,
                 daysUntilReturn,
                 fineValuePerDayInCents);
     }

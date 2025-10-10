@@ -8,17 +8,15 @@ import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
 import pt.psoft.g1.psoftg1.shared.model.EntityWithPhoto;
+import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 
 import java.nio.file.InvalidPathException;
 import java.util.List;
 
-@Entity
-@Table(name = "READER_DETAILS")
+@Getter
+@Setter
 public class ReaderDetails extends EntityWithPhoto {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long pk;
 
     @Getter
     @Setter
@@ -31,7 +29,6 @@ public class ReaderDetails extends EntityWithPhoto {
     @Getter
     private BirthDate birthDate;
 
-    @Embedded
     private PhoneNumber phoneNumber;
 
     @Setter
@@ -120,7 +117,7 @@ public class ReaderDetails extends EntityWithPhoto {
         }
 
         if(fullName != null) {
-            this.reader.setName(fullName);
+            this.reader.setName(new Name(fullName));
         }
 
         if(birthDate != null) {
