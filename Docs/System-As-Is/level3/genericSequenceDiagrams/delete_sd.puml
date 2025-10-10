@@ -7,7 +7,7 @@ title Delete Generic Resource By ID
 participant "GenericController" as Controller
 participant "GenericService" as Service
 participant "GenericRepository" as Repo
-participant "H2 Database" as H2DB
+database "H2 Database" as H2DB
 
 -> Controller: DELETE /api/generic/{id}
 activate Controller

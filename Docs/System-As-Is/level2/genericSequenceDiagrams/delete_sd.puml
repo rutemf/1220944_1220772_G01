@@ -6,7 +6,7 @@ title Delete Generic Resource
 
 actor "User" as USER
 participant "BackEnd" as System
-participant "H2 DataBase" as H2DB
+database "H2 DataBase" as H2DB
 
 activate USER
 
