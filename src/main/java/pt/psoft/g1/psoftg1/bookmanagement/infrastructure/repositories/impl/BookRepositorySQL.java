@@ -6,11 +6,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import pt.psoft.g1.psoftg1.authormanagement.model.AuthorSQL;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.services.BookCountDTO;
 import pt.psoft.g1.psoftg1.bookmanagement.services.SearchBooksQuery;
+import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -85,14 +87,41 @@ public class BookRepositorySQL implements BookRepository {
     public Book save(Book book) {
         BookSQL entity = BookSQL.fromDomain(book);
 
+        if (entity.getGenre() != null) {
+            TypedQuery<GenreSQL> q = entityManager.createQuery(
+            "SELECT g FROM GenreSQL g WHERE g.genre = :genre", GenreSQL.class);
+
+            q.setParameter("genre", entity.getGenre().getGenre());
+
+            List<GenreSQL> results = q.getResultList();
+            if (!results.isEmpty()) {
+                entity.setGenre(results.get(0));
+            }
+        }
+
+        if (entity.getAuthors() != null && !entity.getAuthors().isEmpty()) {
+            List<AuthorSQL> managedAuthors = entity.getAuthors().stream().map(a -> {
+
+                TypedQuery<AuthorSQL> query = entityManager.createQuery(
+                "SELECT au FROM AuthorSQL au WHERE au.name = :name", AuthorSQL.class);
+
+                query.setParameter("name", a.getName());
+
+                return query.getResultStream().findFirst().orElse(a);
+            }).toList();
+
+            entity.setAuthors(managedAuthors);
+        }
+
         if (entityManager.find(BookSQL.class, entity.getId()) == null) {
             entityManager.persist(entity);
         } else {
-            entityManager.merge(entity);
+            entity = entityManager.merge(entity);
         }
 
         return entity.toDomain();
     }
+
 
     @Override
     public void delete(Book book) {
