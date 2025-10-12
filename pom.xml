@@ -167,6 +167,13 @@
                     <failOnError>false</failOnError>
                 </configuration>
             </plugin>
+
+			<!-- PITest for Mutation Testing -->
+			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>1.15.0</version>
+			</plugin>
         </plugins>
 	</build>
 

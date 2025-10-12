@@ -30,6 +30,7 @@ pipeline {
                 echo 'Code Coverage...'
 
                 echo 'Mutation Testing...'
+                sh 'mvn org.pitest:pitest-maven:mutationCoverage'
 
                 echo 'Reporting Results...'
             }
