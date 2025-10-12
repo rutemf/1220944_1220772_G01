@@ -24,7 +24,6 @@ public class FineSQL {
     private LendingSQL lending;
 
     public FineSQL(Fine fine) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdSQL();
         this.fineValuePerDayInCents = fine.getFineValuePerDayInCents();
         this.centsValue = fine.getCentsValue();

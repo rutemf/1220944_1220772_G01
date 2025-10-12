@@ -187,7 +187,7 @@
 				</configuration>
 
 				<dependencies>
-					<!-- 🧪 JUnit 5 Plugin -->
+					<!-- JUnit 5 Plugin -->
 					<dependency>
 						<groupId>org.pitest</groupId>
 						<artifactId>pitest-junit5-plugin</artifactId>
