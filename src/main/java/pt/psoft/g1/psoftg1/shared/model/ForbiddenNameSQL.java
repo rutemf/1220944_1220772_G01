@@ -19,7 +19,6 @@ public class ForbiddenNameSQL {
     private String forbiddenName;
 
     public ForbiddenNameSQL(ForbiddenName forbiddenName) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdSQL();
         this.forbiddenName = forbiddenName.getForbiddenName();
     }

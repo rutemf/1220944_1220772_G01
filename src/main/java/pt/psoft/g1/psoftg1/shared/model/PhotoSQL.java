@@ -23,7 +23,6 @@ public class PhotoSQL {
     private String photoFile;
 
     public PhotoSQL(Photo photo) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdSQL();
         this.photoFile = photo.getPhotoFile();
     }
