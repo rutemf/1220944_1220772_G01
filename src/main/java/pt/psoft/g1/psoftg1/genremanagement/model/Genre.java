@@ -1,16 +1,19 @@
 package pt.psoft.g1.psoftg1.genremanagement.model;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class Genre {
 
-    private final String genre;
+    private String genre;
     private final int GENRE_MAX_LENGTH = 100;
 
     public Genre(String genre) {
+        validateGenre(genre);
+        this.genre = genre;
+    }
+
+    public void setGenre(String genre) {
         validateGenre(genre);
         this.genre = genre;
     }

@@ -182,26 +182,19 @@ public class Bootstrapper implements CommandLineRunner {
     private void createLendings() {
         int i;
         int seq = 0;
-        final var book1 = bookRepository.findByIsbn("9789720706386");
-        final var book2 = bookRepository.findByIsbn("9789723716160");
-        final var book3 = bookRepository.findByIsbn("9789895612864");
-        final var book4 = bookRepository.findByIsbn("9782722203402");
-        final var book5 = bookRepository.findByIsbn("9789722328296");
-        final var book6 = bookRepository.findByIsbn("9789895702756");
-        final var book7 = bookRepository.findByIsbn("9789897776090");
-        final var book8 = bookRepository.findByIsbn("9789896379636");
-        final var book9 = bookRepository.findByIsbn("9789896378905");
-        final var book10 = bookRepository.findByIsbn("9789896375225");
+
+        final var book1 = bookRepository.findByIsbn("9789720706386").get();
+        final var book2 = bookRepository.findByIsbn("9789723716160").get();
+        final var book3 = bookRepository.findByIsbn("9789895612864").get();
+        final var book4 = bookRepository.findByIsbn("9782722203402").get();
+        final var book5 = bookRepository.findByIsbn("9789722328296").get();
+
         List<Book> books = new ArrayList<>();
-        if (book1.isPresent() && book2.isPresent()
-                && book3.isPresent() && book4.isPresent()
-                && book5.isPresent() && book6.isPresent()
-                && book7.isPresent() && book8.isPresent()
-                && book9.isPresent() && book10.isPresent()) {
-            books = List.of(new Book[]{book1.get(), book2.get(), book3.get(),
-                    book4.get(), book5.get(), book6.get(), book7.get(),
-                    book8.get(), book9.get(), book10.get()});
-        }
+        books.add(book1);
+        books.add(book2);
+        books.add(book3);
+        books.add(book4);
+        books.add(book5);
 
         final var readerDetails1 = readerRepository.findByReaderNumber("2025/1");
         final var readerDetails2 = readerRepository.findByReaderNumber("2025/2");
