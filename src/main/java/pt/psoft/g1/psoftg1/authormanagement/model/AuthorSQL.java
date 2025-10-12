@@ -24,7 +24,6 @@ public class AuthorSQL {
     private String bio;
 
     public AuthorSQL(Author author) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdSQL();
         this.authorNumber = author.getAuthorNumber();
         this.name = author.getName().toString();

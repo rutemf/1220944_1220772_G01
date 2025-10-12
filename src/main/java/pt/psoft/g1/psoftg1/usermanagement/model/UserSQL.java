@@ -53,7 +53,6 @@ public class UserSQL implements UserDetails {
     private Set<Role> authorities = new HashSet<>();
 
     public UserSQL(User user) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdSQL();
         this.username = user.getUsername();
         this.password = user.getPassword();

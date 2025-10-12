@@ -34,7 +34,6 @@ public class ReaderDetailsSQL {
     private List<GenreSQL> interestList;
 
     public ReaderDetailsSQL(ReaderDetails readerDetails) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdSQL();
 
         this.reader = ReaderSQL.fromDomain(readerDetails.getReader());

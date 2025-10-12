@@ -20,13 +20,12 @@ public class GenreSQL {
     private String genre;
 
     public GenreSQL(Genre genre) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdSQL();
         this.genre = genre.getGenre();
     }
 
     // JPA
-    protected GenreSQL() {}
+    protected GenreSQL() { }
 
     public Genre toDomain() {
         return new Genre(genre);

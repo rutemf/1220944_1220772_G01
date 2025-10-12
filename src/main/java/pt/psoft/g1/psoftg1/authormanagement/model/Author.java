@@ -20,9 +20,7 @@ public class Author extends EntityWithPhoto {
         this.bio = bio;
     }
 
-    protected Author() {
-        // got ORM only
-    }
+    protected Author() { }
 
     public void applyPatch(final long desiredVersion, final UpdateAuthorRequest request) {
         if (request.getName() != null)

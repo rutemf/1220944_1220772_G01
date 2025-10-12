@@ -28,6 +28,7 @@ pipeline {
                 sh 'mvn test'
 
                 echo 'Code Coverage...'
+                sh 'mvn jacoco:report'
 
                 echo 'Mutation Testing...'
                 sh 'mvn org.pitest:pitest-maven:mutationCoverage'

@@ -34,7 +34,6 @@ public class BookSQL {
     private String photoURI;
 
     public BookSQL(Book book) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdSQL();
         this.isbn = book.getIsbn();
         this.title = book.getTitle().toString();
