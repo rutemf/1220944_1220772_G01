@@ -30,6 +30,7 @@ pipeline {
                 echo 'Code Coverage...'
 
                 echo 'Mutation Testing...'
+                sh 'mvn org.pitest:pitest-maven:mutationCoverage'
 
                 echo 'Reporting Results...'
             }
@@ -57,7 +58,8 @@ pipeline {
                 sh '''
                     git config user.email "jenkins@odsoft-g1.com"
                     git config user.name "Jenkins CI"
-                    git checkout staging
+                    git fetch origin staging
+                    git checkout -b staging origin/staging
                     git pull origin staging
                     git merge --no-ff dev -m "Automated Merge from dev to staging by Jenkins."
                     git push origin staging
