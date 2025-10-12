@@ -1,19 +1,12 @@
 package pt.psoft.g1.psoftg1.authormanagement.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
 import lombok.Getter;
-import lombok.Setter;
 import pt.psoft.g1.psoftg1.shared.model.StringUtilsCustom;
 
-@Embeddable
 @Getter
-@Setter
 public class Bio {
 
     private static final int BIO_MAX_LENGTH = 4096;
-
-    @Column(nullable = false, length = BIO_MAX_LENGTH)
     private String bio;
 
     public Bio(String bio) {
