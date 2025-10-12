@@ -58,8 +58,8 @@ pipeline {
                 sh '''
                     git config user.email "jenkins@odsoft-g1.com"
                     git config user.name "Jenkins CI"
-                    git fetch origin staging
-                    git checkout -B staging dev
+                    git fetch --all
+                    git checkout staging || git checkout -b staging dev
                     git push -u origin staging
                     git merge --no-ff dev -m "Automated Merge from dev to staging by Jenkins."
                     git push origin staging
