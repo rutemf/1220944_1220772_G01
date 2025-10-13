@@ -1,0 +1,47 @@
+@startuml
+
+autonumber
+
+title Get All Generic Resources
+
+actor "User" as USER
+participant "BackEnd" as System
+database "Redis Cache" as REDIS
+database "SQL DataBase" as MYSQL
+database "Mongo DataBase" as MONGO
+
+activate USER
+
+    USER -> System: /GET /api/generic
+    activate System
+
+        System -> REDIS: GET generics
+        activate REDIS
+
+            REDIS --> System: generics data / null
+        deactivate REDIS
+
+        alt cache not found and Persistence = MySQL
+
+            System -> MYSQL: SELECT * FROM generic
+            activate MYSQL
+
+                MYSQL --> System: generics data
+            deactivate MYSQL
+
+        else cache not found and Persistence = MongoDB
+
+            System -> MONGO: find({})
+            activate MONGO
+
+                MONGO --> System: generics data
+            deactivate MONGO
+
+        end
+
+        System --> USER: returns all data
+    deactivate System
+
+deactivate USER
+
+@enduml
