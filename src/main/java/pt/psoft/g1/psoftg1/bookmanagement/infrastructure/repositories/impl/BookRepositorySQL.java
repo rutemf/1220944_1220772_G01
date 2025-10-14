@@ -6,10 +6,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import pt.psoft.g1.psoftg1.authormanagement.model.AuthorSQL;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
+import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.services.BookCountDTO;
 import pt.psoft.g1.psoftg1.bookmanagement.services.SearchBooksQuery;
+import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,38 +30,38 @@ public class BookRepositorySQL implements BookRepository {
 
     @Override
     public List<Book> findByGenre(String genre) {
-        TypedQuery<Book> query = entityManager.createQuery(
-        "SELECT b FROM Book b JOIN b.genre g WHERE g.genre LIKE :genre", Book.class);
+        TypedQuery<BookSQL> query = entityManager.createQuery(
+        "SELECT b FROM BookSQL b JOIN b.genre g WHERE g.genre LIKE :genre", BookSQL.class);
 
         query.setParameter("genre", "%" + genre + "%");
-        return query.getResultList();
+        return query.getResultList().stream().map(BookSQL::toDomain).toList();
     }
 
     @Override
     public List<Book> findByTitle(String title) {
-        TypedQuery<Book> query = entityManager.createQuery(
-        "SELECT b FROM Book b WHERE b.title.title LIKE :title", Book.class);
+        TypedQuery<BookSQL> query = entityManager.createQuery(
+        "SELECT b FROM BookSQL b WHERE b.title LIKE :title", BookSQL.class);
 
         query.setParameter("title", "%" + title + "%");
-        return query.getResultList();
+        return query.getResultList().stream().map(BookSQL::toDomain).toList();
     }
 
     @Override
     public List<Book> findByAuthorName(String authorName) {
-        TypedQuery<Book> query = entityManager.createQuery(
-        "SELECT b FROM Book b JOIN b.authors a WHERE a.name.name LIKE :authorName", Book.class);
+        TypedQuery<BookSQL> query = entityManager.createQuery(
+        "SELECT b FROM BookSQL b JOIN b.authors a WHERE a.name LIKE :authorName", BookSQL.class);
 
         query.setParameter("authorName", "%" + authorName + "%");
-        return query.getResultList();
+        return query.getResultList().stream().map(BookSQL::toDomain).toList();
     }
 
     @Override
     public Optional<Book> findByIsbn(String isbn) {
-        TypedQuery<Book> query = entityManager.createQuery(
-        "SELECT b FROM Book b WHERE b.isbn.isbn = :isbn", Book.class);
+        TypedQuery<BookSQL> query = entityManager.createQuery(
+        "SELECT b FROM BookSQL b WHERE b.isbn.isbn = :isbn", BookSQL.class);
 
         query.setParameter("isbn", isbn);
-        return query.getResultStream().findFirst();
+        return query.getResultStream().map(BookSQL::toDomain).findFirst();
     }
 
     @Override
@@ -68,11 +71,11 @@ public class BookRepositorySQL implements BookRepository {
 
     @Override
     public List<Book> findBooksByAuthorNumber(Long authorNumber) {
-        TypedQuery<Book> query = entityManager.createQuery(
-        "SELECT b FROM Book b JOIN b.authors a WHERE a.authorNumber = :authorNumber", Book.class);
+        TypedQuery<BookSQL> query = entityManager.createQuery(
+        "SELECT b FROM BookSQL b JOIN b.authors a WHERE a.authorNumber = :authorNumber", BookSQL.class);
 
         query.setParameter("authorNumber", authorNumber);
-        return query.getResultList();
+        return query.getResultList().stream().map(BookSQL::toDomain).toList();
     }
 
     @Override
@@ -82,17 +85,48 @@ public class BookRepositorySQL implements BookRepository {
 
     @Override
     public Book save(Book book) {
-        if (book.getIsbn() == null || entityManager.find(Book.class, book.getIsbn()) == null) {
-            entityManager.persist(book);
-            return book;
-        } else {
-            return entityManager.merge(book);
+        BookSQL entity = BookSQL.fromDomain(book);
+
+        if (entity.getGenre() != null) {
+            TypedQuery<GenreSQL> q = entityManager.createQuery(
+            "SELECT g FROM GenreSQL g WHERE g.genre = :genre", GenreSQL.class);
+
+            q.setParameter("genre", entity.getGenre().getGenre());
+
+            List<GenreSQL> results = q.getResultList();
+            if (!results.isEmpty()) {
+                entity.setGenre(results.get(0));
+            }
         }
+
+        if (entity.getAuthors() != null && !entity.getAuthors().isEmpty()) {
+            List<AuthorSQL> managedAuthors = entity.getAuthors().stream().map(a -> {
+
+                TypedQuery<AuthorSQL> query = entityManager.createQuery(
+                "SELECT au FROM AuthorSQL au WHERE au.name = :name", AuthorSQL.class);
+
+                query.setParameter("name", a.getName());
+
+                return query.getResultStream().findFirst().orElse(a);
+            }).toList();
+
+            entity.setAuthors(managedAuthors);
+        }
+
+        if (entityManager.find(BookSQL.class, entity.getId()) == null) {
+            entityManager.persist(entity);
+        } else {
+            entity = entityManager.merge(entity);
+        }
+
+        return entity.toDomain();
     }
+
 
     @Override
     public void delete(Book book) {
-        Book managed = entityManager.contains(book) ? book : entityManager.merge(book);
+        BookSQL entity = BookSQL.fromDomain(book);
+        BookSQL managed = entityManager.contains(entity) ? entity : entityManager.merge(entity);
         entityManager.remove(managed);
     }
 }

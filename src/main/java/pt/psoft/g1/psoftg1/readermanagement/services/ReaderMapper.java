@@ -6,6 +6,7 @@ import org.mapstruct.Named;
 import org.springframework.web.multipart.MultipartFile;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.shared.model.Photo;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
@@ -28,4 +29,12 @@ public abstract class ReaderMapper {
     @Mapping(target = "photo", source = "photoURI")
     @Mapping(target = "interestList", source = "interestList")
     public abstract ReaderDetails createReaderDetails(int readerNumber, Reader reader, CreateReaderRequest request, String photoURI, List<Genre> interestList);
+
+    protected Name map(String value) {
+        return value != null ? new Name(value) : null;
+    }
+
+    protected String map(Name name) {
+        return name != null ? name.toString() : null;
+    }
 }

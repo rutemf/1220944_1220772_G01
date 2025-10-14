@@ -1,0 +1,20 @@
+@startuml
+
+autonumber
+
+title Patch Generic Resource
+
+actor "User" as USER
+participant ":System" as System
+
+activate USER
+
+    USER -> System: /PATCH /api/generic/{id}
+    activate System
+
+        System --> USER: returns updated resource
+    deactivate System
+
+deactivate USER
+
+@enduml

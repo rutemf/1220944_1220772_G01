@@ -72,35 +72,32 @@ public class BookController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //final var savedBook = bookService.save(book);
-        final var newBookUri = ServletUriComponentsBuilder.fromCurrentRequestUri().pathSegment(book.getIsbn()).build().toUri();
+        final var newBookUri = ServletUriComponentsBuilder.fromCurrentRequestUri().pathSegment(String.valueOf(book.getIsbn())).build().toUri();
 
-        return ResponseEntity.created(newBookUri).eTag(Long.toString(book.getVersion())).body(bookViewMapper.toBookView(book));
+        return ResponseEntity.created(newBookUri).body(bookViewMapper.toBookView(book));
     }
 
-    @Operation(summary = "Gets a specific Book by isbn")
+    @Operation(summary = "Gets a Specific Book by ISBN")
     @GetMapping(value = "/{isbn}")
     public ResponseEntity<BookView> findByIsbn(@PathVariable final String isbn) {
 
-        final var book = bookService.findByIsbn(isbn);
-
+        Book book = bookService.findByIsbn(isbn);
         BookView bookView = bookViewMapper.toBookView(book);
 
-        return ResponseEntity.ok()
-                .eTag(Long.toString(book.getVersion()))
-                .body(bookView);
+        return ResponseEntity.ok(bookView);
     }
 
-    @Operation(summary = "Deletes a book photo")
+    @Operation(summary = "Deletes a Book Photo")
     @DeleteMapping("/{isbn}/photo")
     public ResponseEntity<Void> deleteBookPhoto(@PathVariable("isbn") final String isbn) {
 
-        var book = bookService.findByIsbn(isbn);
+        Book book = bookService.findByIsbn(isbn);
         if (book.getPhoto() == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
 
         fileStorageService.deleteFile(book.getPhoto().getPhotoFile());
-        bookService.removeBookPhoto(book.getIsbn(), book.getVersion());
+        bookService.removeBookPhoto(book.getIsbn().toString(), 0);
 
         return ResponseEntity.ok().build();
     }
@@ -158,7 +155,6 @@ public class BookController {
             throw new ConflictException("Could not update book: " + e.getMessage());
         }
         return ResponseEntity.ok()
-                .eTag(Long.toString(book.getVersion()))
                 .body(bookViewMapper.toBookView(book));
     }
 

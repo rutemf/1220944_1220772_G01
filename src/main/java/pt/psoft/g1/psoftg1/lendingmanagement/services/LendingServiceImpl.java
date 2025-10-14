@@ -77,7 +77,7 @@ public class LendingServiceImpl implements LendingService{
         final var r = readerRepository.findByReaderNumber(resource.getReaderNumber())
                 .orElseThrow(() -> new NotFoundException("Reader not found"));
         int seq = lendingRepository.getCountFromCurrentYear()+1;
-        final Lending l = new Lending(b,r,seq, lendingDurationInDays, fineValuePerDayInCents );
+        final Lending l = new Lending(b,r, lendingDurationInDays, fineValuePerDayInCents );
 
         return lendingRepository.save(l);
     }
@@ -88,7 +88,7 @@ public class LendingServiceImpl implements LendingService{
         var lending = lendingRepository.findByLendingNumber(lendingNumber)
                 .orElseThrow(() -> new NotFoundException("Cannot update lending with this lending number"));
 
-        lending.setReturned(desiredVersion, resource.getCommentary());
+        lending.setReturnedDate(LocalDate.now());
 
         if(lending.getDaysDelayed() > 0){
             final var fine = new Fine(lending);

@@ -1,0 +1,40 @@
+@startuml
+
+autonumber
+
+title Delete Generic Resource
+
+actor "User" as USER
+participant "BackEnd" as System
+database "SQL DataBase" as MYSQL
+database "Mongo DataBase" as MONGO
+
+activate USER
+
+    USER -> System: /DELETE /api/generic/{id}
+    activate System
+
+        alt Persistence = MySQL
+
+            System -> MYSQL: DELETE FROM generic WHERE id = {id}
+            activate MYSQL
+
+                MYSQL --> System: Deletion OK
+            deactivate MYSQL
+
+        else Persistence = MongoDB
+
+            System -> MONGO: deleteOne({ id: id })
+            activate MONGO
+
+                MONGO --> System: Deletion OK
+            deactivate MONGO
+
+        end
+
+        System --> USER: informs operation success
+    deactivate System
+
+deactivate USER
+
+@enduml

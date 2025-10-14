@@ -1,0 +1,27 @@
+@startuml
+
+autonumber
+
+title Patch Generic Resource
+
+actor "User" as USER
+participant "BackEnd" as System
+database "H2 DataBase" as H2DB
+
+activate USER
+
+    USER -> System: /PATCH /api/generic/{id}
+    activate System
+
+        System -> H2DB: UPDATE generic SET ... WHERE id = {id}
+        activate H2DB
+
+            H2DB --> System: Update OK
+        deactivate H2DB
+
+        System --> USER: returns updated resource
+    deactivate System
+
+deactivate USER
+
+@enduml

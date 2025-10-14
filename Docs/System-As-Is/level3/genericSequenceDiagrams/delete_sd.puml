@@ -1,0 +1,36 @@
+@startuml
+
+autonumber
+
+title Delete Generic Resource By ID
+
+participant "GenericController" as Controller
+participant "GenericService" as Service
+participant "GenericRepository" as Repo
+database "H2 Database" as H2DB
+
+-> Controller: DELETE /api/generic/{id}
+activate Controller
+
+    Controller -> Service: delete by id
+    activate Service
+
+        Service -> Repo: delete by id
+        activate Repo
+
+            Repo -> H2DB: DELETE FROM generic WHERE id = ?
+            activate H2DB
+
+                H2DB --> Repo: deletion result
+            deactivate H2DB
+
+            Repo --> Service: deletion result
+        deactivate Repo
+
+        Service --> Controller: deletion result
+    deactivate Service
+
+<-- Controller: returns status
+deactivate Controller
+
+@enduml

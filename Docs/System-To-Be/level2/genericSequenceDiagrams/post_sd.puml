@@ -1,0 +1,40 @@
+@startuml
+
+autonumber
+
+title Post Generic Resource
+
+actor "User" as USER
+participant "BackEnd" as System
+database "SQL DataBase" as MYSQL
+database "Mongo DataBase" as MONGO
+
+activate USER
+
+    USER -> System: /POST /api/generic
+    activate System
+
+        alt Persistence = MySQL
+
+            System -> MYSQL: INSERT INTO generic VALUES (...)
+            activate MYSQL
+
+                MYSQL --> System: created data
+            deactivate MYSQL
+
+        else Persistence = MongoDB
+
+            System -> MONGO: save({...})
+            activate MONGO
+
+                MONGO --> System: created data
+            deactivate MONGO
+
+        end
+
+        System --> USER: returns created resource
+    deactivate System
+
+deactivate USER
+
+@enduml
