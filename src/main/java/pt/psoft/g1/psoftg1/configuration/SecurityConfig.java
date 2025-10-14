@@ -78,8 +78,7 @@ public class SecurityConfig {
     private String swaggerPath;
 
     @Bean
-    public AuthenticationManager authenticationManager(final UserDetailsService userDetailsService,
-                                                       final PasswordEncoder passwordEncoder) {
+    public AuthenticationManager authenticationManager(final UserDetailsService userDetailsService, final PasswordEncoder passwordEncoder) {
         final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
@@ -90,7 +89,7 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepo.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(format("User: %s, not found", username)));
+        .orElseThrow(() -> new UsernameNotFoundException(format("User: %s, not found", username)));
     }
 
     @Bean

@@ -32,6 +32,12 @@ public class User implements UserDetails {
         setPassword(password);
     }
 
+    public User(final String username, final String password, final String name) {
+        this.username = username;
+        this.password = password;
+        this.name = new Name(name);
+    }
+
     public User(final String username, final String password, Name name, Set<Role> authorities) {
         this.username = username;
         setPassword(password);

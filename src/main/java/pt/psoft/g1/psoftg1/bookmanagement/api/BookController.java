@@ -229,5 +229,21 @@ public class BookController {
         final var bookList = bookService.searchBooks(request.getPage(), request.getQuery());
         return new ListResponse<>(bookViewMapper.toBookView(bookList));
     }
-}
 
+    @Operation(summary = "Retrieve ISBNs from external sources by title or author")
+    @GetMapping("/external")
+    public ResponseEntity<String> getIsbnsFromExternal(@RequestParam(value = "title") String title) {
+
+        if ((title == null || title.isEmpty())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You must provide either a title.");
+        }
+
+        String isbns = bookService.fetchExternalIsbns(title);
+
+        if (isbns.isEmpty()) {
+            throw new NotFoundException("No ISBNs found for the given query");
+        }
+
+        return ResponseEntity.ok(isbns);
+    }
+}
