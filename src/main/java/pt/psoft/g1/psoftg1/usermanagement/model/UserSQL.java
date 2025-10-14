@@ -85,8 +85,7 @@ public class UserSQL implements UserDetails {
     }
 
     public User toDomain() {
-        User user = new User(this.username, this.password);
-        user.setName(new Name(this.name));
+        User user = new User(this.username, this.password, this.name);
         user.getAuthorities().addAll(this.authorities);
         return user;
     }

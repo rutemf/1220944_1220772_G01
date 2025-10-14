@@ -11,6 +11,7 @@ import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.*;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
+import pt.psoft.g1.psoftg1.external.service.OpenLibraryService;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
@@ -192,6 +193,21 @@ public class BookServiceImpl implements BookService {
         }
 
         return books;
+    }
+
+    @Override
+    public String fetchExternalIsbns(String title) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Title must not be null or empty");
+        }
+
+        String isbns = OpenLibraryService.fetchIsbnsByTitle(title);
+
+        if (isbns.isEmpty()) {
+            throw new NotFoundException("No ISBNs found for the given title: " + title);
+        }
+
+        return isbns;
     }
 
     @Override

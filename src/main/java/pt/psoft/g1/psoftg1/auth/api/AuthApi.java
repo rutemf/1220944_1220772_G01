@@ -73,25 +73,27 @@ public class AuthApi {
 	public ResponseEntity<UserView> login(@RequestBody @Valid final AuthRequest request) {
 		try {
 			final Authentication authentication = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+			new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-			// if the authentication is successful, Spring will store the authenticated user
-			// in its "principal"
 			final User user = (User) authentication.getPrincipal();
 
 			final Instant now = Instant.now();
-			final long expiry = 36000L; // 1 hour is usually too long for a token to be valid. adjust for production
+			final long expiry = 36000L;
 
 			final String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 					.collect(joining(" "));
 
-			final JwtClaimsSet claims = JwtClaimsSet.builder().issuer("example.io").issuedAt(now)
-					.expiresAt(now.plusSeconds(expiry)).subject(format("%s,%s", user.getUsername(), user.getUsername()))
-					.claim("roles", scope).build();
+			final JwtClaimsSet claims = JwtClaimsSet.builder()
+					.issuer("example.io")
+					.issuedAt(now)
+					.expiresAt(now.plusSeconds(expiry))
+					.subject(format("%s,%s", user.getUsername(), user.getUsername()))
+					.claim("roles", scope)
+					.build();
 
 			final String token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
-			return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, token).body(userViewMapper.toUserView(user));
+			return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, "Bearer " + token).body(userViewMapper.toUserView(user));
 		} catch (final BadCredentialsException ex) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}

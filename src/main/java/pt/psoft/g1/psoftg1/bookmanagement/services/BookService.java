@@ -29,5 +29,7 @@ public interface BookService {
 
     List<Book> getBooksSuggestionsForReader(String readerNumber);
 
+    String fetchExternalIsbns(String title);
+
     List<Book> searchBooks(Page page, SearchBooksQuery query);
 }
