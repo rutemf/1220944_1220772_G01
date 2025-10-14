@@ -57,13 +57,19 @@ pipeline {
             steps {
                 echo 'Merging dev into staging...'
                 sh '''
+                    set -euo pipefail
                     git config user.email "jenkins@odsoft-g1.com"
                     git config user.name "Jenkins CI"
-                    git fetch --all
-                    git checkout staging || git checkout -b staging dev
+                    git fetch --unshallow || true
+                    git fetch --prune origin +refs/heads/*:refs/remotes/origin/*
+                    git show-ref --verify --quiet refs/remotes/origin/dev || { echo "origin/dev missing"; exit 1; }
+                    if git show-ref --verify --quiet refs/remotes/origin/staging; then
+                      git checkout -B staging origin/staging
+                    else
+                      git checkout -B staging origin/dev
+                    fi
+                    git merge --no-ff origin/dev -m "Automated merge from dev to staging by Jenkins."
                     git push -u origin staging
-                    git merge --no-ff dev -m "Automated Merge from dev to staging by Jenkins."
-                    git push origin staging
                 '''
             }
         }
