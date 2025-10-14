@@ -1,8 +1,10 @@
 package pt.psoft.g1.psoftg1.shared.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
 public class Name {
 
     private String name;
