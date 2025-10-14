@@ -38,7 +38,7 @@ public class GenreSQLTest {
         String id = genreSQL.getId();
 
         assertNotNull(id);
-        assertTrue(id.matches("[A-Za-z0-9\\-]+"), "ID should match base65 + timestamp format");
+        assertTrue(id.matches("^[A-Za-z0-9+/#]+"), "ID should match base65 format");
     }
 
     // White Box Test

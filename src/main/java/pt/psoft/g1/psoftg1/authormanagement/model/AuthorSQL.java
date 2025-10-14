@@ -31,15 +31,10 @@ public class AuthorSQL {
     }
 
     // JPA
-    protected AuthorSQL() {
-    }
+    protected AuthorSQL() { }
 
     public Author toDomain() {
-        return new Author(
-                authorNumber,
-                new Name(name),
-                new Bio(bio)
-        );
+        return new Author(authorNumber, new Name(name), new Bio(bio));
     }
 
     public static AuthorSQL fromDomain(Author author) {

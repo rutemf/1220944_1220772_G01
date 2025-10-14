@@ -22,13 +22,18 @@ public class Author extends EntityWithPhoto {
 
     protected Author() { }
 
-    public void applyPatch(final long desiredVersion, final UpdateAuthorRequest request) {
-        if (request.getName() != null)
+    public void applyPatch(final UpdateAuthorRequest request) {
+        if (request.getName() != null) {
             setName(new Name(request.getName()));
-        if (request.getBio() != null)
+        }
+
+        if (request.getBio() != null) {
             setBio(new Bio(request.getBio()));
-        if (request.getPhotoURI() != null)
+        }
+
+        if (request.getPhotoURI() != null) {
             setPhotoInternal(request.getPhotoURI());
+        }
     }
 
     public void removePhoto(long desiredVersion) {
