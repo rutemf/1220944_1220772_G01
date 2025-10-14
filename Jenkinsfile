@@ -57,7 +57,7 @@ pipeline {
             steps {
                 echo 'Merging dev into staging...'
                 sh '''
-                    set -euo pipefail
+                    set -eu
                     git config user.email "jenkins@odsoft-g1.com"
                     git config user.name "Jenkins CI"
                     git fetch --unshallow || true
