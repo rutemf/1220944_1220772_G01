@@ -56,21 +56,28 @@ pipeline {
             }
             steps {
                 echo 'Merging dev into staging...'
-                sh '''
-                    set -eu
-                    git config user.email "jenkins@odsoft-g1.com"
-                    git config user.name "Jenkins CI"
-                    git fetch --unshallow || true
-                    git fetch --prune origin +refs/heads/*:refs/remotes/origin/*
-                    git show-ref --verify --quiet refs/remotes/origin/dev || { echo "origin/dev missing"; exit 1; }
-                    if git show-ref --verify --quiet refs/remotes/origin/staging; then
-                      git checkout -B staging origin/staging
-                    else
-                      git checkout -B staging origin/dev
-                    fi
-                    git merge --no-ff origin/dev -m "Automated merge from dev to staging by Jenkins."
-                    git push -u origin staging
-                '''
+                echo 'Merging dev into staging...'
+                withCredentials([usernamePassword(
+                    credentialsId: 'github-token',
+                    usernameVariable: 'GIT_USER',
+                    passwordVariable: 'GIT_TOKEN'
+                )]) {
+                    sh '''
+                        set -eu
+                        git config user.email "jenkins@odsoft-g1.com"
+                        git config user.name "Jenkins CI"
+                        git fetch --unshallow || true
+                        git fetch --prune origin +refs/heads/*:refs/remotes/origin/*
+                        git show-ref --verify --quiet refs/remotes/origin/dev || { echo "origin/dev missing"; exit 1; }
+                        if git show-ref --verify --quiet refs/remotes/origin/staging; then
+                          git checkout -B staging origin/staging
+                        else
+                          git checkout -B staging origin/dev
+                        fi
+                        git merge --no-ff origin/dev -m "Automated merge from dev to staging by Jenkins."
+                        git push -u origin staging
+                    '''
+                }
             }
         }
 
