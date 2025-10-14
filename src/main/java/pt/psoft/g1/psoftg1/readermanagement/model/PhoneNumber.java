@@ -1,12 +1,10 @@
 package pt.psoft.g1.psoftg1.readermanagement.model;
 
-import jakarta.persistence.Embeddable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 
-@Embeddable
 @Getter
-@Setter
+@EqualsAndHashCode
 public class PhoneNumber {
 
     private String phoneNumber;
@@ -18,6 +16,10 @@ public class PhoneNumber {
     protected PhoneNumber() {}
 
     private void setPhoneNumber(String number) {
+        if (number == null || !number.matches("\\d{9}")) {
+            throw new IllegalArgumentException("Phone number is not valid: " + number);
+        }
+
         if (!(number.startsWith("9") || number.startsWith("2")) || number.length() != 9) {
             throw new IllegalArgumentException("Phone number is not valid: " + number);
         }
