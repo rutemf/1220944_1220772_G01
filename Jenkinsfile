@@ -74,7 +74,7 @@ pipeline {
                           git checkout -B staging origin/dev
                         fi
                         git merge --no-ff origin/dev -m "Automated merge from dev to staging by Jenkins."
-                        git push -u origin staging
+                        git push https://$GIT_USER:$GIT_TOKEN@github.com/rutemf/1220944_1220772_G01.git staging
                     '''
                 }
             }
