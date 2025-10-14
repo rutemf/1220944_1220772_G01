@@ -56,7 +56,6 @@ pipeline {
             }
             steps {
                 echo 'Merging dev into staging...'
-                echo 'Merging dev into staging...'
                 withCredentials([usernamePassword(
                     credentialsId: 'github-token',
                     usernameVariable: 'GIT_USER',
