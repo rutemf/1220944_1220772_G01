@@ -11,6 +11,7 @@ import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.*;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
+import pt.psoft.g1.psoftg1.external.service.IsbnService;
 import pt.psoft.g1.psoftg1.external.service.OpenLibraryService;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
@@ -37,6 +38,7 @@ public class BookServiceImpl implements BookService {
     private final AuthorRepository authorRepository;
     private final PhotoRepository photoRepository;
     private final ReaderRepository readerRepository;
+    private final IsbnService isbnService;
 
     @Value("${suggestionsLimitPerGenre}")
     private long suggestionsLimitPerGenre;
@@ -201,7 +203,7 @@ public class BookServiceImpl implements BookService {
             throw new IllegalArgumentException("Title must not be null or empty");
         }
 
-        String isbns = OpenLibraryService.fetchIsbnsByTitle(title);
+        String isbns = isbnService.fetchIsbnsByTitle(title);
 
         if (isbns.isEmpty()) {
             throw new NotFoundException("No ISBNs found for the given title: " + title);

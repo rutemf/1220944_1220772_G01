@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.external.service;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -9,15 +10,16 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class OpenLibraryService {
+@Profile("open")
+public class OpenLibraryService implements IsbnService {
 
-    private static WebClient webClient;
+    private WebClient webClient;
 
     public OpenLibraryService(WebClient.Builder webClientBuilder) {
         webClient = webClientBuilder.baseUrl("https://openlibrary.org").build();
     }
 
-    public static String fetchIsbnsByTitle(String title) {
+    public String fetchIsbnsByTitle(String title) {
         try {
             Mono<Map> responseMono = webClient.get()
             .uri(uriBuilder -> uriBuilder
