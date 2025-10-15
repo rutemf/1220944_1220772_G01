@@ -93,8 +93,34 @@ pipeline {
             when {
                 branch 'prod'
             }
+            environment {
+                APP_NAME = "psoft-g1-app"
+                IMAGE_NAME = "psoft-g1-app:latest"
+                CONTAINER_NAME = "psoft-g1-container"
+                EXPOSE_PORT = "4677"
+            }
             steps {
-                echo 'Deploying to Oracle...'
+                echo 'Deploying to Oracle VM...'
+
+                sh 'docker build -t $IMAGE_NAME .'
+
+                sh '''
+                    if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
+                        echo "Stopping old container..."
+                        docker stop $CONTAINER_NAME || true
+                        docker rm $CONTAINER_NAME || true
+                    fi
+                '''
+
+                sh '''
+                    echo "Starting new container..."
+                    docker run -d \
+                        --name $CONTAINER_NAME \
+                        -p 4677:4677 \
+                        $IMAGE_NAME
+                '''
+
+                echo '✅ Deploy completed successfully!'
             }
         }
     }
