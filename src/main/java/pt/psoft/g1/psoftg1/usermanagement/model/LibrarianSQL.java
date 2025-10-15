@@ -11,12 +11,14 @@ public class LibrarianSQL extends UserSQL {
 
     public LibrarianSQL(Librarian librarian) {
         super(librarian);
+        this.addAuthority(new Role(Role.LIBRARIAN));
     }
 
     protected LibrarianSQL() { }
 
     public Librarian toDomain() {
-        return null;
+        String fullName = this.getName();
+        return Librarian.newLibrarian(this.getUsername(), this.getPassword(), fullName);
     }
 
     public static LibrarianSQL fromDomain(Librarian librarian) {
