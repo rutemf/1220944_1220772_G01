@@ -16,8 +16,8 @@ public class Librarian extends User {
     protected Librarian() { }
 
     public static Librarian newLibrarian(final String username, final String password, final String name) {
-        final var u = new Librarian(username, password);
-        u.setName(new Name(name));
-        return u;
+        final var librarian = new Librarian(username, password);
+        librarian.setName(new Name(name));
+        return librarian;
     }
 }

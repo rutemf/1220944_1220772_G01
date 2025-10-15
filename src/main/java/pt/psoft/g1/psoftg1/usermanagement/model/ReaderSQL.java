@@ -11,13 +11,16 @@ public class ReaderSQL extends UserSQL {
 
     public ReaderSQL(Reader reader) {
         super(reader);
+        this.addAuthority(new Role(Role.READER));
     }
 
     protected ReaderSQL() {}
 
     public Reader toDomain() {
-        return null;
+        String fullName = this.getName();
+        return Reader.newReader(this.getUsername(), this.getPassword(), fullName);
     }
+
 
     public static ReaderSQL fromDomain(Reader reader) {
         return new ReaderSQL(reader);
