@@ -13,7 +13,7 @@ import java.util.Map;
 @Profile("open")
 public class OpenLibraryService implements IsbnService {
 
-    private WebClient webClient;
+    private final WebClient webClient;
 
     public OpenLibraryService(WebClient.Builder webClientBuilder) {
         webClient = webClientBuilder.baseUrl("https://openlibrary.org").build();
