@@ -1,0 +1,20 @@
+@startuml
+
+autonumber
+
+title Post Generic Resource
+
+actor "User" as USER
+participant ":System" as System
+
+activate USER
+
+    USER -> System: /POST /api/generic
+    activate System
+
+        System --> USER: returns created resource
+    deactivate System
+
+deactivate USER
+
+@enduml

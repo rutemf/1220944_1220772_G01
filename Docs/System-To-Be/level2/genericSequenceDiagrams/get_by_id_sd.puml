@@ -1,0 +1,47 @@
+@startuml
+
+autonumber
+
+title Get Generic Resource by ID
+
+actor "User" as USER
+participant "BackEnd" as System
+database "Redis Cache" as REDIS
+database "SQL DataBase" as MYSQL
+database "Mongo DataBase" as MONGO
+
+activate USER
+
+    USER -> System: /GET /api/generic/{id}
+    activate System
+
+        System -> REDIS: GET generic:{id}
+        activate REDIS
+
+            REDIS --> System: generic data / null
+        deactivate REDIS
+
+        alt cache not found and Persistence = MySQL
+
+            System -> MYSQL: SELECT * FROM generic WHERE id = {id}
+            activate MYSQL
+
+                MYSQL --> System: generic data
+            deactivate MYSQL
+
+        else cache not found and Persistence = MongoDB
+
+            System -> MONGO: findOne({ id: id })
+            activate MONGO
+
+                MONGO --> System: generic data
+            deactivate MONGO
+
+        end
+
+        System --> USER: returns requested data
+    deactivate System
+
+deactivate USER
+
+@enduml

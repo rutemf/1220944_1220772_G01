@@ -35,7 +35,7 @@ public abstract class MapperInterface {
         Map<String, String> lendingLink = new HashMap<>();
         String lendingUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/lendings/")
-                .path(lending.getLendingNumber())
+                .path(lending.getLendingNumber().toString())
                 .toUriString();
         lendingLink.put("href", lendingUri);
         return lendingLink;
@@ -46,7 +46,7 @@ public abstract class MapperInterface {
         Map<String, String> bookLink = new HashMap<>();
         String bookUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/books/")
-                .path(book.getIsbn())
+                .path(String.valueOf(book.getIsbn()))
                 .toUriString();
         bookLink.put("href", bookUri);
         return bookLink;

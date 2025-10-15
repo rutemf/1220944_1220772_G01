@@ -87,8 +87,8 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public ReaderDetails update(final Long id, final UpdateReaderRequest request, final long desiredVersion, String photoURI){
-        final ReaderDetails readerDetails = readerRepo.findByUserId(id)
+    public ReaderDetails update(String username, final UpdateReaderRequest request, final long desiredVersion, String photoURI){
+        final ReaderDetails readerDetails = readerRepo.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Cannot find reader"));
 
         List<String> stringInterestList = request.getInterestList();

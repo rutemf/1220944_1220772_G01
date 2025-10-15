@@ -46,6 +46,7 @@
 			<scope>runtime</scope>
 		</dependency>
 
+        <!-- MySQL -->
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
@@ -153,6 +154,67 @@
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
+			</plugin>
+
+            <!-- SpotBugs -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.8.6.4</version>
+                <configuration>
+                    <htmlOutput>true</htmlOutput>
+                    <xmlOutput>false</xmlOutput>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+
+			<!-- PITest for Mutation Testing -->
+			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>1.15.8</version>
+				<configuration>
+					<targetClasses>
+						<param>pt.psoft.g1.*</param>
+					</targetClasses>
+					<targetTests>
+						<param>pt.psoft.g1.*Test</param>
+					</targetTests>
+					<outputFormats>
+						<param>HTML</param>
+						<param>XML</param>
+					</outputFormats>
+				</configuration>
+
+				<dependencies>
+					<!-- JUnit 5 Plugin -->
+					<dependency>
+						<groupId>org.pitest</groupId>
+						<artifactId>pitest-junit5-plugin</artifactId>
+						<version>1.2.1</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<!-- Jacoco Testing Reports -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -3,6 +3,7 @@ package pt.psoft.g1.psoftg1.authormanagement.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,13 +22,10 @@ import pt.psoft.g1.psoftg1.authormanagement.services.CreateAuthorRequest;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookView;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookViewMapper;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.FileStorageService;
-import pt.psoft.g1.psoftg1.usermanagement.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,36 +43,34 @@ public class AuthorController {
     private final FileStorageService fileStorageService;
     private final BookViewMapper bookViewMapper;
 
-
-    //Create
-    @Operation(summary = "Creates a new Author")
+    @Operation(summary = "Creates a New Author")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthorView> create(@Valid CreateAuthorRequest resource) {
-        //Guarantee that the client doesn't provide a link on the body, null = no photo or error
+        // Delete PhotoURI
         resource.setPhotoURI(null);
         MultipartFile file = resource.getPhoto();
 
         String fileName = this.fileStorageService.getRequestPhoto(file);
 
-        if (fileName != null) {
-            resource.setPhotoURI(fileName);
-        }
+        if (fileName != null) { resource.setPhotoURI(fileName); }
 
         final var author = authorService.create(resource);
 
-        final var newauthorUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .build().toUri();
+        if (author == null) {
+            System.out.println("authorService.create retornou null!");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create Author");
+        }
 
-        return ResponseEntity.created(newauthorUri).eTag(Long.toString(author.getVersion()))
-                .body(authorViewMapper.toAuthorView(author));
+        final var newAuthorUri = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri();
 
+        return ResponseEntity.created(newAuthorUri).body(authorViewMapper.toAuthorView(author));
     }
-
 
     //Update
     @Operation(summary = "Updates a specific author")
     @PatchMapping(value = "/{authorNumber}")
+    @Transactional
     public ResponseEntity<AuthorView> partialUpdate(
             @PathVariable("authorNumber")
             @Parameter(description = "The number of the Author to find") final Long authorNumber,
@@ -97,12 +92,9 @@ public class AuthorController {
         }
         Author author = authorService.partialUpdate(authorNumber, resource, concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
 
-        return ResponseEntity.ok()
-                .eTag(Long.toString(author.getVersion()))
-                .body(authorViewMapper.toAuthorView(author));
+        return ResponseEntity.ok().body(authorViewMapper.toAuthorView(author));
     }
 
-    //Gets
     @Operation(summary = "Know an author’s detail given its author number")
     @GetMapping(value = "/{authorNumber}")
     public ResponseEntity<AuthorView> findByAuthorNumber(
@@ -112,9 +104,7 @@ public class AuthorController {
         final var author = authorService.findByAuthorNumber(authorNumber)
                 .orElseThrow(() -> new NotFoundException(Author.class, authorNumber));
 
-        return ResponseEntity.ok()
-                .eTag(Long.toString(author.getVersion()))
-                .body(authorViewMapper.toAuthorView(author));
+        return ResponseEntity.ok().body(authorViewMapper.toAuthorView(author));
     }
 
     @Operation(summary = "Search authors by name")
@@ -213,7 +203,7 @@ public class AuthorController {
         }
 
         this.fileStorageService.deleteFile(author.getPhoto().getPhotoFile());
-        authorService.removeAuthorPhoto(author.getAuthorNumber(), author.getVersion());
+        authorService.removeAuthorPhoto(author.getAuthorNumber(), 1L);
 
         return ResponseEntity.ok().build();
     }

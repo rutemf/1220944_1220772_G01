@@ -1,0 +1,40 @@
+@startuml
+
+autonumber
+
+title Patch Generic Resource
+
+actor "User" as USER
+participant "BackEnd" as System
+database "SQL DataBase" as MYSQL
+database "Mongo DataBase" as MONGO
+
+activate USER
+
+    USER -> System: /PATCH /api/generic/{id}
+    activate System
+
+        alt Persistence = MySQL
+
+            System -> MYSQL: UPDATE generic SET ... WHERE id = {id}
+            activate MYSQL
+
+                MYSQL --> System: updated data
+            deactivate MYSQL
+
+        else Persistence = MongoDB
+
+            System -> MONGO: findOneAndUpdate({ id: id }, { $set: ... })
+            activate MONGO
+
+                MONGO --> System: updated data
+            deactivate MONGO
+
+        end
+
+        System --> USER: returns updated resource
+    deactivate System
+
+deactivate USER
+
+@enduml

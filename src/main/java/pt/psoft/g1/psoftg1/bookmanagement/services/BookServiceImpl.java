@@ -11,6 +11,8 @@ import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.model.*;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
+import pt.psoft.g1.psoftg1.external.service.IsbnService;
+import pt.psoft.g1.psoftg1.external.service.OpenLibraryService;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
 import pt.psoft.g1.psoftg1.exceptions.ConflictException;
@@ -36,6 +38,7 @@ public class BookServiceImpl implements BookService {
     private final AuthorRepository authorRepository;
     private final PhotoRepository photoRepository;
     private final ReaderRepository readerRepository;
+    private final IsbnService isbnService;
 
     @Value("${suggestionsLimitPerGenre}")
     private long suggestionsLimitPerGenre;
@@ -110,8 +113,6 @@ public class BookServiceImpl implements BookService {
             request.setGenreObj(genre.get());
         }
 
-        book.applyPatch(Long.parseLong(currentVersion), request);
-
         bookRepository.save(book);
 
 
@@ -140,7 +141,7 @@ public class BookServiceImpl implements BookService {
             throw new NotFoundException("Book did not have a photo assigned to it.");
         }
 
-        book.removePhoto(desiredVersion);
+        book.setPhotoURI(null);
         var updatedBook = bookRepository.save(book);
         photoRepository.deleteByPhotoFile(photoFile);
     }
@@ -194,6 +195,21 @@ public class BookServiceImpl implements BookService {
         }
 
         return books;
+    }
+
+    @Override
+    public String fetchExternalIsbns(String title) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Title must not be null or empty");
+        }
+
+        String isbns = isbnService.fetchIsbnsByTitle(title);
+
+        if (isbns.isEmpty()) {
+            throw new NotFoundException("No ISBNs found for the given title: " + title);
+        }
+
+        return isbns;
     }
 
     @Override

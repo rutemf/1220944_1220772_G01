@@ -1,0 +1,49 @@
+@startuml
+
+autonumber
+
+title Create Generic Resource (POST)
+
+participant "GenericController" as Controller
+participant "GenericService" as Service
+participant "GenericMapper" as Mapper
+participant "GenericRepository" as Repo
+database "H2 Database" as H2DB
+
+-> Controller: POST /api/generic
+activate Controller
+
+    Controller -> Service: map DTO to entity
+    activate Service
+
+        Service -> Mapper: map DTO to entity
+        activate Mapper
+
+            Mapper --> Service: mapped entity
+        deactivate Mapper
+
+        Service -> Repo: save(entity)
+        activate Repo
+
+            Repo -> H2DB: INSERT INTO generic (...)
+            activate H2DB
+
+                H2DB --> Repo: returns saved entity with id
+            deactivate H2DB
+
+            Repo --> Service: returns saved entity
+        deactivate Repo
+
+        Service -> Mapper: map to DTO
+        activate Mapper
+
+            Mapper --> Service: returns DTO
+        deactivate Mapper
+
+        Service --> Controller: returns DTO
+    deactivate Service
+
+<-- Controller: returns created data (DTO)
+deactivate Controller
+
+@enduml

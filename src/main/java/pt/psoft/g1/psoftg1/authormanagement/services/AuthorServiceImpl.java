@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.authormanagement.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +41,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional
     public Author create(final CreateAuthorRequest resource) {
         /*
          * Since photos can be null (no photo uploaded) that means the URI can be null as well.
@@ -55,10 +57,15 @@ public class AuthorServiceImpl implements AuthorService {
 
         MultipartFile photo = resource.getPhoto();
         String photoURI = resource.getPhotoURI();
-        if(photo == null && photoURI != null || photo != null && photoURI == null) {
+
+        if (photo != null && photoURI == null) {
+            // Apenas ignora a foto, mas continua com outros dados
             resource.setPhoto(null);
+        } else if (photo == null && photoURI != null) {
+            // Talvez o user mandou um URI antigo, ignora-o também
             resource.setPhotoURI(null);
         }
+
         final Author author = mapper.create(resource);
         return authorRepository.save(author);
     }
@@ -89,7 +96,7 @@ public class AuthorServiceImpl implements AuthorService {
         }
         // since we got the object from the database we can check the version in memory
         // and apply the patch
-        author.applyPatch(desiredVersion, request);
+        author.applyPatch(request);
 
         // in the meantime some other user might have changed this object on the
         // database, so concurrency control will still be applied when we try to save
@@ -117,7 +124,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .orElseThrow(() -> new NotFoundException("Cannot find reader"));
 
         String photoFile = author.getPhoto().getPhotoFile();
-        author.removePhoto(desiredVersion);
+        author.setPhoto(null);
         Optional<Author> updatedAuthor = Optional.of(authorRepository.save(author));
         photoRepository.deleteByPhotoFile(photoFile);
         return updatedAuthor;
