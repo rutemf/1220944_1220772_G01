@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
-import pt.psoft.g1.psoftg1.shared.services.IDBase65GeneratorService;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.time.LocalDate;
@@ -17,9 +16,6 @@ import java.time.LocalDate;
 @Setter
 @Table(name = "Lending", uniqueConstraints = {@UniqueConstraint(columnNames={"LENDING_NUMBER"})})
 public class LendingSQL {
-
-    @Transient
-    private IDGeneratorService idGeneratorService;
 
     @Id
     private String id;
@@ -59,7 +55,7 @@ public class LendingSQL {
     private Integer daysOverdue;
 
     public LendingSQL(Lending lending) {
-        this.id = idGeneratorService.generateId();
+        IDGeneratorService.generateIdSQL();
         this.lendingNumber = lending.getLendingNumber();
         this.book = lending.getBook() != null ? BookSQL.fromDomain(lending.getBook()) : null;
         this.readerDetails = lending.getReaderDetails() != null ? ReaderDetailsSQL.fromDomain(lending.getReaderDetails()) : null;

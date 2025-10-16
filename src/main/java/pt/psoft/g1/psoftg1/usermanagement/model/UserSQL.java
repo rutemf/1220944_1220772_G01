@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.shared.services.IDBase65GeneratorService;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Getter
@@ -24,9 +23,6 @@ import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class UserSQL implements UserDetails {
-
-    @Transient
-    private IDGeneratorService idGeneratorService;
 
     @Id
     private String id;
@@ -56,7 +52,7 @@ public class UserSQL implements UserDetails {
     private Set<Role> authorities = new HashSet<>();
 
     public UserSQL(User user) {
-        this.id = idGeneratorService.generateId();
+        this.id = IDGeneratorService.generateIdSQL();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.name = user.getName().toString();

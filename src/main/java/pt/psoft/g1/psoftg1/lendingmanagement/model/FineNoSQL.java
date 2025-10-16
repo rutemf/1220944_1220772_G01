@@ -5,16 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.psoft.g1.psoftg1.shared.services.IDBase65GeneratorService;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Getter
 @Setter
 @Document(collection = "fines")
 public class FineNoSQL {
-
-    @Transient
-    private IDGeneratorService idGeneratorService;
 
     @Id
     private String id;
@@ -27,7 +23,8 @@ public class FineNoSQL {
     private LendingNoSQL lending;
 
     public FineNoSQL(Fine fine) {
-        this.id = idGeneratorService.generateId();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdNoSQL();
         this.fineValuePerDayInCents = fine.getFineValuePerDayInCents();
         this.centsValue = fine.getCentsValue();
         this.lending = LendingNoSQL.fromDomain(fine.getLending());

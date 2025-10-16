@@ -3,7 +3,6 @@ package pt.psoft.g1.psoftg1.lendingmanagement.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.shared.services.IDBase65GeneratorService;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Entity
@@ -11,9 +10,6 @@ import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 @Setter
 @Table(name = "Fine")
 public class FineSQL {
-
-    @Transient
-    private IDGeneratorService idGeneratorService;
 
     @Id
     private String id;
@@ -28,7 +24,7 @@ public class FineSQL {
     private LendingSQL lending;
 
     public FineSQL(Fine fine) {
-        this.id = idGeneratorService.generateId();
+        this.id = IDGeneratorService.generateIdSQL();
         this.fineValuePerDayInCents = fine.getFineValuePerDayInCents();
         this.centsValue = fine.getCentsValue();
         this.lending = LendingSQL.fromDomain(fine.getLending());

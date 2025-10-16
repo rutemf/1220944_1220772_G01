@@ -15,9 +15,6 @@ import java.util.List;
 @Table(name = "Book", uniqueConstraints = @UniqueConstraint(columnNames = "isbn"))
 public class BookSQL {
 
-    @Transient
-    private IDGeneratorService idGeneratorService;
-
     @Id
     private String id;
 
@@ -37,7 +34,7 @@ public class BookSQL {
     private String photoURI;
 
     public BookSQL(Book book) {
-        this.id = idGeneratorService.generateId();
+        this.id = IDGeneratorService.generateIdSQL();
         this.isbn = book.getIsbn();
         this.title = book.getTitle().toString();
         this.description = book.getDescription().toString();

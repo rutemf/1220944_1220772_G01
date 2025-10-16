@@ -1,12 +1,10 @@
 package pt.psoft.g1.psoftg1.shared.model;
 
 import jakarta.persistence.Id;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.psoft.g1.psoftg1.shared.services.IDBase65GeneratorService;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.nio.file.Paths;
@@ -16,9 +14,6 @@ import java.nio.file.Paths;
 @Document(collection = "photos")
 public class PhotoNoSQL {
 
-    @Transient
-    private IDGeneratorService idGeneratorService;
-
     @Id
     private String id;
 
@@ -26,7 +21,8 @@ public class PhotoNoSQL {
     private String photoFile;
 
     public PhotoNoSQL(Photo photo) {
-        this.id = idGeneratorService.generateId();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdNoSQL();
         this.photoFile = photo.getPhotoFile();
     }
 

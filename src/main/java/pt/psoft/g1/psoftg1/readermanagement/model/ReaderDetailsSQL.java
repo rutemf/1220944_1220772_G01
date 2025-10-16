@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
-import pt.psoft.g1.psoftg1.shared.services.IDBase65GeneratorService;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 import pt.psoft.g1.psoftg1.usermanagement.model.ReaderSQL;
 
@@ -16,9 +15,6 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "READER_DETAILS")
 public class ReaderDetailsSQL {
-
-    @Transient
-    private IDGeneratorService idGeneratorService;
 
     @Id
     private String id;
@@ -38,7 +34,7 @@ public class ReaderDetailsSQL {
     private List<GenreSQL> interestList;
 
     public ReaderDetailsSQL(ReaderDetails readerDetails) {
-        this.id = idGeneratorService.generateId();
+        this.id = IDGeneratorService.generateIdSQL();
 
         this.reader = ReaderSQL.fromDomain(readerDetails.getReader());
         this.readerNumber = readerDetails.getReaderNumber();

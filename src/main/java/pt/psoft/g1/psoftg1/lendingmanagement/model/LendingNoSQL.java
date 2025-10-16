@@ -1,13 +1,11 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.model;
 
 import jakarta.persistence.Id;
-import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.bookmanagement.model.BookNoSQL;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
-import pt.psoft.g1.psoftg1.shared.services.IDBase65GeneratorService;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.time.LocalDate;
@@ -16,9 +14,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class LendingNoSQL {
-
-    @Transient
-    private IDGeneratorService idGeneratorService;
 
     @Id
     private String id;
@@ -39,7 +34,8 @@ public class LendingNoSQL {
     private Integer daysOverdue;
 
     public LendingNoSQL(Lending lending) {
-        this.id = idGeneratorService.generateId();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        IDGeneratorService.generateIdNoSQL();
         this.lendingNumber = lending.getLendingNumber();
         this.book = lending.getBook() != null ? BookNoSQL.fromDomain(lending.getBook()) : null;
         this.readerDetails = lending.getReaderDetails();

@@ -1,7 +1,6 @@
 package pt.psoft.g1.psoftg1.usermanagement.model;
 
 import jakarta.persistence.Id;
-import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
@@ -11,7 +10,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.userdetails.UserDetails;
 import pt.psoft.g1.psoftg1.shared.model.Name;
-import pt.psoft.g1.psoftg1.shared.services.IDBase65GeneratorService;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.time.LocalDateTime;
@@ -22,9 +20,6 @@ import java.util.Set;
 @Setter
 @Document(collection = "users")
 public class UserNoSQL implements UserDetails {
-
-    @Transient
-    private IDGeneratorService idGeneratorService;
 
     @Id
     private String id;
@@ -48,7 +43,8 @@ public class UserNoSQL implements UserDetails {
     private Set<Role> authorities = new HashSet<>();
 
     public UserNoSQL(User user) {
-        this.id = idGeneratorService.generateId();
+        IDGeneratorService IDGeneratorService = new IDGeneratorService();
+        this.id = IDGeneratorService.generateIdNoSQL();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.name = user.getName();
