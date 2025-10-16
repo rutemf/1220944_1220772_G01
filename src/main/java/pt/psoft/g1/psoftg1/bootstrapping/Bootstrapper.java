@@ -52,10 +52,10 @@ public class Bootstrapper implements CommandLineRunner {
     @Override
     @Transactional
     public void run(final String... args) {
-        // createAuthors();
-        // createGenres();
-        // createBooks();
-        // loadForbiddenNames();
+        createAuthors();
+        createGenres();
+        createBooks();
+        loadForbiddenNames();
         // createLendings();
         // createPhotos();
     }

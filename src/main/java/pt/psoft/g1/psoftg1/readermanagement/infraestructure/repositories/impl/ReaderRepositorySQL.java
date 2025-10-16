@@ -14,6 +14,7 @@ import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderBookCountDTO;
 import pt.psoft.g1.psoftg1.readermanagement.services.SearchReadersQuery;
 import pt.psoft.g1.psoftg1.usermanagement.model.ReaderSQL;
+import pt.psoft.g1.psoftg1.usermanagement.model.UserSQL;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -79,6 +80,13 @@ public class ReaderRepositorySQL implements ReaderRepository {
     @Override
     public ReaderDetails save(ReaderDetails readerDetails) {
         ReaderDetailsSQL entity = ReaderDetailsSQL.fromDomain(readerDetails);
+
+        UserSQL userManaged = entityManager.createQuery(
+        "SELECT u FROM UserSQL u WHERE u.username = :u", UserSQL.class)
+        .setParameter("u", readerDetails.getReader().getUsername())
+        .getResultStream().findFirst().orElseThrow(() -> new IllegalStateException(
+            "UserSQL not found: " + readerDetails.getReader().getUsername()
+        ));
 
         ReaderSQL readerManaged = entityManager.createQuery(
         "SELECT r FROM ReaderSQL r WHERE r.username = :u", ReaderSQL.class)

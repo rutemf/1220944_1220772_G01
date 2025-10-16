@@ -23,6 +23,7 @@ import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "user")
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 public class UserSQL implements UserDetails {
 
     @Id

@@ -6,8 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.shared.services.Page;
-import pt.psoft.g1.psoftg1.usermanagement.model.User;
-import pt.psoft.g1.psoftg1.usermanagement.model.UserSQL;
+import pt.psoft.g1.psoftg1.usermanagement.model.*;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 import pt.psoft.g1.psoftg1.usermanagement.services.SearchUsersQuery;
 
@@ -38,13 +37,18 @@ public class UserRepositorySQL implements UserRepository {
 
     @Override
     public <S extends User> S save(S entity) {
-        UserSQL userSQL = UserSQL.fromDomain(entity);
-        if (userSQL.getId() == null) {
-            entityManager.persist(userSQL);
-            return (S) userSQL.toDomain();
+        if (entity instanceof Reader reader) {
+            ReaderSQL readerSQL = ReaderSQL.fromDomain(reader);
+            ReaderSQL saved = entityManager.merge(readerSQL);
+            return (S) saved.toDomain();
+        } else if (entity instanceof Librarian librarian) {
+            LibrarianSQL librarianSQL = LibrarianSQL.fromDomain(librarian);
+            LibrarianSQL saved = entityManager.merge(librarianSQL);
+            return (S) saved.toDomain();
         } else {
-            UserSQL merged = entityManager.merge(userSQL);
-            return (S) merged.toDomain();
+            UserSQL userSQL = UserSQL.fromDomain(entity);
+            UserSQL saved = entityManager.merge(userSQL);
+            return (S) saved.toDomain();
         }
     }
 
