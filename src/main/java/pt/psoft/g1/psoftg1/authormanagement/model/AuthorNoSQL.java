@@ -1,16 +1,21 @@
 package pt.psoft.g1.psoftg1.authormanagement.model;
 
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.shared.model.Name;
+import pt.psoft.g1.psoftg1.shared.services.IDBase65GeneratorService;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Getter
 @Setter
 @Document(collection = "authors")
 public class AuthorNoSQL {
+
+    @Transient
+    private IDGeneratorService idGeneratorService;
 
     @Id
     private String id;
@@ -21,8 +26,7 @@ public class AuthorNoSQL {
     private Bio bio;
 
     public AuthorNoSQL(Author author) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
-        this.id = IDGeneratorService.generateIdNoSQL();
+        this.id = idGeneratorService.generateId();
         this.authorNumber = author.getAuthorNumber();
         this.name = author.getName();
         this.bio = author.getBio();

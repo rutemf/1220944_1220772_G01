@@ -1,12 +1,14 @@
 package pt.psoft.g1.psoftg1.bookmanagement.model;
 
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.authormanagement.model.AuthorNoSQL;
 import pt.psoft.g1.psoftg1.genremanagement.model.GenreNoSQL;
+import pt.psoft.g1.psoftg1.shared.services.IDBase65GeneratorService;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.util.List;
@@ -15,6 +17,9 @@ import java.util.List;
 @Setter
 @Document(collection = "books")
 public class BookNoSQL {
+
+    @Transient
+    private IDGeneratorService idGeneratorService;
 
     @Id
     private String id;
@@ -32,8 +37,7 @@ public class BookNoSQL {
     private String photoURI;
 
     public BookNoSQL(Book book) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
-        this.id = IDGeneratorService.generateIdNoSQL();
+        this.id = idGeneratorService.generateId();
         this.isbn = book.getIsbn();
         this.title = book.getTitle();
         this.description = book.getDescription();

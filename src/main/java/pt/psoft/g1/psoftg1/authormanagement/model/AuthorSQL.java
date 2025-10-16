@@ -3,9 +3,11 @@ package pt.psoft.g1.psoftg1.authormanagement.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.shared.model.Name;
+import pt.psoft.g1.psoftg1.shared.services.IDBase65GeneratorService;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Entity
@@ -13,6 +15,9 @@ import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 @Setter
 @Table(name = "Author")
 public class AuthorSQL {
+
+    @Transient
+    private IDGeneratorService idGeneratorService;
 
     @Id
     private String id;
@@ -24,7 +29,7 @@ public class AuthorSQL {
     private String bio;
 
     public AuthorSQL(Author author) {
-        this.id = IDGeneratorService.generateIdSQL();
+        this.id = idGeneratorService.generateId();
         this.authorNumber = author.getAuthorNumber();
         this.name = author.getName().toString();
         this.bio = author.getBio().toString();
