@@ -22,6 +22,7 @@ import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "user")
 public class UserSQL implements UserDetails {
 
     @Id

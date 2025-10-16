@@ -7,11 +7,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderBookCountDTO;
 import pt.psoft.g1.psoftg1.readermanagement.services.SearchReadersQuery;
+import pt.psoft.g1.psoftg1.usermanagement.model.ReaderSQL;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -78,7 +80,22 @@ public class ReaderRepositorySQL implements ReaderRepository {
     public ReaderDetails save(ReaderDetails readerDetails) {
         ReaderDetailsSQL entity = ReaderDetailsSQL.fromDomain(readerDetails);
 
-        if (entity.getId() == null) {
+        ReaderSQL readerManaged = entityManager.createQuery(
+        "SELECT r FROM ReaderSQL r WHERE r.username = :u", ReaderSQL.class)
+        .setParameter("u", readerDetails.getReader().getUsername()).getSingleResult();
+
+        entity.setReader(readerManaged);
+
+        if (entity.getInterestList() != null && !entity.getInterestList().isEmpty()) {
+            List<GenreSQL> managedGenres = entity.getInterestList().stream().map(g -> entityManager.createQuery(
+            "SELECT gg FROM GenreSQL gg WHERE gg.genre = :genre", GenreSQL.class)
+            .setParameter("genre", g.getGenre()).getResultStream()
+            .findFirst().orElse(g)).toList();
+
+            entity.setInterestList(managedGenres);
+        }
+
+        if (entity.getId() == null || entityManager.find(ReaderDetailsSQL.class, entity.getId()) == null) {
             entityManager.persist(entity);
         } else {
             entity = entityManager.merge(entity);
