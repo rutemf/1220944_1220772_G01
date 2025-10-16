@@ -2,33 +2,46 @@ package pt.psoft.g1.psoftg1.bootstrapping;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
+import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
+@Profile("sql")
 @Order(1)
 public class UserBootstrapper implements CommandLineRunner {
 
+    private final ReaderRepository readerRepository;
     private final UserRepository userRepository;
+    private final GenreRepository genreRepository;
 
     @Override
     @Transactional
     public void run(final String... args)  {
         createReaders();
+        // createReaderDetails();
         createLibrarian();
     }
 
     private void createReaders() {
 
         if (userRepository.findByUsername("miguel@gmail.com").isEmpty()) {
-            final Reader manuel = Reader.newReader("miguel@gmail.com", "Miguel123!", "Miguel Cardoso");
-            userRepository.save(manuel);
+            final Reader miguel = Reader.newReader("miguel@gmail.com", "Miguel123!", "Miguel Cardoso");
+            userRepository.save(miguel);
         }
 
         if (userRepository.findByUsername("rute@gmail.com").isEmpty()) {
@@ -53,7 +66,15 @@ public class UserBootstrapper implements CommandLineRunner {
 
     }
 
-    private void createLibrarian(){
+    private void createReaderDetails() {
+        Optional<Genre> romanceGenre = genreRepository.findByString("Romance");
+        Optional<Genre> mysteryGenre = genreRepository.findByString("Mystery");
+        Optional<Genre> fantasyGenre = genreRepository.findByString("Fantasy");
+
+        List<Genre> interestList = Arrays.asList(romanceGenre.get(), mysteryGenre.get(), fantasyGenre.get());
+    }
+
+    private void createLibrarian() {
 
         if (userRepository.findByUsername("maria@gmail.com").isEmpty()) {
             final User maria = Librarian.newLibrarian("maria@gmail.com", "Maria!123", "Maria Roberta");

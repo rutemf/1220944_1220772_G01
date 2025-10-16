@@ -122,7 +122,6 @@ public class BookRepositorySQL implements BookRepository {
         return entity.toDomain();
     }
 
-
     @Override
     public void delete(Book book) {
         BookSQL entity = BookSQL.fromDomain(book);
