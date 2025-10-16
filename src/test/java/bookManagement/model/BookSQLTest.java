@@ -97,7 +97,7 @@ class BookSQLTest {
     void toDomain_mapsGenreAndAuthors_usingProvidedSqlObjects() {
         BookSQL sql = newBookSQL();
         sql.setId("BOOK#1");
-        sql.setIsbn(new Isbn("9780306406157"));
+        sql.setIsbn("9780306406157");
         sql.setTitle("Domain-Driven Design");
         sql.setDescription("Blue book");
         sql.setPhotoURI("photo://uri");
@@ -132,7 +132,7 @@ class BookSQLTest {
     @Test
     void toDomain_handlesNullAuthorsListAsNull_andNonNullAsMappedList() {
         BookSQL sqlNullAuthors = newBookSQL();
-        sqlNullAuthors.setIsbn(new Isbn("9780306406157"));
+        sqlNullAuthors.setIsbn("9780306406157");
         sqlNullAuthors.setTitle("T1");
         sqlNullAuthors.setDescription("D1");
         sqlNullAuthors.setAuthors(null);
@@ -140,7 +140,7 @@ class BookSQLTest {
         assertNull(b1.getAuthors(), "Quando authors é null no SQL, domínio deve receber null");
 
         BookSQL sqlEmptyAuthors = newBookSQL();
-        sqlEmptyAuthors.setIsbn(new Isbn("9780306406157"));
+        sqlEmptyAuthors.setIsbn("9780306406157");
         sqlEmptyAuthors.setTitle("T2");
         sqlEmptyAuthors.setDescription("D2");
         sqlEmptyAuthors.setAuthors(List.of());

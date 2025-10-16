@@ -22,6 +22,7 @@ import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "user")
 public class UserSQL implements UserDetails {
 
     @Id
@@ -49,6 +50,7 @@ public class UserSQL implements UserDetails {
     private String name;
 
     @ElementCollection
+    @JoinTable(name="user_authorities")
     private Set<Role> authorities = new HashSet<>();
 
     public UserSQL(User user) {

@@ -58,7 +58,7 @@ public class BookRepositorySQL implements BookRepository {
     @Override
     public Optional<Book> findByIsbn(String isbn) {
         TypedQuery<BookSQL> query = entityManager.createQuery(
-        "SELECT b FROM BookSQL b WHERE b.isbn.isbn = :isbn", BookSQL.class);
+        "SELECT b FROM BookSQL b WHERE b.isbn = :isbn", BookSQL.class);
 
         query.setParameter("isbn", isbn);
         return query.getResultStream().map(BookSQL::toDomain).findFirst();

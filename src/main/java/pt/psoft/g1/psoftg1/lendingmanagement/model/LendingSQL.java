@@ -9,8 +9,6 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
-import java.time.LocalDate;
-
 @Entity
 @Getter
 @Setter
@@ -33,14 +31,14 @@ public class LendingSQL {
 
     @NotNull
     @Column(nullable = false, updatable = false)
-    private LocalDate startDate;
+    private String startDate;
 
     @NotNull
     @Column(nullable = false)
-    private LocalDate limitDate;
+    private String limitDate;
 
     @Column
-    private LocalDate returnedDate;
+    private String returnedDate;
 
     @Size(max = 1024)
     @Column(length = 1024)
@@ -59,9 +57,9 @@ public class LendingSQL {
         this.lendingNumber = lending.getLendingNumber();
         this.book = lending.getBook() != null ? BookSQL.fromDomain(lending.getBook()) : null;
         this.readerDetails = lending.getReaderDetails() != null ? ReaderDetailsSQL.fromDomain(lending.getReaderDetails()) : null;
-        this.startDate = lending.getStartDate();
-        this.limitDate = lending.getLimitDate();
-        this.returnedDate = lending.getReturnedDate();
+        this.startDate = lending.getStartDate().toString();
+        this.limitDate = lending.getLimitDate().toString();
+        this.returnedDate = lending.getReturnedDate().toString();
         this.commentary = lending.getCommentary();
         this.fineValuePerDayInCents = lending.getFineValuePerDayInCents();
         this.daysUntilReturn = lending.getDaysUntilReturn();
