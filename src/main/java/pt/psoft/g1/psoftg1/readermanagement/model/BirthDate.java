@@ -2,10 +2,11 @@ package pt.psoft.g1.psoftg1.readermanagement.model;
 
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Getter
-public class BirthDate {
+public class BirthDate implements Serializable {
 
     private LocalDate birthDate;
     private static final int DEFAULT_MINIMUM_AGE = 12;

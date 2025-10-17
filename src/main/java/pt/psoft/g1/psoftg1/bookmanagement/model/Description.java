@@ -2,7 +2,9 @@ package pt.psoft.g1.psoftg1.bookmanagement.model;
 
 import pt.psoft.g1.psoftg1.shared.model.StringUtilsCustom;
 
-public class Description {
+import java.io.Serializable;
+
+public class Description implements Serializable {
 
     private String description;
 
