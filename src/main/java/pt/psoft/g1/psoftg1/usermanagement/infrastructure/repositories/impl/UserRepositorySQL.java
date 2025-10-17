@@ -2,6 +2,9 @@ package pt.psoft.g1.psoftg1.usermanagement.infrastructure.repositories.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
@@ -16,6 +19,7 @@ import java.util.Optional;
 
 @Repository
 @Profile("sql")
+@CacheConfig(cacheNames = "users")
 public class UserRepositorySQL implements UserRepository {
 
     private final EntityManager entityManager;
@@ -59,6 +63,7 @@ public class UserRepositorySQL implements UserRepository {
     }
 
     @Override
+    @Cacheable(key = "#id")
     public User getById(Long id) {
         return findById(id).filter(User::isEnabled)
         .orElseThrow(() -> new NotFoundException(User.class, id));
@@ -117,6 +122,7 @@ public class UserRepositorySQL implements UserRepository {
     }
 
     @Override
+    @CacheEvict(key = "#user.id")
     public void delete(User user) {
         UserSQL userSQL = UserSQL.fromDomain(user);
         UserSQL managed = entityManager.contains(userSQL) ? userSQL : entityManager.merge(userSQL);
