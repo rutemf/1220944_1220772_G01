@@ -6,11 +6,12 @@ import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.shared.model.EntityWithPhoto;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
-public class Book extends EntityWithPhoto {
+public class Book extends EntityWithPhoto implements Serializable {
 
     private Isbn isbn;
     private Title title;

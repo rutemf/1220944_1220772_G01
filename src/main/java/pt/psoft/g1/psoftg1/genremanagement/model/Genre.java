@@ -2,8 +2,10 @@ package pt.psoft.g1.psoftg1.genremanagement.model;
 
 import lombok.Getter;
 
+import java.io.Serializable;
+
 @Getter
-public class Genre {
+public class Genre implements Serializable {
 
     private String genre;
     private final int GENRE_MAX_LENGTH = 100;

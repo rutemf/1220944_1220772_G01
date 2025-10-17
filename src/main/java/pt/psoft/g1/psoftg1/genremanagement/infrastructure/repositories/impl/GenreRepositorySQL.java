@@ -2,6 +2,10 @@ package pt.psoft.g1.psoftg1.genremanagement.infrastructure.repositories.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +23,7 @@ import java.util.Optional;
 
 @Repository
 @Profile("sql")
+@CacheConfig(cacheNames = "genres")
 public class GenreRepositorySQL implements GenreRepository {
 
     private final EntityManager entityManager;
@@ -28,6 +33,7 @@ public class GenreRepositorySQL implements GenreRepository {
     }
 
     @Override
+    @Cacheable(key = "'allGenres'")
     public Iterable<Genre> findAll() {
         TypedQuery<GenreSQL> query = entityManager.createQuery(
         "SELECT g FROM GenreSQL g", GenreSQL.class);
@@ -36,6 +42,7 @@ public class GenreRepositorySQL implements GenreRepository {
     }
 
     @Override
+    @Cacheable(key = "#genreName")
     public Optional<Genre> findByString(String genreName) {
         TypedQuery<GenreSQL> query = entityManager.createQuery(
         "SELECT g FROM GenreSQL g WHERE g.genre = :genreName", GenreSQL.class);
@@ -45,6 +52,10 @@ public class GenreRepositorySQL implements GenreRepository {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(key = "#genre.genre"),
+            @CacheEvict(key = "'allGenres'")
+    })
     public Genre save(Genre genre) {
         GenreSQL entity = GenreSQL.fromDomain(genre);
 

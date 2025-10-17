@@ -13,7 +13,6 @@ import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
-import pt.psoft.g1.psoftg1.usermanagement.model.UserSQL;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
 import java.util.Arrays;
@@ -22,7 +21,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-@Profile("sql")
+@Profile("sq2l")
 @Order(1)
 public class UserBootstrapper implements CommandLineRunner {
 
@@ -80,7 +79,6 @@ public class UserBootstrapper implements CommandLineRunner {
 
         ReaderDetails readerDetails = new ReaderDetails(number, reader, birthDate, phoneNumber, true, true, true, null, interestList);
         readerRepository.save(readerDetails);
-        System.out.println("Saved");
     }
 
     private void createLibrarian() {
