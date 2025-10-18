@@ -32,8 +32,8 @@ public class UserBootstrapper implements CommandLineRunner {
     @Override
     @Transactional
     public void run(final String... args)  {
-        createReaders();
-        createLibrarian();
+        // createReaders();
+        // createLibrarian();
     }
 
     private void createReaders() {

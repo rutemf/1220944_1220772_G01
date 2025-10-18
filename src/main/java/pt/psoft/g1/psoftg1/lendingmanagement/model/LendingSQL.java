@@ -59,7 +59,7 @@ public class LendingSQL {
         this.readerDetails = lending.getReaderDetails() != null ? ReaderDetailsSQL.fromDomain(lending.getReaderDetails()) : null;
         this.startDate = lending.getStartDate().toString();
         this.limitDate = lending.getLimitDate().toString();
-        this.returnedDate = lending.getReturnedDate().toString();
+        this.returnedDate = lending.getReturnedDate() != null ? lending.getReturnedDate().toString() : null;
         this.commentary = lending.getCommentary();
         this.fineValuePerDayInCents = lending.getFineValuePerDayInCents();
         this.daysUntilReturn = lending.getDaysUntilReturn();

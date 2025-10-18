@@ -57,7 +57,7 @@ public class Bootstrapper implements CommandLineRunner {
         // createBooks();
         // loadForbiddenNames();
         // createLendings();
-        // createPhotos();
+        createPhotos();
     }
 
     private void createAuthors() {
@@ -196,33 +196,20 @@ public class Bootstrapper implements CommandLineRunner {
         books.add(book4);
         books.add(book5);
 
-        final var readerDetails1 = readerRepository.findByReaderNumber("2025/1");
-        final var readerDetails2 = readerRepository.findByReaderNumber("2025/2");
-        final var readerDetails3 = readerRepository.findByReaderNumber("2025/3");
-        final var readerDetails4 = readerRepository.findByReaderNumber("2025/4");
-        final var readerDetails5 = readerRepository.findByReaderNumber("2025/5");
-        final var readerDetails6 = readerRepository.findByReaderNumber("2025/6");
+        final var readerDetails1 = readerRepository.findByReaderNumber("2025/1").get();
+        final var readerDetails2 = readerRepository.findByReaderNumber("2025/2").get();
 
         List<ReaderDetails> readers = new ArrayList<>();
-        if (readerDetails1.isPresent() && readerDetails2.isPresent() && readerDetails3.isPresent()) {
-            readers = List.of(new ReaderDetails[]{readerDetails1.get(), readerDetails2.get(), readerDetails3.get(),
-                    readerDetails4.get(), readerDetails5.get(), readerDetails6.get()});
-        }
+        readers.add(readerDetails1);
+        readers.add(readerDetails2);
 
         LocalDate startDate;
         LocalDate returnedDate;
         Lending lending;
 
-        //Lendings 1 through 3 (late, returned)
-        for (i = 0; i < 3; i++) {
-            ++seq;
-            if (lendingRepository.findByLendingNumber("2024/" + seq).isEmpty()) {
-                startDate = LocalDate.of(2024, 1, 31 - i);
-                returnedDate = LocalDate.of(2024, 2, 15 + i);
-                // lending = Lending.newBootstrappingLending(books.get(i), readers.get(i*2), 2024, seq, startDate, returnedDate, lendingDurationInDays, fineValuePerDayInCents);
-                // lendingRepository.save(lending);
-            }
-        }
+        lending = new Lending(books.get(0), readers.get(0), 30, 5);
+        lendingRepository.save(lending);
+        System.out.println("Lending created: " + lending);
 
         //Lendings 4 through 6 (overdue, not returned)
         for (i = 0; i < 3; i++) {

@@ -8,12 +8,13 @@ import pt.psoft.g1.psoftg1.shared.model.EntityWithPhoto;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 
+import java.io.Serializable;
 import java.nio.file.InvalidPathException;
 import java.util.List;
 
 @Getter
 @Setter
-public class ReaderDetails extends EntityWithPhoto {
+public class ReaderDetails extends EntityWithPhoto implements Serializable {
 
     private Reader reader;
     private ReaderNumber readerNumber;
