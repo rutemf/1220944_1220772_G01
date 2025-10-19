@@ -82,7 +82,10 @@ pipeline {
 
         stage('Deploy to Oracle - Staging') {
             when {
-                branch 'staging', 'prod'
+                anyOf {
+                    branch 'staging'
+                    branch 'prod'
+                }
             }
             environment {
                 CONTAINER_NAME = "psoft-g1-staging"
