@@ -18,8 +18,7 @@ public class BookSQL {
     @Id
     private String id;
 
-    @Embedded
-    private Isbn isbn;
+    private String isbn;
 
     private String title;
 
@@ -35,7 +34,7 @@ public class BookSQL {
 
     public BookSQL(Book book) {
         this.id = IDGeneratorService.generateIdSQL();
-        this.isbn = book.getIsbn();
+        this.isbn = book.getIsbn().toString();
         this.title = book.getTitle().toString();
         this.description = book.getDescription().toString();
         this.genre = book.getGenre() != null ? GenreSQL.fromDomain(book.getGenre()) : null;
@@ -48,7 +47,7 @@ public class BookSQL {
 
     public Book toDomain() {
         return new Book(
-                isbn.toString(),
+                isbn,
                 title,
                 description != null ? description : null,
                 genre != null ? genre.toDomain() : null,

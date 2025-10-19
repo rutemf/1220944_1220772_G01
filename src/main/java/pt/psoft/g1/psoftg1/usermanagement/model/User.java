@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.usermanagement.model;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +13,7 @@ import pt.psoft.g1.psoftg1.shared.model.Name;
 import lombok.Getter;
 
 @Getter
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
 
     @Setter
     private boolean enabled = true;

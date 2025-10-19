@@ -29,11 +29,27 @@ pipeline {
 
                 echo 'Code Coverage...'
                 sh 'mvn jacoco:report'
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'target/site/jacoco',
+                    reportFiles: 'index.html',
+                    reportName: 'JaCoCo Coverage Report'
+                ])
 
                 echo 'Mutation Testing...'
                 sh 'mvn org.pitest:pitest-maven:mutationCoverage'
 
                 echo 'Reporting Results...'
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'target/pit-reports',
+                    reportFiles: '**/index.html',
+                    reportName: 'PITest Mutation Report'
+                ])
             }
         }
 

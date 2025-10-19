@@ -1,6 +1,8 @@
 package pt.psoft.g1.psoftg1.bookmanagement.model;
 
-public class Title {
+import java.io.Serializable;
+
+public class Title implements Serializable {
 
     private String title;
 

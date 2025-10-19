@@ -2,6 +2,8 @@ package pt.psoft.g1.psoftg1.authormanagement.infrastructure.repositories.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Repository
 @Profile("sql")
+@CacheConfig(cacheNames = "authors")
 public class AuthorRepositorySQL implements AuthorRepository {
 
     private final EntityManager entityManager;
@@ -27,6 +30,7 @@ public class AuthorRepositorySQL implements AuthorRepository {
     }
 
     @Override
+    @Cacheable(key = "#authorNumber")
     public Optional<Author> findByAuthorNumber(Long authorNumber) {
         TypedQuery<AuthorSQL> query = entityManager.createQuery(
         "SELECT a FROM AuthorSQL a WHERE a.authorNumber = :authorNumber", AuthorSQL.class);
@@ -67,6 +71,7 @@ public class AuthorRepositorySQL implements AuthorRepository {
     }
 
     @Override
+    @Cacheable(key = "'allAuthors'")
     public Iterable<Author> findAll() {
         TypedQuery<AuthorSQL> query = entityManager.createQuery(
         "SELECT a FROM AuthorSQL a", AuthorSQL.class);

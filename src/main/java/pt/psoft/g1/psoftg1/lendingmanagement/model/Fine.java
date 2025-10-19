@@ -3,11 +3,12 @@ package pt.psoft.g1.psoftg1.lendingmanagement.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
 @Setter
-public class Fine {
+public class Fine implements Serializable {
 
     private int fineValuePerDayInCents;
     private int centsValue;

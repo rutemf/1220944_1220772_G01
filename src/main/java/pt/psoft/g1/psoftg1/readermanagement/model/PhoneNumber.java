@@ -3,9 +3,11 @@ package pt.psoft.g1.psoftg1.readermanagement.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 @Getter
 @EqualsAndHashCode
-public class PhoneNumber {
+public class PhoneNumber implements Serializable {
 
     private String phoneNumber;
 
