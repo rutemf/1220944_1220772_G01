@@ -4,11 +4,13 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 
@@ -18,6 +20,7 @@ import java.util.Optional;
 
 @Repository
 @Profile("sql")
+@CacheConfig(cacheNames = "lendings")
 public class LendingRepositorySQL implements LendingRepository {
 
     private final EntityManager entityManager;
@@ -27,6 +30,7 @@ public class LendingRepositorySQL implements LendingRepository {
     }
 
     @Override
+    @Cacheable(key = "#lendingNumber")
     public Optional<Lending> findByLendingNumber(String lendingNumber) {
         TypedQuery<LendingSQL> query = entityManager.createQuery(
         "SELECT l FROM LendingSQL l WHERE l.lendingNumber = :lendingNumber", LendingSQL.class);
@@ -202,6 +206,7 @@ public class LendingRepositorySQL implements LendingRepository {
     }
 
     @Override
+    @CacheEvict(key = "#lending.lendingNumber")
     public void delete(Lending lending) {
         LendingSQL lendingSQL = LendingSQL.fromDomain(lending);
         LendingSQL managed = entityManager.contains(lendingSQL) ? lendingSQL : entityManager.merge(lendingSQL);
