@@ -1,7 +1,6 @@
 package pt.psoft.g1.psoftg1.bootstrapping;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
@@ -15,8 +14,8 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
-import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
@@ -24,7 +23,6 @@ import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 import pt.psoft.g1.psoftg1.shared.services.ForbiddenNameService;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,10 +33,6 @@ import java.util.Optional;
 @PropertySource({"classpath:config/library.properties"})
 @Order(2)
 public class Bootstrapper implements CommandLineRunner {
-    @Value("${lendingDurationInDays}")
-    private int lendingDurationInDays;
-    @Value("${fineValuePerDayInCents}")
-    private int fineValuePerDayInCents;
 
     private final GenreRepository genreRepository;
     private final BookRepository bookRepository;
@@ -57,7 +51,6 @@ public class Bootstrapper implements CommandLineRunner {
         // createBooks();
         // loadForbiddenNames();
         // createLendings();
-        createPhotos();
     }
 
     private void createAuthors() {
@@ -180,9 +173,6 @@ public class Bootstrapper implements CommandLineRunner {
     }
 
     private void createLendings() {
-        int i;
-        int seq = 0;
-
         final var book1 = bookRepository.findByIsbn("9789720706386").get();
         final var book2 = bookRepository.findByIsbn("9789723716160").get();
         final var book3 = bookRepository.findByIsbn("9789895612864").get();
@@ -203,103 +193,17 @@ public class Bootstrapper implements CommandLineRunner {
         readers.add(readerDetails1);
         readers.add(readerDetails2);
 
-        LocalDate startDate;
-        LocalDate returnedDate;
-        Lending lending;
+        Lending lending1 = new Lending(books.get(0), readers.get(0), 30, 5);
+        lending1.setLendingNumber(new LendingNumber(2025,1));
+        lendingRepository.save(lending1);
 
-        lending = new Lending(books.get(0), readers.get(0), 30, 5);
-        lendingRepository.save(lending);
-        System.out.println("Lending created: " + lending);
+        Lending lending2 = new Lending(books.get(1), readers.get(0), 25, 5);
+        lending2.setLendingNumber(new LendingNumber(2025,2));
+        lendingRepository.save(lending2);
 
-        //Lendings 4 through 6 (overdue, not returned)
-        for (i = 0; i < 3; i++) {
-            ++seq;
-            if (lendingRepository.findByLendingNumber("2024/" + seq).isEmpty()) {
-                startDate = LocalDate.of(2024, 3, 25 + i);
-                // lending = Lending.newBootstrappingLending(books.get(1+i), readers.get(1+i*2), 2024, seq, startDate, null, lendingDurationInDays, fineValuePerDayInCents);
-                // lendingRepository.save(lending);
-            }
-        }
-        //Lendings 7 through 9 (late, overdue, not returned)
-        for (i = 0; i < 3; i++) {
-            ++seq;
-            if (lendingRepository.findByLendingNumber("2024/" + seq).isEmpty()) {
-                startDate = LocalDate.of(2024, 4, (1 + 2 * i));
-                // lending = Lending.newBootstrappingLending(books.get(3/(i+1)), readers.get(i*2), 2024, seq, startDate, null, lendingDurationInDays, fineValuePerDayInCents);
-                // lendingRepository.save(lending);
-            }
-        }
-
-        //Lendings 10 through 12 (returned)
-        for (i = 0; i < 3; i++) {
-            ++seq;
-            if (lendingRepository.findByLendingNumber("2024/" + seq).isEmpty()) {
-                startDate = LocalDate.of(2024, 5, (i + 1));
-                returnedDate = LocalDate.of(2024, 5, (i + 2));
-                // lending = Lending.newBootstrappingLending(books.get(3-i), readers.get(1+i*2), 2024, seq, startDate, returnedDate, lendingDurationInDays, fineValuePerDayInCents);
-                // lendingRepository.save(lending);
-            }
-        }
-
-        //Lendings 13 through 18 (returned)
-        for (i = 0; i < 6; i++) {
-            ++seq;
-            if (lendingRepository.findByLendingNumber("2024/" + seq).isEmpty()) {
-                startDate = LocalDate.of(2024, 5, (i + 2));
-                returnedDate = LocalDate.of(2024, 5, (i + 2 * 2));
-                // lending = Lending.newBootstrappingLending(books.get(i), readers.get(i), 2024, seq, startDate, returnedDate, lendingDurationInDays, fineValuePerDayInCents);
-                // lendingRepository.save(lending);
-            }
-        }
-
-        //Lendings 19 through 23 (returned)
-        for (i = 0; i < 6; i++) {
-            ++seq;
-            if (lendingRepository.findByLendingNumber("2024/" + seq).isEmpty()) {
-                startDate = LocalDate.of(2024, 5, (i + 8));
-                returnedDate = LocalDate.of(2024, 5, (2 * i + 8));
-                // lending = Lending.newBootstrappingLending(books.get(i), readers.get(1+i%4), 2024, seq, startDate, returnedDate, lendingDurationInDays, fineValuePerDayInCents);
-                // lendingRepository.save(lending);
-            }
-        }
-
-        //Lendings 24 through 29 (returned)
-        for (i = 0; i < 6; i++) {
-            ++seq;
-            if (lendingRepository.findByLendingNumber("2024/" + seq).isEmpty()) {
-                startDate = LocalDate.of(2024, 5, (i + 18));
-                returnedDate = LocalDate.of(2024, 5, (2 * i + 18));
-                // lending = Lending.newBootstrappingLending(books.get(i), readers.get(i%2+2), 2024, seq, startDate, returnedDate, lendingDurationInDays, fineValuePerDayInCents);
-                // lendingRepository.save(lending);
-            }
-        }
-
-        //Lendings 30 through 35 (not returned, not overdue)
-        for (i = 0; i < 6; i++) {
-            ++seq;
-            if (lendingRepository.findByLendingNumber("2024/" + seq).isEmpty()) {
-                startDate = LocalDate.of(2024, 6, (i / 3 + 1));
-                // lending = Lending.newBootstrappingLending(books.get(i), readers.get(i%2+3), 2024, seq, startDate, null, lendingDurationInDays, fineValuePerDayInCents);
-                // lendingRepository.save(lending);
-            }
-        }
-
-        //Lendings 36 through 45 (not returned, not overdue)
-        for (i = 0; i < 10; i++) {
-            ++seq;
-            if (lendingRepository.findByLendingNumber("2024/" + seq).isEmpty()) {
-                startDate = LocalDate.of(2024, 6, (2 + i / 4));
-                // lending = Lending.newBootstrappingLending(books.get(i), readers.get(4-i%4), 2024, seq, startDate, null, lendingDurationInDays, fineValuePerDayInCents);
-                // lendingRepository.save(lending);
-            }
-        }
-    }
-
-    private void createPhotos() {
-        /*Optional<Photo> photoJoao = photoRepository.findByPhotoFile("foto-joao.jpg");
-        if(photoJoao.isEmpty()) {
-            Photo photo = new Photo(Paths.get(""))
-        }*/
+        Lending lending3 = new Lending(books.get(0), readers.get(1), 25, 10);
+        lending3.setLendingNumber(new LendingNumber(2025,3));
+        lendingRepository.save(lending3);
     }
 }
 

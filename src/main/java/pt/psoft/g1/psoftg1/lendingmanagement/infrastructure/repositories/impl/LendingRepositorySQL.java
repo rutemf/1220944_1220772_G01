@@ -179,15 +179,15 @@ public class LendingRepositorySQL implements LendingRepository {
         }
 
         if (lendingSQL.getReaderDetails() != null) {
-            String readerId = lendingSQL.getReaderDetails().getId();
+            String readerNumber = lendingSQL.getReaderDetails().getReaderNumber();
 
             TypedQuery<ReaderDetailsSQL> readerQuery = entityManager.createQuery(
-            "SELECT r FROM ReaderDetailsSQL r WHERE r.id = :readerId", ReaderDetailsSQL.class);
+            "SELECT r FROM ReaderDetailsSQL r WHERE r.readerNumber = :readerNumber", ReaderDetailsSQL.class);
 
-            readerQuery.setParameter("readerId", readerId);
+            readerQuery.setParameter("readerNumber", readerNumber);
 
             ReaderDetailsSQL managedReader = readerQuery.getResultStream().findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Reader with ID " + readerId + " not found."));
+            .orElseThrow(() -> new IllegalArgumentException("Reader with ID " + readerNumber + " not found."));
 
             lendingSQL.setReaderDetails(managedReader);
         }

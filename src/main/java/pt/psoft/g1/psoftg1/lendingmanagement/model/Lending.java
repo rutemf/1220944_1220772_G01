@@ -25,7 +25,7 @@ public class Lending {
     private int fineValuePerDayInCents;
 
     public Lending(Book book, ReaderDetails readerDetails, int lendingDuration, int fineValuePerDayInCents) {
-        this.lendingNumber = new LendingNumber(2025, 1);
+        this.lendingNumber = new LendingNumber(LocalDate.now().getYear(), 0);
         this.book = book;
         this.readerDetails = readerDetails;
         this.startDate = LocalDate.now();
