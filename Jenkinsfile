@@ -74,17 +74,18 @@ pipeline {
         }
 
         stage('Deploy Locally') {
-            when {
-                branch 'dev'
-            }
             steps {
                 echo 'Deploying Dev Container...'
+                archiveArtifacts artifacts: 'target/*.jar'
             }
         }
 
         stage('Deploy to Oracle - Staging') {
             when {
-                branch 'staging'
+                anyOf {
+                    branch 'staging'
+                    branch 'prod'
+                }
             }
             environment {
                 CONTAINER_NAME = "psoft-g1-staging"

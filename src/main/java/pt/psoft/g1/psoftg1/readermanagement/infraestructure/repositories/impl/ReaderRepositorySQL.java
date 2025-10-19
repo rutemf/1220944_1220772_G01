@@ -7,6 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Repository
 @Profile("sql")
+@CacheConfig(cacheNames = "readers")
 public class ReaderRepositorySQL implements ReaderRepository {
 
     private final EntityManager entityManager;
@@ -32,6 +36,7 @@ public class ReaderRepositorySQL implements ReaderRepository {
     }
 
     @Override
+    @Cacheable(key = "#readerNumber")
     public Optional<ReaderDetails> findByReaderNumber(String readerNumber) {
         TypedQuery<ReaderDetailsSQL> query = entityManager.createQuery(
         "SELECT r FROM ReaderDetailsSQL r WHERE r.readerNumber = :readerNumber", ReaderDetailsSQL.class);
@@ -71,7 +76,7 @@ public class ReaderRepositorySQL implements ReaderRepository {
     public int getCountFromCurrentYear() {
         int year = LocalDate.now().getYear();
         TypedQuery<Long> query = entityManager.createQuery(
-        "SELECT COUNT(r) FROM ReaderDetailsSQL r WHERE FUNCTION('YEAR', r.registrationDate) = :year", Long.class);
+        "SELECT COUNT(r) FROM ReaderDetailsSQL r JOIN r.reader u WHERE FUNCTION('YEAR', u.createdAt) = :year", Long.class);
 
         query.setParameter("year", year);
         return query.getSingleResult().intValue();
@@ -113,6 +118,7 @@ public class ReaderRepositorySQL implements ReaderRepository {
     }
 
     @Override
+    @Cacheable(key = "'allReaders'")
     public Iterable<ReaderDetails> findAll() {
         TypedQuery<ReaderDetailsSQL> query = entityManager.createQuery(
         "SELECT r FROM ReaderDetailsSQL r", ReaderDetailsSQL.class);
@@ -138,6 +144,7 @@ public class ReaderRepositorySQL implements ReaderRepository {
     }
 
     @Override
+    @CacheEvict(key = "#readerDetails.readerNumber")
     public void delete(ReaderDetails readerDetails) {
         ReaderDetailsSQL entity = ReaderDetailsSQL.fromDomain(readerDetails);
         ReaderDetailsSQL managed = entityManager.contains(entity) ? entity : entityManager.merge(entity);
