@@ -3,8 +3,10 @@ package pt.psoft.g1.psoftg1.authormanagement.model;
 import lombok.Getter;
 import pt.psoft.g1.psoftg1.shared.model.StringUtilsCustom;
 
+import java.io.Serializable;
+
 @Getter
-public class Bio {
+public class Bio implements Serializable {
 
     private static final int BIO_MAX_LENGTH = 4096;
     private String bio;

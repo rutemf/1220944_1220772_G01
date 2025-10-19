@@ -51,7 +51,7 @@ public class ReaderDetailsSQL {
 
     public ReaderDetails toDomain() {
         return new ReaderDetails(
-                Integer.parseInt(this.readerNumber),
+                Integer.parseInt(this.readerNumber.split("/")[1]),
                 this.reader.toDomain(),
                 this.birthDate,
                 this.phoneNumber,

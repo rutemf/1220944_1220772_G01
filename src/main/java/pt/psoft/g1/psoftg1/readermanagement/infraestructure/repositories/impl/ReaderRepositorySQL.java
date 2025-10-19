@@ -7,11 +7,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderBookCountDTO;
 import pt.psoft.g1.psoftg1.readermanagement.services.SearchReadersQuery;
+import pt.psoft.g1.psoftg1.usermanagement.model.ReaderSQL;
+import pt.psoft.g1.psoftg1.usermanagement.model.UserSQL;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Repository
 @Profile("sql")
+@CacheConfig(cacheNames = "readers")
 public class ReaderRepositorySQL implements ReaderRepository {
 
     private final EntityManager entityManager;
@@ -29,6 +36,7 @@ public class ReaderRepositorySQL implements ReaderRepository {
     }
 
     @Override
+    @Cacheable(key = "#readerNumber")
     public Optional<ReaderDetails> findByReaderNumber(String readerNumber) {
         TypedQuery<ReaderDetailsSQL> query = entityManager.createQuery(
         "SELECT r FROM ReaderDetailsSQL r WHERE r.readerNumber = :readerNumber", ReaderDetailsSQL.class);
@@ -68,7 +76,7 @@ public class ReaderRepositorySQL implements ReaderRepository {
     public int getCountFromCurrentYear() {
         int year = LocalDate.now().getYear();
         TypedQuery<Long> query = entityManager.createQuery(
-        "SELECT COUNT(r) FROM ReaderDetailsSQL r WHERE FUNCTION('YEAR', r.registrationDate) = :year", Long.class);
+        "SELECT COUNT(r) FROM ReaderDetailsSQL r JOIN r.reader u WHERE FUNCTION('YEAR', u.createdAt) = :year", Long.class);
 
         query.setParameter("year", year);
         return query.getSingleResult().intValue();
@@ -78,7 +86,29 @@ public class ReaderRepositorySQL implements ReaderRepository {
     public ReaderDetails save(ReaderDetails readerDetails) {
         ReaderDetailsSQL entity = ReaderDetailsSQL.fromDomain(readerDetails);
 
-        if (entity.getId() == null) {
+        UserSQL userManaged = entityManager.createQuery(
+        "SELECT u FROM UserSQL u WHERE u.username = :u", UserSQL.class)
+        .setParameter("u", readerDetails.getReader().getUsername())
+        .getResultStream().findFirst().orElseThrow(() -> new IllegalStateException(
+            "UserSQL not found: " + readerDetails.getReader().getUsername()
+        ));
+
+        ReaderSQL readerManaged = entityManager.createQuery(
+        "SELECT r FROM ReaderSQL r WHERE r.username = :u", ReaderSQL.class)
+        .setParameter("u", readerDetails.getReader().getUsername()).getSingleResult();
+
+        entity.setReader(readerManaged);
+
+        if (entity.getInterestList() != null && !entity.getInterestList().isEmpty()) {
+            List<GenreSQL> managedGenres = entity.getInterestList().stream().map(g -> entityManager.createQuery(
+            "SELECT gg FROM GenreSQL gg WHERE gg.genre = :genre", GenreSQL.class)
+            .setParameter("genre", g.getGenre()).getResultStream()
+            .findFirst().orElse(g)).toList();
+
+            entity.setInterestList(managedGenres);
+        }
+
+        if (entity.getId() == null || entityManager.find(ReaderDetailsSQL.class, entity.getId()) == null) {
             entityManager.persist(entity);
         } else {
             entity = entityManager.merge(entity);
@@ -88,6 +118,7 @@ public class ReaderRepositorySQL implements ReaderRepository {
     }
 
     @Override
+    @Cacheable(key = "'allReaders'")
     public Iterable<ReaderDetails> findAll() {
         TypedQuery<ReaderDetailsSQL> query = entityManager.createQuery(
         "SELECT r FROM ReaderDetailsSQL r", ReaderDetailsSQL.class);
@@ -113,6 +144,7 @@ public class ReaderRepositorySQL implements ReaderRepository {
     }
 
     @Override
+    @CacheEvict(key = "#readerDetails.readerNumber")
     public void delete(ReaderDetails readerDetails) {
         ReaderDetailsSQL entity = ReaderDetailsSQL.fromDomain(readerDetails);
         ReaderDetailsSQL managed = entityManager.contains(entity) ? entity : entityManager.merge(entity);

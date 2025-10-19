@@ -4,6 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Fine;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.FineSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.FineRepository;
@@ -13,6 +15,7 @@ import java.util.Optional;
 
 @Repository
 @Profile("sql")
+@CacheConfig(cacheNames = "fines")
 public class FineRepositorySQL implements FineRepository {
 
     private final EntityManager entityManager;
@@ -20,6 +23,7 @@ public class FineRepositorySQL implements FineRepository {
     public FineRepositorySQL(EntityManager entityManager) { this.entityManager = entityManager; }
 
     @Override
+    @Cacheable(key = "#lendingNumber")
     public Optional<Fine> findByLendingNumber(String lendingNumber) {
         TypedQuery<FineSQL> query = entityManager.createQuery(
         "SELECT f FROM FineSQL f WHERE f.lending.lendingNumber = :lendingNumber", FineSQL.class);
@@ -37,6 +41,7 @@ public class FineRepositorySQL implements FineRepository {
     }
 
     @Override
+    @Cacheable(key = "'allFines'")
     public Iterable<Fine> findAll() {
         TypedQuery<FineSQL> query = entityManager.createQuery(
         "SELECT f FROM FineSQL f", FineSQL.class);

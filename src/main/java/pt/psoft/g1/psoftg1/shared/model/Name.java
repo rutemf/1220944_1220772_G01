@@ -3,9 +3,11 @@ package pt.psoft.g1.psoftg1.shared.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 @Getter
 @EqualsAndHashCode
-public class Name {
+public class Name implements Serializable {
 
     private String name;
 

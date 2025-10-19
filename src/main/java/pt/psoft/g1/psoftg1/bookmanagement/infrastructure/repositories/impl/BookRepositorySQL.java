@@ -2,6 +2,9 @@ package pt.psoft.g1.psoftg1.bookmanagement.infrastructure.repositories.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +23,7 @@ import java.util.Optional;
 
 @Repository
 @Profile("sql")
+@CacheConfig(cacheNames = "books")
 public class BookRepositorySQL implements BookRepository {
 
     private final EntityManager entityManager;
@@ -56,9 +60,10 @@ public class BookRepositorySQL implements BookRepository {
     }
 
     @Override
+    @Cacheable(key = "#isbn")
     public Optional<Book> findByIsbn(String isbn) {
         TypedQuery<BookSQL> query = entityManager.createQuery(
-        "SELECT b FROM BookSQL b WHERE b.isbn.isbn = :isbn", BookSQL.class);
+        "SELECT b FROM BookSQL b WHERE b.isbn = :isbn", BookSQL.class);
 
         query.setParameter("isbn", isbn);
         return query.getResultStream().map(BookSQL::toDomain).findFirst();
@@ -122,8 +127,8 @@ public class BookRepositorySQL implements BookRepository {
         return entity.toDomain();
     }
 
-
     @Override
+    @CacheEvict(key = "#book.isbn")
     public void delete(Book book) {
         BookSQL entity = BookSQL.fromDomain(book);
         BookSQL managed = entityManager.contains(entity) ? entity : entityManager.merge(entity);

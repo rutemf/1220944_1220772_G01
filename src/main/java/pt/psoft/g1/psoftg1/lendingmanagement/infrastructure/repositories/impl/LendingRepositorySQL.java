@@ -4,9 +4,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 
 import java.time.LocalDate;
@@ -15,6 +20,7 @@ import java.util.Optional;
 
 @Repository
 @Profile("sql")
+@CacheConfig(cacheNames = "lendings")
 public class LendingRepositorySQL implements LendingRepository {
 
     private final EntityManager entityManager;
@@ -24,9 +30,10 @@ public class LendingRepositorySQL implements LendingRepository {
     }
 
     @Override
+    @Cacheable(key = "#lendingNumber")
     public Optional<Lending> findByLendingNumber(String lendingNumber) {
         TypedQuery<LendingSQL> query = entityManager.createQuery(
-        "SELECT l FROM LendingSQL l WHERE l.lendingNumber.lendingNumber = :lendingNumber", LendingSQL.class);
+        "SELECT l FROM LendingSQL l WHERE l.lendingNumber = :lendingNumber", LendingSQL.class);
 
         query.setParameter("lendingNumber", lendingNumber);
         return query.getResultStream().findFirst().map(LendingSQL::toDomain);
@@ -38,8 +45,8 @@ public class LendingRepositorySQL implements LendingRepository {
         "SELECT l FROM LendingSQL l " +
         "JOIN l.book b " +
         "JOIN l.readerDetails r " +
-        "WHERE b.isbn.isbn = :isbn " +
-        "AND r.readerNumber.readerNumber = :readerNumber", LendingSQL.class);
+        "WHERE b.isbn = :isbn " +
+        "AND r.readerNumber = :readerNumber", LendingSQL.class);
 
         query.setParameter("isbn", isbn);
         query.setParameter("readerNumber", readerNumber);
@@ -60,7 +67,7 @@ public class LendingRepositorySQL implements LendingRepository {
         TypedQuery<LendingSQL> query = entityManager.createQuery(
         "SELECT l FROM LendingSQL l " +
         "JOIN l.readerDetails r " +
-        "WHERE r.readerNumber.readerNumber = :readerNumber " +
+        "WHERE r.readerNumber = :readerNumber " +
         "AND l.returnedDate IS NULL", LendingSQL.class);
 
         query.setParameter("readerNumber", readerNumber);
@@ -83,7 +90,7 @@ public class LendingRepositorySQL implements LendingRepository {
         "SELECT AVG(DATEDIFF(l.returnedDate, l.startDate)) " +
         "FROM LendingSQL l " +
         "JOIN l.book b " +
-        "WHERE b.isbn.isbn = :isbn " +
+        "WHERE b.isbn = :isbn " +
         "AND l.returnedDate IS NOT NULL", Double.class);
 
         query.setParameter("isbn", isbn);
@@ -160,6 +167,35 @@ public class LendingRepositorySQL implements LendingRepository {
     @Override
     public Lending save(Lending lending) {
         LendingSQL lendingSQL = LendingSQL.fromDomain(lending);
+
+        if (lendingSQL.getBook() != null) {
+            String bookIsbn = lendingSQL.getBook().getIsbn();
+
+            TypedQuery<BookSQL> bookQuery = entityManager.createQuery(
+            "SELECT b FROM BookSQL b WHERE b.isbn = :isbn", BookSQL.class);
+
+            bookQuery.setParameter("isbn", bookIsbn);
+
+            BookSQL managedBook = bookQuery.getResultStream().findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Book with ISBN " + bookIsbn + " not found."));
+
+            lendingSQL.setBook(managedBook);
+        }
+
+        if (lendingSQL.getReaderDetails() != null) {
+            String readerNumber = lendingSQL.getReaderDetails().getReaderNumber();
+
+            TypedQuery<ReaderDetailsSQL> readerQuery = entityManager.createQuery(
+            "SELECT r FROM ReaderDetailsSQL r WHERE r.readerNumber = :readerNumber", ReaderDetailsSQL.class);
+
+            readerQuery.setParameter("readerNumber", readerNumber);
+
+            ReaderDetailsSQL managedReader = readerQuery.getResultStream().findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Reader with ID " + readerNumber + " not found."));
+
+            lendingSQL.setReaderDetails(managedReader);
+        }
+
         if (lendingSQL.getLendingNumber() == null) {
             entityManager.persist(lendingSQL);
             return lendingSQL.toDomain();
@@ -170,6 +206,7 @@ public class LendingRepositorySQL implements LendingRepository {
     }
 
     @Override
+    @CacheEvict(key = "#lending.lendingNumber")
     public void delete(Lending lending) {
         LendingSQL lendingSQL = LendingSQL.fromDomain(lending);
         LendingSQL managed = entityManager.contains(lendingSQL) ? lendingSQL : entityManager.merge(lendingSQL);

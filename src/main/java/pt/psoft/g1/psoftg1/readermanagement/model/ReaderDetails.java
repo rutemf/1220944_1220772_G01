@@ -2,19 +2,19 @@ package pt.psoft.g1.psoftg1.readermanagement.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.exceptions.ConflictException;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.readermanagement.services.UpdateReaderRequest;
 import pt.psoft.g1.psoftg1.shared.model.EntityWithPhoto;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 
+import java.io.Serializable;
 import java.nio.file.InvalidPathException;
 import java.util.List;
 
 @Getter
 @Setter
-public class ReaderDetails extends EntityWithPhoto {
+public class ReaderDetails extends EntityWithPhoto implements Serializable {
 
     private Reader reader;
     private ReaderNumber readerNumber;

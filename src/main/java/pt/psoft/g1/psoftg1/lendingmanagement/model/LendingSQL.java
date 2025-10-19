@@ -10,6 +10,7 @@ import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -20,8 +21,7 @@ public class LendingSQL {
     @Id
     private String id;
 
-    @Embedded
-    private LendingNumber lendingNumber;
+    private String lendingNumber;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -33,14 +33,14 @@ public class LendingSQL {
 
     @NotNull
     @Column(nullable = false, updatable = false)
-    private LocalDate startDate;
+    private String startDate;
 
     @NotNull
     @Column(nullable = false)
-    private LocalDate limitDate;
+    private String limitDate;
 
     @Column
-    private LocalDate returnedDate;
+    private String returnedDate;
 
     @Size(max = 1024)
     @Column(length = 1024)
@@ -55,27 +55,31 @@ public class LendingSQL {
     private Integer daysOverdue;
 
     public LendingSQL(Lending lending) {
-        IDGeneratorService.generateIdSQL();
-        this.lendingNumber = lending.getLendingNumber();
+        this.id = IDGeneratorService.generateIdSQL();
+        this.lendingNumber = lending.getLendingNumber() != null ? lending.getLendingNumber().toString() : null;
         this.book = lending.getBook() != null ? BookSQL.fromDomain(lending.getBook()) : null;
         this.readerDetails = lending.getReaderDetails() != null ? ReaderDetailsSQL.fromDomain(lending.getReaderDetails()) : null;
-        this.startDate = lending.getStartDate();
-        this.limitDate = lending.getLimitDate();
-        this.returnedDate = lending.getReturnedDate();
+        this.startDate = lending.getStartDate().toString();
+        this.limitDate = lending.getLimitDate().toString();
+        this.returnedDate = lending.getReturnedDate() != null ? lending.getReturnedDate().toString() : null;
         this.commentary = lending.getCommentary();
         this.fineValuePerDayInCents = lending.getFineValuePerDayInCents();
-        this.daysUntilReturn = lending.getDaysUntilReturn();
-        this.daysOverdue = lending.getDaysOverdue();
+        this.daysUntilReturn = lending.getDaysUntilReturn() != null ? lending.getDaysUntilReturn() : 0;
+        this.daysOverdue = lending.getDaysOverdue() != null ? lending.getDaysOverdue() : 0;
     }
 
     // JPA
     protected LendingSQL() { }
 
     public Lending toDomain() {
+        LocalDate start = LocalDate.parse(this.startDate);
+        LocalDate limit = LocalDate.parse(this.limitDate);
+        int durationInDays = (int) ChronoUnit.DAYS.between(start, limit);
+
         return new Lending(
                 book != null ? book.toDomain() : null,
                 readerDetails != null ? readerDetails.toDomain() : null,
-                daysUntilReturn,
+                durationInDays,
                 fineValuePerDayInCents);
     }
 

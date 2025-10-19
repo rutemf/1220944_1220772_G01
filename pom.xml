@@ -53,9 +53,22 @@
 			<version>8.2.0</version>
 		</dependency>
 
+		<!-- MongoDB -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+
+		<!-- Caching -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
+		<!-- Redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
 		<!-- security, authentication & authorization -->
@@ -178,7 +191,13 @@
 						<param>pt.psoft.g1.*</param>
 					</targetClasses>
 					<targetTests>
-						<param>pt.psoft.g1.*Test</param>
+						<param>authorManagement.*Test</param>
+						<param>bookManagement.*Test</param>
+						<param>genreManagement.*Test</param>
+						<param>lendingManagement.*Test</param>
+						<param>readerManagement.*Test</param>
+						<param>shared.*Test</param>
+						<param>userManagement.*Test</param>
 					</targetTests>
 					<outputFormats>
 						<param>HTML</param>

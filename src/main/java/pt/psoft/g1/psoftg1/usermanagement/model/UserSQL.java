@@ -13,7 +13,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.userdetails.UserDetails;
-import pt.psoft.g1.psoftg1.shared.model.Name;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +22,8 @@ import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "user")
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 public class UserSQL implements UserDetails {
 
     @Id
@@ -50,6 +51,7 @@ public class UserSQL implements UserDetails {
     private String name;
 
     @ElementCollection
+    @JoinTable(name="user_authorities")
     private Set<Role> authorities = new HashSet<>();
 
     public UserSQL(User user) {
@@ -82,6 +84,10 @@ public class UserSQL implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public void addAuthority(final Role authority) {
+        this.authorities.add(authority);
     }
 
     public User toDomain() {

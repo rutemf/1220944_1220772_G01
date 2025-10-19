@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
-public class Reader extends User {
+public class Reader extends User implements Serializable {
 
     public Reader(String username, String password) {
         super(username, password);
@@ -16,8 +18,8 @@ public class Reader extends User {
     protected Reader() { }
 
     public static Reader newReader(final String username, final String password, final String name) {
-        final var u = new Reader(username, password);
-        u.setName(new Name(name));
-        return u;
+        final var reader = new Reader(username, password);
+        reader.setName(new Name(name));
+        return reader;
     }
 }
