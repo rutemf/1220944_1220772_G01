@@ -21,7 +21,6 @@ public class AuthorNoSQL {
     private Bio bio;
 
     public AuthorNoSQL(Author author) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdNoSQL();
         this.authorNumber = author.getAuthorNumber();
         this.name = author.getName();

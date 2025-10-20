@@ -12,6 +12,7 @@ public class ReaderNoSQL extends UserNoSQL {
     }
     public ReaderNoSQL(Reader reader) {
         super(reader);
+        this.addAuthority(new Role(Role.READER));
     }
     @Override
     public Reader toDomain() {

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -52,7 +53,8 @@ public class ReaderRepositoryNoSQL implements ReaderRepository {
     public Optional<ReaderDetails> findByUserId(Long userId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("userId").is(userId));
-        return Optional.ofNullable(mongoTemplate.findOne(query, ReaderDetails.class));    }
+        return Optional.ofNullable(mongoTemplate.findOne(query, ReaderDetails.class));
+    }
 
     @Override
     public int getCountFromCurrentYear() {
@@ -82,7 +84,26 @@ public class ReaderRepositoryNoSQL implements ReaderRepository {
 
     @Override
     public Page<ReaderBookCountDTO> findTopByGenre(Pageable pageable, String genre, LocalDate startDate, LocalDate endDate) {
-        return new PageImpl<>(List.of(), pageable, 0);
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("lendings.genre.name").is(genre)
+                        .and("lendings.lendDate").gte(startDate).lte(endDate)),
+                Aggregation.unwind("lendings"),
+                Aggregation.group("readerNumber", "username")
+                        .count().as("bookCount"),
+                Aggregation.sort(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "bookCount")),
+                Aggregation.skip(pageable.getOffset()),
+                Aggregation.limit(pageable.getPageSize())
+        );
+
+        List<ReaderBookCountDTO> topReaders = mongoTemplate.aggregate(aggregation, "readers", ReaderBookCountDTO.class)
+                .getMappedResults();
+
+        long total = mongoTemplate.count(Query.query(
+                Criteria.where("lendings.genre.name").is(genre)
+                        .and("lendings.lendDate").gte(startDate).lte(endDate)
+        ), ReaderDetails.class);
+
+        return new PageImpl<>(topReaders, pageable, total);
     }
 
     @Override
@@ -92,6 +113,18 @@ public class ReaderRepositoryNoSQL implements ReaderRepository {
 
     @Override
     public List<ReaderDetails> searchReaderDetails(pt.psoft.g1.psoftg1.shared.services.Page page, SearchReadersQuery query) {
-        return List.of();
+        Query mongoQuery = new Query();
+
+        if (query.getName() != null) {
+            mongoQuery.addCriteria(Criteria.where("username").regex(query.getName(), "i"));
+        }
+        if (query.getEmail() != null) {
+            mongoQuery.addCriteria(Criteria.where("email").regex(query.getEmail(), "i"));
+        }
+        if (query.getPhoneNumber() != null) {
+            mongoQuery.addCriteria(Criteria.where("phoneNumber").regex(query.getPhoneNumber(), "i"));
+        }
+
+        return mongoTemplate.find(mongoQuery, ReaderDetails.class);
     }
 }

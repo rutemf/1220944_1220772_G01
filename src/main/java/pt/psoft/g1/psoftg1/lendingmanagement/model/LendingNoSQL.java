@@ -34,7 +34,6 @@ public class LendingNoSQL {
     private Integer daysOverdue;
 
     public LendingNoSQL(Lending lending) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         IDGeneratorService.generateIdNoSQL();
         this.lendingNumber = lending.getLendingNumber();
         this.book = lending.getBook() != null ? BookNoSQL.fromDomain(lending.getBook()) : null;

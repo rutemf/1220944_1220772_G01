@@ -9,7 +9,7 @@ import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Getter
 @Setter
-@Document(collection = "genre")
+@Document(collection = "genres")
 public class GenreNoSQL {
 
     @Id
@@ -19,7 +19,6 @@ public class GenreNoSQL {
     private String genre;
 
     public GenreNoSQL(Genre genre) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdNoSQL();
         this.genre = genre.getGenre();
     }

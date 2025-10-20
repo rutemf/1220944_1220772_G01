@@ -23,7 +23,6 @@ public class FineNoSQL {
     private LendingNoSQL lending;
 
     public FineNoSQL(Fine fine) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdNoSQL();
         this.fineValuePerDayInCents = fine.getFineValuePerDayInCents();
         this.centsValue = fine.getCentsValue();

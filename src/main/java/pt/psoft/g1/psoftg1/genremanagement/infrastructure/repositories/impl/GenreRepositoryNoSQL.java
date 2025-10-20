@@ -2,8 +2,11 @@ package pt.psoft.g1.psoftg1.genremanagement.infrastructure.repositories.impl;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -46,21 +49,34 @@ public class GenreRepositoryNoSQL implements GenreRepository {
 
     @Override
     public Page<GenreBookCountDTO> findTop5GenreByBookCount(Pageable pageable) {
-        return null;
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.group("genre.name").count().as("bookCount"),
+                Aggregation.sort(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "bookCount")),
+                Aggregation.limit(5)
+        );
+
+        AggregationResults<GenreBookCountDTO> results = mongoTemplate.aggregate(aggregation, "books", GenreBookCountDTO.class);
+
+        List<GenreBookCountDTO> list = results.getMappedResults();
+
+        return new PageImpl<>(list, pageable, list.size());
     }
 
     @Override
     public List<GenreLendingsDTO> getAverageLendingsInMonth(LocalDate month, pt.psoft.g1.psoftg1.shared.services.Page page) {
+        // TODO
         return List.of();
     }
 
     @Override
     public List<GenreLendingsPerMonthDTO> getLendingsPerMonthLastYearByGenre() {
+        // TODO
         return List.of();
     }
 
     @Override
     public List<GenreLendingsPerMonthDTO> getLendingsAverageDurationPerMonth(LocalDate startDate, LocalDate endDate) {
+        // TODO
         return List.of();
     }
 

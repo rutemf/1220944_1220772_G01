@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
+import pt.psoft.g1.psoftg1.usermanagement.model.UserNoSQL;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 import pt.psoft.g1.psoftg1.usermanagement.services.SearchUsersQuery;
 
@@ -59,8 +60,22 @@ public class UserRepositoryNoSQL implements UserRepository {
 
     @Override
     public List<User> searchUsers(Page page, SearchUsersQuery query) {
-        // You can implement filtering and paging here using Criteria
-        return List.of(); // TODO implement search logic if needed
+        Query mongoQuery = new Query();
+
+        if (query.getUsername() != null && !query.getUsername().isBlank()) {
+            mongoQuery.addCriteria(Criteria.where("username").regex(query.getUsername(), "i"));
+        }
+
+        if (query.getUsername() != null && !query.getUsername().isBlank()) {
+            mongoQuery.addCriteria(Criteria.where("name.name").regex(query.getUsername(), "i"));
+        }
+
+        List<UserNoSQL> results = mongoTemplate.find(mongoQuery, UserNoSQL.class);
+
+        return results.stream()
+                .map(UserNoSQL::toDomain)
+                .toList();
+
     }
 
     @Override

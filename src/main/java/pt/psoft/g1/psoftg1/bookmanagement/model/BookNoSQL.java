@@ -32,7 +32,6 @@ public class BookNoSQL {
     private String photoURI;
 
     public BookNoSQL(Book book) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdNoSQL();
         this.isbn = book.getIsbn();
         this.title = book.getTitle();

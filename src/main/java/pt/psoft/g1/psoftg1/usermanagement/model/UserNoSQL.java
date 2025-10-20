@@ -43,7 +43,6 @@ public class UserNoSQL implements UserDetails {
     private Set<Role> authorities = new HashSet<>();
 
     public UserNoSQL(User user) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdNoSQL();
         this.username = user.getUsername();
         this.password = user.getPassword();
@@ -81,6 +80,10 @@ public class UserNoSQL implements UserDetails {
         user.getAuthorities().addAll(this.authorities);
         user.setEnabled(this.enabled);
         return user;
+    }
+
+    public void addAuthority(final Role authority) {
+        this.authorities.add(authority);
     }
 
     public static UserNoSQL fromDomain(User user) {
