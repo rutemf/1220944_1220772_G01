@@ -29,7 +29,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-@Profile("sql")
+@Profile("nosql")
 @PropertySource({"classpath:config/library.properties"})
 @Order(2)
 public class Bootstrapper implements CommandLineRunner {
@@ -46,11 +46,11 @@ public class Bootstrapper implements CommandLineRunner {
     @Override
     @Transactional
     public void run(final String... args) {
-        // createAuthors();
-        // createGenres();
-        // createBooks();
-        // loadForbiddenNames();
-        // createLendings();
+        createAuthors();
+        createGenres();
+        createBooks();
+        loadForbiddenNames();
+        createLendings();
     }
 
     private void createAuthors() {
