@@ -1,0 +1,43 @@
+package genreManagement;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
+import pt.psoft.g1.psoftg1.genremanagement.services.GenreService;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest(classes = pt.psoft.g1.psoftg1.PsoftG1Application.class)
+@ActiveProfiles({"sql", "open"})
+public class GenreServiceIT {
+
+    @Autowired
+    private GenreService genreService;
+
+    @Test
+    void contextLoads() {
+        assertNotNull(genreService);
+    }
+
+    @Test
+    void testFindAllGenres() {
+        List<Genre> genres = (List<Genre>) genreService.findAll();
+
+        assertNotNull(genres);
+        assertFalse(genres.isEmpty());
+    }
+
+    @Test
+    void testFindGenreById() {
+        Genre genre = genreService.findAll().iterator().next();
+        Optional<Genre> found = genreService.findByString(genre.getGenre());
+
+        assertTrue(found.isPresent(), "Genre should be present");
+        assertEquals(genre.getGenre(), found.get().getGenre());
+    }
+}
