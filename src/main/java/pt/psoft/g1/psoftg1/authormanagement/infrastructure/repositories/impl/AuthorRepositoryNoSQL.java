@@ -48,7 +48,7 @@ public class AuthorRepositoryNoSQL implements AuthorRepository {
 
     @Override
     public List<Author> searchByNameName(String name) {
-        Query query = new Query(Criteria.where("name.value").is(name));
+        Query query = new Query(Criteria.where("name").is(name));
         List<AuthorNoSQL> authors = mongoTemplate.find(query, AuthorNoSQL.class);
         return authors.stream().map(AuthorNoSQL::toDomain).collect(Collectors.toList());
     }

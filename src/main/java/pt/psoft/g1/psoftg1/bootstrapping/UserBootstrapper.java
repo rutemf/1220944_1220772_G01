@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-@Profile("sq2l")
+@Profile("2")
 @Order(1)
 public class UserBootstrapper implements CommandLineRunner {
 
@@ -32,8 +32,8 @@ public class UserBootstrapper implements CommandLineRunner {
     @Override
     @Transactional
     public void run(final String... args)  {
-        // createReaders();
-        // createLibrarian();
+        createReaders();
+        createLibrarian();
     }
 
     private void createReaders() {
