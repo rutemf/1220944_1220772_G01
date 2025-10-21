@@ -40,4 +40,13 @@ public class GenreServiceIT {
         assertTrue(found.isPresent(), "Genre should be present");
         assertEquals(genre.getGenre(), found.get().getGenre());
     }
+
+    @Test
+    void testSave() {
+        Genre genre = new Genre("Musical");
+        Genre savedGenre = genreService.save(genre);
+
+        assertNotNull(savedGenre, "Saved genre should not be null");
+        assertEquals(genre.getGenre(), savedGenre.getGenre(), "Genre name should match");
+    }
 }
