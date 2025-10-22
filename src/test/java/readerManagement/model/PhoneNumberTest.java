@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PhoneNumberTest {
 
-
     // Black Box Test
     @Test
     void testValidPhoneStartingWith9IsAccepted() {

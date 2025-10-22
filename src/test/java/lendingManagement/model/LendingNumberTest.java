@@ -1,4 +1,4 @@
-package lendingManagement;
+package lendingManagement.model;
 
 import org.junit.jupiter.api.Test;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
