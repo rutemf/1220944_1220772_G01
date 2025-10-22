@@ -55,8 +55,19 @@ public class AuthorRepositoryNoSQL implements AuthorRepository {
 
     @Override
     public Author save(Author author) {
-        AuthorNoSQL authorNoSQL = AuthorNoSQL.fromDomain(author);
+        Optional<AuthorNoSQL> existingAuthorNoSQL = findAuthorNoSQLByNumber(author.getAuthorNumber());
+        AuthorNoSQL authorNoSQL;
+
+        if (existingAuthorNoSQL.isPresent()) {
+            authorNoSQL = existingAuthorNoSQL.get();
+            authorNoSQL.setName(author.getName());
+            authorNoSQL.setBio(author.getBio());
+
+        } else {
+            authorNoSQL = AuthorNoSQL.fromDomain(author);
+        }
         AuthorNoSQL saved = mongoTemplate.save(authorNoSQL);
+
         return saved.toDomain();
     }
 
@@ -110,5 +121,10 @@ public class AuthorRepositoryNoSQL implements AuthorRepository {
                 .distinct()
                 .map(AuthorNoSQL::toDomain)
                 .toList();
+    }
+
+    private Optional<AuthorNoSQL> findAuthorNoSQLByNumber(Long authorNumber) {
+        Query query = new Query(Criteria.where("authorNumber").is(authorNumber));
+        return Optional.ofNullable(mongoTemplate.findOne(query, AuthorNoSQL.class));
     }
 }
