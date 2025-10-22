@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.bookmanagement.model.BookNoSQL;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsNoSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.time.LocalDate;
@@ -18,15 +19,15 @@ public class LendingNoSQL {
     @Id
     private String id;
 
-    private LendingNumber lendingNumber;
+    private String lendingNumber;
 
     private BookNoSQL book;
 
-    private ReaderDetails readerDetails;
+    private ReaderDetailsNoSQL readerDetails;
 
-    private LocalDate startDate;
-    private LocalDate limitDate;
-    private LocalDate returnedDate;
+    private String startDate;
+    private String limitDate;
+    private String returnedDate;
     private String commentary;
     private int fineValuePerDayInCents;
 
@@ -35,12 +36,12 @@ public class LendingNoSQL {
 
     public LendingNoSQL(Lending lending) {
         IDGeneratorService.generateIdNoSQL();
-        this.lendingNumber = lending.getLendingNumber();
+        this.lendingNumber = lending.getLendingNumber().toString();
         this.book = lending.getBook() != null ? BookNoSQL.fromDomain(lending.getBook()) : null;
-        this.readerDetails = lending.getReaderDetails();
-        this.startDate = lending.getStartDate();
-        this.limitDate = lending.getLimitDate();
-        this.returnedDate = lending.getReturnedDate();
+        this.readerDetails = new ReaderDetailsNoSQL(lending.getReaderDetails());
+        this.startDate = lending.getStartDate().toString();
+        this.limitDate = lending.getLimitDate().toString();
+        this.returnedDate = lending.getReturnedDate().toString();
         this.commentary = lending.getCommentary();
         this.fineValuePerDayInCents = lending.getFineValuePerDayInCents();
         this.daysUntilReturn = lending.getDaysUntilReturn();
@@ -53,7 +54,7 @@ public class LendingNoSQL {
     public Lending toDomain() {
         return new Lending(
                 book != null ? book.toDomain() : null,
-                readerDetails,
+                readerDetails != null ? readerDetails.toDomain() : null,
                 daysUntilReturn != null ? daysUntilReturn : 0,
                 fineValuePerDayInCents
         );

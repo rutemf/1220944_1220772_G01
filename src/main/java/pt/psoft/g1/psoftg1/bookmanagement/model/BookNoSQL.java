@@ -19,9 +19,9 @@ public class BookNoSQL {
     @Id
     private String id;
 
-    private Isbn isbn;
-    private Title title;
-    private Description description;
+    private String isbn;
+    private String title;
+    private String description;
 
     @DBRef
     private GenreNoSQL genre;
@@ -33,9 +33,9 @@ public class BookNoSQL {
 
     public BookNoSQL(Book book) {
         this.id = IDGeneratorService.generateIdNoSQL();
-        this.isbn = book.getIsbn();
-        this.title = book.getTitle();
-        this.description = book.getDescription();
+        this.isbn = book.getIsbn().toString();
+        this.title = book.getTitle().toString();
+        this.description = book.getDescription().toString();
         this.genre = book.getGenre() != null ? GenreNoSQL.fromDomain(book.getGenre()) : null;
         this.authors = book.getAuthors() != null ? book.getAuthors().stream().map(AuthorNoSQL::fromDomain).toList() : List.of();
         this.photoURI = book.getPhotoURI();
@@ -46,9 +46,9 @@ public class BookNoSQL {
 
     public Book toDomain() {
         return new Book(
-                isbn != null ? isbn.toString() : null,
-                title != null ? title.toString() : null,
-                description != null ? description.toString() : null,
+                isbn != null ? isbn : null,
+                title != null ? title : null,
+                description != null ? description : null,
                 genre != null ? genre.toDomain() : null,
                 authors != null ? authors.stream().map(AuthorNoSQL::toDomain).toList() : List.of(),
                 photoURI

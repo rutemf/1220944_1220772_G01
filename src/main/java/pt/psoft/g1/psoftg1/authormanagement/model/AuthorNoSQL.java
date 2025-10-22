@@ -14,17 +14,15 @@ public class AuthorNoSQL {
 
     @Id
     private String id;
-
     private Long authorNumber;
-    private long version;
-    private Name name;
-    private Bio bio;
+    private String name;
+    private String bio;
 
     public AuthorNoSQL(Author author) {
         this.id = IDGeneratorService.generateIdNoSQL();
         this.authorNumber = author.getAuthorNumber();
-        this.name = author.getName();
-        this.bio = author.getBio();
+        this.name = author.getName().toString();
+        this.bio = author.getBio().toString();
     }
 
     // NoSQL
@@ -34,8 +32,8 @@ public class AuthorNoSQL {
     public Author toDomain() {
         return new Author(
                 authorNumber,
-                name != null ? new Name(name.toString()) : null,
-                bio != null ? new Bio(bio.toString()) : null
+                name != null ? new Name(name) : null,
+                bio != null ? new Bio(bio) : null
         );
     }
 
