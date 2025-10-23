@@ -60,8 +60,8 @@ public class AuthorRepositoryNoSQL implements AuthorRepository {
 
         if (existingAuthorNoSQL.isPresent()) {
             authorNoSQL = existingAuthorNoSQL.get();
-            authorNoSQL.setName(author.getName());
-            authorNoSQL.setBio(author.getBio());
+            authorNoSQL.setName(author.getName().toString());
+            authorNoSQL.setBio(author.getBio().toString());
 
         } else {
             authorNoSQL = AuthorNoSQL.fromDomain(author);

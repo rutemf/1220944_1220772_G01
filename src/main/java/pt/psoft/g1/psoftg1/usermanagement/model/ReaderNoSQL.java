@@ -3,6 +3,7 @@ package pt.psoft.g1.psoftg1.usermanagement.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
+import pt.psoft.g1.psoftg1.shared.model.Name;
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class ReaderNoSQL extends UserNoSQL {
         Reader reader = new Reader();
         reader.setUsername(getUsername());
         reader.setPassword(getPassword());
-        reader.setName(getName());
+        reader.setName(new Name(getName()));
         reader.getAuthorities().addAll(getAuthorities());
         reader.setEnabled(isEnabled());
         return reader;
