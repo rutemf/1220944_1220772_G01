@@ -81,7 +81,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to Oracle - Staging') {
+        stage('Deploy to Oracle - staging') {
             when {
                 anyOf {
                     branch 'staging'

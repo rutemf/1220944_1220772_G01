@@ -48,6 +48,15 @@ public class AuthorServiceIT {
     }
 
     @Test
+    void testFindByName() {
+        List<Author> authors = authorService.findByName("Agatha Christie");
+
+        assertNotNull(authors, "Authors list should not be null");
+        assertFalse(authors.isEmpty(), "Authors list should not be empty");
+        assertEquals("Agatha Christie", authors.get(0).getName().toString(), "Author name should match");
+    }
+
+    @Test
     void testCreate() {
         CreateAuthorRequest createAuthorRequest = new CreateAuthorRequest("MiguelTest", "Test de Author", null, null);
         Author savedAuthor = authorService.create(createAuthorRequest);
