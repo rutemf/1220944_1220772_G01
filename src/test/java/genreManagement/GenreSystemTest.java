@@ -10,6 +10,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import pt.psoft.g1.psoftg1.PsoftG1Application;
+import pt.psoft.g1.psoftg1.genremanagement.services.GetAverageLendingsQuery;
 
 import java.time.Duration;
 
@@ -35,7 +36,7 @@ public class GenreSystemTest {
 
     @Test
     @Order(1)
-    void getTop5Genres_shouldReturnList() {
+    void testGetTop5Genres() {
         client.get()
                 .uri(BASE + "/top5")
                 .accept(APPLICATION_JSON)
@@ -51,7 +52,7 @@ public class GenreSystemTest {
 
     @Test
     @Order(2)
-    void getLendingsPerMonthLastTwelveMonths_shouldReturnList() {
+    void testGetLendingsPerMonthLastTwelveMonths() {
         client.get()
                 .uri(BASE + "/lendingsPerMonthLastTwelveMonths")
                 .accept(APPLICATION_JSON)
@@ -71,7 +72,7 @@ public class GenreSystemTest {
 
     @Test
     @Order(3)
-    void getLendingsAverageDurationPerMonth_givenValidRange_shouldReturnList() {
+    void testGetLendingsAverageDurationPerMonth() {
         client.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(BASE + "/lendingsAverageDurationPerMonth")
@@ -90,5 +91,36 @@ public class GenreSystemTest {
                 .jsonPath("$.items[0].durationAverages").isArray()
                 .jsonPath("$.items[0].durationAverages[*].genre").value(everyItem(not(isEmptyOrNullString())))
                 .jsonPath("$.items[0].durationAverages[*].value").value(everyItem(greaterThanOrEqualTo(0.0)));
+    }
+
+    @Test
+    @Order(4)
+    void testGetAverageLendings() {
+        String body = """
+        {
+          "page": {
+            "number": 1,
+            "size": 10
+          },
+          "query": {
+            "year": 2025,
+            "month": 10
+          }
+        }
+        """;
+
+        client.post()
+                .uri(BASE + "/avgLendingsPerGenre")
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .bodyValue(body)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentTypeCompatibleWith(APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.items").isArray()
+                .jsonPath("$.items.length()").value(allOf(greaterThan(0), lessThanOrEqualTo(5)))
+                .jsonPath("$.items[*].genre").value(everyItem(not(isEmptyOrNullString())))
+                .jsonPath("$.items[*].value").value(everyItem(greaterThanOrEqualTo(0)));
     }
 }

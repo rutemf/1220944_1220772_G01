@@ -129,4 +129,35 @@ public class AuthorSystemTest {
                 .jsonPath("$.bio").value(containsString("British author"))
                 .jsonPath("$.photo").value(nullValue());
     }
+
+    @Test
+    @Order(6)
+    void testGetSpecificAuthorPhoto() {
+        client.get()
+                .uri(BASE + "/1/photo")
+                .accept(APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    @Order(7)
+    void testGetCoAuthors() {
+        client.get()
+                .uri(BASE + "/4/coauthors")
+                .accept(APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentTypeCompatibleWith(APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.author.name").isEqualTo("Agatha Christie")
+                .jsonPath("$.author.bio").value(not(isEmptyOrNullString()))
+                .jsonPath("$.author._links.author").value(containsString("/api/authors/4"))
+                .jsonPath("$.coauthors").isArray()
+                .jsonPath("$.coauthors.length()").value(greaterThan(0))
+                .jsonPath("$.coauthors[*].name").value(everyItem(allOf(notNullValue(), instanceOf(String.class))))
+                .jsonPath("$.coauthors[*].books").isArray()
+                .jsonPath("$.coauthors[*].books[*].title").value(everyItem(allOf(notNullValue(), instanceOf(String.class))))
+                .jsonPath("$.coauthors[*].books[*].isbn").value(everyItem(matchesPattern("\\d{13}")));
+    }
 }
