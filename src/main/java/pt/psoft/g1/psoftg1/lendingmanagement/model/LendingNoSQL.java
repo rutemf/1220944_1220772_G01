@@ -49,7 +49,8 @@ public class LendingNoSQL {
     }
 
     // NoSQL
-    protected LendingNoSQL() {}
+    protected LendingNoSQL() {
+    }
 
     public Lending toDomain() {
         return new Lending(

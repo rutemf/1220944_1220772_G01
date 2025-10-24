@@ -1,27 +1,33 @@
 package pt.psoft.g1.psoftg1.genremanagement.infrastructure.repositories.impl;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.annotation.Profile;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
+import pt.psoft.g1.psoftg1.genremanagement.model.GenreNoSQL;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsDTO;
 import pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsPerMonthDTO;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.time.YearMonth;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 @Profile("nosql")
+@CacheConfig(cacheNames = "genres")
 public class GenreRepositoryNoSQL implements GenreRepository {
 
     private final MongoTemplate mongoTemplate;
@@ -31,122 +37,150 @@ public class GenreRepositoryNoSQL implements GenreRepository {
     }
 
     @Override
+    @Cacheable(key = "'allGenres'")
     public Iterable<Genre> findAll() {
-        return mongoTemplate.findAll(Genre.class);
+        return mongoTemplate.findAll(GenreNoSQL.class)
+                .stream()
+                .map(GenreNoSQL::toDomain)
+                .toList();
     }
 
+
     @Override
+    @Cacheable(key = "#genreName")
     public Optional<Genre> findByString(String genreName) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("name").is(genreName));
-        return Optional.ofNullable(mongoTemplate.findOne(query, Genre.class));
+        Query query = new Query(Criteria.where("genre").is(genreName));
+        GenreNoSQL result = mongoTemplate.findOne(query, GenreNoSQL.class);
+        return Optional.ofNullable(result).map(GenreNoSQL::toDomain);
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(key = "#genre.genre"),
+            @CacheEvict(key = "'allGenres'")
+    })
     public Genre save(Genre genre) {
-        return mongoTemplate.save(genre);
+        GenreNoSQL entity = GenreNoSQL.fromDomain(genre);
+        mongoTemplate.save(entity);
+        return entity.toDomain();
     }
 
     @Override
     public Page<GenreBookCountDTO> findTop5GenreByBookCount(Pageable pageable) {
-        Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.group("genre.name").count().as("bookCount"),
-                Aggregation.sort(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "bookCount")),
-                Aggregation.limit(5)
+        Aggregation agg = Aggregation.newAggregation(
+                Aggregation.lookup("books", "genre", "genre", "books"),
+                Aggregation.unwind("books", true),
+                Aggregation.group("genre").count().as("bookCount"),
+                Aggregation.project("bookCount").and("_id").as("genre"),
+                Aggregation.sort(org.springframework.data.domain.Sort.Direction.DESC, "bookCount"),
+                Aggregation.skip(pageable.getOffset()),
+                Aggregation.limit(pageable.getPageSize())
         );
 
-        AggregationResults<GenreBookCountDTO> results = mongoTemplate.aggregate(aggregation, "books", GenreBookCountDTO.class);
+        List<GenreBookCountDTO> results = mongoTemplate.aggregate(agg, "genres", GenreBookCountDTO.class)
+                .getMappedResults();
 
-        List<GenreBookCountDTO> list = results.getMappedResults();
-
-        return new PageImpl<>(list, pageable, list.size());
+        return new PageImpl<>(results, pageable, results.size());
     }
 
     @Override
     public List<GenreLendingsDTO> getAverageLendingsInMonth(LocalDate month, pt.psoft.g1.psoftg1.shared.services.Page page) {
-        LocalDate startDate = month.withDayOfMonth(1);
-        LocalDate endDate = month.plusMonths(1).withDayOfMonth(1);
+        int year = month.getYear();
+        int monthValue = month.getMonthValue();
 
-        int skip = (page.getNumber() - 1) * page.getLimit();
-        int limit = page.getLimit();
-
-        Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("lendingDate").gte(startDate).lt(endDate)),
-
-                Aggregation.group("book.genre.name")
-                        .count().as("lendingCount"),
-
-                Aggregation.project()
-                        .and("_id").as("genreName")
-                        .and("lendingCount").as("lendingCount"),
-
-                Aggregation.sort(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "lendingCount")),
-
-                Aggregation.skip(skip),
-                Aggregation.limit(limit)
+        Aggregation agg = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("startDate").gte(LocalDate.of(year, monthValue, 1))
+                        .lt(LocalDate.of(year, monthValue, 1).plusMonths(1))),
+                Aggregation.lookup("books", "bookId", "_id", "book"),
+                Aggregation.unwind("book"),
+                Aggregation.lookup("genres", "book.genreId", "_id", "genre"),
+                Aggregation.unwind("genre"),
+                Aggregation.group("genre.genre").count().as("lendingsCount"),
+                Aggregation.project("lendingsCount").and("_id").as("genre")
         );
 
-        AggregationResults<GenreLendingsDTO> results =
-                mongoTemplate.aggregate(aggregation, "lendings", GenreLendingsDTO.class);
-
-        return results.getMappedResults();
+        return mongoTemplate.aggregate(agg, "lendings", GenreLendingsDTO.class).getMappedResults();
     }
 
     @Override
     public List<GenreLendingsPerMonthDTO> getLendingsPerMonthLastYearByGenre() {
         LocalDate oneYearAgo = LocalDate.now().minusYears(1);
 
-        Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("lendingDate").gte(oneYearAgo)),
-
-                Aggregation.project("book.genre.name")
-                        .andExpression("year(lendingDate)").as("year")
-                        .andExpression("month(lendingDate)").as("month"),
-                Aggregation.group("book.genre.name", "year", "month")
-                        .count().as("lendings"),
-
+        Aggregation agg = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("startDate").gte(oneYearAgo)),
+                Aggregation.lookup("books", "bookId", "_id", "book"),
+                Aggregation.unwind("book"),
+                Aggregation.lookup("genres", "book.genreId", "_id", "genre"),
+                Aggregation.unwind("genre"),
                 Aggregation.project()
-                        .and("_id.genreName").as("genreName")
-                        .and("_id.year").as("year")
-                        .and("_id.month").as("month")
-                        .and("lendings").as("lendingCount"),
-
-                Aggregation.sort(org.springframework.data.domain.Sort.by("year", "month"))
+                        .andExpression("year(startDate)").as("year")
+                        .andExpression("month(startDate)").as("month")
+                        .and("genre.genre").as("genre"),
+                Aggregation.group("genre", "year", "month").count().as("count"),
+                Aggregation.sort(org.springframework.data.domain.Sort.Direction.ASC, "year", "month", "genre")
         );
 
-        AggregationResults<GenreLendingsPerMonthDTO> results = mongoTemplate.aggregate(aggregation, "lendings", GenreLendingsPerMonthDTO.class);
-        return results.getMappedResults();
+        var results = mongoTemplate.aggregate(agg, "lendings", Map.class).getMappedResults();
+
+        Map<YearMonth, List<GenreLendingsDTO>> byYm = new LinkedHashMap<>();
+        for (var r : results) {
+            String genre = (String) r.get("_id.genre");
+            int year = (int) r.get("_id.year");
+            int month = (int) r.get("_id.month");
+            long count = ((Number) r.get("count")).longValue();
+
+            YearMonth ym = YearMonth.of(year, month);
+            byYm.computeIfAbsent(ym, __ -> new ArrayList<>()).add(new GenreLendingsDTO(genre, count));
+        }
+
+        return byYm.entrySet().stream()
+                .map(e -> new GenreLendingsPerMonthDTO(e.getKey().getYear(), e.getKey().getMonthValue(), e.getValue()))
+                .sorted(Comparator.comparingInt(GenreLendingsPerMonthDTO::getYear)
+                        .thenComparingInt(GenreLendingsPerMonthDTO::getMonth))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<GenreLendingsPerMonthDTO> getLendingsAverageDurationPerMonth(LocalDate startDate, LocalDate endDate) {
-        Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("lendingDate").gte(startDate).lt(endDate)
-                        .and("returnDate").ne(null)),
-
-                Aggregation.project("book.genre.name", "lendingDate", "returnDate")
-                        .andExpression("year(lendingDate)").as("year")
-                        .andExpression("month(lendingDate)").as("month")
-                        .andExpression("returnDate - lendingDate").as("durationInDays"),
-
-                Aggregation.group("book.genre.name", "year", "month")
-                        .avg("durationInDays").as("averageDuration"),
-
+        Aggregation agg = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("startDate").gte(startDate).lte(endDate)),
+                Aggregation.lookup("books", "bookId", "_id", "book"),
+                Aggregation.unwind("book"),
+                Aggregation.lookup("genres", "book.genreId", "_id", "genre"),
+                Aggregation.unwind("genre"),
                 Aggregation.project()
-                        .and("_id.genreName").as("genreName")
-                        .and("_id.year").as("year")
-                        .and("_id.month").as("month")
-                        .and("averageDuration").as("averageDuration"),
-
-                Aggregation.sort(org.springframework.data.domain.Sort.by("year", "month"))
+                        .andExpression("year(startDate)").as("year")
+                        .andExpression("month(startDate)").as("month")
+                        .and("genre.genre").as("genre")
+                        .andExpression("cond(returnedDate != null, (returnedDate - startDate), (now() - startDate))")
+                        .as("duration"),
+                Aggregation.group("genre", "year", "month").avg("duration").as("avgDuration"),
+                Aggregation.sort(org.springframework.data.domain.Sort.Direction.ASC, "year", "month", "genre")
         );
 
-        AggregationResults<GenreLendingsPerMonthDTO> results = mongoTemplate.aggregate(aggregation, "lendings", GenreLendingsPerMonthDTO.class);
-        return results.getMappedResults();
+        var results = mongoTemplate.aggregate(agg, "lendings", Map.class).getMappedResults();
+
+        Map<YearMonth, List<GenreLendingsDTO>> byYm = new LinkedHashMap<>();
+        for (var r : results) {
+            String genre = (String) r.get("_id.genre");
+            int year = (int) r.get("_id.year");
+            int month = (int) r.get("_id.month");
+            double avg = ((Number) r.get("avgDuration")).doubleValue();
+
+            YearMonth ym = YearMonth.of(year, month);
+            byYm.computeIfAbsent(ym, __ -> new ArrayList<>()).add(new GenreLendingsDTO(genre, avg));
+        }
+
+        return byYm.entrySet().stream()
+                .map(e -> new GenreLendingsPerMonthDTO(e.getKey().getYear(), e.getKey().getMonthValue(), e.getValue()))
+                .sorted(Comparator.comparingInt(GenreLendingsPerMonthDTO::getYear)
+                        .thenComparingInt(GenreLendingsPerMonthDTO::getMonth))
+                .collect(Collectors.toList());
     }
 
     @Override
     public void delete(Genre genre) {
-        mongoTemplate.remove(genre);
+        Query query = new Query(Criteria.where("genre").is(genre.getGenre()));
+        mongoTemplate.remove(query, GenreNoSQL.class);
     }
 }

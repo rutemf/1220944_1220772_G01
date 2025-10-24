@@ -1,6 +1,7 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.infrastructure.repositories.impl;
 
 import org.bson.Document;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -8,13 +9,17 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import pt.psoft.g1.psoftg1.bookmanagement.model.BookNoSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNoSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsNoSQL;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @Profile("nosql")
@@ -28,104 +33,131 @@ public class LendingRepositoryNoSQL implements LendingRepository {
 
     @Override
     public Optional<Lending> findByLendingNumber(String lendingNumber) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("lendingNumber").is(lendingNumber));
-        Lending lending = mongoTemplate.findOne(query, Lending.class);
-        return Optional.ofNullable(lending);
+        Query query = new Query(Criteria.where("lendingNumber").is(lendingNumber));
+        LendingNoSQL result = mongoTemplate.findOne(query, LendingNoSQL.class);
+        return Optional.ofNullable(result).map(LendingNoSQL::toDomain);
     }
 
     @Override
     public List<Lending> listByReaderNumberAndIsbn(String readerNumber, String isbn) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("readerNumber").is(readerNumber)
-                .and("isbn.value").is(isbn));
-        return mongoTemplate.find(query, Lending.class);
+        Query query = new Query(Criteria.where("book.isbn").is(isbn)
+                .and("readerDetails.readerNumber").is(readerNumber));
+        return mongoTemplate.find(query, LendingNoSQL.class)
+                .stream()
+                .map(LendingNoSQL::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override
     public int getCountFromCurrentYear() {
-        LocalDate startOfYear = LocalDate.now().withDayOfYear(1);
-        Query query = new Query();
-        query.addCriteria(Criteria.where("lendingDate").gte(startOfYear));
-        return (int) mongoTemplate.count(query, Lending.class);
+        int year = LocalDate.now().getYear();
+
+        Aggregation agg = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("startDate")
+                        .gte(LocalDate.of(year, 1, 1))
+                        .lt(LocalDate.of(year + 1, 1, 1))),
+                Aggregation.count().as("total")
+        );
+
+        var result = mongoTemplate.aggregate(agg, "lendings", org.bson.Document.class).getUniqueMappedResult();
+        return result != null ? ((Number) result.get("total")).intValue() : 0;
     }
 
     @Override
     public List<Lending> listOutstandingByReaderNumber(String readerNumber) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("readerNumber").is(readerNumber)
-                .and("returned").is(false));
-        return mongoTemplate.find(query, Lending.class);
+        Query query = new Query(Criteria.where("readerDetails.readerNumber").is(readerNumber)
+                .and("returnedDate").is(null));
+        return mongoTemplate.find(query, LendingNoSQL.class)
+                .stream()
+                .map(LendingNoSQL::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Double getAverageDuration() {
-        Aggregation aggregation = Aggregation.newAggregation(
+        Aggregation agg = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("returnedDate").ne(null)),
                 Aggregation.project()
-                        .andExpression("returnDate - lendingDate").as("duration"),
-                Aggregation.group().avg("duration").as("averageDuration")
+                        .andExpression("returnDate - startDate").as("duration"),
+                Aggregation.group().avg("duration").as("avgDuration")
         );
 
-        AggregationResults<Document> result = mongoTemplate.aggregate(aggregation, Lending.class, org.bson.Document.class);
-        org.bson.Document doc = result.getUniqueMappedResult();
-        if (doc != null && doc.get("averageDuration") != null) {
-            return ((Number) doc.get("averageDuration")).doubleValue();
-        }
-        return 0.0;
+        var result = mongoTemplate.aggregate(agg, "lendings", org.bson.Document.class).getUniqueMappedResult();
+        return result != null ? result.getDouble("avgDuration") : 0.0;
     }
 
     @Override
     public Double getAvgLendingDurationByIsbn(String isbn) {
-        Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("isbn.value").is(isbn)),
+        Aggregation agg = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("returnedDate").ne(null)
+                        .and("book.isbn").is(isbn)),
                 Aggregation.project()
-                        .andExpression("returnDate - lendingDate").as("duration"),
-                Aggregation.group().avg("duration").as("averageDuration")
+                        .andExpression("returnDate - startDate").as("duration"),
+                Aggregation.group().avg("duration").as("avgDuration")
         );
 
-        AggregationResults<org.bson.Document> result = mongoTemplate.aggregate(aggregation, Lending.class, org.bson.Document.class);
-        org.bson.Document doc = result.getUniqueMappedResult();
-        if (doc != null && doc.get("averageDuration") != null) {
-            return ((Number) doc.get("averageDuration")).doubleValue();
-        }
-        return 0.0;
+        var result = mongoTemplate.aggregate(agg, "lendings", org.bson.Document.class).getUniqueMappedResult();
+        return result != null ? result.getDouble("avgDuration") : 0.0;
     }
 
     @Override
     public List<Lending> getOverdue(Page page) {
-        LocalDate today = LocalDate.now();
-        Query query = new Query();
-        query.addCriteria(Criteria.where("dueDate").lt(today)
-                .and("returned").is(false));
-        return mongoTemplate.find(query, Lending.class);
+        Query query = new Query(Criteria.where("returnedDate").is(null)
+                .and("limitDate").lt(LocalDate.now()))
+                .skip((page.getNumber() - 1) * page.getLimit())
+                .limit(page.getLimit());
+        return mongoTemplate.find(query, LendingNoSQL.class)
+                .stream()
+                .map(LendingNoSQL::toDomain)
+                .collect(Collectors.toList());
     }
-
     @Override
     public List<Lending> searchLendings(Page page, String readerNumber, String isbn, Boolean returned, LocalDate startDate, LocalDate endDate) {
-        Query query = new Query();
-
-        if (readerNumber != null && !readerNumber.isBlank()) {
-            query.addCriteria(Criteria.where("readerNumber").is(readerNumber));
-        }
-        if (isbn != null && !isbn.isBlank()) {
-            query.addCriteria(Criteria.where("isbn.value").is(isbn));
-        }
+        Criteria criteria = new Criteria();
+        if (readerNumber != null) criteria.and("readerDetails.readerNumber").is(readerNumber);
+        if (isbn != null) criteria.and("book.isbn").is(isbn);
         if (returned != null) {
-            query.addCriteria(Criteria.where("returned").is(returned));
+            if (returned) criteria.and("returnedDate").ne(null);
+            else criteria.and("returnedDate").is(null);
         }
-        if (startDate != null) {
-            query.addCriteria(Criteria.where("lendingDate").gte(startDate));
-        }
-        if (endDate != null) {
-            query.addCriteria(Criteria.where("lendingDate").lte(endDate));
+        if (startDate != null) criteria.and("startDate").gte(startDate);
+        if (endDate != null) criteria.and("startDate").lte(endDate);
+
+        Query query = new Query(criteria)
+                .skip((page.getNumber() - 1) * page.getLimit())
+                .limit(page.getLimit());
+
+        return mongoTemplate.find(query, LendingNoSQL.class)
+                .stream()
+                .map(LendingNoSQL::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    public Lending save(Lending lending) {
+        LendingNoSQL entity = LendingNoSQL.fromDomain(lending);
+
+        if (entity.getBook() != null && entity.getBook().getIsbn() != null) {
+            BookNoSQL book = mongoTemplate.findOne(
+                    new Query(Criteria.where("isbn").is(entity.getBook().getIsbn())), BookNoSQL.class);
+            if (book == null) throw new IllegalArgumentException("Book not found: " + entity.getBook().getIsbn());
+            entity.setBook(book);
         }
 
-        return mongoTemplate.find(query, Lending.class);
+        if (entity.getReaderDetails() != null && entity.getReaderDetails().getReaderNumber() != null) {
+            ReaderDetailsNoSQL reader = mongoTemplate.findOne(
+                    new Query(Criteria.where("readerNumber").is(entity.getReaderDetails().getReaderNumber())), ReaderDetailsNoSQL.class);
+            if (reader == null) throw new IllegalArgumentException("Reader not found: " + entity.getReaderDetails().getReaderNumber());
+            entity.setReaderDetails(reader);
+        }
+
+        mongoTemplate.save(entity);
+        return entity.toDomain();
     }
 
     @Override
-    public Lending save(Lending lending) { return mongoTemplate.save(lending);}
-
-    @Override
-    public void delete(Lending lending) {mongoTemplate.remove(lending);}
+    @CacheEvict(key = "#lending.lendingNumber")
+    public void delete(Lending lending) {
+        Query query = new Query(Criteria.where("lendingNumber").is(lending.getLendingNumber()));
+        mongoTemplate.remove(query, LendingNoSQL.class);
+    }
 }
