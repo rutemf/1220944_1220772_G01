@@ -19,6 +19,14 @@ pipeline {
 
                 echo 'Static Code Analysis...'
                 sh 'mvn -B spotbugs:spotbugs spotbugs:check -DskipTests'
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'target/spotbugs',
+                    reportFiles: 'spotbugs.html',
+                    reportName: 'SpotBugs Report'
+                ])
             }
         }
 
@@ -26,17 +34,6 @@ pipeline {
             steps {
                 echo 'Unit Testing...'
                 sh 'mvn test'
-
-                echo 'Code Coverage...'
-                sh 'mvn jacoco:report'
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target/site/jacoco',
-                    reportFiles: 'index.html',
-                    reportName: 'JaCoCo Coverage Report'
-                ])
 
                 echo 'Mutation Testing...'
                 sh 'mvn org.pitest:pitest-maven:mutationCoverage'
@@ -57,6 +54,17 @@ pipeline {
             steps {
                 echo 'Integration Testing...'
                 sh 'mvn verify -DskipUnitTests'
+
+                echo 'Code Coverage...'
+                sh 'mvn jacoco:report'
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'target/site/jacoco',
+                    reportFiles: 'index.html',
+                    reportName: 'JaCoCo Coverage Report'
+                ])
             }
         }
 
