@@ -87,7 +87,8 @@ public class GenreRepositorySQL implements GenreRepository {
         TypedQuery<GenreLendingsDTO> query = entityManager.createQuery(
         "SELECT new pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsDTO(g.genre, COUNT(l)) " +
         "FROM LendingSQL l JOIN l.book b JOIN b.genre g " +
-        "WHERE FUNCTION('MONTH', l.startDate) = :monthMonth AND FUNCTION('YEAR', l.startDate) = :monthYear " +
+        "WHERE FUNCTION('MONTH', FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')) = :monthMonth " +
+        "AND FUNCTION('YEAR', FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')) = :monthYear " +
         "GROUP BY g.genre", GenreLendingsDTO.class);
 
         query.setParameter("monthMonth", month.getMonthValue());
@@ -101,7 +102,7 @@ public class GenreRepositorySQL implements GenreRepository {
         LocalDate oneYearAgo = LocalDate.now().minusYears(1);
 
         TypedQuery<Object[]> query = entityManager.createQuery(
-    "SELECT g.genre, " +
+        "SELECT g.genre, " +
         "  FUNCTION('YEAR',  FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')), " +
         "  FUNCTION('MONTH', FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')), " +
         "  COUNT(l) " +
