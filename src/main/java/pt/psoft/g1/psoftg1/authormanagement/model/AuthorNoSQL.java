@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 @Getter
 @Setter
 @Document(collection = "authors")
@@ -20,14 +22,13 @@ public class AuthorNoSQL {
 
     public AuthorNoSQL(Author author) {
         this.id = IDGeneratorService.generateIdNoSQL();
-        this.authorNumber = author.getAuthorNumber();
+        this.authorNumber = (author.getAuthorNumber() != null) ? author.getAuthorNumber() : ThreadLocalRandom.current().nextLong(10L, 1001L);
         this.name = author.getName().toString();
         this.bio = author.getBio().toString();
     }
 
     // NoSQL
-    protected AuthorNoSQL() {
-    }
+    protected AuthorNoSQL() { }
 
     public Author toDomain() {
         return new Author(
@@ -40,5 +41,4 @@ public class AuthorNoSQL {
     public static AuthorNoSQL fromDomain(Author author) {
         return new AuthorNoSQL(author);
     }
-
 }

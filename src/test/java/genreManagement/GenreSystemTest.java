@@ -12,7 +12,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import pt.psoft.g1.psoftg1.PsoftG1Application;
 
 import java.time.Duration;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
