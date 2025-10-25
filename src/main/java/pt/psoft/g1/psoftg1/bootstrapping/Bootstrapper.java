@@ -14,8 +14,10 @@ import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.Fine;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
+import pt.psoft.g1.psoftg1.lendingmanagement.repositories.FineRepository;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
@@ -28,17 +30,18 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-@Profile("nosql")
+@Profile("sql")
 @PropertySource({"classpath:config/library.properties"})
 @Order(2)
 public class Bootstrapper implements CommandLineRunner {
 
-    private final GenreRepository genreRepository;
-    private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
+    private final FineRepository fineRepository;
+    private final ForbiddenNameService forbiddenNameService;
+    private final GenreRepository genreRepository;
     private final LendingRepository lendingRepository;
     private final ReaderRepository readerRepository;
-    private final ForbiddenNameService forbiddenNameService;
 
     @Override
     @Transactional
@@ -48,6 +51,7 @@ public class Bootstrapper implements CommandLineRunner {
         createBooks();
         loadForbiddenNames();
         createLendings();
+        createFines();
     }
 
     private void createAuthors() {
@@ -190,18 +194,36 @@ public class Bootstrapper implements CommandLineRunner {
         readers.add(readerDetails1);
         readers.add(readerDetails2);
 
-        Lending lending1 = new Lending(books.get(0), readers.get(0), 30, 5);
-        lending1.setLendingNumber(new LendingNumber(2025,1));
-        lendingRepository.save(lending1);
+        if (lendingRepository.findByLendingNumber("2025/1").isEmpty()) {
+            Lending lending1 = new Lending(books.get(0), readers.get(0), 30, 5);
+            lending1.setLendingNumber(new LendingNumber(2025,1));
+            lendingRepository.save(lending1);
+        }
 
-        Lending lending2 = new Lending(books.get(1), readers.get(0), 25, 5);
-        lending2.setLendingNumber(new LendingNumber(2025,2));
-        lendingRepository.save(lending2);
+        if (lendingRepository.findByLendingNumber("2025/2").isEmpty()) {
+            Lending lending2 = new Lending(books.get(1), readers.get(0), 25, 5);
+            lending2.setLendingNumber(new LendingNumber(2025,2));
+            lendingRepository.save(lending2);
+        }
 
-        Lending lending3 = new Lending(books.get(0), readers.get(1), 25, 10);
-        lending3.setLendingNumber(new LendingNumber(2025,3));
-        lendingRepository.save(lending3);
+        if (lendingRepository.findByLendingNumber("2025/3").isEmpty()) {
+            Lending lending3 = new Lending(books.get(0), readers.get(1), 25, 10);
+            lending3.setLendingNumber(new LendingNumber(2025,3));
+            lendingRepository.save(lending3);
+        }
+    }
+
+    private void createFines() {
+        Iterable<Fine> fines = fineRepository.findAll();
+
+        if (!fines.iterator().hasNext()) {
+            Lending lending1 = lendingRepository.findByLendingNumber("2025/1").get();
+            final Fine fine1 = new Fine(lending1);
+            fineRepository.save(fine1);
+
+            Lending lending2 = lendingRepository.findByLendingNumber("2025/2").get();
+            final Fine fine2 = new Fine(lending2);
+            fineRepository.save(fine2);
+        }
     }
 }
-
-
