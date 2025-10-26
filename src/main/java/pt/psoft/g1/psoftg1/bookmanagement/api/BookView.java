@@ -13,6 +13,7 @@ import java.util.Map;
 @Data
 @Schema(description = "A Book")
 public class BookView {
+
     @NotNull
     private String title;
 

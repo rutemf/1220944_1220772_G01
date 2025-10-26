@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class AuthorCoAuthorBooksView {
+
     private AuthorView author;
     private List<CoAuthorView> coauthors;
 
