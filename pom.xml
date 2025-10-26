@@ -200,6 +200,10 @@
 						<param>shared.*Test</param>
 						<param>userManagement.*Test</param>
 					</targetTests>
+					<excludedTestClasses>
+						<param>**IT</param>
+						<param>**SystemTest</param>
+					</excludedTestClasses>
 					<outputFormats>
 						<param>HTML</param>
 						<param>XML</param>

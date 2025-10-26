@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
@@ -11,7 +13,7 @@ import java.util.Optional;
 
 @Getter
 @Setter
-public class Lending {
+public class Lending implements Serializable {
 
     private LendingNumber lendingNumber;
     private Book book;
