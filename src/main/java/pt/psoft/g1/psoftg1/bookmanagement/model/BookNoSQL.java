@@ -10,6 +10,7 @@ import pt.psoft.g1.psoftg1.genremanagement.model.GenreNoSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -46,14 +47,20 @@ public class BookNoSQL {
 
     public Book toDomain() {
         return new Book(
-                isbn != null ? isbn : null,
-                title != null ? title : null,
-                description != null ? description : null,
+                isbn != null ? isbn : "",
+                title != null ? title : "",
+                description != null ? description : "",
                 genre != null ? genre.toDomain() : null,
-                authors != null ? authors.stream().map(AuthorNoSQL::toDomain).toList() : List.of(),
-                photoURI
+                authors != null
+                        ? authors.stream()
+                        .filter(Objects::nonNull)
+                        .map(AuthorNoSQL::toDomain)
+                        .toList()
+                        : List.of(),
+                photoURI != null ? photoURI : ""
         );
     }
+
 
     public static BookNoSQL fromDomain(Book book) {
         return new BookNoSQL(book);

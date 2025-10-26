@@ -1,8 +1,8 @@
 package pt.psoft.g1.psoftg1.readermanagement.model;
 
+import org.springframework.data.annotation.Id;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.genremanagement.model.GenreNoSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
@@ -15,9 +15,8 @@ import java.util.List;
 @Document(collection = "reader_details")
 public class ReaderDetailsNoSQL {
 
+    @Id
     private String id;
-
-    @DBRef
     private ReaderNoSQL reader;
 
     private String readerNumber;
@@ -26,8 +25,6 @@ public class ReaderDetailsNoSQL {
     private boolean gdprConsent;
     private boolean marketingConsent;
     private boolean thirdPartySharingConsent;
-
-    @DBRef
     private List<GenreNoSQL> interestList;
 
     public ReaderDetailsNoSQL(ReaderDetails readerDetails) {

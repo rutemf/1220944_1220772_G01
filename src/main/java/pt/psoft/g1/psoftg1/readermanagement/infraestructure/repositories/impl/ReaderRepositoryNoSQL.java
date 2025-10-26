@@ -79,10 +79,11 @@ public class ReaderRepositoryNoSQL implements ReaderRepository {
                 Aggregation.count().as("total")
         );
 
-        var result = mongoTemplate.aggregate(agg, "readerDetails", Map.class).getUniqueMappedResult();
+        var result = mongoTemplate.aggregate(agg, "reader_Details", Map.class).getUniqueMappedResult();
         return result != null ? ((Number) result.get("total")).intValue() : 0;
     }
 
+    @Override
     public ReaderDetails save(ReaderDetails readerDetails) {
         ReaderDetailsNoSQL entity = ReaderDetailsNoSQL.fromDomain(readerDetails);
 

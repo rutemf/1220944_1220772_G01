@@ -12,13 +12,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
-@Document(collection = "users")
+@Document(collection = "user")
 public class UserNoSQL implements UserDetails {
 
     @Id

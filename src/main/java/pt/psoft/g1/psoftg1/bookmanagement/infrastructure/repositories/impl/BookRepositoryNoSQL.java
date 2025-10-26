@@ -51,11 +51,18 @@ public class BookRepositoryNoSQL implements BookRepository {
                 .stream().map(BookNoSQL::toDomain).collect(Collectors.toList());
     }
 
-    @Override
     public Optional<Book> findByIsbn(String isbn) {
-        Query query = Query.query(Criteria.where("isbn.value").is(isbn));
+        if (isbn == null || isbn.isBlank()) {
+            return Optional.empty();
+        }
+
+        Query query = Query.query(Criteria.where("isbn").is(isbn));
         BookNoSQL bookNoSQL = mongoTemplate.findOne(query, BookNoSQL.class);
-        return Optional.ofNullable(bookNoSQL).map(BookNoSQL::toDomain);
+
+        if (bookNoSQL == null) {
+            return Optional.empty();
+        }
+        return Optional.of(bookNoSQL.toDomain());
     }
 
     @Override

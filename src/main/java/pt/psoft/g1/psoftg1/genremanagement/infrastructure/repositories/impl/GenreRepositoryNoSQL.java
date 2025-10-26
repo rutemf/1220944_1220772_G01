@@ -45,11 +45,10 @@ public class GenreRepositoryNoSQL implements GenreRepository {
                 .toList();
     }
 
-
     @Override
     @Cacheable(key = "#genreName")
     public Optional<Genre> findByString(String genreName) {
-        Query query = new Query(Criteria.where("genre").is(genreName));
+        Query query = new Query(Criteria.where("genreName").is(genreName));
         GenreNoSQL result = mongoTemplate.findOne(query, GenreNoSQL.class);
         return Optional.ofNullable(result).map(GenreNoSQL::toDomain);
     }

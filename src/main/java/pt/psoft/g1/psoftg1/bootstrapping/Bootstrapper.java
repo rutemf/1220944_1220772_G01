@@ -82,6 +82,11 @@ public class Bootstrapper implements CommandLineRunner {
     private void createGenres() {
         Iterable<Genre> genres = genreRepository.findAll();
 
+        for (Genre genre : genres) {
+            System.out.println("Existing genre: " + genre.getGenre());
+            genreRepository.delete(genre);
+        }
+
         if (!genres.iterator().hasNext()) {
             final Genre genre1 = new Genre("Fantasy");
             genreRepository.save(genre1);

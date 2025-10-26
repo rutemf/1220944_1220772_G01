@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.infrastructure.repositories.impl;
 
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @Repository
 @Profile("nosql")
+@CacheConfig(cacheNames = "fines")
 public class FineRepositoryNoSQL implements FineRepository {
 
     private final MongoTemplate mongoTemplate;
