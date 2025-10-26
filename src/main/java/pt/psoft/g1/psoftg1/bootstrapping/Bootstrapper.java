@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
@@ -23,8 +22,13 @@ import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.shared.services.ForbiddenNameService;
+import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
+import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
+import pt.psoft.g1.psoftg1.usermanagement.model.User;
+import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +36,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Profile("bootstrap")
 @PropertySource({"classpath:config/library.properties"})
-@Order(2)
 public class Bootstrapper implements CommandLineRunner {
 
     private final AuthorRepository authorRepository;
@@ -42,14 +45,20 @@ public class Bootstrapper implements CommandLineRunner {
     private final GenreRepository genreRepository;
     private final LendingRepository lendingRepository;
     private final ReaderRepository readerRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public void run(final String... args) {
+        loadForbiddenNames();
+
+        // createReaders();
+        createLibrarian();
+
         createAuthors();
         createGenres();
         createBooks();
-        loadForbiddenNames();
+
         createLendings();
         createFines();
     }
@@ -115,7 +124,7 @@ public class Bootstrapper implements CommandLineRunner {
             authors.add(janeAusten);
 
             Book book = new Book("9789720706386", "O País das Pessoas de Pernas Para o Ar ",
-  "O livro reúne quatro histórias divertidas de um peixinho vermelho. ",
+            "O livro reúne quatro histórias divertidas de um peixinho vermelho. ",
             romanceGenre.get(), authors, null);
 
             bookRepository.save(book);
@@ -126,7 +135,7 @@ public class Bootstrapper implements CommandLineRunner {
             authors.add(ernestHemingway);
 
             Book book = new Book("9789723716160", "Como se Desenha Uma Casa",
-  "Como quem, vindo de países distantes fora do caminho.",
+            "Como quem, vindo de países distantes fora do caminho.",
             mysteryGenre.get(), authors, null);
 
             bookRepository.save(book);
@@ -137,7 +146,7 @@ public class Bootstrapper implements CommandLineRunner {
             authors.add(agathaChristie);
 
             Book book = new Book("9789895612864", "C e Algoritmos",
-  "O C é uma linguagem de programação incontornável no estudo.",
+            "O C é uma linguagem de programação incontornável no estudo.",
             fantasyGenre.get(), authors, null);
 
             bookRepository.save(book);
@@ -149,7 +158,7 @@ public class Bootstrapper implements CommandLineRunner {
             authors.add(ernestHemingway);
 
             Book book = new Book("9782722203402", "Introdução ao Desenvolvimento Moderno para a Web",
-  "Este livro foca o desenvolvimento moderno de aplicações Web.",
+            "Este livro foca o desenvolvimento moderno de aplicações Web.",
             fantasyGenre.get(), authors, null);
 
             bookRepository.save(book);
@@ -161,7 +170,7 @@ public class Bootstrapper implements CommandLineRunner {
             authors.add(janeAusten);
 
             Book book = new Book("9789722328296", "O Principezinho",
-  "Depois de deixar o seu asteroide.",
+            "Depois de deixar o seu asteroide.",
             romanceGenre.get(), authors, "bookPhotoTest.jpg");
 
             bookRepository.save(book);
@@ -225,5 +234,64 @@ public class Bootstrapper implements CommandLineRunner {
             final Fine fine2 = new Fine(lending2);
             fineRepository.save(fine2);
         }
+    }
+
+    private void createReaders() {
+        boolean readersExists = true;
+        Iterable<ReaderDetails> readers = readerRepository.findAll();
+        if (!readers.iterator().hasNext()) {
+            readersExists = false;
+        }
+
+        if (userRepository.findByUsername("miguel@gmail.com").isEmpty()) {
+            final Reader miguel = Reader.newReader("miguel@gmail.com", "Miguel123!", "Miguel Cardoso");
+            userRepository.save(miguel);
+        } else if (!readersExists) {
+            final Reader miguel = Reader.newReader("miguel@gmail.com", "Miguel123!", "Miguel Cardoso");
+            createReaderDetails(1, miguel, "2004-07-04", "910663221");
+        }
+
+        if (userRepository.findByUsername("rute@gmail.com").isEmpty()) {
+            final Reader rute = Reader.newReader("rute@gmail.com", "Rute!123", "Rute Ferreira");
+            userRepository.save(rute);
+        } else if (!readersExists) {
+            final Reader rute = Reader.newReader("rute@gmail.com", "Rute!123", "Rute Ferreira");
+            createReaderDetails(2, rute, "2004-11-04", "999888777");
+        }
+
+        if (userRepository.findByUsername("pedro@gmail.com").isEmpty()) {
+            final Reader pedro = Reader.newReader("pedro@gmail.com", "Pedro!123", "Pedro Tabau");
+            userRepository.save(pedro);
+        }
+
+        if (userRepository.findByUsername("catarina@gmail.com").isEmpty()) {
+            final Reader catarina = Reader.newReader("catarina@gmail.com", "Catarina!123", "Catarina Martins");
+            userRepository.save(catarina);
+        }
+
+        if (userRepository.findByUsername("marcelo@gmail.com").isEmpty()) {
+            final Reader marcelo = Reader.newReader("marcelo@gmail.com", "Marcelo!123", "Marcelo Sousa");
+            userRepository.save(marcelo);
+        }
+
+    }
+
+    private void createReaderDetails(int number, Reader reader, String birthDate, String phoneNumber) {
+        Optional<Genre> romanceGenre = genreRepository.findByString("Romance");
+        Optional<Genre> mysteryGenre = genreRepository.findByString("Mystery");
+        Optional<Genre> fantasyGenre = genreRepository.findByString("Fantasy");
+        List<Genre> interestList = Arrays.asList(romanceGenre.get(), mysteryGenre.get(), fantasyGenre.get());
+
+        ReaderDetails readerDetails = new ReaderDetails(number, reader, birthDate, phoneNumber, true, true, true, null, interestList);
+        readerRepository.save(readerDetails);
+    }
+
+    private void createLibrarian() {
+
+        if (userRepository.findByUsername("maria@gmail.com").isEmpty()) {
+            final User maria = Librarian.newLibrarian("maria@gmail.com", "Maria!123", "Maria Roberta");
+            userRepository.save(maria);
+        }
+
     }
 }
