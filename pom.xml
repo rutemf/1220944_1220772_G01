@@ -194,6 +194,7 @@
 					<targetTests>
 						<param>authorManagement.*Test</param>
 						<param>bookManagement.*Test</param>
+						<param>exceptions.*Test</param>
 						<param>genreManagement.*Test</param>
 						<param>lendingManagement.*Test</param>
 						<param>readerManagement.*Test</param>
