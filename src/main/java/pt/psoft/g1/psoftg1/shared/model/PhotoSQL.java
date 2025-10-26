@@ -28,7 +28,7 @@ public class PhotoSQL {
     }
 
     // JPA
-    protected PhotoSQL (){}
+    protected PhotoSQL() { }
 
     public Photo toDomain() {
         return new Photo(Paths.get(photoFile));
