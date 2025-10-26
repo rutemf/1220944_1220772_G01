@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-@Profile("nosql")
+@Profile("bootstrap")
 @Order(1)
 public class UserBootstrapper implements CommandLineRunner {
 

@@ -21,7 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @ActiveProfiles({"sql","open"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Transactional
-public class GenreSystemTest {
+public class GenreSQLSystemTest {
 
     @LocalServerPort
     int port;

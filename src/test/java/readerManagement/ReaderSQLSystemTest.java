@@ -20,7 +20,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @ActiveProfiles({"sql","open"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Transactional
-public class ReaderSystemTest {
+public class ReaderSQLSystemTest {
 
     @LocalServerPort
     int port;
@@ -95,5 +95,25 @@ public class ReaderSystemTest {
                 .jsonPath("$.interestList[0]").isEqualTo("Romance")
                 .jsonPath("$.interestList[1]").isEqualTo("Mystery")
                 .jsonPath("$.interestList[2]").isEqualTo("Fantasy");
+    }
+
+    @Test
+    @Order(4)
+    void testGetTop() {
+        client.get()
+                .uri(BASE + "/top5")
+                .accept(APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentTypeCompatibleWith(APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.items").isArray()
+                .jsonPath("$.items[0].readerNumber").exists()
+                .jsonPath("$.items[0].birthDate").exists()
+                .jsonPath("$.items[0].phoneNumber").exists()
+                .jsonPath("$.items[0].gdprConsent").exists()
+                .jsonPath("$.items[0].marketingConsent").exists()
+                .jsonPath("$.items[0].thirdPartySharingConsent").exists()
+                .jsonPath("$.items[0].interestList").isArray();
     }
 }

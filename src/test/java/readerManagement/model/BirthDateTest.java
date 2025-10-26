@@ -3,6 +3,7 @@ package readerManagement.model;
 import org.junit.jupiter.api.Test;
 import pt.psoft.g1.psoftg1.readermanagement.model.BirthDate;
 
+import java.lang.reflect.Constructor;
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -77,5 +78,16 @@ public class BirthDateTest {
             new BirthDate(tooYoungDate);
         });
         assertTrue(thrown.getMessage().contains("at least 12"));
+    }
+
+    // White Box Test
+    @Test
+    void testProtectedConstructor() throws Exception {
+        Constructor<BirthDate> constructor = BirthDate.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+
+        BirthDate birthDate = constructor.newInstance();
+
+        assertNull(birthDate.getBirthDate());
     }
 }

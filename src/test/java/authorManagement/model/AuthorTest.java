@@ -7,6 +7,8 @@ import pt.psoft.g1.psoftg1.authormanagement.model.Bio;
 import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
 
 
+import java.lang.reflect.Constructor;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthorTest {
@@ -98,5 +100,16 @@ public class AuthorTest {
 
         assertSame(oldName, a.getName());
         assertSame(oldBio, a.getBio());
+    }
+
+    // White Box Test
+    @Test
+    void testProtectedConstructor() throws Exception {
+        Constructor<Author> constructor = Author.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+
+        Author author = constructor.newInstance();
+
+        assertNull(author.getAuthorNumber());
     }
 }
