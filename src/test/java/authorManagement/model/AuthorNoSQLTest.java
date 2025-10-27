@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AuthorNoSQLTest {
 
     // Black Box Test
-
     @Test
     void testFromDomainMapsAllFields() {
         Author domain= new Author(46L, new Name("Lourenço Seruya"), new Bio("Mistery and crimes"));
@@ -50,15 +49,15 @@ public class AuthorNoSQLTest {
         assertNotEquals(noSQL1.getId(), noSQL2.getId(), "IDs distintos esperados para rows diferentes");
     }
 
-    //White Box Test
+    // White Box Test
     @Test
     void testConstructorGeneratesValidId(){
 
     }
 
-    //White Box Test
+    // White Box Test
     @Test
-    void estFromDomainCopiesAuthorNumberOnly(){
+    void testFromDomainCopiesAuthorNumberOnly(){
         Author domain = new Author(144L, new Name("Name"), new Bio("Bio"));
         AuthorNoSQL noSQL = AuthorNoSQL.fromDomain(domain);
 
@@ -67,5 +66,3 @@ public class AuthorNoSQLTest {
     }
 
 }
-
-

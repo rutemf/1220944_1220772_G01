@@ -12,10 +12,13 @@ import java.util.Map;
 @Service
 @Profile("google")
 public class GoogleBooksService implements IsbnService {
+
     private final WebClient webClient;
+
     public GoogleBooksService(WebClient.Builder webClientBuilder) {
         webClient = webClientBuilder.baseUrl("https://www.googleapis.com/books/v1/volumes").build();
     }
+
     @Override
     public String fetchIsbnsByTitle(String title) {
         try {
