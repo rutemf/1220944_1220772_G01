@@ -21,13 +21,11 @@
 package pt.psoft.g1.psoftg1.usermanagement.api;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.SearchRequest;
-import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.CreateUserRequest;
 import pt.psoft.g1.psoftg1.usermanagement.services.EditUserRequest;
@@ -36,14 +34,9 @@ import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
 import java.util.List;
 
-/**
- * Based on https://github.com/Yoh0xFF/java-spring-security-example
- *
- */
 @Tag(name = "UserAdmin")
 @RestController
 @RequestMapping(path = "api/admin/users")
-@RolesAllowed(Role.ADMIN)
 @RequiredArgsConstructor
 public class UserAdminApi {
 
