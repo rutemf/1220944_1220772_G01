@@ -8,11 +8,11 @@ import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 
 import java.util.List;
 
-
 @Getter
 @Data
 @NoArgsConstructor
 public class UpdateBookRequest {
+
     @Setter
     private String isbn;
 
@@ -29,7 +29,6 @@ public class UpdateBookRequest {
     @Getter
     @Setter
     private MultipartFile photo;
-
 
     @Setter
     private Genre genreObj;
