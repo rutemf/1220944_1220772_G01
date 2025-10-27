@@ -3,6 +3,7 @@ package authorManagement.model;
 import org.junit.jupiter.api.Test;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.model.AuthorNoSQL;
+import pt.psoft.g1.psoftg1.authormanagement.model.AuthorSQL;
 import pt.psoft.g1.psoftg1.authormanagement.model.Bio;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 
@@ -52,7 +53,13 @@ public class AuthorNoSQLTest {
     // White Box Test
     @Test
     void testConstructorGeneratesValidId(){
+        Author domain = new Author(111L, new Name("Name"), new Bio("Bio"));
+        AuthorNoSQL authorNoSQL = new AuthorNoSQL(domain);
 
+        String id = authorNoSQL.getId();
+
+        assertNotNull(id);
+        assertTrue(id.matches("\\d{13}-[0-9a-fA-F]{6}"), "ID should match format: timestamp-randomHex(6 digits)");
     }
 
     // White Box Test
