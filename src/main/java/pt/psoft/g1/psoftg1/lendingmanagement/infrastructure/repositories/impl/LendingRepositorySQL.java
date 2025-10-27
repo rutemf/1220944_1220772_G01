@@ -77,8 +77,10 @@ public class LendingRepositorySQL implements LendingRepository {
     @Override
     public Double getAverageDuration() {
         TypedQuery<Double> query = entityManager.createQuery(
-        "SELECT AVG(DATEDIFF(l.returnedDate, l.startDate)) " +
-        "FROM LendingSQL l " +
+        "SELECT AVG(function('datediff', " +
+        "   function('str_to_date', l.returnedDate, '%Y-%m-%d'), " +
+        "   function('str_to_date', l.startDate, '%Y-%m-%d')" +
+        ")) FROM LendingSQL l " +
         "WHERE l.returnedDate IS NOT NULL", Double.class);
 
         return Optional.ofNullable(query.getSingleResult()).orElse(0.0);
@@ -102,8 +104,8 @@ public class LendingRepositorySQL implements LendingRepository {
         TypedQuery<LendingSQL> query = entityManager.createQuery(
         "SELECT l FROM LendingSQL l " +
         "WHERE l.returnedDate IS NULL " +
-        "AND l.limitDate < CURRENT_DATE " +
-        "ORDER BY l.limitDate ASC", LendingSQL.class);
+        "AND function('str_to_date', l.limitDate, '%Y-%m-%d') < CURRENT_DATE " +
+        "ORDER BY function('str_to_date', l.limitDate, '%Y-%m-%d') ASC", LendingSQL.class);
 
         query.setFirstResult((page.getNumber() - 1) * page.getLimit());
         query.setMaxResults(page.getLimit());
