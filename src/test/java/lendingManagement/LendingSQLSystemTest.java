@@ -19,10 +19,10 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @SpringBootTest(classes = PsoftG1Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles({"sql","google"})
+@ActiveProfiles({"sql","open"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Transactional
-public class LendingSQLGoogleBooksSystemTest {
+public class LendingSQLSystemTest {
 
     @LocalServerPort
     int port;
