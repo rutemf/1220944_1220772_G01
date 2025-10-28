@@ -70,6 +70,7 @@ public class UserRepositorySQL implements UserRepository {
     }
 
     @Override
+    @Cacheable(key = "#username")
     public Optional<User> findByUsername(String username) {
         TypedQuery<UserSQL> query = entityManager.createQuery(
         "SELECT u FROM UserSQL u WHERE u.username = :username", UserSQL.class);
@@ -122,10 +123,21 @@ public class UserRepositorySQL implements UserRepository {
     }
 
     @Override
-    @CacheEvict(key = "#user.id")
+    @CacheEvict(key = "#user.username")
     public void delete(User user) {
-        UserSQL userSQL = UserSQL.fromDomain(user);
+        final String username = user.getUsername();
+
+        TypedQuery<UserSQL> query = entityManager.createQuery(
+        "SELECT u FROM UserSQL u WHERE u.username = :username", UserSQL.class);
+
+        query.setParameter("username", username);
+        UserSQL userSQL = query.getResultStream().findFirst().get();
+
         UserSQL managed = entityManager.contains(userSQL) ? userSQL : entityManager.merge(userSQL);
+
+        managed.getAuthorities().clear();
+        entityManager.flush();
+
         entityManager.remove(managed);
     }
 }

@@ -55,9 +55,9 @@ public class UserAdminApi {
 		return userViewMapper.toUserView(user);
 	}
 
-	@DeleteMapping("{id}")
-	public UserView delete(@PathVariable final Long id) {
-		final var user = userService.delete(id);
+	@DeleteMapping("{username}")
+	public UserView delete(@PathVariable final String username) {
+		final var user = userService.delete(username);
 		return userViewMapper.toUserView(user);
 	}
 
