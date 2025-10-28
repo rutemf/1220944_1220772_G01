@@ -33,9 +33,11 @@ public class LendingRepositoryNoSQL implements LendingRepository {
 
     @Override
     public Optional<Lending> findByLendingNumber(String lendingNumber) {
-        Query query = new Query(Criteria.where("lendingNumber").is(lendingNumber));
-        LendingNoSQL result = mongoTemplate.findOne(query, LendingNoSQL.class);
-        return Optional.ofNullable(result).map(LendingNoSQL::toDomain);
+        Query query = new Query();
+        query.addCriteria(Criteria.where("lendingNumber").is(lendingNumber));
+
+        LendingNoSQL lendingMongo = mongoTemplate.findOne(query, LendingNoSQL.class);
+        return Optional.ofNullable(lendingMongo).map(LendingNoSQL::toDomain);
     }
 
     @Override

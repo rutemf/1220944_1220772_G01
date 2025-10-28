@@ -5,10 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.genremanagement.model.GenreNoSQL;
+import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 import pt.psoft.g1.psoftg1.usermanagement.model.ReaderNoSQL;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -36,9 +38,7 @@ public class ReaderDetailsNoSQL {
         this.gdprConsent = readerDetails.isGdprConsent();
         this.marketingConsent = readerDetails.isMarketingConsent();
         this.thirdPartySharingConsent = readerDetails.isThirdPartySharingConsent();
-        this.interestList = readerDetails.getInterestList() != null
-                ? readerDetails.getInterestList().stream().map(GenreNoSQL::fromDomain).toList()
-                : List.of();
+        this.interestList = readerDetails.getInterestList().stream().map(GenreNoSQL::fromDomain).collect(Collectors.toList());
     }
 
     protected ReaderDetailsNoSQL() {}
@@ -46,14 +46,14 @@ public class ReaderDetailsNoSQL {
     public ReaderDetails toDomain() {
         return new ReaderDetails(
                 Integer.parseInt(this.readerNumber.split("/")[1]),
-                this.reader != null ? this.reader.toDomain() : null,
+                this.reader.toDomain(),
                 this.birthDate,
                 this.phoneNumber,
                 this.gdprConsent,
                 this.marketingConsent,
                 this.thirdPartySharingConsent,
                 null,
-                this.interestList != null ? this.interestList.stream().map(GenreNoSQL::toDomain).toList() : List.of()
+                this.interestList.stream().map(GenreNoSQL::toDomain).collect(Collectors.toList())
         );
     }
     public static ReaderDetailsNoSQL fromDomain(ReaderDetails readerDetails) {

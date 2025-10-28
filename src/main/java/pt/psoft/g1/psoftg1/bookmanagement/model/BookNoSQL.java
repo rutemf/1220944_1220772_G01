@@ -50,13 +50,17 @@ public class BookNoSQL {
         return new Book(
                 isbn,
                 title,
-                description != null ? description : null,
+                description,
                 genre != null ? genre.toDomain() : null,
-                authors != null ? authors.stream().map(AuthorNoSQL::toDomain).toList() : null,
+                authors != null
+                        ? authors.stream()
+                        .filter(Objects::nonNull)
+                        .map(AuthorNoSQL::toDomain)
+                        .toList()
+                        : null,
                 photoURI
         );
     }
-
 
     public static BookNoSQL fromDomain(Book book) {
         return new BookNoSQL(book);

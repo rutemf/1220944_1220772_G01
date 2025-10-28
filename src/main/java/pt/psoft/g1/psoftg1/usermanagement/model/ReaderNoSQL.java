@@ -9,6 +9,7 @@ import pt.psoft.g1.psoftg1.shared.model.Name;
 @Setter
 @Document(collection = "readers")
 public class ReaderNoSQL extends UserNoSQL {
+
     protected ReaderNoSQL() {
     }
     public ReaderNoSQL(Reader reader) {
@@ -17,12 +18,8 @@ public class ReaderNoSQL extends UserNoSQL {
     }
     @Override
     public Reader toDomain() {
-        Reader reader = new Reader();
-        reader.setUsername(getUsername());
-        reader.setPassword(getPassword());
-        reader.setName(new Name(getName()));
-        reader.getAuthorities().addAll(getAuthorities());
-        reader.setEnabled(isEnabled());
+        Reader reader = Reader.newReader(this.getUsername(), this.getPassword(), this.getName());
+        reader.getAuthorities().addAll(this.getAuthorities());
         return reader;
     }
     public static ReaderNoSQL fromDomain(Reader reader) {

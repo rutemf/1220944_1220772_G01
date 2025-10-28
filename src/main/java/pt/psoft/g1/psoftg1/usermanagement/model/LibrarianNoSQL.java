@@ -13,13 +13,16 @@ public class LibrarianNoSQL extends UserNoSQL{
         super(librarian);
         this.addAuthority(new Role(Role.LIBRARIAN));
     }
+
     protected LibrarianNoSQL() { }
+
     @Override
     public Librarian toDomain() {
         Librarian librarian = Librarian.newLibrarian(this.getUsername(), this.getPassword(), String.valueOf(this.getName()));
         librarian.getAuthorities().addAll(this.getAuthorities());
         return librarian;
     }
+
     public static LibrarianNoSQL fromDomain(Librarian librarian) {
         return new LibrarianNoSQL(librarian);
     }

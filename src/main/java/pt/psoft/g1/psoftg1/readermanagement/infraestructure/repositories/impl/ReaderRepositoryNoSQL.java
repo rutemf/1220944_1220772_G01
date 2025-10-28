@@ -36,12 +36,14 @@ public class ReaderRepositoryNoSQL implements ReaderRepository {
     public ReaderRepositoryNoSQL(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
+
     @Override
     @Cacheable(key = "#readerNumber")
     public Optional<ReaderDetails> findByReaderNumber(String readerNumber) {
-        Query query = new Query(Criteria.where("readerNumber").is(readerNumber));
-        ReaderDetailsNoSQL result = mongoTemplate.findOne(query, ReaderDetailsNoSQL.class);
-        return Optional.ofNullable(result).map(ReaderDetailsNoSQL::toDomain);
+        ReaderDetailsNoSQL reader = mongoTemplate.findOne(
+                Query.query(Criteria.where("readerNumber").is(readerNumber)),
+                ReaderDetailsNoSQL.class);
+        return Optional.ofNullable(reader).map(ReaderDetailsNoSQL::toDomain);
     }
 
     @Override
