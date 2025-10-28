@@ -31,11 +31,7 @@ public class AuthorNoSQL {
     protected AuthorNoSQL() { }
 
     public Author toDomain() {
-        return new Author(
-                authorNumber,
-                name != null ? new Name(name) : null,
-                bio != null ? new Bio(bio) : null
-        );
+        return new Author(authorNumber, new Name(name), new Bio(bio));
     }
 
     public static AuthorNoSQL fromDomain(Author author) {

@@ -46,9 +46,10 @@ public class BookRepositoryNoSQL implements BookRepository {
 
     @Override
     public List<Book> findByAuthorName(String authorName) {
-        Query query = Query.query(Criteria.where("authors.name.value").is(authorName));
-        return mongoTemplate.find(query, BookNoSQL.class)
-                .stream().map(BookNoSQL::toDomain).collect(Collectors.toList());
+        Query query = new Query();
+        query.addCriteria(Criteria.where("authorName").regex(authorName, "i"));
+        List<BookNoSQL> books = mongoTemplate.find(query, BookNoSQL.class);
+        return books.stream().map(BookNoSQL::toDomain).toList();
     }
 
     public Optional<Book> findByIsbn(String isbn) {
