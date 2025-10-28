@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.authormanagement.model.AuthorNoSQL;
+import pt.psoft.g1.psoftg1.authormanagement.model.AuthorSQL;
 import pt.psoft.g1.psoftg1.genremanagement.model.GenreNoSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
@@ -47,17 +48,12 @@ public class BookNoSQL {
 
     public Book toDomain() {
         return new Book(
-                isbn != null ? isbn : "",
-                title != null ? title : "",
-                description != null ? description : "",
+                isbn,
+                title,
+                description != null ? description : null,
                 genre != null ? genre.toDomain() : null,
-                authors != null
-                        ? authors.stream()
-                        .filter(Objects::nonNull)
-                        .map(AuthorNoSQL::toDomain)
-                        .toList()
-                        : List.of(),
-                photoURI != null ? photoURI : ""
+                authors != null ? authors.stream().map(AuthorNoSQL::toDomain).toList() : null,
+                photoURI
         );
     }
 
