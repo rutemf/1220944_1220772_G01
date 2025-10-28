@@ -27,6 +27,7 @@ import pt.psoft.g1.psoftg1.usermanagement.model.Reader;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -203,22 +204,40 @@ public class Bootstrapper implements CommandLineRunner {
         readers.add(readerDetails1);
         readers.add(readerDetails2);
 
-        if (lendingRepository.findByLendingNumber("2025/1").isEmpty()) {
+        if (lendingRepository.findByLendingNumber("2025/0").isEmpty()) {
             Lending lending1 = new Lending(books.get(0), readers.get(0), 30, 5);
             lending1.setLendingNumber(new LendingNumber(2025,1));
             lendingRepository.save(lending1);
         }
 
-        if (lendingRepository.findByLendingNumber("2025/2").isEmpty()) {
+        if (lendingRepository.findByLendingNumber("2025/1").isEmpty()) {
             Lending lending2 = new Lending(books.get(1), readers.get(0), 25, 5);
             lending2.setLendingNumber(new LendingNumber(2025,2));
             lendingRepository.save(lending2);
         }
 
-        if (lendingRepository.findByLendingNumber("2025/3").isEmpty()) {
+        if (lendingRepository.findByLendingNumber("2025/2").isEmpty()) {
             Lending lending3 = new Lending(books.get(0), readers.get(1), 25, 10);
             lending3.setLendingNumber(new LendingNumber(2025,3));
             lendingRepository.save(lending3);
+        }
+
+        if (lendingRepository.findByLendingNumber("2025/3").isEmpty()) {
+            Lending lending4 = new Lending(books.get(2), readers.get(1), 15, 5);
+            lending4.setLimitDate(LocalDate.of(2025,1, 10));
+            lendingRepository.save(lending4);
+        }
+
+        if (lendingRepository.findByLendingNumber("2025/4").isEmpty()) {
+            Lending lending4 = new Lending(books.get(2), readers.get(1), 30, 5);
+            lending4.setLimitDate(LocalDate.of(2025,3, 10));
+            lendingRepository.save(lending4);
+        }
+
+        if (lendingRepository.findByLendingNumber("2025/5").isEmpty()) {
+            Lending lending4 = new Lending(books.get(1), readers.get(1), 30, 15);
+            lending4.setLimitDate(LocalDate.of(2025,7, 10));
+            lendingRepository.save(lending4);
         }
     }
 
