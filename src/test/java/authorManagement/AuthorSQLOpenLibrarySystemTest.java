@@ -24,7 +24,7 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 @ActiveProfiles({"sql","open"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Transactional
-public class AuthorSQLSystemTest {
+public class AuthorSQLOpenLibrarySystemTest {
 
     @LocalServerPort
     int port;

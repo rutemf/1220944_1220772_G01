@@ -22,7 +22,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @ActiveProfiles({"sql","open"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Transactional
-public class LendingSQLSystemTest {
+public class LendingSQLOpenLibrarySystemTest {
 
     @LocalServerPort
     int port;
