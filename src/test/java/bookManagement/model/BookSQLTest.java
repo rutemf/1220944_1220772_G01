@@ -51,7 +51,7 @@ class BookSQLTest {
         BookSQL sql = BookSQL.fromDomain(domain);
 
         assertNotNull(sql.getId(), "ID deve ser gerado");
-        assertEquals(isbn, sql.getIsbn().toString());
+        assertEquals(isbn, sql.getIsbn());
         assertEquals(title, sql.getTitle());
         assertEquals(desc, sql.getDescription());
         assertNull(sql.getGenre(), "Genre deve ser null quando domínio tem null");

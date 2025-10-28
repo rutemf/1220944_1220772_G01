@@ -39,8 +39,8 @@ public class FineNoSQL {
         return fine;
     }
 
-    public static FineSQL fromDomain(Fine fine) {
-        return new FineSQL(fine);
+    public static FineNoSQL fromDomain(Fine fine) {
+        return new FineNoSQL(fine);
     }
 
 }

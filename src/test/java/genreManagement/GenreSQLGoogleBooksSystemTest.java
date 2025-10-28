@@ -15,13 +15,20 @@ import pt.psoft.g1.psoftg1.PsoftG1Application;
 import java.time.Duration;
 
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @SpringBootTest(classes = PsoftG1Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles({"sql","open"})
+@ActiveProfiles({"sql","google"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Transactional
-public class GenreSQLSystemTest {
+public class GenreSQLGoogleBooksSystemTest {
 
     @LocalServerPort
     int port;
@@ -124,4 +131,5 @@ public class GenreSQLSystemTest {
                 .jsonPath("$.items[*].genre").value(everyItem(not(isEmptyOrNullString())))
                 .jsonPath("$.items[*].value").value(everyItem(greaterThanOrEqualTo(0)));
     }
+
 }

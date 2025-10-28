@@ -3,7 +3,6 @@ package authorManagement.model;
 import org.junit.jupiter.api.Test;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.model.AuthorNoSQL;
-import pt.psoft.g1.psoftg1.authormanagement.model.AuthorSQL;
 import pt.psoft.g1.psoftg1.authormanagement.model.Bio;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 

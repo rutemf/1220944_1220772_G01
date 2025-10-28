@@ -6,7 +6,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import pt.psoft.g1.psoftg1.shared.model.ForbiddenName;
 import pt.psoft.g1.psoftg1.shared.model.ForbiddenNameNoSQL;
-import pt.psoft.g1.psoftg1.shared.model.ForbiddenNameSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import static org.junit.jupiter.api.Assertions.*;

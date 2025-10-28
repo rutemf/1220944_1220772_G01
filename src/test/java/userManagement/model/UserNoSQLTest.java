@@ -77,6 +77,28 @@ public class UserNoSQLTest {
 
     // White Box Test
     @Test
+    void testJPAConstructorDefaults() throws Exception {
+        Constructor<UserNoSQL> c = UserNoSQL.class.getDeclaredConstructor();
+        c.setAccessible(true);
+        UserNoSQL empty = c.newInstance();
+
+        assertNull(empty.getId());
+        assertNull(empty.getUsername());
+        assertNull(empty.getPassword());
+        assertNull(empty.getName());
+
+        assertNotNull(empty.getAuthorities(), "Authorities deve ser inicializado");
+        assertTrue(empty.getAuthorities().isEmpty(), "Authorities deve iniciar vazio");
+
+        assertTrue(empty.isEnabled(), "Flag enabled tem default = true");
+        assertNull(empty.getCreatedAt());
+        assertNull(empty.getModifiedAt());
+        assertNull(empty.getCreatedBy());
+        assertNull(empty.getModifiedBy());
+    }
+
+    // White Box Test
+    @Test
     void testUserDetailsStatusReflectsEnabled() {
         UserNoSQL noSQL = UserNoSQL.fromDomain(domainUser);
 

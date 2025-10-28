@@ -2,7 +2,10 @@ package bookManagement;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
@@ -11,14 +14,15 @@ import pt.psoft.g1.psoftg1.PsoftG1Application;
 
 import java.time.Duration;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @SpringBootTest(classes = PsoftG1Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles({"sql","open"})
+@ActiveProfiles({"sql","google"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Transactional
-public class BookSQLSystemTest {
+public class BookSQLGoogleBooksSystemTest {
 
     @LocalServerPort
     int port;
