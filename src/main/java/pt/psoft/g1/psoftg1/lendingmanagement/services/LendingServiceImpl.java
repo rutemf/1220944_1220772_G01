@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -9,6 +10,7 @@ import pt.psoft.g1.psoftg1.exceptions.LendingForbiddenException;
 import pt.psoft.g1.psoftg1.exceptions.NotFoundException;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Fine;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.FineRepository;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
@@ -56,6 +58,7 @@ public class LendingServiceImpl implements LendingService{
     }
 
     @Override
+    @Transactional
     public Lending create(final CreateLendingRequest resource) {
         int count = 0;
 
@@ -73,13 +76,16 @@ public class LendingServiceImpl implements LendingService{
         }
 
         final var b = bookRepository.findByIsbn(resource.getIsbn())
-                .orElseThrow(() -> new NotFoundException("Book not found"));
-        final var r = readerRepository.findByReaderNumber(resource.getReaderNumber())
-                .orElseThrow(() -> new NotFoundException("Reader not found"));
-        int seq = lendingRepository.getCountFromCurrentYear()+1;
-        final Lending l = new Lending(b,r, lendingDurationInDays, fineValuePerDayInCents );
+        .orElseThrow(() -> new NotFoundException("Book not found"));
 
-        return lendingRepository.save(l);
+        final var r = readerRepository.findByReaderNumber(resource.getReaderNumber())
+        .orElseThrow(() -> new NotFoundException("Reader not found"));
+
+        int seq = lendingRepository.getCountFromCurrentYear()+1;
+        Lending lending = new Lending(b,r, lendingDurationInDays, fineValuePerDayInCents );
+        lending.setLendingNumber(new LendingNumber(LocalDate.now().getYear(), seq));
+
+        return lendingRepository.save(lending);
     }
 
     @Override

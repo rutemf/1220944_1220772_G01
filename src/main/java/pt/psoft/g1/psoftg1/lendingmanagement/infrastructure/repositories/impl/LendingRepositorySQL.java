@@ -57,7 +57,7 @@ public class LendingRepositorySQL implements LendingRepository {
     public int getCountFromCurrentYear() {
         TypedQuery<Long> query = entityManager.createQuery(
         "SELECT COUNT(l) FROM LendingSQL l " +
-        "WHERE YEAR(l.startDate) = YEAR(CURRENT_DATE)", Long.class);
+        "WHERE SUBSTRING(l.startDate, 1, 4) = CAST(FUNCTION('YEAR', CURRENT_DATE()) AS string)", Long.class);
 
         return query.getSingleResult().intValue();
     }

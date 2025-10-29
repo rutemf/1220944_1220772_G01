@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Schema(description = "A DTO for creating a Lending")
 public class CreateLendingRequest {
+
     @NotNull
     @NotBlank
     @Size(min = 10, max = 13)
@@ -22,4 +23,5 @@ public class CreateLendingRequest {
     @NotBlank
     @Size(min = 6, max = 16)
     private String readerNumber;
+
 }

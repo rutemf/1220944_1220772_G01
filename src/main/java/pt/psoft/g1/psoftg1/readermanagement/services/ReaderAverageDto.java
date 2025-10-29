@@ -11,7 +11,6 @@ public class ReaderAverageDto {
 
     @NotNull
     private ReaderDetails readerView;
-
     private Long lendingCount;
 
 }

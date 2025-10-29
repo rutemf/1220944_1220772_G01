@@ -55,7 +55,7 @@ public class LendingSQLSystemTest {
 
     @Test
     @Order(2)
-    void testSetLendingReturned() {
+    void testGetAverageLendingDuration() {
         client.get()
                 .uri(BASE + "/avgDuration")
                 .accept(APPLICATION_JSON)
