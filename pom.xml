@@ -192,9 +192,11 @@
 						<param>pt.psoft.g1.*</param>
 					</targetClasses>
 					<targetTests>
+						<param>auth.*Test</param>
 						<param>authorManagement.*Test</param>
 						<param>bookManagement.*Test</param>
 						<param>exceptions.*Test</param>
+						<param>external.*Test</param>
 						<param>genreManagement.*Test</param>
 						<param>lendingManagement.*Test</param>
 						<param>readerManagement.*Test</param>
