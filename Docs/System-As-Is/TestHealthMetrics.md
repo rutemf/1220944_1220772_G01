@@ -1,4 +1,4 @@
-# 🧪 Test Health Metrics (System *As Is*)
+# Test Health Metrics (System *As Is*)
 
 ## 1. 📋 Overview
 
@@ -7,7 +7,7 @@ The goal is to understand the current testing landscape, identify improvement op
 
 ---
 
-## 2. 📊 Test Quantity Metrics
+## 2. Test Quantity Metrics
 
 The following metrics evaluate the **volume** and **coverage** of the existing tests in the project.
 
@@ -21,7 +21,7 @@ The following metrics evaluate the **volume** and **coverage** of the existing t
 
 ---
 
-## 3. 🧠 Test Quality Metrics
+## 3. Test Quality Metrics
 
 | **Metric**                        | **Description**                           | **Current Status** | **Observations**                            |
 |-----------------------------------|-------------------------------------------|--------------------|---------------------------------------------|
@@ -35,7 +35,7 @@ The following metrics evaluate the **volume** and **coverage** of the existing t
 
 ---
 
-## 4. ⚠️ Identified Issues / Risks
+## 4. Identified Issues / Risks
 
 - Low test coverage
 - Repetitive setup logic across multiple test classes
@@ -45,7 +45,7 @@ The following metrics evaluate the **volume** and **coverage** of the existing t
 
 ---
 
-## 5. 💡 Recommendations
+## 5. Recommendations
 
 To improve overall test health and maintainability:
 
