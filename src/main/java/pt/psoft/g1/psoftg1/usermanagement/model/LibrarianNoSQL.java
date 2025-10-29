@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
-@Document(collection = "librarians")
 public class LibrarianNoSQL extends UserNoSQL{
 
     public LibrarianNoSQL(Librarian librarian) {

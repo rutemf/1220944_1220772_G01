@@ -7,11 +7,10 @@ import pt.psoft.g1.psoftg1.shared.model.Name;
 
 @Getter
 @Setter
-@Document(collection = "readers")
 public class ReaderNoSQL extends UserNoSQL {
 
-    protected ReaderNoSQL() {
-    }
+    protected ReaderNoSQL() {}
+
     public ReaderNoSQL(Reader reader) {
         super(reader);
         this.addAuthority(new Role(Role.READER));
