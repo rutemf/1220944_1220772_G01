@@ -8,7 +8,9 @@ import java.util.List;
 
 @Data
 @Schema(description = "A Reader")
+@Setter
 public class ReaderView {
+
     private String readerNumber;
     private String email;
     private String fullName;
@@ -19,4 +21,5 @@ public class ReaderView {
     private boolean marketingConsent;
     private boolean thirdPartySharingConsent;
     private List<String> interestList;
+
 }

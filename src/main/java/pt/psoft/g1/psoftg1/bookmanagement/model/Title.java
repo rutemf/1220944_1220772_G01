@@ -10,8 +10,7 @@ public class Title implements Serializable {
         setTitle(title);
     }
 
-    protected Title() {
-    }
+    protected Title() { }
 
     public void setTitle(String title) {
         int TITLE_MAX_LENGTH = 128;

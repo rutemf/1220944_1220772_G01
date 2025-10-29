@@ -126,4 +126,15 @@ public class IsbnTest {
         int mods = ctor.getModifiers();
         assertTrue(Modifier.isProtected(mods), "O construtor no-args deve ser protected");
     }
+
+    // White Box Test
+    @Test
+    void testProtectedConstructor() throws Exception {
+        Constructor<Isbn> constructor = Isbn.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+
+        Isbn isbn = constructor.newInstance();
+
+        assertNull(isbn.toString());
+    }
 }

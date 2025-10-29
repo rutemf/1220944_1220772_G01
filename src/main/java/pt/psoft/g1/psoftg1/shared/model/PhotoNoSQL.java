@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 
 @Getter
 @Setter
-@Document(collection = "photos")
+@Document(collection = "photo")
 public class PhotoNoSQL {
 
     @Id
@@ -21,7 +21,6 @@ public class PhotoNoSQL {
     private String photoFile;
 
     public PhotoNoSQL(Photo photo) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdNoSQL();
         this.photoFile = photo.getPhotoFile();
     }

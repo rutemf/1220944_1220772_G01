@@ -8,6 +8,8 @@ import lombok.Setter;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 @Entity
 @Getter
 @Setter
@@ -25,7 +27,7 @@ public class AuthorSQL {
 
     public AuthorSQL(Author author) {
         this.id = IDGeneratorService.generateIdSQL();
-        this.authorNumber = author.getAuthorNumber();
+        this.authorNumber = (author.getAuthorNumber() != null) ? author.getAuthorNumber() : ThreadLocalRandom.current().nextLong(10L, 1001L);
         this.name = author.getName().toString();
         this.bio = author.getBio().toString();
     }

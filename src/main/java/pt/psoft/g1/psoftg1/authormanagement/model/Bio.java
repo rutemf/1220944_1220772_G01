@@ -32,4 +32,3 @@ public class Bio implements Serializable {
         return bio;
     }
 }
-

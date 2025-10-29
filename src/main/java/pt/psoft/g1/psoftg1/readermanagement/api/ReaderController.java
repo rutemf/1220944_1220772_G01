@@ -85,8 +85,6 @@ class ReaderController {
             // Use the `array` property instead of `schema`
             array = @ArraySchema(schema = @Schema(implementation = ReaderView.class))) })
     @GetMapping(value="/{year}/{seq}")
-    //This is just for testing purposes, therefore admin role has been set
-    //@RolesAllowed(Role.LIBRARIAN)
     public ResponseEntity<ReaderQuoteView> findByReaderNumber(@PathVariable("year")
                                                            @Parameter(description = "The year of the Reader to find")
                                                            final Integer year,
@@ -100,12 +98,11 @@ class ReaderController {
         var readerQuoteView = readerViewMapper.toReaderQuoteView(readerDetails);
 
         int birthYear = readerDetails.getBirthDate().getBirthDate().getYear();
-        int birhMonth = readerDetails.getBirthDate().getBirthDate().getMonthValue();
+        int birthMonth = readerDetails.getBirthDate().getBirthDate().getMonthValue();
 
-        readerQuoteView.setQuote(apiNinjasService.getRandomEventFromYearMonth(birthYear, birhMonth));
+        readerQuoteView.setQuote(apiNinjasService.getRandomEventFromYearMonth(birthYear, birthMonth));
 
-        return ResponseEntity.ok()
-                .body(readerQuoteView);
+        return ResponseEntity.ok().body(readerQuoteView);
     }
 
     @Operation(summary = "Gets a list of Readers by phoneNumber")
@@ -114,27 +111,27 @@ class ReaderController {
 
         List<ReaderDetails> readerDetailsList  = readerService.findByPhoneNumber(phoneNumber);
 
-        if(readerDetailsList.isEmpty()) {
+        if (readerDetailsList.isEmpty()) {
             throw new NotFoundException(ReaderDetails.class, phoneNumber);
         }
 
         return new ListResponse<>(readerViewMapper.toReaderView(readerDetailsList));
     }
 
-    @RolesAllowed(Role.LIBRARIAN)
+    @Operation(summary = "Gets a list of Readers by name")
     @GetMapping(params = "name")
     public ListResponse<ReaderView> findByReaderName(@RequestParam("name") final String name) {
         List<User> userList = this.userService.findByNameLike(name);
         List<ReaderDetails> readerDetailsList = new ArrayList<>();
 
-        for(User user : userList) {
+        for (User user : userList) {
             Optional<ReaderDetails> readerDetails = this.readerService.findByUsername(user.getUsername());
-            if(readerDetails.isPresent()) {
+            if (readerDetails.isPresent()) {
                 readerDetailsList.add(readerDetails.get());
             }
         }
 
-        if(readerDetailsList.isEmpty()) {
+        if (readerDetailsList.isEmpty()) {
             throw new NotFoundException("Could not find reader with name: " + name);
         }
 

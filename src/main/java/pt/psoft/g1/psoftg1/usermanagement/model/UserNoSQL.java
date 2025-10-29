@@ -12,23 +12,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
-@Document(collection = "users")
+@Document(collection = "user")
 public class UserNoSQL implements UserDetails {
 
     @Id
     private String id;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     @LastModifiedDate
-    private LocalDateTime modifiedAt;
+    private String modifiedAt;
 
     @CreatedBy
     private String createdBy;
@@ -39,15 +38,14 @@ public class UserNoSQL implements UserDetails {
     private boolean enabled = true;
     private String username;
     private String password;
-    private Name name;
+    private String name;
     private Set<Role> authorities = new HashSet<>();
 
     public UserNoSQL(User user) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdNoSQL();
         this.username = user.getUsername();
         this.password = user.getPassword();
-        this.name = user.getName();
+        this.name = user.getName().toString();
         this.authorities = new HashSet<>(user.getAuthorities());
         this.enabled = user.isEnabled();
     }
@@ -76,11 +74,13 @@ public class UserNoSQL implements UserDetails {
     }
 
     public User toDomain() {
-        User user = new User(this.username, this.password);
-        user.setName(this.name);
+        User user = new User(this.username, this.password, this.name);
         user.getAuthorities().addAll(this.authorities);
-        user.setEnabled(this.enabled);
         return user;
+    }
+
+    public void addAuthority(final Role authority) {
+        this.authorities.add(authority);
     }
 
     public static UserNoSQL fromDomain(User user) {

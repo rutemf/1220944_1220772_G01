@@ -35,7 +35,6 @@ public class ReaderDetailsSQL {
 
     public ReaderDetailsSQL(ReaderDetails readerDetails) {
         this.id = IDGeneratorService.generateIdSQL();
-
         this.reader = ReaderSQL.fromDomain(readerDetails.getReader());
         this.readerNumber = readerDetails.getReaderNumber();
         this.birthDate = readerDetails.getBirthDate().toString();

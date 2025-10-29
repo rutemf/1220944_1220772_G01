@@ -26,6 +26,7 @@ import pt.psoft.g1.psoftg1.shared.services.Page;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -83,26 +84,17 @@ public class BookServiceImpl implements BookService {
     public Book update(UpdateBookRequest request, String currentVersion) {
 
         var book = findByIsbn(request.getIsbn());
-        if (request.getAuthors() != null) {
-            List<Long> authorNumbers = request.getAuthors();
-            List<Author> authors = new ArrayList<>();
-            for (Long authorNumber : authorNumbers) {
-                Optional<Author> temp = authorRepository.findByAuthorNumber(authorNumber);
-                if (temp.isEmpty()) {
-                    continue;
-                }
-                Author author = temp.get();
-                authors.add(author);
-            }
 
-            request.setAuthorObjList(authors);
+        if (request.getAuthors() != null) {
+            List<Author> authors = request.getAuthors().stream()
+                    .map(authorNumber -> authorRepository.findByAuthorNumber(authorNumber).orElse(null))
+                    .filter(Objects::nonNull)
+                    .toList();
+            book.setAuthors(authors);
         }
 
-        MultipartFile photo = request.getPhoto();
-        String photoURI = request.getPhotoURI();
-        if (photo == null && photoURI != null || photo != null && photoURI == null) {
-            request.setPhoto(null);
-            request.setPhotoURI(null);
+        if (request.getPhoto() != null && request.getPhotoURI() != null) {
+            book.setPhotoURI(request.getPhotoURI());
         }
 
         if (request.getGenre() != null) {
@@ -113,10 +105,16 @@ public class BookServiceImpl implements BookService {
             request.setGenreObj(genre.get());
         }
 
-        bookRepository.save(book);
+        if (request.getDescription() != null)
+            book.setDescription(new Description(request.getDescription()));
 
+        if (request.getGenreObj() != null)
+            book.setGenre(request.getGenreObj());
 
-        return book;
+        if (request.getAuthorObjList() != null)
+            book.setAuthors(request.getAuthorObjList());
+
+        return bookRepository.save(book);
     }
 
     @Override

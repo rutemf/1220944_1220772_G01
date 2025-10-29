@@ -3,6 +3,8 @@ package bookManagement.model;
 import org.junit.jupiter.api.Test;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Title;
 
+import java.lang.reflect.Constructor;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TitleTest {
@@ -74,5 +76,16 @@ public class TitleTest {
         Title title = new Title("Initial");
         assertDoesNotThrow(() -> title.setTitle("  Refactoring  "));
         assertEquals("Refactoring", title.toString());
+    }
+
+    // White Box Test
+    @Test
+    void testProtectedConstructor() throws Exception {
+        Constructor<Title> constructor = Title.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+
+        Title title = constructor.newInstance();
+
+        assertNull(title.toString());
     }
 }

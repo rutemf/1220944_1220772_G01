@@ -17,7 +17,6 @@ public class ForbiddenNameNoSQL {
     private String forbiddenName;
 
     public ForbiddenNameNoSQL(ForbiddenName forbiddenName) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdNoSQL();
         this.forbiddenName = forbiddenName.getForbiddenName();
     }
@@ -29,7 +28,7 @@ public class ForbiddenNameNoSQL {
         return new ForbiddenName(forbiddenName);
     }
 
-    public static ForbiddenNameSQL fromDomain(ForbiddenName forbiddenName) {
-        return new ForbiddenNameSQL(forbiddenName);
+    public static ForbiddenNameNoSQL fromDomain(ForbiddenName forbiddenName) {
+        return new ForbiddenNameNoSQL(forbiddenName);
     }
 }

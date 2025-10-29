@@ -76,11 +76,15 @@ public class LendingSQL {
         LocalDate limit = LocalDate.parse(this.limitDate);
         int durationInDays = (int) ChronoUnit.DAYS.between(start, limit);
 
-        return new Lending(
+        Lending lending = new Lending(
                 book != null ? book.toDomain() : null,
                 readerDetails != null ? readerDetails.toDomain() : null,
                 durationInDays,
                 fineValuePerDayInCents);
+
+        lending.setLendingNumber(new LendingNumber(this.lendingNumber));
+
+        return lending;
     }
 
     public static LendingSQL fromDomain(Lending lending) {

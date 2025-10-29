@@ -6,10 +6,12 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pt.psoft.g1.psoftg1.authormanagement.model.AuthorNoSQL;
+import pt.psoft.g1.psoftg1.authormanagement.model.AuthorSQL;
 import pt.psoft.g1.psoftg1.genremanagement.model.GenreNoSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -19,9 +21,9 @@ public class BookNoSQL {
     @Id
     private String id;
 
-    private Isbn isbn;
-    private Title title;
-    private Description description;
+    private String isbn;
+    private String title;
+    private String description;
 
     @DBRef
     private GenreNoSQL genre;
@@ -32,11 +34,10 @@ public class BookNoSQL {
     private String photoURI;
 
     public BookNoSQL(Book book) {
-        IDGeneratorService IDGeneratorService = new IDGeneratorService();
         this.id = IDGeneratorService.generateIdNoSQL();
-        this.isbn = book.getIsbn();
-        this.title = book.getTitle();
-        this.description = book.getDescription();
+        this.isbn = book.getIsbn().toString();
+        this.title = book.getTitle().toString();
+        this.description = book.getDescription().toString();
         this.genre = book.getGenre() != null ? GenreNoSQL.fromDomain(book.getGenre()) : null;
         this.authors = book.getAuthors() != null ? book.getAuthors().stream().map(AuthorNoSQL::fromDomain).toList() : List.of();
         this.photoURI = book.getPhotoURI();
@@ -47,11 +48,16 @@ public class BookNoSQL {
 
     public Book toDomain() {
         return new Book(
-                isbn != null ? isbn.toString() : null,
-                title != null ? title.toString() : null,
-                description != null ? description.toString() : null,
+                isbn,
+                title,
+                description,
                 genre != null ? genre.toDomain() : null,
-                authors != null ? authors.stream().map(AuthorNoSQL::toDomain).toList() : List.of(),
+                authors != null
+                        ? authors.stream()
+                        .filter(Objects::nonNull)
+                        .map(AuthorNoSQL::toDomain)
+                        .toList()
+                        : null,
                 photoURI
         );
     }

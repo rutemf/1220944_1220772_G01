@@ -7,8 +7,9 @@ import lombok.Data;
 @Data
 @Schema(description = "Reader with lending count")
 public class ReaderCountView {
+
     @NotNull
     private ReaderView readerView;
-
     private Long lendingCount;
+
 }
