@@ -34,7 +34,6 @@ public class FineNoSQL {
 
     public Fine toDomain() {
         if (this.lending == null) return null;
-
         Lending lendingDomain = this.lending.toDomain();
         Fine fine = new Fine(lendingDomain);
         fine.setCentsValue(this.centsValue);
