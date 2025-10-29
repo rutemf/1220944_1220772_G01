@@ -11,6 +11,7 @@ import pt.psoft.g1.psoftg1.lendingmanagement.model.FineNoSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.FineRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -38,8 +39,12 @@ public class FineRepositoryNoSQL implements FineRepository {
 
     @Override
     public Iterable<Fine> findAll() {
-        List<FineNoSQL> fineNoSQLList = mongoTemplate.findAll(FineNoSQL.class);
-        return fineNoSQLList.stream().map(FineNoSQL::toDomain).toList();
+        List<FineNoSQL> fines = mongoTemplate.findAll(FineNoSQL.class, "fines");
+
+        return fines.stream()
+                .map(FineNoSQL::toDomain)
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @Override

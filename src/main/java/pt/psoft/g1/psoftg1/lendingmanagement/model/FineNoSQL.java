@@ -14,26 +14,29 @@ public class FineNoSQL {
 
     @Id
     private String id;
-
     private int fineValuePerDayInCents;
-
     private int centsValue;
-
-    @DBRef
     private LendingNoSQL lending;
 
     public FineNoSQL(Fine fine) {
         this.id = IDGeneratorService.generateIdNoSQL();
         this.fineValuePerDayInCents = fine.getFineValuePerDayInCents();
         this.centsValue = fine.getCentsValue();
-        this.lending = LendingNoSQL.fromDomain(fine.getLending());
+        if (fine.getLending() != null) {
+            this.lending = LendingNoSQL.fromDomain(fine.getLending());
+        } else {
+            this.lending = null;
+        }
     }
 
     // NoSQL
     protected FineNoSQL() {}
 
     public Fine toDomain() {
-        Fine fine = new Fine(this.lending.toDomain());
+        if (this.lending == null) return null;
+
+        Lending lendingDomain = this.lending.toDomain();
+        Fine fine = new Fine(lendingDomain);
         fine.setCentsValue(this.centsValue);
         fine.setFineValuePerDayInCents(this.fineValuePerDayInCents);
         return fine;
