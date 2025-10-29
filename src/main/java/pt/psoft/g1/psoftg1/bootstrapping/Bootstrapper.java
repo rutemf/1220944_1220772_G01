@@ -113,8 +113,6 @@ public class Bootstrapper implements CommandLineRunner {
 
     private void createBooks() {
         Optional<Genre> romanceGenre = genreRepository.findByString("Romance");
-        System.out.println("AQUIIII");
-        System.out.println(romanceGenre);
         Optional<Genre> mysteryGenre = genreRepository.findByString("Mystery");
         Optional<Genre> fantasyGenre = genreRepository.findByString("Fantasy");
 
@@ -200,8 +198,6 @@ public class Bootstrapper implements CommandLineRunner {
         books.add(book5);
 
         final var readerDetails1 = readerRepository.findByReaderNumber("2025/1").get();
-        System.out.println("oie");
-        System.out.println(readerDetails1);
         final var readerDetails2 = readerRepository.findByReaderNumber("2025/2").get();
 
         List<ReaderDetails> readers = new ArrayList<>();
