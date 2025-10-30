@@ -1,6 +1,7 @@
 package pt.psoft.g1.psoftg1.authormanagement.infrastructure.repositories.impl;
 
-import org.bson.Document;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Repository
 @Profile("nosql")
+@CacheConfig(cacheNames = "authors")
 public class AuthorRepositoryNoSQL implements AuthorRepository {
 
     private final MongoTemplate mongoTemplate;
@@ -33,6 +35,7 @@ public class AuthorRepositoryNoSQL implements AuthorRepository {
     }
 
     @Override
+    @Cacheable(key = "#authorNumber")
     public Optional<Author> findByAuthorNumber(Long authorNumber) {
         Query query = new Query(Criteria.where("authorNumber").is(authorNumber));
         AuthorNoSQL authorNoSQL = mongoTemplate.findOne(query, AuthorNoSQL.class);
@@ -72,6 +75,7 @@ public class AuthorRepositoryNoSQL implements AuthorRepository {
     }
 
     @Override
+    @Cacheable(key = "'allAuthors'")
     public Iterable<Author> findAll() {
         return mongoTemplate.findAll(AuthorNoSQL.class)
                 .stream()

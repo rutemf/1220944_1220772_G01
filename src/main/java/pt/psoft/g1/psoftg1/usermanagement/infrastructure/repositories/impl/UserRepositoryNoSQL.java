@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.usermanagement.infrastructure.repositories.impl;
 
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.annotation.Profile;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Repository
 @Profile("nosql")
+@CacheConfig(cacheNames = "users")
 public class UserRepositoryNoSQL implements UserRepository {
     private final MongoTemplate mongoTemplate;
 
@@ -69,6 +71,7 @@ public class UserRepositoryNoSQL implements UserRepository {
     }
 
     @Override
+    @Cacheable(key = "#username")
     public Optional<User> findByUsername(String username) {
         Query query = new Query(Criteria.where("username").is(username));
         UserNoSQL userNoSQL = mongoTemplate.findOne(query, UserNoSQL.class);
@@ -120,7 +123,7 @@ public class UserRepositoryNoSQL implements UserRepository {
     }
 
     @Override
-    @CacheEvict(key = "#user.id")
+    @CacheEvict(key = "#user.username")
     public void delete(User user) {
         mongoTemplate.remove(new Query(Criteria.where("id").is(user.getUsername())), UserNoSQL.class);
     }
