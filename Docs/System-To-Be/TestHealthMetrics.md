@@ -13,9 +13,9 @@ The following metrics evaluate the **volume** and **coverage** of the new tests 
 
 | **Metric**                                   | **Description**                          | **Current Value** |
 |----------------------------------------------|------------------------------------------|-------------------|
-| **Number of Unit Tests**                     | Total number of unit-level tests         | 400?              |
+| **Number of Unit Tests**                     | Total number of unit-level tests         | 400               |
 | **Number of Integration Tests**              | Tests verifying component interactions   | 15                |
-| **Number of End-to-End Tests**               | System-level functional tests            | 0                 |
+| **Number of End-to-End Tests**               | System-level functional tests            | 26                |
 | **Code Coverage (%)**                        | Lines of code covered by automated tests | **46%**           |
 | **Build/Test Execution Frequency**           | Frequency of test runs in CI/CD          | In every commit   |
 
