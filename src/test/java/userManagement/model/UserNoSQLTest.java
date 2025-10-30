@@ -76,7 +76,7 @@ public class UserNoSQLTest {
 
     // White Box Test
     @Test
-    void testJPAConstructorDefaults() throws Exception {
+    void testConstructorDefaults() throws Exception {
         Constructor<UserNoSQL> c = UserNoSQL.class.getDeclaredConstructor();
         c.setAccessible(true);
         UserNoSQL empty = c.newInstance();

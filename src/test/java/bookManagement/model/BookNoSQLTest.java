@@ -84,7 +84,7 @@ public class BookNoSQLTest {
 
     // White Box Test
     @Test
-    void jpaNoArgsConstructor_defaultsAreNull() {
+    void NoArgsConstructor_defaultsAreNull() {
         BookNoSQL empty = newBookNoSQL();
         assertNull(empty.getId());
         assertNull(empty.getIsbn());

@@ -72,7 +72,7 @@ public class FineNoSQLTest {
 
     // White Box Test
     @Test
-    void testJpaNoArgsConstructorAndSetters() throws Exception {
+    void testNoArgsConstructorAndSetters() throws Exception {
         FineNoSQL noSQL = newInstanceViaReflection();
 
         assertNull(noSQL.getId());
