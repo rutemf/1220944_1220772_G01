@@ -78,7 +78,7 @@ The system must support various testing approaches: functional opaque and transp
 | Response           | The system executes unit, integration and mutation tests, producing valuable reports |
 | Response measure   | Test execution within acceptable time limits and good coverage                       |
 
-## 7. Environment Deployment
+## 7. Deployment Environment
 
 The system must be deployed in two hosting environments: Local and Docker Container.
 
