@@ -91,3 +91,20 @@ The system must be deployed in two hosting environments: Local and Docker Contai
 | Response           | The system is installed and runs successfully without changes |
 | Response measure   | Deployment finish within acceptable time limits               |
 
+## Quality Attribute Scenario Synthesis
+
+| Quality Attribute              | Scenario                                                                                                             | Importance | Risk |
+|--------------------------------|----------------------------------------------------------------------------------------------------------------------|------------|------|
+| *Functionality, Performance*   | System generates distinct IDs for different entities (books, lending, genre, fines) according to required formats.   | H          | L    |
+| *Modifiability, Availability*  | Runtime configuration allows switching between ID generation schemes, persistence models, and APIs without downtime. | H          | M    |
+| *Functionality, Modifiability* | New external APIs (Open Library, Google Books) integrated without changing the core system.                          | H          | M    |
+| *Performance, Reliability*     | CI/CD pipeline executes builds, tests, and deployment successfully within acceptable time limits.                    | H          | M    |
+| *Testability*                  | Automated test suite executes unit, integration, and mutation tests, producing valuable reports.                     | H          | M    |
+| *Portability*                  | System deploys successfully in Local and Docker environments without code changes.                                   | H          | M    |
+| *Performance*                  | ID generation service handles requests within acceptable time limits.                                                | M          | M    |
+| *Usability*                    | Admins recognize and apply valid runtime configuration options quickly and clearly.                                  | H          | L    |
+| *Compatibility, Reliability*   | System supports MySQL+Redis and MongoDB+Redis interoperability without functional errors.                            | H          | M    |
+| *Compatibility, Modifiability* | System integrates new external APIs without architectural redesign within project deadlines.                         | H          | M    |
+| *Performance*                  | CI/CD pipeline full execution (build, test, deploy) completes within acceptable time limits.                         | H          | M    |
+| *Modifiability, Reliability*   | Persistence connectors maintain system features and characteristics when switching between data models.              | H          | M    |
+
