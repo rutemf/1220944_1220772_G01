@@ -1,39 +1,34 @@
-package pt.psoft.g1.psoftg1.usermanagement.model;
+package pt.psoft.g1.psoftg1.usermanagement.dataschema;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import lombok.Getter;
-import lombok.Setter;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
+import pt.psoft.g1.psoftg1.usermanagement.model.Role;
+import pt.psoft.g1.psoftg1.usermanagement.model.User;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
-@Entity
-@EntityListeners(AuditingEntityListener.class)
-@Table(name = "user")
-@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
-public class UserSQL implements UserDetails {
+@Document(collection = "user")
+public class UserNoSQL implements UserDetails {
 
     @Id
     private String id;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     @LastModifiedDate
-    private LocalDateTime modifiedAt;
+    private String modifiedAt;
 
     @CreatedBy
     private String createdBy;
@@ -42,20 +37,13 @@ public class UserSQL implements UserDetails {
     private String modifiedBy;
 
     private boolean enabled = true;
-
-    @Column(unique = true)
-    @Email
     private String username;
     private String password;
-
     private String name;
-
-    @ElementCollection
-    @JoinTable(name="user_authorities")
     private Set<Role> authorities = new HashSet<>();
 
-    public UserSQL(User user) {
-        this.id = IDGeneratorService.generateIdSQL();
+    public UserNoSQL(User user) {
+        this.id = IDGeneratorService.generateIdNoSQL();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.name = user.getName().toString();
@@ -63,8 +51,8 @@ public class UserSQL implements UserDetails {
         this.enabled = user.isEnabled();
     }
 
-    // JPA
-    protected UserSQL() { }
+    // NoSQL
+    protected UserNoSQL() { }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -86,17 +74,17 @@ public class UserSQL implements UserDetails {
         return enabled;
     }
 
-    public void addAuthority(final Role authority) {
-        this.authorities.add(authority);
-    }
-
     public User toDomain() {
         User user = new User(this.username, this.password, this.name);
         user.getAuthorities().addAll(this.authorities);
         return user;
     }
 
-    public static UserSQL fromDomain(User user) {
-        return new UserSQL(user);
+    public void addAuthority(final Role authority) {
+        this.authorities.add(authority);
+    }
+
+    public static UserNoSQL fromDomain(User user) {
+        return new UserNoSQL(user);
     }
 }

@@ -1,10 +1,11 @@
-package pt.psoft.g1.psoftg1.bookmanagement.model;
+package pt.psoft.g1.psoftg1.bookmanagement.dataschema;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.authormanagement.model.AuthorSQL;
-import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
+import pt.psoft.g1.psoftg1.authormanagement.dataschema.AuthorSQL;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
+import pt.psoft.g1.psoftg1.genremanagement.dataschema.GenreSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.util.List;

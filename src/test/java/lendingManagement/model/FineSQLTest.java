@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Fine;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.FineSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.FineSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.LendingSQL;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 

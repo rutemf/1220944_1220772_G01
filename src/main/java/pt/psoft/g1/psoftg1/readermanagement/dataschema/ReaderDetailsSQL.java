@@ -1,11 +1,12 @@
-package pt.psoft.g1.psoftg1.readermanagement.model;
+package pt.psoft.g1.psoftg1.readermanagement.dataschema;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
+import pt.psoft.g1.psoftg1.genremanagement.dataschema.GenreSQL;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
-import pt.psoft.g1.psoftg1.usermanagement.model.ReaderSQL;
+import pt.psoft.g1.psoftg1.usermanagement.dataschema.ReaderSQL;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
+import pt.psoft.g1.psoftg1.bookmanagement.dataschema.BookSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.LendingSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
+import pt.psoft.g1.psoftg1.readermanagement.dataschema.ReaderDetailsSQL;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 
 import java.time.LocalDate;

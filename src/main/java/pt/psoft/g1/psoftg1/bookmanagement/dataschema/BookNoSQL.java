@@ -1,13 +1,13 @@
-package pt.psoft.g1.psoftg1.bookmanagement.model;
+package pt.psoft.g1.psoftg1.bookmanagement.dataschema;
 
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.psoft.g1.psoftg1.authormanagement.model.AuthorNoSQL;
-import pt.psoft.g1.psoftg1.authormanagement.model.AuthorSQL;
-import pt.psoft.g1.psoftg1.genremanagement.model.GenreNoSQL;
+import pt.psoft.g1.psoftg1.authormanagement.dataschema.AuthorNoSQL;
+import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
+import pt.psoft.g1.psoftg1.genremanagement.dataschema.GenreNoSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.util.List;

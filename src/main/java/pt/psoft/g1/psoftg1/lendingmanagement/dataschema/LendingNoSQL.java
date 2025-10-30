@@ -1,14 +1,13 @@
-package pt.psoft.g1.psoftg1.lendingmanagement.model;
+package pt.psoft.g1.psoftg1.lendingmanagement.dataschema;
 
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookNoSQL;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsNoSQL;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
+import pt.psoft.g1.psoftg1.bookmanagement.dataschema.BookNoSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
+import pt.psoft.g1.psoftg1.readermanagement.dataschema.ReaderDetailsNoSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.time.LocalDate;

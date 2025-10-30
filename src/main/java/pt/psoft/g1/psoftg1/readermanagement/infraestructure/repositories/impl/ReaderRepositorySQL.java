@@ -10,14 +10,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
+import pt.psoft.g1.psoftg1.genremanagement.dataschema.GenreSQL;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
+import pt.psoft.g1.psoftg1.readermanagement.dataschema.ReaderDetailsSQL;
 import pt.psoft.g1.psoftg1.readermanagement.repositories.ReaderRepository;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderBookCountDTO;
 import pt.psoft.g1.psoftg1.readermanagement.services.SearchReadersQuery;
-import pt.psoft.g1.psoftg1.usermanagement.model.ReaderSQL;
-import pt.psoft.g1.psoftg1.usermanagement.model.UserSQL;
+import pt.psoft.g1.psoftg1.usermanagement.dataschema.ReaderSQL;
+import pt.psoft.g1.psoftg1.usermanagement.dataschema.UserSQL;
 
 import java.time.LocalDate;
 import java.util.List;

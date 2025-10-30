@@ -1,8 +1,9 @@
-package pt.psoft.g1.psoftg1.lendingmanagement.model;
+package pt.psoft.g1.psoftg1.lendingmanagement.dataschema;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.Fine;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Entity

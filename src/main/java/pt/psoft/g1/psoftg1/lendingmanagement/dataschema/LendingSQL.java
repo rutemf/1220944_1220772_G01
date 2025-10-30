@@ -1,12 +1,14 @@
-package pt.psoft.g1.psoftg1.lendingmanagement.model;
+package pt.psoft.g1.psoftg1.lendingmanagement.dataschema;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
+import pt.psoft.g1.psoftg1.bookmanagement.dataschema.BookSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNumber;
+import pt.psoft.g1.psoftg1.readermanagement.dataschema.ReaderDetailsSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.time.LocalDate;

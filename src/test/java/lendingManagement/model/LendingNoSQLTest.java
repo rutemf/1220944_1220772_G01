@@ -1,8 +1,7 @@
 package lendingManagement.model;
 
 import org.junit.jupiter.api.Test;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNoSQL;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.LendingNoSQL;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 

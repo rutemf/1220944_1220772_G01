@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Fine;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.FineNoSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.FineNoSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.FineRepository;
 
 import java.util.List;

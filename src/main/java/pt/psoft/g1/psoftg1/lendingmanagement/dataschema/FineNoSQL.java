@@ -1,10 +1,11 @@
-package pt.psoft.g1.psoftg1.lendingmanagement.model;
+package pt.psoft.g1.psoftg1.lendingmanagement.dataschema;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.Fine;
+import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Getter

@@ -6,7 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pt.psoft.g1.psoftg1.shared.model.Name;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
-import pt.psoft.g1.psoftg1.usermanagement.model.UserNoSQL;
+import pt.psoft.g1.psoftg1.usermanagement.dataschema.UserNoSQL;
 
 import java.lang.reflect.Constructor;
 import java.util.Set;

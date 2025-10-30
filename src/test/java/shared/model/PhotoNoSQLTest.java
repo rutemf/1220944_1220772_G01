@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import pt.psoft.g1.psoftg1.shared.model.Photo;
-import pt.psoft.g1.psoftg1.shared.model.PhotoNoSQL;
+import pt.psoft.g1.psoftg1.shared.dataschema.PhotoNoSQL;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.lang.reflect.Constructor;

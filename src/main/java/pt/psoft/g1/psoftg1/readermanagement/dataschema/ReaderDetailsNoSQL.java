@@ -1,13 +1,13 @@
-package pt.psoft.g1.psoftg1.readermanagement.model;
+package pt.psoft.g1.psoftg1.readermanagement.dataschema;
 
 import org.springframework.data.annotation.Id;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pt.psoft.g1.psoftg1.genremanagement.model.GenreNoSQL;
-import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
+import pt.psoft.g1.psoftg1.genremanagement.dataschema.GenreNoSQL;
+import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
-import pt.psoft.g1.psoftg1.usermanagement.model.ReaderNoSQL;
+import pt.psoft.g1.psoftg1.usermanagement.dataschema.ReaderNoSQL;
 
 import java.util.List;
 import java.util.stream.Collectors;

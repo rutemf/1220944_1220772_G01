@@ -1,12 +1,13 @@
-package pt.psoft.g1.psoftg1.usermanagement.model;
+package pt.psoft.g1.psoftg1.usermanagement.dataschema;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
+import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
+import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 
 @Getter
 @Setter
-public class LibrarianNoSQL extends UserNoSQL{
+public class LibrarianNoSQL extends UserNoSQL {
 
     public LibrarianNoSQL(Librarian librarian) {
         super(librarian);

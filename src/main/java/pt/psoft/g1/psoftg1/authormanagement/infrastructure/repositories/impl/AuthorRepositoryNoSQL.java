@@ -13,9 +13,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
-import pt.psoft.g1.psoftg1.authormanagement.model.AuthorNoSQL;
+import pt.psoft.g1.psoftg1.authormanagement.dataschema.AuthorNoSQL;
 import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookNoSQL;
+import pt.psoft.g1.psoftg1.bookmanagement.dataschema.BookNoSQL;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,9 +1,10 @@
-package pt.psoft.g1.psoftg1.genremanagement.model;
+package pt.psoft.g1.psoftg1.genremanagement.dataschema;
 
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
+import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 @Getter

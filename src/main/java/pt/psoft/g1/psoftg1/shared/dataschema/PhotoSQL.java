@@ -1,4 +1,4 @@
-package pt.psoft.g1.psoftg1.shared.model;
+package pt.psoft.g1.psoftg1.shared.dataschema;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -6,6 +6,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import pt.psoft.g1.psoftg1.shared.model.Photo;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
 
 import java.nio.file.Paths;

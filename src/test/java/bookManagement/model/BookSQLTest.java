@@ -5,11 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
-import pt.psoft.g1.psoftg1.authormanagement.model.AuthorSQL;
+import pt.psoft.g1.psoftg1.authormanagement.dataschema.AuthorSQL;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
+import pt.psoft.g1.psoftg1.bookmanagement.dataschema.BookSQL;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
-import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
+import pt.psoft.g1.psoftg1.genremanagement.dataschema.GenreSQL;
 
 import java.lang.reflect.Constructor;
 import java.util.List;

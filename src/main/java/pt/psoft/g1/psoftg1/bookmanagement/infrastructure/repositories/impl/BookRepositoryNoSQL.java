@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookNoSQL;
+import pt.psoft.g1.psoftg1.bookmanagement.dataschema.BookNoSQL;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.services.BookCountDTO;
 import pt.psoft.g1.psoftg1.bookmanagement.services.SearchBooksQuery;

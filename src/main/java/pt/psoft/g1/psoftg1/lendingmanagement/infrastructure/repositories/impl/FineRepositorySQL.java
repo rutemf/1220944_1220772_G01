@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Fine;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.FineSQL;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.FineSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.LendingSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.FineRepository;
 
 import java.util.List;
