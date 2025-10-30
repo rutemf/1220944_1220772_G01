@@ -286,6 +286,9 @@
 					<includes>
 						<include>**/*Test.java</include>
 					</includes>
+					<excludes>
+						<exclude>**/*SystemTest.java</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 
@@ -305,6 +308,7 @@
 				<configuration>
 					<includes>
 						<include>**/*IT.java</include>
+						<include>**/*SystemTest.java</include>
 					</includes>
 				</configuration>
 			</plugin>
