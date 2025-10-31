@@ -6,9 +6,9 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
 @EnableCaching
-public class PsoftG1Application {
+public class LibraryManagementApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PsoftG1Application.class, args);
+		SpringApplication.run(LibraryManagementApplication.class, args);
 	}
 }

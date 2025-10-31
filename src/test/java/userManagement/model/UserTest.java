@@ -51,6 +51,13 @@ public class UserTest {
         assertTrue(emptyUser.getAuthorities().isEmpty());
     }
 
+    // Black Box Test
+    @Test
+    void testSetUserEnabled() {
+        user.setEnabled(false);
+        assertFalse(user.isEnabled(), "User should be disabled after setting enabled to false");
+    }
+
     // White Box Test
     @Test
     void testAddAuthorityAddsRole() {

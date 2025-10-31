@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import pt.psoft.g1.psoftg1.PsoftG1Application;
+import pt.psoft.g1.psoftg1.LibraryManagementApplication;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
 import pt.psoft.g1.psoftg1.authormanagement.services.AuthorService;
 import pt.psoft.g1.psoftg1.authormanagement.services.CreateAuthorRequest;
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = PsoftG1Application.class)
+@SpringBootTest(classes = LibraryManagementApplication.class)
 @ActiveProfiles({"sql", "open"})
 @Transactional
 public class AuthorServiceIT {
