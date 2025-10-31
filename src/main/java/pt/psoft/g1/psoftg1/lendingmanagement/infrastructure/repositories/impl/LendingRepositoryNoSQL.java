@@ -1,19 +1,19 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.infrastructure.repositories.impl;
 
-import org.bson.Document;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookNoSQL;
+import pt.psoft.g1.psoftg1.bookmanagement.dataschema.BookNoSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingNoSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.LendingNoSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsNoSQL;
+import pt.psoft.g1.psoftg1.readermanagement.dataschema.ReaderDetailsNoSQL;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 
 import java.time.LocalDate;
@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Repository
 @Profile("nosql")
+@CacheConfig(cacheNames = "lendings")
 public class LendingRepositoryNoSQL implements LendingRepository {
 
     private final MongoTemplate mongoTemplate;
@@ -32,6 +33,8 @@ public class LendingRepositoryNoSQL implements LendingRepository {
     }
 
     @Override
+    @Cacheable(key = "#lendingNumber")
+
     public Optional<Lending> findByLendingNumber(String lendingNumber) {
         Query query = new Query();
         query.addCriteria(Criteria.where("lendingNumber").is(lendingNumber));

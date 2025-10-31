@@ -11,14 +11,14 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import pt.psoft.g1.psoftg1.PsoftG1Application;
+import pt.psoft.g1.psoftg1.LibraryManagementApplication;
 
 import java.time.Duration;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.matchesPattern;
 
-@SpringBootTest(classes = PsoftG1Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = LibraryManagementApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"nosql","google"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Transactional

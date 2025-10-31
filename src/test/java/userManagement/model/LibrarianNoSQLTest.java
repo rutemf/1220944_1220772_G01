@@ -2,8 +2,8 @@ package userManagement.model;
 
 import org.junit.jupiter.api.Test;
 import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
-import pt.psoft.g1.psoftg1.usermanagement.model.LibrarianNoSQL;
-import pt.psoft.g1.psoftg1.usermanagement.model.LibrarianSQL;
+import pt.psoft.g1.psoftg1.usermanagement.dataschema.LibrarianNoSQL;
+import pt.psoft.g1.psoftg1.usermanagement.dataschema.LibrarianSQL;
 import pt.psoft.g1.psoftg1.usermanagement.model.Role;
 
 import java.lang.reflect.Constructor;

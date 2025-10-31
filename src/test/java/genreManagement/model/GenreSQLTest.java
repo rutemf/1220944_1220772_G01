@@ -2,7 +2,7 @@ package genreManagement.model;
 
 import org.junit.jupiter.api.Test;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
-import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
+import pt.psoft.g1.psoftg1.genremanagement.dataschema.GenreSQL;
 
 import static org.junit.jupiter.api.Assertions.*;
 

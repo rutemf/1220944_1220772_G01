@@ -1,0 +1,16 @@
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import pt.psoft.g1.psoftg1.LibraryManagementApplication;
+
+@SpringBootTest(classes = LibraryManagementApplication.class)
+@ActiveProfiles({"sql","open"})
+public class LibraryManagementApplicationSystemTest {
+
+    @Test
+    void contextLoads() {
+        Assertions.assertTrue(true);
+    }
+
+}

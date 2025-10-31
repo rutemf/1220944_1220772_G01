@@ -5,11 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
-import pt.psoft.g1.psoftg1.authormanagement.model.AuthorNoSQL;
+import pt.psoft.g1.psoftg1.authormanagement.dataschema.AuthorNoSQL;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookNoSQL;
+import pt.psoft.g1.psoftg1.bookmanagement.dataschema.BookNoSQL;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
-import pt.psoft.g1.psoftg1.genremanagement.model.GenreNoSQL;
+import pt.psoft.g1.psoftg1.genremanagement.dataschema.GenreNoSQL;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -84,7 +84,7 @@ public class BookNoSQLTest {
 
     // White Box Test
     @Test
-    void jpaNoArgsConstructor_defaultsAreNull() {
+    void NoArgsConstructor_defaultsAreNull() {
         BookNoSQL empty = newBookNoSQL();
         assertNull(empty.getId());
         assertNull(empty.getIsbn());

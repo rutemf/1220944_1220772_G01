@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
-import pt.psoft.g1.psoftg1.shared.model.PhotoNoSQL;
+import pt.psoft.g1.psoftg1.shared.dataschema.PhotoNoSQL;
 import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 import org.springframework.data.mongodb.core.query.Query;
 

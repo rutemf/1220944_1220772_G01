@@ -1,13 +1,14 @@
 package pt.psoft.g1.psoftg1.lendingmanagement.infrastructure.repositories.impl;
 
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Fine;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.FineNoSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.FineNoSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.FineRepository;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class FineRepositoryNoSQL implements FineRepository {
     }
 
     @Override
+    @Cacheable(key = "#lendingNumber")
     public Optional<Fine> findByLendingNumber(String lendingNumber) {
         Query query = new Query(Criteria.where("lending.lendingNumber.lendingNumber").is(lendingNumber));
         FineNoSQL fineNoSQL = mongoTemplate.findOne(query, FineNoSQL.class);
@@ -38,6 +40,7 @@ public class FineRepositoryNoSQL implements FineRepository {
     }
 
     @Override
+    @Cacheable(key = "'allFines'")
     public Iterable<Fine> findAll() {
         List<FineNoSQL> fines = mongoTemplate.findAll(FineNoSQL.class, "fines");
 

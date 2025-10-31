@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.shared.model.Photo;
-import pt.psoft.g1.psoftg1.shared.model.PhotoSQL;
+import pt.psoft.g1.psoftg1.shared.dataschema.PhotoSQL;
 import pt.psoft.g1.psoftg1.shared.repositories.PhotoRepository;
 import java.nio.file.Paths;
 

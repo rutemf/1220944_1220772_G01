@@ -3,6 +3,8 @@ package lendingManagement.model;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.FineNoSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.LendingNoSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.*;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.shared.services.IDGeneratorService;
@@ -72,7 +74,7 @@ public class FineNoSQLTest {
 
     // White Box Test
     @Test
-    void testJpaNoArgsConstructorAndSetters() throws Exception {
+    void testNoArgsConstructorAndSetters() throws Exception {
         FineNoSQL noSQL = newInstanceViaReflection();
 
         assertNull(noSQL.getId());
