@@ -65,20 +65,7 @@ The system must automatically execute builds, tests, and deployments
 | Response           | The pipeline compiles, runs tests, and successfully deploys the system |
 | Response measure   | Execution completed within acceptable time limits.                     |
 
-## 6. Testability
-
-The system must support various testing approaches: functional opaque and transparent boxes, with different SUTs, and mutation
-
-| Element            | Statement                                                                            |
-|--------------------|--------------------------------------------------------------------------------------|
-| Stimulus           | Execution of automated tests                                                         |
-| Stimulus source    | Developer and CI/CD pipeline                                                         |
-| Environment        | Testing and pipeline                                                                 | 
-| Artifact           | Framework and SUT                                                                    |
-| Response           | The system executes unit, integration and mutation tests, producing valuable reports |
-| Response measure   | Test execution within acceptable time limits and good coverage                       |
-
-## 7. Deployment Environment
+## 6. Deployment Environment
 
 The system must be deployed in two hosting environments: Local and Docker Container.
 
@@ -99,7 +86,6 @@ The system must be deployed in two hosting environments: Local and Docker Contai
 | *Modifiability, Availability*  | Runtime configuration allows switching between ID generation schemes, persistence models, and APIs without downtime. | H          | M    |
 | *Functionality, Modifiability* | New external APIs (Open Library, Google Books) integrated without changing the core system.                          | H          | M    |
 | *Performance, Reliability*     | CI/CD pipeline executes builds, tests, and deployment successfully within acceptable time limits.                    | H          | M    |
-| *Testability*                  | Automated test suite executes unit, integration, and mutation tests, producing valuable reports.                     | H          | M    |
 | *Portability*                  | System deploys successfully in Local and Docker environments without code changes.                                   | H          | M    |
 | *Performance*                  | ID generation service handles requests within acceptable time limits.                                                | M          | M    |
 | *Usability*                    | Admins recognize and apply valid runtime configuration options quickly and clearly.                                  | H          | L    |
