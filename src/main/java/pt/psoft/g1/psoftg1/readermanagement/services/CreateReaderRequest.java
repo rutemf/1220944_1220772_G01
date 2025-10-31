@@ -6,13 +6,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
-import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
 
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class CreateReaderRequest {
+
     @NotBlank
     @Email
     @NonNull

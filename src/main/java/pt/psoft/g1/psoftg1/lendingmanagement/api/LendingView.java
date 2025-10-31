@@ -35,15 +35,5 @@ public class LendingView {
     @Setter
     @Getter
     private LendingLinksView _links;
-}
 
-/*>
-A: a ambos deve ser facultado:
->- lending number
->- book title
->- lending date
->- return date
->- number of days till return date (if applicable)
->- number of days in overdue (if applicable)
->- fine amount (if applicable)
-*/
+}

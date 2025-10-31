@@ -20,14 +20,12 @@ import pt.psoft.g1.psoftg1.lendingmanagement.services.CreateLendingRequest;
 import pt.psoft.g1.psoftg1.lendingmanagement.services.LendingService;
 import pt.psoft.g1.psoftg1.lendingmanagement.services.SearchLendingQuery;
 import pt.psoft.g1.psoftg1.lendingmanagement.services.SetLendingReturnedRequest;
-import pt.psoft.g1.psoftg1.readermanagement.api.ReaderLendingsAvgPerMonthView;
 import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetails;
 import pt.psoft.g1.psoftg1.readermanagement.services.ReaderService;
 import pt.psoft.g1.psoftg1.shared.api.ListResponse;
 import pt.psoft.g1.psoftg1.shared.services.ConcurrencyService;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 import pt.psoft.g1.psoftg1.shared.services.SearchRequest;
-import pt.psoft.g1.psoftg1.usermanagement.model.Librarian;
 import pt.psoft.g1.psoftg1.usermanagement.model.User;
 import pt.psoft.g1.psoftg1.usermanagement.services.UserService;
 
@@ -64,35 +62,16 @@ public class LendingController {
 
     @Operation(summary = "Gets a specific Lending")
     @GetMapping(value = "/{year}/{seq}")
-    public ResponseEntity<LendingView> findByLendingNumber(
-            Authentication authentication,
-            @PathVariable("year")
-            @Parameter(description = "The year of the Lending to find") final Integer year,
-            @PathVariable("seq")
-            @Parameter(description = "The sequencial of the Lending to find") final Integer seq) {
+    public ResponseEntity<LendingView> findByLendingNumber(@PathVariable("year") final Integer year, @PathVariable("seq") final Integer seq) {
 
         String ln = year + "/" + seq;
-        final var lending = lendingService.findByLendingNumber(ln)
-                .orElseThrow(() -> new NotFoundException(Lending.class, ln));
+        final var lending = lendingService.findByLendingNumber(ln).orElseThrow(() -> new NotFoundException(Lending.class, ln));
 
-        User loggedUser = userService.getAuthenticatedUser(authentication);
-
-        //if Librarian is logged in, skip ahead
-        if (!(loggedUser instanceof Librarian)) {
-            final var loggedReaderDetails = readerService.findByUsername(loggedUser.getUsername())
-                    .orElseThrow(() -> new NotFoundException(ReaderDetails.class, loggedUser.getUsername()));
-
-            //if logged Reader matches the one associated with the lending, skip ahead
-            if (!Objects.equals(loggedReaderDetails.getReaderNumber(), lending.getReaderDetails().getReaderNumber())) {
-                throw new AccessDeniedException("Reader does not have permission to view this lending");
-            }
-        }
-        final var lendingUri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .build().toUri();
+        final var lendingUri = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri();
 
         return ResponseEntity.ok().location(lendingUri)
-                .contentType(MediaType.parseMediaType("application/hal+json"))
-                .body(lendingViewMapper.toLendingView(lending));
+               .contentType(MediaType.parseMediaType("application/hal+json"))
+               .body(lendingViewMapper.toLendingView(lending));
     }
 
     @Operation(summary = "Sets a lending as returned")
@@ -134,7 +113,6 @@ public class LendingController {
     @Operation(summary = "Get average lendings duration")
     @GetMapping(value = "/avgDuration")
     public @ResponseBody ResponseEntity<LendingsAverageDurationView> getAvgDuration() {
-
         return ResponseEntity.ok().body(lendingViewMapper.toLendingsAverageDurationView(lendingService.getAverageDuration()));
     }
 
@@ -148,19 +126,8 @@ public class LendingController {
     }
 
     @PostMapping("/search")
-    public ListResponse<LendingView> searchReaders(
-            @RequestBody final SearchRequest<SearchLendingQuery> request) {
+    public ListResponse<LendingView> searchReaders(@RequestBody final SearchRequest<SearchLendingQuery> request) {
         final var readerList = lendingService.searchLendings(request.getPage(), request.getQuery());
         return new ListResponse<>(lendingViewMapper.toLendingView(readerList));
     }
-
-/*    @Operation(summary = "Get list monthly average lendings per reader")
-    @GetMapping(value = "/averageMonthlyPerReader")
-    public ListResponse<ReaderLendingsAvgPerMonthView>getAverageMonthlyPerReader(
-            @RequestParam("startDate") final String start,
-            @RequestParam("endDate") final String end){
-
-
-    }*/
-
 }

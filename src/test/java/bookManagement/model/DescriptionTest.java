@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Description;
 import pt.psoft.g1.psoftg1.shared.model.StringUtilsCustom;
 
+import java.lang.reflect.Constructor;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DescriptionTest {
@@ -76,5 +78,16 @@ public class DescriptionTest {
         String longDesc = "x".repeat(5000);
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> description.setDescription(longDesc));
         assertEquals("Description has a maximum of 4096 characters", ex.getMessage());
+    }
+
+    // White Box Test
+    @Test
+    void testProtectedConstructor() throws Exception {
+        Constructor<Description> constructor = Description.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+
+        Description description = constructor.newInstance();
+
+        assertNull(description.toString());
     }
 }

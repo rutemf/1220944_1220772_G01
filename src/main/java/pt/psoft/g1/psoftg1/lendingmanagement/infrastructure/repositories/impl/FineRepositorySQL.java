@@ -7,7 +7,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Fine;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.FineSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.FineSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.LendingSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.FineRepository;
 
 import java.util.List;
@@ -54,6 +55,18 @@ public class FineRepositorySQL implements FineRepository {
     @Override
     public Fine save(Fine fine) {
         FineSQL fineSQL = FineSQL.fromDomain(fine);
+
+        if (fineSQL.getLending() != null) {
+            TypedQuery<LendingSQL> q = entityManager.createQuery(
+            "SELECT l FROM LendingSQL l WHERE l.lendingNumber = :lendingNumber", LendingSQL.class);
+
+            q.setParameter("lendingNumber", fineSQL.getLending().getLendingNumber());
+
+            List<LendingSQL> results = q.getResultList();
+            if (!results.isEmpty()) {
+                fineSQL.setLending(results.get(0));
+            }
+        }
 
         if (fineSQL.getId() == null) {
             entityManager.persist(fineSQL);

@@ -5,7 +5,7 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.shared.model.ForbiddenName;
-import pt.psoft.g1.psoftg1.shared.model.ForbiddenNameSQL;
+import pt.psoft.g1.psoftg1.shared.dataschema.ForbiddenNameSQL;
 import pt.psoft.g1.psoftg1.shared.repositories.ForbiddenNameRepository;
 
 import java.util.List;

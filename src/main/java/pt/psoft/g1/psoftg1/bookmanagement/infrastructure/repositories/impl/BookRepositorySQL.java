@@ -7,15 +7,16 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import pt.psoft.g1.psoftg1.authormanagement.model.AuthorSQL;
+import pt.psoft.g1.psoftg1.authormanagement.dataschema.AuthorSQL;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
+import pt.psoft.g1.psoftg1.bookmanagement.dataschema.BookSQL;
 import pt.psoft.g1.psoftg1.bookmanagement.repositories.BookRepository;
 import pt.psoft.g1.psoftg1.bookmanagement.services.BookCountDTO;
 import pt.psoft.g1.psoftg1.bookmanagement.services.SearchBooksQuery;
-import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
+import pt.psoft.g1.psoftg1.genremanagement.dataschema.GenreSQL;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -71,7 +72,22 @@ public class BookRepositorySQL implements BookRepository {
 
     @Override
     public Page<BookCountDTO> findTop5BooksLent(LocalDate oneYearAgo, Pageable pageable) {
-        return null;
+        TypedQuery<Object[]> query = entityManager.createQuery(
+        "SELECT l.book, COUNT(l) " +
+        "FROM LendingSQL l " +
+        "WHERE l.startDate >= :oneYearAgo " +
+        "GROUP BY l.book " +
+        "ORDER BY COUNT(l) DESC",
+        Object[].class
+        );
+
+        query.setParameter("oneYearAgo", oneYearAgo.toString());
+        query.setMaxResults(5);
+
+        List<Object[]> results = query.getResultList();
+        List<BookCountDTO> dtoList = results.stream().map(r -> new BookCountDTO(((BookSQL) r[0]).toDomain(), (Long) r[1])).toList();
+
+        return new PageImpl<>(dtoList, pageable, dtoList.size());
     }
 
     @Override

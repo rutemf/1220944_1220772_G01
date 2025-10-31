@@ -2,10 +2,12 @@ package readerManagement.model;
 
 import org.junit.jupiter.api.Test;
 import pt.psoft.g1.psoftg1.readermanagement.model.PhoneNumber;
+
+import java.lang.reflect.Constructor;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PhoneNumberTest {
-
 
     // Black Box Test
     @Test
@@ -74,5 +76,16 @@ public class PhoneNumberTest {
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> new PhoneNumber("9123456789"));
         assertEquals("Phone number is not valid: 9123456789", ex.getMessage());
+    }
+
+    // White Box Test
+    @Test
+    void testProtectedConstructor() throws Exception {
+        Constructor<PhoneNumber> constructor = PhoneNumber.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+
+        PhoneNumber phoneNumber = constructor.newInstance();
+
+        assertNull(phoneNumber.getPhoneNumber());
     }
 }

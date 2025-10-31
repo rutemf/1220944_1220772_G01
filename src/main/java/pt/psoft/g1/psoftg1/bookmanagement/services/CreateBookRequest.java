@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-
 @Getter
 @Data
 @NoArgsConstructor
@@ -37,4 +36,5 @@ public class CreateBookRequest {
 
     @NotNull
     private List<Long> authors;
+
 }

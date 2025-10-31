@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
+import pt.psoft.g1.psoftg1.bookmanagement.dataschema.BookSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.model.Lending;
-import pt.psoft.g1.psoftg1.lendingmanagement.model.LendingSQL;
+import pt.psoft.g1.psoftg1.lendingmanagement.dataschema.LendingSQL;
 import pt.psoft.g1.psoftg1.lendingmanagement.repositories.LendingRepository;
-import pt.psoft.g1.psoftg1.readermanagement.model.ReaderDetailsSQL;
+import pt.psoft.g1.psoftg1.readermanagement.dataschema.ReaderDetailsSQL;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 
 import java.time.LocalDate;
@@ -57,7 +57,7 @@ public class LendingRepositorySQL implements LendingRepository {
     public int getCountFromCurrentYear() {
         TypedQuery<Long> query = entityManager.createQuery(
         "SELECT COUNT(l) FROM LendingSQL l " +
-        "WHERE YEAR(l.startDate) = YEAR(CURRENT_DATE)", Long.class);
+        "WHERE SUBSTRING(l.startDate, 1, 4) = CAST(FUNCTION('YEAR', CURRENT_DATE()) AS string)", Long.class);
 
         return query.getSingleResult().intValue();
     }
@@ -77,8 +77,10 @@ public class LendingRepositorySQL implements LendingRepository {
     @Override
     public Double getAverageDuration() {
         TypedQuery<Double> query = entityManager.createQuery(
-        "SELECT AVG(DATEDIFF(l.returnedDate, l.startDate)) " +
-        "FROM LendingSQL l " +
+        "SELECT AVG(function('datediff', " +
+        "   function('str_to_date', l.returnedDate, '%Y-%m-%d'), " +
+        "   function('str_to_date', l.startDate, '%Y-%m-%d')" +
+        ")) FROM LendingSQL l " +
         "WHERE l.returnedDate IS NOT NULL", Double.class);
 
         return Optional.ofNullable(query.getSingleResult()).orElse(0.0);
@@ -102,8 +104,8 @@ public class LendingRepositorySQL implements LendingRepository {
         TypedQuery<LendingSQL> query = entityManager.createQuery(
         "SELECT l FROM LendingSQL l " +
         "WHERE l.returnedDate IS NULL " +
-        "AND l.limitDate < CURRENT_DATE " +
-        "ORDER BY l.limitDate ASC", LendingSQL.class);
+        "AND function('str_to_date', l.limitDate, '%Y-%m-%d') < CURRENT_DATE " +
+        "ORDER BY function('str_to_date', l.limitDate, '%Y-%m-%d') ASC", LendingSQL.class);
 
         query.setFirstResult((page.getNumber() - 1) * page.getLimit());
         query.setMaxResults(page.getLimit());

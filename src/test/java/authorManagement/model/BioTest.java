@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import pt.psoft.g1.psoftg1.authormanagement.model.Bio;
 import pt.psoft.g1.psoftg1.shared.model.StringUtilsCustom;
 
+import java.lang.reflect.Constructor;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BioTest {
@@ -72,5 +74,16 @@ public class BioTest {
 
         IllegalArgumentException ex2 = assertThrows(IllegalArgumentException.class, () -> bio.setBio(" "));
         assertEquals("Bio cannot be blank", ex2.getMessage());
+    }
+
+    // White Box Test
+    @Test
+    void testProtectedConstructor() throws Exception {
+        Constructor<Bio> constructor = Bio.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+
+        Bio bio = constructor.newInstance();
+
+        assertNull(bio.getBio());
     }
 }

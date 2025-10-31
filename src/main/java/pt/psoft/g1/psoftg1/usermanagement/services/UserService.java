@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.usermanagement.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -54,26 +55,9 @@ public class UserService implements UserDetailsService {
             }
         }
 
-        User user;
-
-		/*switch(request.getRole()) {
-			case Role.READER: {
-				user = Reader.newReader(request.getUsername(), request.getPassword(), request.getName());
-				break;
-			}
-			case Role.LIBRARIAN: {
-				user = Librarian.newLibrarian(request.getUsername(), request.getPassword(), request.getName());
-				break;
-			}
-			default: {
-				return null;
-			}
-		}*/
-
-        user = Librarian.newLibrarian(request.getUsername(), request.getPassword(), request.getName());
-        //final User user = userEditMapper.create(request);
+        User user = new User(request.getUsername(), request.getPassword(), request.getName());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        //user.addAuthority(new Role(request.getRole()));
+        user.addAuthority(new Role(Role.ADMIN));
 
         return userRepo.save(user);
     }
@@ -87,13 +71,13 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User delete(final Long id) {
-        final User user = userRepo.getById(id);
+    public User delete(final String username) {
+        final User user = userRepo.findByUsername(username)
+        .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        // user.setUsername(user.getUsername().replace("@", String.format("_%s@",
-        // user.getId().toString())));
-        user.setEnabled(false);
-        return userRepo.save(user);
+        userRepo.delete(user);
+
+        return user;
     }
 
     @Override

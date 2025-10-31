@@ -12,18 +12,19 @@ import java.util.Map;
 @Data
 @Schema(description = "A Lending")
 public class AuthorView {
+
     @NotNull
     private Long authorNumber;
+
     @NotNull
     private String name;
+
     @NotNull
     private String bio;
+
     private String photo;
+
     @Setter
     @Getter
     private Map<String, Object> _links = new HashMap<>();
-
-
 }
-
-

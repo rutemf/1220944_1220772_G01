@@ -12,14 +12,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import pt.psoft.g1.psoftg1.bookmanagement.services.GenreBookCountDTO;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
-import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
+import pt.psoft.g1.psoftg1.genremanagement.dataschema.GenreSQL;
 import pt.psoft.g1.psoftg1.genremanagement.repositories.GenreRepository;
 import pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsDTO;
 import pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsPerMonthDTO;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 @Profile("sql")
@@ -88,7 +87,8 @@ public class GenreRepositorySQL implements GenreRepository {
         TypedQuery<GenreLendingsDTO> query = entityManager.createQuery(
         "SELECT new pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsDTO(g.genre, COUNT(l)) " +
         "FROM LendingSQL l JOIN l.book b JOIN b.genre g " +
-        "WHERE FUNCTION('MONTH', l.startDate) = :monthMonth AND FUNCTION('YEAR', l.startDate) = :monthYear " +
+        "WHERE FUNCTION('MONTH', FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')) = :monthMonth " +
+        "AND FUNCTION('YEAR', FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')) = :monthYear " +
         "GROUP BY g.genre", GenreLendingsDTO.class);
 
         query.setParameter("monthMonth", month.getMonthValue());
@@ -101,34 +101,97 @@ public class GenreRepositorySQL implements GenreRepository {
     public List<GenreLendingsPerMonthDTO> getLendingsPerMonthLastYearByGenre() {
         LocalDate oneYearAgo = LocalDate.now().minusYears(1);
 
-        TypedQuery<GenreLendingsPerMonthDTO> query = entityManager.createQuery(
-        "SELECT new pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsPerMonthDTO(" +
-        "g.genre, FUNCTION('MONTH', l.startDate), COUNT(l)) " +
+        TypedQuery<Object[]> query = entityManager.createQuery(
+        "SELECT g.genre, " +
+        "  FUNCTION('YEAR',  FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')), " +
+        "  FUNCTION('MONTH', FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')), " +
+        "  COUNT(l) " +
         "FROM LendingSQL l JOIN l.book b JOIN b.genre g " +
-        "WHERE l.startDate >= :startDate " +
-        "GROUP BY g.genre, FUNCTION('MONTH', l.startDate) " +
-        "ORDER BY g.genre, FUNCTION('MONTH', l.startDate)", GenreLendingsPerMonthDTO.class);
+        "WHERE FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d') >= :fromDate " +
+        "GROUP BY g.genre, " +
+        "  FUNCTION('YEAR',  FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')), " +
+        "  FUNCTION('MONTH', FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')) " +
+        "ORDER BY " +
+        "  FUNCTION('YEAR',  FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')), " +
+        "  FUNCTION('MONTH', FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')), " +
+        "  g.genre", Object[].class);
 
-        query.setParameter("startDate", oneYearAgo);
+        query.setParameter("fromDate", oneYearAgo);
 
-        return query.getResultList();
+        var rows = query.getResultList();
+
+        Map<String, List<GenreLendingsDTO>> byYm = new LinkedHashMap<>();
+        for (Object[] r : rows) {
+            String genre = (String) r[0];
+            int year     = ((Number) r[1]).intValue();
+            int month    = ((Number) r[2]).intValue();
+            long count   = ((Number) r[3]).longValue();
+
+            String key = year + "-" + String.format("%02d", month);
+            byYm.computeIfAbsent(key, __ -> new ArrayList<>()).add(new GenreLendingsDTO(genre, count));
+        }
+
+        List<GenreLendingsPerMonthDTO> out = new ArrayList<>();
+        for (var e : byYm.entrySet()) {
+            var ym = e.getKey().split("-");
+            int y = Integer.parseInt(ym[0]);
+            int m = Integer.parseInt(ym[1]);
+            out.add(new GenreLendingsPerMonthDTO(y, m, e.getValue()));
+        }
+
+        out.sort(Comparator.comparingInt(GenreLendingsPerMonthDTO::getYear).thenComparingInt(GenreLendingsPerMonthDTO::getMonth));
+
+        return out;
     }
 
     @Override
     public List<GenreLendingsPerMonthDTO> getLendingsAverageDurationPerMonth(LocalDate startDate, LocalDate endDate) {
-        TypedQuery<GenreLendingsPerMonthDTO> query = entityManager.createQuery(
-        "SELECT new pt.psoft.g1.psoftg1.genremanagement.services.GenreLendingsPerMonthDTO(" +
-        "g.genre, FUNCTION('MONTH', l.startDate), " +
-        "AVG(FUNCTION('DATEDIFF', FUNCTION('COALESCE', l.returnedDate, FUNCTION('CURRENT_DATE')), l.startDate))) " +
+        TypedQuery<Object[]> query = entityManager.createQuery(
+        "SELECT g.genre, " +
+        "  FUNCTION('YEAR',  FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d'))," +
+        "  FUNCTION('MONTH', FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d'))," +
+        "  AVG( FUNCTION('DATEDIFF', " +
+        "        FUNCTION('COALESCE', FUNCTION('STR_TO_DATE', l.returnedDate, '%Y-%m-%d'), FUNCTION('CURRENT_DATE')), " +
+        "        FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')" +
+        "      ) ) " +
         "FROM LendingSQL l JOIN l.book b JOIN b.genre g " +
-        "WHERE l.startDate BETWEEN :startDate AND :endDate " +
-        "GROUP BY g.genre, FUNCTION('MONTH', l.startDate) " +
-        "ORDER BY g.genre, FUNCTION('MONTH', l.startDate)", GenreLendingsPerMonthDTO.class);
+        "WHERE FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d') BETWEEN :startDate AND :endDate " +
+        "GROUP BY g.genre, " +
+        "  FUNCTION('YEAR',  FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')), " +
+        "  FUNCTION('MONTH', FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d')) " +
+        "ORDER BY " +
+        "  FUNCTION('YEAR',  FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d'))," +
+        "  FUNCTION('MONTH', FUNCTION('STR_TO_DATE', l.startDate, '%Y-%m-%d'))," +
+        "  g.genre", Object[].class);
 
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
 
-        return query.getResultList();
+        List<Object[]> rows = query.getResultList();
+
+        Map<String, List<GenreLendingsDTO>> byYearMonth = new LinkedHashMap<>();
+
+        for (Object[] r : rows) {
+            String genre = (String) r[0];
+            int year     = ((Number) r[1]).intValue();
+            int month    = ((Number) r[2]).intValue();
+            double avg   = r[3] == null ? 0d : ((Number) r[3]).doubleValue();
+
+            String key = year + "-" + String.format("%02d", month);
+            byYearMonth.computeIfAbsent(key, __ -> new ArrayList<>()).add(new GenreLendingsDTO(genre, avg));
+        }
+
+        List<GenreLendingsPerMonthDTO> out = new ArrayList<>();
+        for (Map.Entry<String, List<GenreLendingsDTO>> e : byYearMonth.entrySet()) {
+            String[] ym = e.getKey().split("-");
+            int y = Integer.parseInt(ym[0]);
+            int m = Integer.parseInt(ym[1]);
+            out.add(new GenreLendingsPerMonthDTO(y, m, e.getValue()));
+        }
+
+        out.sort(Comparator.comparingInt(GenreLendingsPerMonthDTO::getYear).thenComparingInt(GenreLendingsPerMonthDTO::getMonth));
+
+        return out;
     }
 
     @Override

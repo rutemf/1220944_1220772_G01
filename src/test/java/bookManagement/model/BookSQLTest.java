@@ -5,12 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pt.psoft.g1.psoftg1.authormanagement.model.Author;
-import pt.psoft.g1.psoftg1.authormanagement.model.AuthorSQL;
+import pt.psoft.g1.psoftg1.authormanagement.dataschema.AuthorSQL;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.bookmanagement.model.BookSQL;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
+import pt.psoft.g1.psoftg1.bookmanagement.dataschema.BookSQL;
 import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
-import pt.psoft.g1.psoftg1.genremanagement.model.GenreSQL;
+import pt.psoft.g1.psoftg1.genremanagement.dataschema.GenreSQL;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -52,7 +51,7 @@ class BookSQLTest {
         BookSQL sql = BookSQL.fromDomain(domain);
 
         assertNotNull(sql.getId(), "ID deve ser gerado");
-        assertEquals(isbn, sql.getIsbn().toString());
+        assertEquals(isbn, sql.getIsbn());
         assertEquals(title, sql.getTitle());
         assertEquals(desc, sql.getDescription());
         assertNull(sql.getGenre(), "Genre deve ser null quando domínio tem null");

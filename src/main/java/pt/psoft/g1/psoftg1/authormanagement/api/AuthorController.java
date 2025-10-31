@@ -115,7 +115,6 @@ public class AuthorController {
         return new ListResponse<>(authorViewMapper.toAuthorView(authors));
     }
 
-
     //Know the books of an Author
     @Operation(summary = "Know the books of an author")
     @GetMapping("/{authorNumber}/books")
