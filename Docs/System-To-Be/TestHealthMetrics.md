@@ -1,6 +1,6 @@
 # Test Health Metrics (System *To Be*)
 
-## 1. 📋 Overview
+## 1. Overview
 
 This document presents the current assessment of the system’s **test health metrics**, focusing on both **quantity** and **quality** of the existing automated tests.  
 The goal is to understand the new testing landscape, and compare it to the previous one.
