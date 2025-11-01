@@ -1,0 +1,84 @@
+@startuml
+
+autonumber
+title Create Generic Resource (PATCH)
+
+actor "User" as User
+participant "GenericController" as Controller
+participant "GenericService" as Service
+participant "GenericMapper" as Mapper
+participant "GenericRepository" as Repo
+database "MySQL DataBase" as SQL
+database "MongoDB DataBase" as NOSQL
+
+activate User
+
+User -> Controller: PATCH /api/generic/{id}
+activate Controller
+
+    Controller -> Service: update by id
+    activate Service
+
+        Service -> Repo: find by id
+        activate Repo
+
+        alt Persistence = SQL
+            Repo -> SQL: SELECT * FROM generic WHERE id = ?
+            activate SQL
+                SQL --> Repo: returns data
+            deactivate SQL
+
+        else Persistence = NOSQL
+            Repo -> NOSQL: db.generic.find({ id: "?" })
+            activate NOSQL
+                NOSQL --> Repo: returns data
+            deactivate NOSQL
+        end
+
+        Repo --> Service: returns entity
+        deactivate Repo
+
+        Service -> Mapper: apply patch (DTO to entity)
+        activate Mapper
+            Mapper --> Service: returns updated entity
+        deactivate Mapper
+
+        Service -> Repo: save updated entity
+        activate Repo
+
+        alt Persistence = SQL
+            Repo -> SQL: UPDATE generic SET ... WHERE id = {id}
+            activate SQL
+
+                SQL --> Repo: returns updated data
+            deactivate SQL
+
+            Repo --> Service: returns updated data
+
+        else Persistence = NOSQL
+
+            Repo -> NOSQL: findOneAndUpdate({ id: id }, { $set: ... })
+            activate NOSQL
+
+                NOSQL --> Repo: returns updated data
+            deactivate NOSQL
+
+            Repo --> Service: returns updated data
+            deactivate Repo
+        end
+
+        Service -> Mapper: map to DTO
+        activate Mapper
+
+            Mapper --> Service: returns DTO
+        deactivate Mapper
+
+        Service --> Controller: returns DTO
+    deactivate Service
+
+Controller --> User: returns updated data (DTO)
+deactivate Controller
+
+deactivate User
+
+@enduml

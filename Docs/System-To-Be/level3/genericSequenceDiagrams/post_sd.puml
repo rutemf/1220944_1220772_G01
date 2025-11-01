@@ -1,0 +1,68 @@
+@startuml
+
+autonumber
+
+title Create Generic Resource (POST)
+actor "User" as User
+participant "GenericController" as Controller
+participant "GenericService" as Service
+participant "GenericMapper" as Mapper
+participant "GenericRepository" as Repo
+database "MySQL DataBase" as SQL
+database "MongoDB DataBase" as NOSQL
+
+
+activate User
+
+User -> Controller: POST /api/generic
+activate Controller
+
+    Controller -> Service: map DTO to entity
+    activate Service
+
+        Service -> Mapper: map DTO to entity
+        activate Mapper
+
+            Mapper --> Service: mapped entity
+        deactivate Mapper
+
+        Service -> Repo: save(entity)
+        activate Repo
+
+        alt Persistence = SQL
+
+            Repo -> SQL: INSERT INTO generic (...)
+            activate SQL
+
+                SQL --> Repo: returns saved entity with id
+            deactivate SQL
+
+            Repo --> Service: returns saved entity
+
+        else Persistence = NOSQL
+
+          Repo -> NOSQL: save({...})
+                    activate NOSQL
+
+                        NOSQL --> Repo: returns saved entity with id
+                    deactivate NOSQL
+
+                    Repo --> Service: returns saved entity
+                deactivate Repo
+        end
+
+        Service -> Mapper: map to DTO
+        activate Mapper
+
+            Mapper --> Service: returns DTO
+        deactivate Mapper
+
+        Service --> Controller: returns DTO
+    deactivate Service
+
+User <-- Controller: returns created data (DTO)
+deactivate Controller
+
+deactivate User
+
+@enduml

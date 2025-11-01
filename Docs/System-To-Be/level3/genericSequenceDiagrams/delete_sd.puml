@@ -1,0 +1,55 @@
+@startuml
+
+autonumber
+
+title Create Generic Resource (DELETE)
+actor "User" as User
+participant "GenericController" as Controller
+participant "GenericService" as Service
+participant "GenericRepository" as Repo
+database "MySQL DataBase" as SQL
+database "MongoDB DataBase" as NOSQL
+
+
+activate User
+
+User -> Controller: DELETE /api/generic/{id}
+activate Controller
+
+    Controller -> Service: delete by id
+    activate Service
+
+        Service -> Repo: delete by id
+        activate Repo
+
+        alt Persistence = SQL
+
+            Repo -> SQL: DELETE FROM generic WHERE id = {id}
+            activate SQL
+
+                SQL --> Repo: Deletion OK
+            deactivate SQL
+
+            Repo --> Service: Deletion OK
+
+        else Persistence = NOSQL
+
+          Repo -> NOSQL: deleteOne({ id: id })
+                    activate NOSQL
+
+                        NOSQL --> Repo: Deletion OK
+                    deactivate NOSQL
+
+                    Repo --> Service: Deletion OK
+                deactivate Repo
+        end
+
+        Service --> Controller: informs operation success
+    deactivate Service
+
+User <-- Controller: informs operation success
+deactivate Controller
+
+deactivate User
+
+@enduml
