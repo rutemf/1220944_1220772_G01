@@ -1,19 +1,19 @@
 @startuml
 
 autonumber
-title Create Generic Resource (PATCH)
 
-actor "User" as User
+title Update Generic Resource By ID (PATCH)
+
 participant "GenericController" as Controller
 participant "GenericService" as Service
 participant "GenericMapper" as Mapper
 participant "GenericRepository" as Repo
-database "MySQL DataBase" as SQL
-database "MongoDB DataBase" as NOSQL
+participant "GenericDataSchema" as DataSchema
+database "SQL DataBase" as MYSQL
+database "Mongo DataBase" as MONGO
+database "Redis Cache" as REDIS
 
-activate User
-
-User -> Controller: PATCH /api/generic/{id}
+-> Controller: PATCH /api/generic/{id}
 activate Controller
 
     Controller -> Service: update by id
@@ -22,50 +22,58 @@ activate Controller
         Service -> Repo: find by id
         activate Repo
 
-        alt Persistence = SQL
-            Repo -> SQL: SELECT * FROM generic WHERE id = ?
-            activate SQL
-                SQL --> Repo: returns data
-            deactivate SQL
+            note right of Repo: GetByID Process
 
-        else Persistence = NOSQL
-            Repo -> NOSQL: db.generic.find({ id: "?" })
-            activate NOSQL
-                NOSQL --> Repo: returns data
-            deactivate NOSQL
-        end
-
-        Repo --> Service: returns entity
+            Repo --> Service: returns entity
         deactivate Repo
 
         Service -> Mapper: apply patch (DTO to entity)
         activate Mapper
+
             Mapper --> Service: returns updated entity
         deactivate Mapper
 
         Service -> Repo: save updated entity
         activate Repo
 
-        alt Persistence = SQL
-            Repo -> SQL: UPDATE generic SET ... WHERE id = {id}
-            activate SQL
+            Repo -> DataSchema: maps to DataSchema
+            activate DataSchema
 
-                SQL --> Repo: returns updated data
-            deactivate SQL
+                DataSchema --> Repo: return dataSchema object
+            deactivate DataSchema
 
-            Repo --> Service: returns updated data
+            alt Persistence = MySQL
 
-        else Persistence = NOSQL
+            Repo -> MYSQL: UPDATE generic SET ... WHERE id = {id}
+            activate MYSQL
 
-            Repo -> NOSQL: findOneAndUpdate({ id: id }, { $set: ... })
-            activate NOSQL
+                MYSQL --> Repo: updated data
+            deactivate MYSQL
 
-                NOSQL --> Repo: returns updated data
-            deactivate NOSQL
+            else Persistence = MongoDB
 
-            Repo --> Service: returns updated data
-            deactivate Repo
-        end
+            Repo -> MONGO: findOneAndUpdate({ id: id }, { $set: ... })
+            activate MONGO
+
+                MONGO --> Repo: updated data
+            deactivate MONGO
+
+            end
+
+            Repo -> REDIS: update cache entry for id
+            activate REDIS
+
+                REDIS --> Repo: cache updated result
+            deactivate REDIS
+
+            Repo -> DataSchema: maps to Domain
+            activate DataSchema
+
+                DataSchema --> Repo: return domain object
+            deactivate DataSchema
+
+            Repo --> Service: returns updated entity
+        deactivate Repo
 
         Service -> Mapper: map to DTO
         activate Mapper
@@ -76,9 +84,7 @@ activate Controller
         Service --> Controller: returns DTO
     deactivate Service
 
-Controller --> User: returns updated data (DTO)
+<-- Controller: returns updated data (DTO)
 deactivate Controller
-
-deactivate User
 
 @enduml

@@ -3,18 +3,17 @@
 autonumber
 
 title Create Generic Resource (POST)
-actor "User" as User
+
 participant "GenericController" as Controller
 participant "GenericService" as Service
 participant "GenericMapper" as Mapper
 participant "GenericRepository" as Repo
-database "MySQL DataBase" as SQL
-database "MongoDB DataBase" as NOSQL
+participant "GenericDataSchema" as DataSchema
+database "SQL DataBase" as MYSQL
+database "Mongo DataBase" as MONGO
+database "Redis Cache" as REDIS
 
-
-activate User
-
-User -> Controller: POST /api/generic
+-> Controller: POST /api/generic
 activate Controller
 
     Controller -> Service: map DTO to entity
@@ -29,27 +28,44 @@ activate Controller
         Service -> Repo: save(entity)
         activate Repo
 
-        alt Persistence = SQL
+            Repo -> DataSchema: maps to DataSchema
+            activate DataSchema
 
-            Repo -> SQL: INSERT INTO generic (...)
-            activate SQL
+                DataSchema --> Repo: return dataSchema object
+            deactivate DataSchema
 
-                SQL --> Repo: returns saved entity with id
-            deactivate SQL
+            alt Persistence = MySQL
+
+            Repo -> MYSQL: INSERT INTO generic VALUES (...)
+            activate MYSQL
+
+                MYSQL --> Repo: created data
+            deactivate MYSQL
+
+            else Persistence = MongoDB
+
+            Repo -> MONGO: save({...})
+            activate MONGO
+
+                MONGO --> Repo: created data
+            deactivate MONGO
+
+            end
+
+            Repo -> REDIS: add cache entry for id
+            activate REDIS
+
+                REDIS --> Repo: cache saving result
+            deactivate REDIS
+
+            Repo -> DataSchema: maps to Domain
+            activate DataSchema
+
+                DataSchema --> Repo: return domain list
+            deactivate DataSchema
 
             Repo --> Service: returns saved entity
-
-        else Persistence = NOSQL
-
-          Repo -> NOSQL: save({...})
-                    activate NOSQL
-
-                        NOSQL --> Repo: returns saved entity with id
-                    deactivate NOSQL
-
-                    Repo --> Service: returns saved entity
-                deactivate Repo
-        end
+        deactivate Repo
 
         Service -> Mapper: map to DTO
         activate Mapper
@@ -60,9 +76,7 @@ activate Controller
         Service --> Controller: returns DTO
     deactivate Service
 
-User <-- Controller: returns created data (DTO)
+<-- Controller: returns created data (DTO)
 deactivate Controller
-
-deactivate User
 
 @enduml

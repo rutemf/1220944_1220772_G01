@@ -2,18 +2,16 @@
 
 autonumber
 
-title Create Generic Resource (DELETE)
-actor "User" as User
+title Delete Generic Resource By ID
+
 participant "GenericController" as Controller
 participant "GenericService" as Service
 participant "GenericRepository" as Repo
-database "MySQL DataBase" as SQL
-database "MongoDB DataBase" as NOSQL
+database "Redis Cache" as REDIS
+database "SQL DataBase" as MYSQL
+database "Mongo DataBase" as MONGO
 
-
-activate User
-
-User -> Controller: DELETE /api/generic/{id}
+-> Controller: DELETE /api/generic/{id}
 activate Controller
 
     Controller -> Service: delete by id
@@ -22,34 +20,37 @@ activate Controller
         Service -> Repo: delete by id
         activate Repo
 
-        alt Persistence = SQL
+            alt Persistence = MySQL
 
-            Repo -> SQL: DELETE FROM generic WHERE id = {id}
-            activate SQL
+            Repo -> MYSQL: DELETE FROM generic WHERE id = ?
+            activate MYSQL
 
-                SQL --> Repo: Deletion OK
-            deactivate SQL
+                MYSQL --> Repo: deletion result
+            deactivate MYSQL
 
-            Repo --> Service: Deletion OK
+            else Persistence = MongoDB
 
-        else Persistence = NOSQL
+            Repo -> MONGO: deleteOne({ id: id })
+            activate MONGO
 
-          Repo -> NOSQL: deleteOne({ id: id })
-                    activate NOSQL
+                MONGO --> Repo: Deletion OK
+            deactivate MONGO
 
-                        NOSQL --> Repo: Deletion OK
-                    deactivate NOSQL
+            end
 
-                    Repo --> Service: Deletion OK
-                deactivate Repo
-        end
+            Repo -> REDIS: remove cache entry for id
+            activate REDIS
 
-        Service --> Controller: informs operation success
+                REDIS --> Repo: cache deletion result
+            deactivate REDIS
+
+            Repo --> Service: deletion result
+        deactivate Repo
+
+        Service --> Controller: deletion result
     deactivate Service
 
-User <-- Controller: informs operation success
+<-- Controller: returns status
 deactivate Controller
-
-deactivate User
 
 @enduml
