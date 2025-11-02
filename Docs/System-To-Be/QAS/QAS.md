@@ -13,6 +13,8 @@ The system must support distinct ID generation schemes in different formats base
 | Response           | A ID is generated according to the required format               |
 | Response measure   | Generation time within acceptable time limits                    | 
 
+![QAS1](QAS_IdGeneration.md)
+
 ## 2. Data persistence
 
 The system must support persisting data in different data models and Data Base Management System (DBMS): MySQL+Redis and MongoDB+Redis.
@@ -25,6 +27,8 @@ The system must support persisting data in different data models and Data Base M
 | Artifact           | Persistence connectors                                |
 | Response           | The system maintains its features and characteristics |
 | Response measure   | Switch completed within acceptable time limits        |
+
+![QAS2](QAS_DataPersisting.md)
 
 ## 3. External API Extensibility
 
@@ -39,9 +43,11 @@ The system must support the integration of new external APIs without changing th
 | Response           | A book's ISBN                                                                         |
 | Response measure   | Functional integration                                                                |
 
+![QAS3](QAS_ExternalAPIExtensibility.md)
+
 ## 4. Runtime Configurability 
 
-The system must support runtime configuration regarding ID generation, persistence and APIs.
+The system must support runtime configuration regarding, persistence and APIs.
 
 | Element            | Statement                                    |
 |--------------------|----------------------------------------------|
@@ -52,9 +58,11 @@ The system must support runtime configuration regarding ID generation, persisten
 | Response           | New configuration is applied immediately     |
 | Response measure   | Change applied within acceptable time limits | 
 
+![QAS4](QAS_RuntimeConfigurability.md)
+
 ## 5. CI/CD Pipeline Execution
 
-The system must automatically execute builds, tests, and deployments
+The system must automatically execute builds, tests, and deployments.
 
 | Element            | Statement                                                              |
 |--------------------|------------------------------------------------------------------------|
@@ -64,6 +72,8 @@ The system must automatically execute builds, tests, and deployments
 | Artifact           | Jenkins pipeline                                                       |
 | Response           | The pipeline compiles, runs tests, and successfully deploys the system |
 | Response measure   | Execution completed within acceptable time limits.                     |
+
+![QAS5](QAS_CI-CDPipelineExecution.md)
 
 ## 6. Deployment Environment
 
@@ -77,6 +87,8 @@ The system must be deployed in two hosting environments: Local and Docker Contai
 | Artifact           | Build artifacts and deployment scripts                        |
 | Response           | The system is installed and runs successfully without changes |
 | Response measure   | Deployment finish within acceptable time limits               |
+
+![QAS6](QAS_DeploymentEnvironment.md)
 
 ## Quality Attribute Scenario Synthesis
 

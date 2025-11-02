@@ -13,7 +13,11 @@ Ensure requirements and constraints are clearly identified and aligned with proj
 ### 2.2 Problem Statement
 The system must support persisting data in different data models and Data Base Management System (DBMS): MySQL+Redis and MongoDB+Redis.
 
-### 2.1 Requirements (SMART)
+### 2.3 Architecturally Significant Requirements (ASR)
+
+Persistence of relational and document data models, MySQL and MongoDB respectively, Database Management System (DBMS).
+
+### 2.4 Requirements (SMART)
 
 | Requirement    | Description                                                            |
 |----------------|------------------------------------------------------------------------|
@@ -23,12 +27,11 @@ The system must support persisting data in different data models and Data Base M
 | **Relevant**   | Scalability and flexibility for different deployment environments      |
 | **Time-bound** | Must be operational by deployment to multi-environment CI/CD pipeline  |
 
-### 2.4 Variation Points  
+### 2.5 Variation Points  
 - DBMS configurations: MySQL + Redis and  MongoDB + Redis
 - Data model types: Relational and Document-based
-- Switching trigger: Deployment configuration
 
-### 2.5 Evolution Points
+### 2.6 Evolution Points
 - Support for hybrid persistence strategies
 
 ## 3. Step 2: Establish goals and select inputs to be considered in the iteration
@@ -51,21 +54,48 @@ Ensure data is persisted in different data models that:
 
 ### 4.1 Selected Element
 
-### 4.2 Ractionale
-
-### Expected Outcome
-
+Implementation of GenreSQL, GenreNoSQL, GenreRepositorySQL and GenreRepositoryNoSQL.
 
 ## 5. Step 4: Choose one or more design concepts that satisfy the inputs of the iteration
 
 ### 5.1 Applied Tactics
 
+| Quality Attribute | Tactic                       | Description                                                                                                                  |
+|-------------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| **Availability**  | **Replication and Caching**  | Use Redis caching and database replication to improve data availability and reduce downtime.                                 |
+| **Modifiability** | **Encapsulation**            | Isolate ID logic in a single service (IDGeneratorService) so algorithm changes do not affect entity creation or persistence. | 
+| **Performance**   | **Pre-computation**          | Generate IDs and cache frequent queries in memory to reduce database latency and improve response time.                      | 
+| **Portability**   | **Abstraction**              | Eliminate dependency on specific DB vendors by abstracting persistence logic behind repository interfaces.                   | 
+| **Scalability**   | **Stateless Design**         | Maintain repositories and services as stateless components to enable horizontal scaling and distributed deployments.         | 
+| **Reliability**   | **Timestamp Inclusion**      | Embed time-based components in IDs to ensure global uniqueness and traceability across distributed systems.                  | 
+| **Extensibility** | **Plug-in Architecture**     | Allow new persistence strategies or ID generation algorithms to be integrated dynamically without major refactoring.         |
+
 ### 5.2 Reference Architectures and Patterns
 
-### 5.3 Architectural Design Alternatives and Rationale
+- Layered Architecture
+- Service Layer
 
-### 5.4 Decision Rationale
+## 6. Step 5 – Instantiate architectural elements, allocate responsibilities, and define interfaces
 
+### 6.1 Main components
+
+For Genre example:
+
+| Component                | Responsibility                        |
+|--------------------------|---------------------------------------|
+| **GenreSQL**             | Maps domain entity to SQL database    |
+| **GenreNoSQL**           | Maps domain entity to NoSQL database  |
+| **GenreRepositorySQL**   | Manage Genre entity in SQL database   | 
+| **GenreRepositoryNoSQL** | Manage Genre entity in NoSQL database |
+
+## 7. Step 6 – Evaluate and Refine the Architecture
+
+### 7.1 Outcome
+- Architecture is ready for future integration with other databases.
+
+## 8. Step 7 – Iteration Closure and Refinement
+
+The problem statement has been solved, respecting the requirements goals established.
 
 
 

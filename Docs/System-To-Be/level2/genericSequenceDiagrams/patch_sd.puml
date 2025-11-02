@@ -8,6 +8,7 @@ actor "User" as USER
 participant "BackEnd" as System
 database "SQL DataBase" as MYSQL
 database "Mongo DataBase" as MONGO
+database "Redis Cache" as REDIS
 
 activate USER
 
@@ -31,6 +32,12 @@ activate USER
             deactivate MONGO
 
         end
+
+        System -> REDIS: update cache entry for id
+        activate REDIS
+
+            REDIS --> System: cache updated result
+        deactivate REDIS
 
         System --> USER: returns updated resource
     deactivate System

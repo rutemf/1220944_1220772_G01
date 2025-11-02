@@ -9,7 +9,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import pt.psoft.g1.psoftg1.authormanagement.dataschema.AuthorNoSQL;
 import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
+import pt.psoft.g1.psoftg1.genremanagement.dataschema.GenreNoSQL;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,6 +27,7 @@ import pt.psoft.g1.psoftg1.bookmanagement.services.SearchBooksQuery;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -81,20 +84,16 @@ public class BookRepositoryNoSQL implements BookRepository {
         AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "lending", Document.class);
         List<Document> mappedResults = results.getMappedResults();
 
-        // Extrai todos os IDs de Book da agregação
         List<String> bookIds = mappedResults.stream()
                 .map(doc -> doc.getString("_id"))
                 .toList();
 
-        // Busca todos os Books de uma só vez
         Query bookQuery = new Query(Criteria.where("id").in(bookIds));
         List<Book> books = mongoTemplate.find(bookQuery, Book.class);
 
-        // Mapear ID -> Book para fácil acesso
         Map<Isbn, Book> bookMap = books.stream()
                 .collect(Collectors.toMap(Book::getIsbn, b -> b));
 
-        // Cria os DTOs
         List<BookCountDTO> dtoList = mappedResults.stream()
                 .map(doc -> {
                     String bookId = doc.getString("_id");
@@ -110,9 +109,10 @@ public class BookRepositoryNoSQL implements BookRepository {
 
     @Override
     public List<Book> findBooksByAuthorNumber(Long authorNumber) {
-        Query query = Query.query(Criteria.where("authors.authorNumber").is(authorNumber));
-        return mongoTemplate.find(query, BookNoSQL.class)
-                .stream().map(BookNoSQL::toDomain).collect(Collectors.toList());
+        return mongoTemplate.find(Query.query(Criteria.where("authorNumber").is(authorNumber)), BookNoSQL.class)
+                .stream()
+                .map(BookNoSQL::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -136,9 +136,37 @@ public class BookRepositoryNoSQL implements BookRepository {
 
     @Override
     public Book save(Book book) {
-        BookNoSQL bookNoSQL = BookNoSQL.fromDomain(book);
-        BookNoSQL saved = mongoTemplate.save(bookNoSQL);
-        return saved.toDomain();
+        BookNoSQL entity = BookNoSQL.fromDomain(book);
+
+        if (entity.getGenre() != null) {
+            GenreNoSQL genre = mongoTemplate.findOne(
+                    Query.query(Criteria.where("genre").is(entity.getGenre().getGenre())),
+                    GenreNoSQL.class
+            );
+            if (genre != null) {
+                entity.setGenre(genre);
+            }
+        }
+
+        if (entity.getAuthors() != null && !entity.getAuthors().isEmpty()) {
+            List<AuthorNoSQL> managedAuthors = entity.getAuthors().stream()
+                    .map(a -> mongoTemplate.findOne(
+                            Query.query(Criteria.where("name").is(a.getName())),
+                            AuthorNoSQL.class
+                    ))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+            entity.setAuthors(managedAuthors);
+        }
+
+        if (entity.getId() == null || mongoTemplate.findById(entity.getId(), BookNoSQL.class) == null) {
+            mongoTemplate.insert(entity);
+        } else {
+            mongoTemplate.save(entity);
+        }
+
+        return entity.toDomain();
     }
 
     @Override

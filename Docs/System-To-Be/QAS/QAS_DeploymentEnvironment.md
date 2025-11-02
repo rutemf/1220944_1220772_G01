@@ -12,7 +12,11 @@ Ensure requirements and constraints are clearly identified and aligned with proj
 ### 2.2 Problem Statement
 The system must be deployed to a virtual machine, so it can be publicly accessed.
 
-### 2.3 Requirements (SMART)
+### 2.3 Architecturally Significant Requirements (ASR)
+
+Deployment of Jenkins in two environments.
+
+### 2.4 Requirements (SMART)
 
 | Requirement    | Description                                                                                                                                                               |
 |----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -22,11 +26,11 @@ The system must be deployed to a virtual machine, so it can be publicly accessed
 | **Relevant**   | It is essential for the public availability of the system, allowing end-users to access the production services.                                                          |
 | **Time-bound** | The deployment mechanism must be operational and functional by the end of the Sprint.                                                                                     |
 
-### 2.4 Variation Points
+### 2.5 Variation Points
 - Deployment Target: Usage of a Virtual Machine (VM) versus Platform as a Service (PaaS).
 - Exposing API Publicly: Exposing API Publicly versus exposing API for certain IPs.
 
-### 2.5 Evolution Points
+### 2.6 Evolution Points
 - Autoscaling: Integrate the environment with an orchestrator for automatic horizontal scaling.
 
 ## 3. Step 2: Establish goals and select inputs for iteration

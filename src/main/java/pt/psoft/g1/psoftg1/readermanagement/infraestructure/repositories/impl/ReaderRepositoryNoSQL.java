@@ -55,8 +55,9 @@ public class ReaderRepositoryNoSQL implements ReaderRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public Optional<ReaderDetails> findByUsername(String username) {
-        Query query = new Query(Criteria.where("reader.username").is(username));
+        Query query = new Query(Criteria.where("username").is(username));
         ReaderDetailsNoSQL result = mongoTemplate.findOne(query, ReaderDetailsNoSQL.class);
         return Optional.ofNullable(result).map(ReaderDetailsNoSQL::toDomain);
     }
@@ -171,7 +172,6 @@ public class ReaderRepositoryNoSQL implements ReaderRepository {
         mongoTemplate.remove(query, ReaderDetailsNoSQL.class);
     }
 
-    //verificar
     @Override
     public List<ReaderDetails> searchReaderDetails(pt.psoft.g1.psoftg1.shared.services.Page page, SearchReadersQuery query) {
         Query mongoQuery = new Query();

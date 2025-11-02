@@ -1,0 +1,56 @@
+@startuml
+
+autonumber
+
+title Delete Generic Resource By ID
+
+participant "GenericController" as Controller
+participant "GenericService" as Service
+participant "GenericRepository" as Repo
+database "Redis Cache" as REDIS
+database "SQL DataBase" as MYSQL
+database "Mongo DataBase" as MONGO
+
+-> Controller: DELETE /api/generic/{id}
+activate Controller
+
+    Controller -> Service: delete by id
+    activate Service
+
+        Service -> Repo: delete by id
+        activate Repo
+
+            alt Persistence = MySQL
+
+            Repo -> MYSQL: DELETE FROM generic WHERE id = ?
+            activate MYSQL
+
+                MYSQL --> Repo: deletion result
+            deactivate MYSQL
+
+            else Persistence = MongoDB
+
+            Repo -> MONGO: deleteOne({ id: id })
+            activate MONGO
+
+                MONGO --> Repo: Deletion OK
+            deactivate MONGO
+
+            end
+
+            Repo -> REDIS: remove cache entry for id
+            activate REDIS
+
+                REDIS --> Repo: cache deletion result
+            deactivate REDIS
+
+            Repo --> Service: deletion result
+        deactivate Repo
+
+        Service --> Controller: deletion result
+    deactivate Service
+
+<-- Controller: returns status
+deactivate Controller
+
+@enduml
