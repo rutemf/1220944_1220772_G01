@@ -12,7 +12,11 @@ Ensure requirements and constraints are clearly identified and aligned with proj
 ### 2.2 Problem Statement
 The system must generate IDs for other entities in different formats based on varying specifications.
 
-### 2.3 Requirements (SMART)
+### 2.3 Architecturally Significant Requirements (ASR)
+
+Generate IDs for other enSSes in different formats based on varying specifications.
+
+### 2.4 Requirements (SMART)
 
 | Requirement    | Description                                                                                                                 |
 |----------------|-----------------------------------------------------------------------------------------------------------------------------|
@@ -22,11 +26,11 @@ The system must generate IDs for other entities in different formats based on va
 | **Relevant**   | Supports future extensibility for new entities and formats                                                                  |
 | **Time-bound** | Must be operational by deployment to multi-environment CI/CD pipeline                                                       |
 
-### 2.4 Variation Points
+### 2.5 Variation Points
 - Id formats: Random Base65 and Timestamp - 6 Hexadecimal digits
 - Invocation: Local cached generation
 
-### 2.5 Evolution Points
+### 2.6 Evolution Points
 - Plug-in model for integrating new generation algorithms
 
 ## 3. Step 2: Establish goals and select inputs for iteration
@@ -54,14 +58,17 @@ The **IDGeneratorService** is a new service to handle the ID generation logic, h
 
 ### 5.1 Applied Tactics
 
-| Quality Attribute   | Tactic                       | Description                                                                                                                     |
-|---------------------|------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
-| **Modifiability**   | **Encapsulation**            | Isolate Id logic in a single service (IDGeneratorService) so changes to algorithms do not affect entity creation or persistence | 
-| **Performance**     | **Pre-computation**          | Generate IDs in memory, avoiding database latency                                                                               | 
-| **Portability**     | **Abstraction**              | Eliminate dependency on DB vendor; abstract Id generation away from persistence                                                 | 
-| **Scalability**     | **Stateless design**         | No shared mutable state; enables scaling and future distribution                                                                | 
-| **Reliability**     | **Timestamp inclusion**      | Embed time component to ensure uniqueness across instances                                                                      | 
-| **Extensibility**   | **Plug-in architecture**     | Allow future Id algorithms to be registered dynamically                                                                         | 
+| Quality Attribute    | Tactic                          | Description                                                                                                         |
+|----------------------|---------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| **Availability**     | **Replication and Failover**    | Use MySQL replicas and MongoDB replica sets to ensure continued service during node failures.                       |
+| **Interoperability** | **Repository Abstraction**      | Define common repository interfaces to allow both SQL and NoSQL backends to interact seamlessly with the domain.     |
+| **Flexibility**      | **Runtime Configuration**       | Enable switching between MySQL+Redis and MongoDB+Redis via Spring profiles or configuration files.                   |
+| **Maintainability**  | **Layered Architecture**        | Separate domain, service, and persistence layers to simplify updates and debugging.                                 |
+| **Modifiability**    | **Schema Versioning**           | Introduce schema version fields and migration scripts to evolve data structures safely.                             |
+| **Portability**      | **Technology Abstraction**      | Use JPA for SQL and Spring Data MongoDB for NoSQL to minimize vendor lock-in.                                       |
+| **Performance**      | **Caching and Indexing**        | Use Redis for caching and add indexes on frequently queried fields to improve response time.                         |
+| **Scalability**      | **Sharding and Read Replicas**  | Distribute data horizontally in MongoDB and scale MySQL reads with replicas.                                        |
+| **Testability**      | **Contract Testing**            | Use shared tests to ensure both SQL and NoSQL implementations behave consistently.                                  |
 
 ### 5.2 Reference Architectures and Patterns
 - Layered Architecture
@@ -78,7 +85,6 @@ The **IDGeneratorService** is a new service to handle the ID generation logic, h
 ## 7. Step 6 – Evaluate and Refine the Architecture
 
 ### 7.1 Outcome
-- The applied tactics collectively achieve the desired **modifiability**, **portability**, and **reliability** goals.
 - Architecture is ready for future integration with distributed ID services if scalability demands increase.
 
 ## 8. Step 7 – Iteration Closure and Refinement

@@ -16,7 +16,7 @@
 
 - [Quality Attribute Scenarios (QAS)](#quality-attribute-scenarios-qas)
 
-- [Technical Memos](#technical-memos)
+- [TechnicalMemos](#technical-memos)
 
 - [System To Be](#system-to-be)
     - [Level 1](#level-1-1)
@@ -88,6 +88,7 @@ Note: Change Intelli J to the light Theme to see the mapping more clearly
 
 ## Technical Memos
 
+![TechnicalMemos](System-To-Be/TechnicalMemos.md)
 
 ## System To Be
 
@@ -146,8 +147,6 @@ Note: Change Intelli J to the light Theme to see the mapping more clearly
 ### Critical Pipeline Analysis
 
 ![Critical Pipeline Analysis](System-To-Be/Critical-Pipeline-Analysis.md)
-
-### Tests Comparison: System As Is v.s. System To Be
 
 
 
