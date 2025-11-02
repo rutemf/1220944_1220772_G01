@@ -179,6 +179,7 @@ public class GenreRepositoryNoSQL implements GenreRepository {
     }
 
     @Override
+    @CacheEvict(key="#genre")
     public void delete(Genre genre) {
         Query query = new Query(Criteria.where("genre").is(genre.getGenre()));
         mongoTemplate.remove(query, GenreNoSQL.class);

@@ -195,6 +195,7 @@ public class GenreRepositorySQL implements GenreRepository {
     }
 
     @Override
+    @CacheEvict(key="#genre")
     public void delete(Genre genre) {
         GenreSQL entity = GenreSQL.fromDomain(genre);
         GenreSQL managed = entityManager.contains(entity) ? entity : entityManager.merge(entity);

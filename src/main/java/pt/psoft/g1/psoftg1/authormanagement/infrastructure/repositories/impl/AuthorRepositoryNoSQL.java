@@ -1,12 +1,17 @@
 package pt.psoft.g1.psoftg1.authormanagement.infrastructure.repositories.impl;
 
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.MongoExpression;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationExpression;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -20,8 +25,6 @@ import pt.psoft.g1.psoftg1.bookmanagement.dataschema.BookNoSQL;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Repository
 @Profile("nosql")
@@ -37,9 +40,10 @@ public class AuthorRepositoryNoSQL implements AuthorRepository {
     @Override
     @Cacheable(key = "#authorNumber")
     public Optional<Author> findByAuthorNumber(Long authorNumber) {
-        Query query = new Query(Criteria.where("authorNumber").is(authorNumber));
-        AuthorNoSQL authorNoSQL = mongoTemplate.findOne(query, AuthorNoSQL.class);
-        return Optional.ofNullable(authorNoSQL).map(AuthorNoSQL::toDomain);
+        Query query = new Query();
+        query.addCriteria(Criteria.where("authorNumber").is(authorNumber));
+        AuthorNoSQL authorSQL = mongoTemplate.findOne(query, AuthorNoSQL.class);
+        return Optional.ofNullable(authorSQL).map(AuthorNoSQL::toDomain);
     }
 
     @Override
@@ -86,29 +90,30 @@ public class AuthorRepositoryNoSQL implements AuthorRepository {
     @Override
     public Page<AuthorLendingView> findTopAuthorByLendings(Pageable pageableRules) {
         Aggregation aggregation = Aggregation.newAggregation(
-                unwind("authors"),
-                group("authors.name").count().as("lendingCount"),
-                sort(org.springframework.data.domain.Sort.Direction.DESC, "lendingCount"),
-                skip(pageableRules.getOffset()),
-                limit(pageableRules.getPageSize())
+                Aggregation.unwind("authors"),
+                Aggregation.lookup("lendings", "id", "book.id", "lendings"),
+                Aggregation.addFields()
+                        .addFieldWithValue("lendingCount",
+                                AggregationExpression.from(MongoExpression.create("{$size: '$lendings'}")))
+                        .build(),
+                Aggregation.group("authorName")
+                        .sum("lendingCount").as("totalLendings"),
+                Aggregation.project("totalLendings")
+                        .and("id").as("authorName"),
+
+                Aggregation.sort(Sort.by(Sort.Direction.DESC, "totalLendings")),
+                Aggregation.skip( pageableRules.getOffset()),
+                Aggregation.limit(pageableRules.getPageSize())
         );
-
-        AggregationResults<org.bson.Document> results =
-                mongoTemplate.aggregate(aggregation, "lendings", org.bson.Document.class);
-
-        List<AuthorLendingView> topAuthors = results.getMappedResults().stream()
-                .map(doc -> new AuthorLendingView(
-                        doc.getString("_id"),
-                        ((Number) doc.get("lendingCount")).longValue()
-                ))
-                .toList();
-
-        long totalCount = mongoTemplate.count(new Query(), org.bson.Document.class);
-
-        return new org.springframework.data.domain.PageImpl<>(topAuthors, pageableRules, totalCount);
+        AggregationResults<AuthorLendingView> results = mongoTemplate.aggregate(
+                aggregation, "books", AuthorLendingView.class
+        );
+        List<AuthorLendingView> list = results.getMappedResults();
+        return new PageImpl<>(list, pageableRules, list.size());
     }
 
     @Override
+    @CacheEvict(key = "author.authorNumber")
     public void delete(Author author) {
         Query query = new Query(Criteria.where("authorNumber").is(author.getAuthorNumber()));
         mongoTemplate.remove(query, AuthorNoSQL.class);
@@ -116,7 +121,7 @@ public class AuthorRepositoryNoSQL implements AuthorRepository {
 
     @Override
     public List<Author> findCoAuthorsByAuthorNumber(Long authorNumber) {
-        Query query = new Query(Criteria.where("authors.authorNumber").is(authorNumber));
+        Query query = new Query(Criteria.where("authorNumber").is(authorNumber));
         List<BookNoSQL> books = mongoTemplate.find(query, BookNoSQL.class);
 
         return books.stream()
