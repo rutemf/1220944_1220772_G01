@@ -55,7 +55,10 @@ PITest (Mutation Testing) was used to assess the **quality (kill power)** of the
 
 ## 5. Comparison Between Old Test and New Test
 
+[Open New Test](../../src/test/java/bookManagement/model/IsbnTest.java)
+
 #### a. Structure & Organization
+
 | Aspect                  | Old Version                                                | New Version                                                                                                                 |
 |-------------------------|------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
 | **Package**             | `pt.psoft.g1.psoftg1.bookmanagement.model`                 | `bookManagement.model`                                                                                                      |
@@ -66,6 +69,7 @@ PITest (Mutation Testing) was used to assess the **quality (kill power)** of the
 | **Test Coverage**       | Focuses only on validation exceptions and correct checksum | Expands coverage to include equality, hashCode, toString, reflection, constructor visibility, and detailed validation cases |
 
 #### b. Validation Logic Tested
+
 | Case                                   | Old Test         | New Test                                                |
 |----------------------------------------|------------------|---------------------------------------------------------|
 | `null` ISBN                            | ✅ Tested         | ✅ Tested with explicit message assertion                |
