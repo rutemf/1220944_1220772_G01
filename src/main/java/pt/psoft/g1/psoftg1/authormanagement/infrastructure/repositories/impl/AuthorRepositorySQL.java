@@ -3,6 +3,7 @@ package pt.psoft.g1.psoftg1.authormanagement.infrastructure.repositories.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
@@ -97,6 +98,7 @@ public class AuthorRepositorySQL implements AuthorRepository {
     }
 
     @Override
+    @CacheEvict(key = "author.authorNumber")
     public void delete(Author author) {
         AuthorSQL sql = AuthorSQL.fromDomain(author);
         AuthorSQL managed = entityManager.contains(sql) ? sql : entityManager.merge(sql);

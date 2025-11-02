@@ -18,6 +18,7 @@ import pt.psoft.g1.psoftg1.usermanagement.repositories.UserRepository;
 import pt.psoft.g1.psoftg1.usermanagement.services.SearchUsersQuery;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -128,6 +129,16 @@ public class UserRepositoryNoSQL implements UserRepository {
     @Override
     @CacheEvict(key = "#user.username")
     public void delete(User user) {
-        mongoTemplate.remove(new Query(Criteria.where("id").is(user.getUsername())), UserNoSQL.class);
+        String username = user.getUsername();
+
+        Query query = new Query(Criteria.where("username").is(username));
+        UserNoSQL userNoSQL = mongoTemplate.findOne(query, UserNoSQL.class);
+
+        if (userNoSQL != null) {
+            userNoSQL.setAuthorities(Collections.emptySet());
+            mongoTemplate.save(userNoSQL);
+
+            mongoTemplate.remove(query, UserNoSQL.class);
+        }
     }
 }

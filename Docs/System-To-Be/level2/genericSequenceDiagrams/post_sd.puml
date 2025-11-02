@@ -7,7 +7,9 @@ title Post Generic Resource
 actor "User" as USER
 participant "BackEnd" as System
 database "SQL DataBase" as MYSQL
+database "SQL DataBase" as MYSQL
 database "Mongo DataBase" as MONGO
+database "Redis Cache" as REDIS
 
 activate USER
 
@@ -31,6 +33,12 @@ activate USER
             deactivate MONGO
 
         end
+
+        System -> REDIS: add cache entry for id
+        activate REDIS
+
+            REDIS --> System: cache saving result
+        deactivate REDIS
 
         System --> USER: returns created resource
     deactivate System

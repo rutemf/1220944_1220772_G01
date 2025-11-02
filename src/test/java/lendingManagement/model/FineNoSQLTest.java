@@ -34,13 +34,13 @@ public class FineNoSQLTest {
         try (MockedStatic<IDGeneratorService> genStub = mockStatic(IDGeneratorService.class);
              MockedStatic<LendingNoSQL> lendingStub = mockStatic(LendingNoSQL.class)) {
 
-            genStub.when(IDGeneratorService::generateIdNoSQL).thenReturn("SQL-ID-123");
+            genStub.when(IDGeneratorService::generateIdNoSQL).thenReturn("NOSQL-ID-123");
             lendingStub.when(() -> LendingNoSQL.fromDomain(lending)).thenReturn(lendingNoSQLMock);
 
             FineNoSQL noSQL = FineNoSQL.fromDomain(fine);
 
             assertNotNull(noSQL);
-            assertEquals("SQL-ID-123", noSQL.getId());
+            assertEquals("NOSQL-ID-123", noSQL.getId());
             assertEquals(50, noSQL.getFineValuePerDayInCents());
             assertEquals(999, noSQL.getCentsValue());
             assertSame(lendingNoSQLMock, noSQL.getLending());
@@ -54,7 +54,7 @@ public class FineNoSQLTest {
     @Test
     void testToDomain_MapsBackToFine() throws Exception {
         FineNoSQL noSQL = newInstanceViaReflection();
-        noSQL.setId("SQL-ID-XYZ");
+        noSQL.setId("NOSQL-ID-XYZ");
         noSQL.setFineValuePerDayInCents(75);
         noSQL.setCentsValue(300);
 

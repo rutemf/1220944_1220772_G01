@@ -4,6 +4,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -17,6 +18,7 @@ import pt.psoft.g1.psoftg1.readermanagement.dataschema.ReaderDetailsNoSQL;
 import pt.psoft.g1.psoftg1.shared.services.Page;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -106,15 +108,31 @@ public class LendingRepositoryNoSQL implements LendingRepository {
 
     @Override
     public List<Lending> getOverdue(Page page) {
-        Query query = new Query(Criteria.where("returnedDate").is(null)
-                .and("limitDate").lt(LocalDate.now()))
-                .skip((page.getNumber() - 1) * page.getLimit())
-                .limit(page.getLimit());
-        return mongoTemplate.find(query, LendingNoSQL.class)
-                .stream()
-                .map(LendingNoSQL::toDomain)
+        int pageNumber = page.getNumber() > 0 ? page.getNumber() : 1;
+        int pageLimit = page.getLimit() > 0 ? page.getLimit() : 10;
+
+        Query query = new Query();
+        query.addCriteria(Criteria.where("returnedDate").is(null));
+
+        List<Lending> lendings = mongoTemplate.find(query, Lending.class);
+
+        LocalDate today = LocalDate.now();
+
+        return lendings.stream()
+                .filter(l -> {
+                    try {
+                        LocalDate limit = LocalDate.parse(l.getLimitDate().toString());
+                        return limit.isBefore(today);
+                    } catch (Exception e) {
+                        return false;
+                    }
+                })
+                .sorted(Comparator.comparing(Lending::getLimitDate))
+                .skip((long) (pageNumber - 1) * pageLimit)
+                .limit(pageLimit)
                 .collect(Collectors.toList());
     }
+
     @Override
     public List<Lending> searchLendings(Page page, String readerNumber, String isbn, Boolean returned, LocalDate startDate, LocalDate endDate) {
         Criteria criteria = new Criteria();

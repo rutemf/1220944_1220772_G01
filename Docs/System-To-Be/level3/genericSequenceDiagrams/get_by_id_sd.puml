@@ -1,0 +1,70 @@
+@startuml
+
+autonumber
+
+title Get Generic Resource By ID
+
+participant "GenericController" as Controller
+participant "GenericService" as Service
+participant "GenericMapper" as Mapper
+participant "GenericRepository" as Repo
+participant "GenericDataSchema" as DataSchema
+database "Redis Cache" as REDIS
+database "SQL DataBase" as MYSQL
+database "Mongo DataBase" as MONGO
+
+-> Controller: GET /api/generic/{id}
+activate Controller
+
+    Controller -> Service: get by id
+    activate Service
+
+            Service -> Repo: find by id
+            activate Repo
+
+                Repo -> REDIS: GET generic:{id}
+                activate REDIS
+
+                    REDIS --> Repo: generic data / null
+                deactivate REDIS
+
+                alt cache not found and Persistence = MySQL
+
+                Repo -> MYSQL: SELECT * FROM generic WHERE id = {id}
+                activate MYSQL
+
+                    MYSQL --> Repo: generic data
+                deactivate MYSQL
+
+                else cache not found and Persistence = MongoDB
+
+                Repo -> MONGO: findOne({ id: id })
+                activate MONGO
+
+                    MONGO --> Repo: generic data
+                deactivate MONGO
+
+                end
+
+                Repo -> DataSchema: maps to Domain
+                activate DataSchema
+
+                    DataSchema --> Repo: return domain item
+                deactivate DataSchema
+
+                Repo --> Service: returns entity
+            deactivate Repo
+
+            Service -> Mapper: map to DTO
+            activate Mapper
+
+                Mapper --> Service: return DTO
+            deactivate Mapper
+
+            Service --> Controller: return DTO
+        deactivate Service
+
+    <-- Controller: returns data
+deactivate Controller
+
+@enduml

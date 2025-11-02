@@ -1,0 +1,70 @@
+@startuml
+
+autonumber
+
+title Get All Generic Resources
+
+participant "GenericController" as Controller
+participant "GenericService" as Service
+participant "GenericMapper" as Mapper
+participant "GenericRepository" as Repo
+participant "GenericDataSchema" as DataSchema
+database "Redis Cache" as REDIS
+database "SQL DataBase" as MYSQL
+database "Mongo DataBase" as MONGO
+
+-> Controller: GET /api/generic
+activate Controller
+
+    Controller -> Service: get all
+    activate Service
+
+            Service -> Repo: find all
+            activate Repo
+
+                Repo -> REDIS: SELECT * FROM generic
+                activate REDIS
+
+                    REDIS --> Repo: returns all
+                deactivate REDIS
+
+                alt cache not found and Persistence = MySQL
+
+                Repo -> MYSQL: SELECT * FROM generic
+                activate MYSQL
+
+                    MYSQL --> Repo: returns all
+                deactivate MYSQL
+
+                else cache not found and Persistence = MongoDB
+
+                Repo -> MONGO: find({})
+                activate MONGO
+
+                    MONGO --> Repo: returns all
+                deactivate MONGO
+
+                end
+
+                Repo -> DataSchema: maps to Domain
+                activate DataSchema
+
+                    DataSchema --> Repo: return domain list
+                deactivate DataSchema
+
+                Repo --> Service: returns all
+            deactivate Repo
+
+            Service -> Mapper: map to DTO
+            activate Mapper
+
+                Mapper --> Service: return DTO list
+            deactivate Mapper
+
+            Service --> Controller: return DTO list
+        deactivate Service
+
+    <-- Controller: returns all data
+deactivate Controller
+
+@enduml

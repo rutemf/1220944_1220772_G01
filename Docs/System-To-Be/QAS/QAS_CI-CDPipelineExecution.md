@@ -12,7 +12,11 @@ Ensure requirements and constraints are clearly identified and aligned with proj
 ### 2.2 Problem Statement
 A CI/CD pipeline must be created in Jenkins to test and deploy the application.
 
-### 2.3 Requirements (SMART)
+### 2.3 Architecturally Significant Requirements (ASR)
+
+Adoption of a CI/CD automation process using Jenkins
+
+### 2.4 Requirements (SMART)
 
 | Requirement    | Description                                                                                                                                                         |
 |----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -22,11 +26,11 @@ A CI/CD pipeline must be created in Jenkins to test and deploy the application.
 | **Relevant**   | It is essential for enforcing code quality standards, enabling rapid feedback to developers, and ensuring reliable, continuous integration.                         |
 | **Time-bound** | The pipeline's core test and build stages must be operational and integrated into the main repository branch by the end of the current Sprint.                      |
 
-### 2.4 Variation Points
+### 2.5 Variation Points
 - Pipeline Environment: Using Jenkins versus using other pipeline managers like GitHub Actions.
 - Test Type Inclusion: Running only Unit Tests versus including time-consuming End-to-End (E2E) tests in the main pipeline.
 
-### 2.5 Evolution Points
+### 2.6 Evolution Points
 - Security Scanning: Integrate tools for static code analysis and dependency vulnerability scanning as mandatory early pipeline stages.
 - Autoscaling and Orchestration: Integrate the environment with an orchestrator for automatic horizontal scaling of the application based on traffic load, moving beyond the single Virtual Machine constraint.
 
