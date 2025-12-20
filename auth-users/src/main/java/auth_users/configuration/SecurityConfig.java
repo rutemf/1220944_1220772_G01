@@ -47,14 +47,6 @@ import auth_users.users.model.Role;
 import lombok.RequiredArgsConstructor;
 import auth_users.users.repositories.UserRepository;
 
-/**
- * Check https://www.baeldung.com/security-spring and https://www.toptal.com/spring/spring-security-tutorial
- * <p>
- * Based on https://github.com/Yoh0xFF/java-spring-security-example/
- *
- * @author pagsousa
- *
- */
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
@@ -167,5 +159,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
-
 }
