@@ -3,11 +3,9 @@ package auth_users.shared.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
 public class ForbiddenName {
 
     @Id
@@ -23,4 +21,6 @@ public class ForbiddenName {
     public ForbiddenName(String name) {
         this.forbiddenName = name;
     }
+
+    protected ForbiddenName() { }
 }

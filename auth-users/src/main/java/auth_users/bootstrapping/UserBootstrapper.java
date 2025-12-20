@@ -1,5 +1,6 @@
 package auth_users.bootstrapping;
 
+import auth_users.shared.services.ForbiddenNameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -17,11 +18,13 @@ import auth_users.users.repositories.UserRepository;
 @Order(1)
 public class UserBootstrapper implements CommandLineRunner {
 
+    private final ForbiddenNameService forbiddenNameService;
     private final UserRepository userRepository;
 
     @Override
     @Transactional
     public void run(final String... args) {
+        loadForbiddenNames();
         createReaders();
         createLibrarian();
     }
@@ -53,5 +56,10 @@ public class UserBootstrapper implements CommandLineRunner {
             final User miguel = Librarian.newLibrarian("miguel@gmail.com", "Miguel!123", "Miguel Angelo");
             userRepository.save(miguel);
         }
+    }
+
+    protected void loadForbiddenNames() {
+        String fileName = "forbiddenNames.txt";
+        forbiddenNameService.loadDataFromFile(fileName);
     }
 }

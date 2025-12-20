@@ -5,11 +5,6 @@ import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-/**
- * Based on <a href=
- * "https://github.com/Yoh0xFF/java-spring-security-example">https://github.com/Yoh0xFF/java-spring-security-example</a>
- *
- */
 @AllArgsConstructor
 @Data
 public class Page {
