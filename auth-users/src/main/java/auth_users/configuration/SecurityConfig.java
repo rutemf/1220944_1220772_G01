@@ -69,9 +69,9 @@ public class SecurityConfig {
     private String swaggerPath;
 
     @Bean
-    public AuthenticationManager authenticationManager(final UserDetailsService userDetailsService,
-            final PasswordEncoder passwordEncoder) {
+    public AuthenticationManager authenticationManager(final UserDetailsService userDetailsService, final PasswordEncoder passwordEncoder) {
         final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
 
@@ -80,8 +80,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepo.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(format("User: %s, not found", username)));
+        return username -> userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(format("User: %s, not found", username)));
     }
 
     @Bean
@@ -115,7 +114,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Used by JwtAuthenticationProvider to generate JWT tokens
     @Bean
     public JwtEncoder jwtEncoder() {
         final JWK jwk = new RSAKey.Builder(this.rsaPublicKey).privateKey(this.rsaPrivateKey).build();
@@ -123,13 +121,11 @@ public class SecurityConfig {
         return new NimbusJwtEncoder(jwks);
     }
 
-    // Used by JwtAuthenticationProvider to decode and validate JWT tokens
     @Bean
     public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(this.rsaPublicKey).build();
     }
 
-    // Extract authorities from the roles claim
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
@@ -141,13 +137,11 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
-    // Set password encoding schema
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Used by spring security if CORS is enabled.
     @Bean
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

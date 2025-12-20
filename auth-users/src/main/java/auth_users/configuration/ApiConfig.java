@@ -20,7 +20,6 @@ public class ApiConfig {
         return new ShallowEtagHeaderFilter();
     }
 
-
     @Bean
     public OpenAPI openApi() {
         return new OpenAPI().addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
