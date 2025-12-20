@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.shared.model;
 
+import auth_users.shared.model.Name;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
