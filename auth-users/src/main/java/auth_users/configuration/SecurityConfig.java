@@ -42,10 +42,10 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
-import auth_users.usermanagement.model.Role;
+import auth_users.users.model.Role;
 
 import lombok.RequiredArgsConstructor;
-import auth_users.usermanagement.repositories.UserRepository;
+import auth_users.users.repositories.UserRepository;
 
 /**
  * Check https://www.baeldung.com/security-spring and https://www.toptal.com/spring/spring-security-tutorial

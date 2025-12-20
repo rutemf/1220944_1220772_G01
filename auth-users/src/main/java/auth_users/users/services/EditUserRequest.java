@@ -18,15 +18,13 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package auth_users.usermanagement.services;
+package auth_users.users.services;
 
-import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Based on https://github.com/Yoh0xFF/java-spring-security-example
@@ -34,33 +32,10 @@ import lombok.*;
  */
 @Data
 @NoArgsConstructor
-public class CreateUserRequest {
-    @NonNull
-    @NotBlank
-    @Email
-    @Setter
-    @Getter
-    private String username;
-
-    @NonNull
-    @NotBlank
-    @Setter
-    @Getter
-    private String password;
-
-    @NonNull
-    @NotBlank
+@AllArgsConstructor
+public class EditUserRequest {
     private String name;
-
-    @Getter
-    @Setter
-    private String role;
-
-    private Set<String> authorities = new HashSet<>();
-
-    public CreateUserRequest(final String username, final String fullName, final String password) {
-        this.username = username;
-        this.name = fullName;
-        this.password = password;
-    }
+    private String username;
+    private String password;
+    private Set<String> authorities;
 }

@@ -18,29 +18,40 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package auth_users.usermanagement.model;
+package auth_users.users.repositories;
 
-import org.springframework.security.core.GrantedAuthority;
+import java.util.List;
+import java.util.Optional;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
-
-import java.io.Serial;
+import auth_users.exceptions.NotFoundException;
+import auth_users.users.services.SearchUsersQuery;
+import auth_users.users.model.User;
+import auth_users.shared.services.Page;
 
 /**
- * Based on https://github.com/Yoh0xFF/java-spring-security-example
  *
  */
-@Value
-@AllArgsConstructor
-public class Role implements GrantedAuthority {
+public interface UserRepository {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    <S extends User> List<S> saveAll(Iterable<S> entities);
 
-    public static final String ADMIN = "ADMIN";
-    public static final String LIBRARIAN = "LIBRARIAN";
-    public static final String READER = "READER";
+    <S extends User> S save(S entity);
 
-    String authority;
+    Optional<User> findById(Long objectId);
+
+    default User getById(final Long id) {
+        final Optional<User> maybeUser = findById(id);
+        // throws 404 Not Found if the user does not exist or is not enabled
+        return maybeUser.filter(User::isEnabled).orElseThrow(() -> new NotFoundException(User.class, id));
+    }
+
+    Optional<User> findByUsername(String username);
+
+    List<User> searchUsers(Page page, SearchUsersQuery query);
+
+    List<User> findByNameName(String name);
+
+    List<User> findByNameNameContains(String name);
+
+    void delete(User user);
 }

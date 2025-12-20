@@ -18,20 +18,24 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package auth_users.usermanagement.services;
+package auth_users.users.api;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.List;
+
+import auth_users.users.model.User;
+import org.mapstruct.Mapper;
+
+import org.mapstruct.Mapping;
 
 /**
  * Based on https://github.com/Yoh0xFF/java-spring-security-example
  *
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class SearchUsersQuery {
-    private String username;
-    private String fullName;
+@Mapper(componentModel = "spring")
+public abstract class UserViewMapper {
+
+    @Mapping(target = "fullName", source = "name.name")
+    public abstract UserView toUserView(User user);
+
+    public abstract List<UserView> toUserView(List<User> users);
 }

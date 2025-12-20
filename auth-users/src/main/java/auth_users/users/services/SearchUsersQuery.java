@@ -18,7 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package auth_users.usermanagement.api;
+package auth_users.users.services;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,10 +31,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserView {
-
-    private String id;
-
+public class SearchUsersQuery {
     private String username;
     private String fullName;
 }

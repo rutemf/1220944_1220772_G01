@@ -18,7 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package auth_users.usermanagement.services;
+package auth_users.users.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -33,11 +33,11 @@ import org.springframework.transaction.annotation.Transactional;
 import auth_users.exceptions.ConflictException;
 import auth_users.shared.repositories.ForbiddenNameRepository;
 import auth_users.shared.services.Page;
-import auth_users.usermanagement.model.Librarian;
-import auth_users.usermanagement.model.Reader;
-import auth_users.usermanagement.model.Role;
-import auth_users.usermanagement.model.User;
-import auth_users.usermanagement.repositories.UserRepository;
+import auth_users.users.model.Librarian;
+import auth_users.users.model.Reader;
+import auth_users.users.model.Role;
+import auth_users.users.model.User;
+import auth_users.users.repositories.UserRepository;
 
 import java.util.List;
 import java.util.Optional;

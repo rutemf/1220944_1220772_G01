@@ -4,16 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import auth_users.usermanagement.model.Librarian;
-import auth_users.usermanagement.model.Reader;
-import auth_users.usermanagement.model.User;
-import auth_users.usermanagement.repositories.UserRepository;
-
-import java.util.ArrayList;
-import java.util.List;
+import auth_users.users.model.Librarian;
+import auth_users.users.model.Reader;
+import auth_users.users.model.User;
+import auth_users.users.repositories.UserRepository;
 
 @Component
 @RequiredArgsConstructor
@@ -22,36 +18,40 @@ import java.util.List;
 public class UserBootstrapper implements CommandLineRunner {
 
     private final UserRepository userRepository;
-    private final JdbcTemplate jdbcTemplate;
-    private List<String> queriesToExecute = new ArrayList<>();
 
     @Override
     @Transactional
     public void run(final String... args) {
         createReaders();
         createLibrarian();
-        executeQueries();
     }
 
     private void createReaders() {
-        // Reader1 - Manuel
-        if (userRepository.findByUsername("manuel@gmail.com").isEmpty()) {
-            final Reader manuel = Reader.newReader("manuel@gmail.com", "Manuelino123!", "Manuel Sarapinto das Coives");
-            userRepository.save(manuel);
+        if (userRepository.findByUsername("rute@gmail.com").isEmpty()) {
+            final Reader rute = Reader.newReader("rute@gmail.com", "Rute!123", "Rute Ferreira");
+            userRepository.save(rute);
+        }
+
+        if (userRepository.findByUsername("pedro@gmail.com").isEmpty()) {
+            final Reader pedro = Reader.newReader("pedro@gmail.com", "Pedro!123", "Pedro Tabau");
+            userRepository.save(pedro);
+        }
+
+        if (userRepository.findByUsername("marcelo@gmail.com").isEmpty()) {
+            final Reader marcelo = Reader.newReader("marcelo@gmail.com", "Marcelo!123", "Marcelo Sousa");
+            userRepository.save(marcelo);
         }
     }
 
     private void createLibrarian() {
-        // Maria
         if (userRepository.findByUsername("maria@gmail.com").isEmpty()) {
-            final User maria = Librarian.newLibrarian("maria@gmail.com", "Mariaroberta!123", "Maria Roberta");
+            final User maria = Librarian.newLibrarian("maria@gmail.com", "Maria!123", "Maria Roberta");
             userRepository.save(maria);
         }
-    }
 
-    private void executeQueries() {
-        for (String query : queriesToExecute) {
-            jdbcTemplate.update(query);
+        if (userRepository.findByUsername("miguel@gmail.com").isEmpty()) {
+            final User miguel = Librarian.newLibrarian("miguel@gmail.com", "Miguel!123", "Miguel Angelo");
+            userRepository.save(miguel);
         }
     }
 }

@@ -18,14 +18,14 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package auth_users.usermanagement.services;
+package auth_users.users.services;
 
 import static java.util.stream.Collectors.toSet;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import auth_users.usermanagement.model.User;
+import auth_users.users.model.User;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -35,7 +35,7 @@ import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import auth_users.shared.api.MapperInterface;
-import auth_users.usermanagement.model.Role;
+import auth_users.users.model.Role;
 
 /**
  * Based on https://github.com/Yoh0xFF/java-spring-security-example

@@ -18,13 +18,13 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package auth_users.usermanagement.infrastructure.repositories.impl;
+package auth_users.users.infrastructure.repositories.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import auth_users.usermanagement.services.SearchUsersQuery;
+import auth_users.users.services.SearchUsersQuery;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
@@ -38,8 +38,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import auth_users.exceptions.NotFoundException;
-import auth_users.usermanagement.model.User;
-import auth_users.usermanagement.repositories.UserRepository;
+import auth_users.users.model.User;
+import auth_users.users.repositories.UserRepository;
 import auth_users.shared.services.Page;
 
 import lombok.RequiredArgsConstructor;

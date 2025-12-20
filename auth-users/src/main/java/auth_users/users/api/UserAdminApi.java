@@ -18,13 +18,13 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package auth_users.usermanagement.api;
+package auth_users.users.api;
 
-import auth_users.usermanagement.model.User;
-import auth_users.usermanagement.services.CreateUserRequest;
-import auth_users.usermanagement.services.EditUserRequest;
-import auth_users.usermanagement.services.SearchUsersQuery;
-import auth_users.usermanagement.services.UserService;
+import auth_users.users.model.User;
+import auth_users.users.services.CreateUserRequest;
+import auth_users.users.services.EditUserRequest;
+import auth_users.users.services.SearchUsersQuery;
+import auth_users.users.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import auth_users.shared.api.ListResponse;
 import auth_users.shared.services.SearchRequest;
-import auth_users.usermanagement.model.Role;
+import auth_users.users.model.Role;
 
 import java.util.List;
 

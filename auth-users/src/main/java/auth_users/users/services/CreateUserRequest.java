@@ -18,24 +18,49 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package auth_users.usermanagement.api;
+package auth_users.users.services;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import auth_users.usermanagement.model.User;
-import org.mapstruct.Mapper;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-import org.mapstruct.Mapping;
+import lombok.*;
 
 /**
  * Based on https://github.com/Yoh0xFF/java-spring-security-example
  *
  */
-@Mapper(componentModel = "spring")
-public abstract class UserViewMapper {
+@Data
+@NoArgsConstructor
+public class CreateUserRequest {
+    @NonNull
+    @NotBlank
+    @Email
+    @Setter
+    @Getter
+    private String username;
 
-    @Mapping(target = "fullName", source = "name.name")
-    public abstract UserView toUserView(User user);
+    @NonNull
+    @NotBlank
+    @Setter
+    @Getter
+    private String password;
 
-    public abstract List<UserView> toUserView(List<User> users);
+    @NonNull
+    @NotBlank
+    private String name;
+
+    @Getter
+    @Setter
+    private String role;
+
+    private Set<String> authorities = new HashSet<>();
+
+    public CreateUserRequest(final String username, final String fullName, final String password) {
+        this.username = username;
+        this.name = fullName;
+        this.password = password;
+    }
 }

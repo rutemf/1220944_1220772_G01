@@ -1,6 +1,5 @@
 package auth_users.configuration;
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
@@ -13,32 +12,22 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
-/**
- *
- * @author pgsousa
- *
- */
 @Configuration
 public class ApiConfig {
 
-    /*
-     * Etags
-     */
     @Bean
     public ShallowEtagHeaderFilter shallowEtagHeaderFilter() {
         return new ShallowEtagHeaderFilter();
     }
 
-    /*
-     * OpenAPI
-     */
+
     @Bean
     public OpenAPI openApi() {
         return new OpenAPI().addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
-                .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
-                .info(new Info().title("ApiDePsoft").description("ApiDePsoft").version("v1.0")
-                        .contact(new Contact().name("QualquerCoisa").email("email@something.noemail"))
-                        .termsOfService("TOC").license(new License().name("MIT").url("#")));
+        .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
+        .info(new Info().title("ApiDePsoft").description("ApiDePsoft").version("v1.0")
+        .contact(new Contact().name("QualquerCoisa").email("email@something.noemail"))
+        .termsOfService("TOC").license(new License().name("MIT").url("#")));
     }
 
     private SecurityScheme createAPIKeyScheme() {

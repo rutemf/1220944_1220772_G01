@@ -3,11 +3,11 @@ package pt.psoft.g1.psoftg1.testutils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import auth_users.usermanagement.api.UserView;
-import auth_users.usermanagement.api.UserViewMapper;
-import auth_users.usermanagement.model.User;
-import auth_users.usermanagement.services.CreateUserRequest;
-import auth_users.usermanagement.services.UserService;
+import auth_users.users.api.UserView;
+import auth_users.users.api.UserViewMapper;
+import auth_users.users.model.User;
+import auth_users.users.services.CreateUserRequest;
+import auth_users.users.services.UserService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

@@ -18,40 +18,23 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package auth_users.usermanagement.repositories;
+package auth_users.users.api;
 
-import java.util.List;
-import java.util.Optional;
-
-import auth_users.exceptions.NotFoundException;
-import auth_users.usermanagement.services.SearchUsersQuery;
-import auth_users.usermanagement.model.User;
-import auth_users.shared.services.Page;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
+ * Based on https://github.com/Yoh0xFF/java-spring-security-example
  *
  */
-public interface UserRepository {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserView {
 
-    <S extends User> List<S> saveAll(Iterable<S> entities);
+    private String id;
 
-    <S extends User> S save(S entity);
-
-    Optional<User> findById(Long objectId);
-
-    default User getById(final Long id) {
-        final Optional<User> maybeUser = findById(id);
-        // throws 404 Not Found if the user does not exist or is not enabled
-        return maybeUser.filter(User::isEnabled).orElseThrow(() -> new NotFoundException(User.class, id));
-    }
-
-    Optional<User> findByUsername(String username);
-
-    List<User> searchUsers(Page page, SearchUsersQuery query);
-
-    List<User> findByNameName(String name);
-
-    List<User> findByNameNameContains(String name);
-
-    void delete(User user);
+    private String username;
+    private String fullName;
 }
