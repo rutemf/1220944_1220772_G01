@@ -3,11 +3,11 @@ package pt.psoft.g1.psoftg1.authormanagement.model;
 import org.hibernate.StaleObjectStateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pt.psoft.g1.psoftg1.authormanagement.model.Author;
-import pt.psoft.g1.psoftg1.authormanagement.services.CreateAuthorRequest;
-import pt.psoft.g1.psoftg1.authormanagement.services.UpdateAuthorRequest;
-import pt.psoft.g1.psoftg1.shared.model.EntityWithPhoto;
-import pt.psoft.g1.psoftg1.shared.model.Photo;
+import books.authors.model.Author;
+import books.authors.services.CreateAuthorRequest;
+import books.authors.services.UpdateAuthorRequest;
+import books.shared.model.EntityWithPhoto;
+import books.shared.model.Photo;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,5 +1,6 @@
 package pt.psoft.g1.psoftg1.authormanagement.services;
 
+import books.authors.services.AuthorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,8 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pt.psoft.g1.psoftg1.TestConfig;
-import pt.psoft.g1.psoftg1.authormanagement.model.Author;
-import pt.psoft.g1.psoftg1.authormanagement.repositories.AuthorRepository;
+import books.authors.model.Author;
+import books.authors.repositories.AuthorRepository;
 
 
 import java.util.ArrayList;

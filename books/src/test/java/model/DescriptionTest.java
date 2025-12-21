@@ -1,7 +1,7 @@
 package model;
 
 import org.junit.jupiter.api.Test;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Description;
+import books.books.model.Description;
 
 import static org.junit.jupiter.api.Assertions.*;
 

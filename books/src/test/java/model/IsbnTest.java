@@ -1,7 +1,7 @@
 package model;
 
 import org.junit.jupiter.api.Test;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Isbn;
+import books.books.model.Isbn;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

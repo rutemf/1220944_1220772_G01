@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
-import pt.psoft.g1.psoftg1.bookmanagement.api.BookViewAMQP;
+import books.books.api.BookViewAMQP;
 
 public class BookMessageBuilder {
   private ObjectMapper mapper = new ObjectMapper();

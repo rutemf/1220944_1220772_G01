@@ -1,7 +1,7 @@
 package pt.psoft.g1.psoftg1.shared.model;
 
 import org.junit.jupiter.api.Test;
-import pt.psoft.g1.psoftg1.shared.model.Name;
+import books.shared.model.Name;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

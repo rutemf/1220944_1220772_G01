@@ -2,9 +2,9 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pt.psoft.g1.psoftg1.authormanagement.model.Author;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
+import books.authors.model.Author;
+import books.books.model.Book;
+import books.genres.model.Genre;
 
 import java.util.ArrayList;
 

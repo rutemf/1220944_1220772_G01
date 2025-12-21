@@ -1,7 +1,7 @@
 package pt.psoft.g1.psoftg1.authormanagement.model;
 
 import org.junit.jupiter.api.Test;
-import pt.psoft.g1.psoftg1.authormanagement.model.Bio;
+import books.authors.model.Bio;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

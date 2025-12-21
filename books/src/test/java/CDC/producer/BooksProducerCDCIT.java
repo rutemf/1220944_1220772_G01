@@ -27,14 +27,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import pt.psoft.g1.psoftg1.TestConfig;
-import pt.psoft.g1.psoftg1.authormanagement.model.Author;
+import books.authors.model.Author;
 import pt.psoft.g1.psoftg1.bookmanagement.api.BookViewAMQPMapperImpl;
-import pt.psoft.g1.psoftg1.bookmanagement.infrastructure.publishers.impl.BookEventsRabbitmqPublisherImpl;
-import pt.psoft.g1.psoftg1.bookmanagement.publishers.BookEventsPublisher;
-import pt.psoft.g1.psoftg1.bookmanagement.services.BookService;
-import pt.psoft.g1.psoftg1.bookmanagement.api.BookViewAMQP;
-import pt.psoft.g1.psoftg1.bookmanagement.model.Book;
-import pt.psoft.g1.psoftg1.genremanagement.model.Genre;
+import books.books.infrastructure.publishers.impl.BookEventsRabbitmqPublisherImpl;
+import books.books.publishers.BookEventsPublisher;
+import books.books.services.BookService;
+import books.books.api.BookViewAMQP;
+import books.books.model.Book;
+import books.genres.model.Genre;
 
 import java.util.List;
 

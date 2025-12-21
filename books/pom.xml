@@ -192,6 +192,12 @@
 			<version>4.6.15</version> <!-- Use the latest version -->
 		</dependency>
 
+		<!-- MySQL -->
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>8.2.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>io.micrometer</groupId>
@@ -211,7 +217,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>pt.psoft.g1.psoftg1.LMSBooks</mainClass>
+					<mainClass>books.LMSBooks</mainClass>
 					<layout>ZIP</layout>
 				</configuration>
 
@@ -224,7 +230,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>pt.psoft.g1.psoftg1.LMSBooks</mainClass>
+							<mainClass>books.LMSBooks</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
