@@ -26,7 +26,8 @@ public class UserBootstrapper implements CommandLineRunner {
     public void run(final String... args) {
         loadForbiddenNames();
         createReaders();
-        createLibrarian();
+        createLibrarians();
+        createAdmins();
     }
 
     private void createReaders() {
@@ -46,7 +47,7 @@ public class UserBootstrapper implements CommandLineRunner {
         }
     }
 
-    private void createLibrarian() {
+    private void createLibrarians() {
         if (userRepository.findByUsername("maria@gmail.com").isEmpty()) {
             final User maria = Librarian.newLibrarian("maria@gmail.com", "Maria!123", "Maria Roberta");
             userRepository.save(maria);
@@ -58,7 +59,14 @@ public class UserBootstrapper implements CommandLineRunner {
         }
     }
 
-    protected void loadForbiddenNames() {
+    private void createAdmins() {
+        if (userRepository.findByUsername("admin@gmail.com").isEmpty()) {
+            final User admin = User.newUser("admin@gmail.com", "Admin!123", "Super Admin", "ADMIN");
+            userRepository.save(admin);
+        }
+    }
+
+    private void loadForbiddenNames() {
         String fileName = "forbiddenNames.txt";
         forbiddenNameService.loadDataFromFile(fileName);
     }
