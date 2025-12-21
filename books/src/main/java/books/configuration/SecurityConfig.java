@@ -41,14 +41,6 @@ import books.users.model.Role;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Check https://www.baeldung.com/security-spring and https://www.toptal.com/spring/spring-security-tutorial
- * <p>
- * Based on https://github.com/Yoh0xFF/java-spring-security-example/
- *
- * @author pagsousa
- *
- */
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)

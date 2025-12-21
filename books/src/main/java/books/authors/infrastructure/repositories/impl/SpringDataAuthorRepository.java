@@ -4,7 +4,6 @@ import books.authors.model.Author;
 import books.authors.repositories.AuthorRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import pt.psoft.g1.psoftg1.authormanagement.api.AuthorLendingView;
 
 import java.util.List;
 import java.util.Optional;

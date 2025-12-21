@@ -9,6 +9,7 @@ import books.shared.model.StringUtilsCustom;
 
 @Embeddable
 public class Bio {
+
     @Transient
     private final int BIO_MAX_LENGTH = 4096;
 
@@ -21,16 +22,21 @@ public class Bio {
         setBio(bio);
     }
 
-    protected Bio() {
-    }
+    protected Bio() { }
 
     public void setBio(String bio) {
-        if (bio == null)
+        if (bio == null) {
             throw new IllegalArgumentException("Bio cannot be null");
-        if (bio.isBlank())
+        }
+
+        if (bio.isBlank()) {
             throw new IllegalArgumentException("Bio cannot be blank");
-        if (bio.length() > BIO_MAX_LENGTH)
+        }
+
+        if (bio.length() > BIO_MAX_LENGTH) {
             throw new IllegalArgumentException("Bio has a maximum of 4096 characters");
+        }
+
         this.bio = StringUtilsCustom.sanitizeHtml(bio);
     }
 

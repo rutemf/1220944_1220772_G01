@@ -3,8 +3,6 @@ package books.books.services;
 import books.books.model.Book;
 import books.books.publishers.BookEventsPublisher;
 import books.books.repositories.BookRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +23,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@PropertySource({ "classpath:config/library.properties" })
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
@@ -34,9 +31,6 @@ public class BookServiceImpl implements BookService {
     private final PhotoRepository photoRepository;
 
     private final BookEventsPublisher bookEventsPublisher;
-
-    @Value("${suggestionsLimitPerGenre}")
-    private long suggestionsLimitPerGenre;
 
     @Override
     public Book create(CreateBookRequest request, String isbn) {
@@ -49,7 +43,7 @@ public class BookServiceImpl implements BookService {
 
         Book savedBook = create(isbn, title, description, photoURI, genre, authorIds);
 
-        if( savedBook!=null ) {
+        if (savedBook != null) {
             bookEventsPublisher.sendBookCreated(savedBook);
         }
 
@@ -71,12 +65,12 @@ public class BookServiceImpl implements BookService {
         return bookCreated;
     }
 
-    private Book create( String isbn,
-                            String title,
-                            String description,
-                            String photoURI,
-                            String genreName,
-                            List<Long> authorIds) {
+    private Book create(String isbn,
+                        String title,
+                        String description,
+                        String photoURI,
+                        String genreName,
+                        List<Long> authorIds) {
 
         if (bookRepository.findByIsbn(isbn).isPresent()) {
             throw new ConflictException("Book with ISBN " + isbn + " already exists");
@@ -111,8 +105,8 @@ public class BookServiceImpl implements BookService {
         String title = request.getTitle();
         String description = request.getDescription();
 
-        Book updatedBook = update( book, currentVersion, title, description, photoURI, genreId, authorsId);
-        if( updatedBook!=null ) {
+        Book updatedBook = update(book, currentVersion, title, description, photoURI, genreId, authorsId);
+        if (updatedBook != null) {
             bookEventsPublisher.sendBookUpdated(updatedBook, currentVersion);
         }
 
@@ -137,13 +131,13 @@ public class BookServiceImpl implements BookService {
         return bookUpdated;
     }
 
-    private Book update( Book book,
-                         Long currentVersion,
-                         String title,
-                         String description,
-                         String photoURI,
-                         String genreId,
-                         List<Long> authorsId) {
+    private Book update(Book book,
+                        Long currentVersion,
+                        String title,
+                        String description,
+                        String photoURI,
+                        String genreId,
+                        List<Long> authorsId) {
 
         Genre genreObj = null;
         if (genreId != null) {
@@ -164,8 +158,7 @@ public class BookServiceImpl implements BookService {
                 Author author = temp.get();
                 authors.add(author);
             }
-        }
-        else
+        } else
             authors = null;
 
         book.applyPatch(currentVersion, title, description, photoURI, genreObj, authors);
@@ -188,7 +181,7 @@ public class BookServiceImpl implements BookService {
         book.removePhoto(desiredVersion);
 
         var deletedBook = bookRepository.save(book);
-        if( deletedBook!=null ) {
+        if (deletedBook != null) {
             photoRepository.deleteByPhotoFile(photoFile);
 
             bookEventsPublisher.sendBookDeleted(deletedBook, desiredVersion);
@@ -225,8 +218,6 @@ public class BookServiceImpl implements BookService {
         return bookRepository.searchBooks(page, query);
     }
 
-
-
     private List<Author> getAuthors(List<Long> authorNumbers) {
 
         List<Author> authors = new ArrayList<>();
@@ -243,5 +234,4 @@ public class BookServiceImpl implements BookService {
 
         return authors;
     }
-
 }

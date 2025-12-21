@@ -1,6 +1,5 @@
 package books.authors.model;
 
-import books.authors.services.UpdateAuthorRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.StaleObjectStateException;
@@ -10,6 +9,7 @@ import books.shared.model.Name;
 
 @Entity
 public class Author extends EntityWithPhoto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "AUTHOR_NUMBER")
@@ -24,6 +24,14 @@ public class Author extends EntityWithPhoto {
 
     @Embedded
     private Bio bio;
+
+    public Author(String name, String bio, String photoURI) {
+        setName(name);
+        setBio(bio);
+        setPhotoInternal(photoURI);
+    }
+
+    protected Author() { }
 
     public void setName(String name) {
         this.name = new Name(name);
@@ -41,40 +49,7 @@ public class Author extends EntityWithPhoto {
         return authorNumber;
     }
 
-    public Author(String name, String bio, String photoURI) {
-        setName(name);
-        setBio(bio);
-        setPhotoInternal(photoURI);
-    }
-
-    protected Author() {
-        // got ORM only
-    }
-
-    public void applyPatch(final long desiredVersion, final UpdateAuthorRequest request) {
-        if (this.version != desiredVersion)
-            throw new StaleObjectStateException("Object was already modified by another user", this.authorNumber);
-        if (request.getName() != null)
-            setName(request.getName());
-        if (request.getBio() != null)
-            setBio(request.getBio());
-        if (request.getPhotoURI() != null)
-            setPhotoInternal(request.getPhotoURI());
-    }
-
-    public void removePhoto(long desiredVersion) {
-        if (desiredVersion != this.version) {
-            throw new ConflictException("Provided version does not match latest version of this object");
-        }
-
-        setPhotoInternal(null);
-    }
-
     public String getName() {
         return this.name.toString();
-    }
-
-    public String getBio() {
-        return this.bio.toString();
     }
 }

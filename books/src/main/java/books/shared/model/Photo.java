@@ -12,6 +12,7 @@ import java.nio.file.Path;
 
 @Entity
 public class Photo {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long pk;
@@ -21,10 +22,9 @@ public class Photo {
     @Getter
     private String photoFile;
 
-    protected Photo() {
-    }
-
     public Photo(Path photoPath) {
         setPhotoFile(photoPath.toString());
     }
+
+    protected Photo() { }
 }

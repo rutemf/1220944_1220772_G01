@@ -10,10 +10,10 @@ import java.io.Serializable;
 @Embeddable
 @EqualsAndHashCode
 public class Isbn implements Serializable {
+
     @Size(min = 10, max = 13)
     @Column(name = "ISBN", length = 16)
-
-    String isbn;
+    private String isbn;
 
     public Isbn(String isbn) {
         if (isValidIsbn(isbn)) {
@@ -23,12 +23,13 @@ public class Isbn implements Serializable {
         }
     }
 
-    protected Isbn() {
-    };
+    protected Isbn() { }
 
     private static boolean isValidIsbn(String isbn) {
-        if (isbn == null)
+        if (isbn == null) {
             throw new IllegalArgumentException("Isbn cannot be null");
+        }
+
         return (isbn.length() == 10) ? isValidIsbn10(isbn) : isValidIsbn13(isbn);
     }
 
@@ -68,6 +69,7 @@ public class Isbn implements Serializable {
         return checksum == Integer.parseInt(isbn.substring(12));
     }
 
+    @Override
     public String toString() {
         return this.isbn;
     }

@@ -1,10 +1,8 @@
 package books.bootstrapping;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +13,6 @@ import books.genres.model.Genre;
 import books.books.repositories.BookRepository;
 import books.genres.repositories.GenreRepository;
 import books.exceptions.NotFoundException;
-import books.shared.repositories.PhotoRepository;
 import books.shared.services.ForbiddenNameService;
 
 import java.util.ArrayList;
@@ -25,19 +22,12 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Profile("bootstrap")
-@PropertySource({ "classpath:config/library.properties" })
-@Order(2)
+@Order(1)
 public class Bootstrapper implements CommandLineRunner {
-    @Value("${lendingDurationInDays}")
-    private int lendingDurationInDays;
-    @Value("${fineValuePerDayInCents}")
-    private int fineValuePerDayInCents;
 
     private final GenreRepository genreRepository;
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
-    private final PhotoRepository photoRepository;
-
     private final ForbiddenNameService forbiddenNameService;
 
     @Override
@@ -47,7 +37,6 @@ public class Bootstrapper implements CommandLineRunner {
         createGenres();
         createBooks();
         loadForbiddenNames();
-        createPhotos();
     }
 
     private void createAuthors() {
@@ -343,37 +332,8 @@ public class Bootstrapper implements CommandLineRunner {
         }
     }
 
-    protected void loadForbiddenNames() {
+    private void loadForbiddenNames() {
         String fileName = "forbiddenNames.txt";
         forbiddenNameService.loadDataFromFile(fileName);
-    }
-
-    private void createLendings() {
-        int i;
-        int seq = 0;
-        final var book1 = bookRepository.findByIsbn("9789720706386");
-        final var book2 = bookRepository.findByIsbn("9789723716160");
-        final var book3 = bookRepository.findByIsbn("9789895612864");
-        final var book4 = bookRepository.findByIsbn("9782722203402");
-        final var book5 = bookRepository.findByIsbn("9789722328296");
-        final var book6 = bookRepository.findByIsbn("9789895702756");
-        final var book7 = bookRepository.findByIsbn("9789897776090");
-        final var book8 = bookRepository.findByIsbn("9789896379636");
-        final var book9 = bookRepository.findByIsbn("9789896378905");
-        final var book10 = bookRepository.findByIsbn("9789896375225");
-        List<Book> books = new ArrayList<>();
-        if (book1.isPresent() && book2.isPresent() && book3.isPresent() && book4.isPresent() && book5.isPresent()
-                && book6.isPresent() && book7.isPresent() && book8.isPresent() && book9.isPresent()
-                && book10.isPresent()) {
-            books = List.of(new Book[] { book1.get(), book2.get(), book3.get(), book4.get(), book5.get(), book6.get(),
-                    book7.get(), book8.get(), book9.get(), book10.get() });
-        }
-    }
-
-    private void createPhotos() {
-        /*
-         * Optional<Photo> photoJoao = photoRepository.findByPhotoFile("foto-joao.jpg"); if(photoJoao.isEmpty()) { Photo
-         * photo = new Photo(Paths.get("")) }
-         */
     }
 }

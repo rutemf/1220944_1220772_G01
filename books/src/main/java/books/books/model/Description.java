@@ -9,19 +9,19 @@ import books.shared.model.StringUtilsCustom;
 
 @Embeddable
 public class Description {
+
     @Transient
     private final int DESC_MAX_LENGTH = 4096;
 
     @Size(max = DESC_MAX_LENGTH)
     @Column(length = DESC_MAX_LENGTH)
-    String description;
+    private String description;
 
     public Description(String description) {
         setDescription(description);
     }
 
-    protected Description() {
-    }
+    protected Description() { }
 
     public void setDescription(@Nullable String description) {
         if (description == null || description.isBlank()) {
@@ -33,6 +33,7 @@ public class Description {
         }
     }
 
+    @Override
     public String toString() {
         return this.description;
     }

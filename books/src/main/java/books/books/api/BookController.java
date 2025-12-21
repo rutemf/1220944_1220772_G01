@@ -39,7 +39,6 @@ public class BookController {
     private final BookService bookService;
     private final ConcurrencyService concurrencyService;
     private final FileStorageService fileStorageService;
-
     private final BookViewMapper bookViewMapper;
 
     @Operation(summary = "Register a new Book")
@@ -47,7 +46,6 @@ public class BookController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<BookView> create(CreateBookRequest resource, @PathVariable("isbn") String isbn) {
 
-        // Guarantee that the client doesn't provide a link on the body, null = no photo or error
         resource.setPhotoURI(null);
         MultipartFile file = resource.getPhoto();
 
@@ -63,12 +61,10 @@ public class BookController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        // final var savedBook = bookService.save(book);
-        final var newBookUri = ServletUriComponentsBuilder.fromCurrentRequestUri().pathSegment(book.getIsbn()).build()
-                .toUri();
 
-        return ResponseEntity.created(newBookUri).eTag(Long.toString(book.getVersion()))
-                .body(bookViewMapper.toBookView(book));
+        final var newBookUri = ServletUriComponentsBuilder.fromCurrentRequestUri().pathSegment(book.getIsbn()).build().toUri();
+
+        return ResponseEntity.created(newBookUri).eTag(Long.toString(book.getVersion())).body(bookViewMapper.toBookView(book));
     }
 
     @Operation(summary = "Updates a specific Book")
@@ -77,9 +73,10 @@ public class BookController {
                                                @Valid final UpdateBookRequest resource) {
 
         final String ifMatchValue = request.getHeader(ConcurrencyService.IF_MATCH);
+
         if (ifMatchValue == null || ifMatchValue.isEmpty() || ifMatchValue.equals("null")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "You must issue a conditional PATCH using 'if-match'");
+            "You must issue a conditional PATCH using 'if-match'");
         }
 
         MultipartFile file = resource.getPhoto();
@@ -92,12 +89,14 @@ public class BookController {
 
         Book book;
         resource.setIsbn(isbn);
+
         try {
             book = bookService.update(resource,
                     concurrencyService.getVersionFromIfMatchHeader(ifMatchValue));
         } catch (Exception e) {
             throw new ConflictException("Could not update book: " + e.getMessage());
         }
+
         return ResponseEntity.ok().eTag(Long.toString(book.getVersion())).body(bookViewMapper.toBookView(book));
     }
 
@@ -106,9 +105,6 @@ public class BookController {
     public ListResponse<BookView> findBooks(@RequestParam(value = "title", required = false) final String title,
                                             @RequestParam(value = "genre", required = false) final String genre,
                                             @RequestParam(value = "authorName", required = false) final String authorName) {
-
-        // Este método, como está, faz uma junção 'OR'.
-        // Para uma junção 'AND', ver o "/search"
 
         List<Book> booksByTitle = null;
         if (title != null)

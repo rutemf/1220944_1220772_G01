@@ -14,8 +14,9 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Book", uniqueConstraints = { @UniqueConstraint(name = "uc_book_isbn", columnNames = { "ISBN" }) })
+@Table(name = "Book", uniqueConstraints = {@UniqueConstraint(name = "uc_book_isbn", columnNames = {"ISBN"})})
 public class Book extends EntityWithPhoto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     long pk;
@@ -85,9 +86,7 @@ public class Book extends EntityWithPhoto {
         setPhotoInternal(photoURI);
     }
 
-    protected Book() {
-        // got ORM only
-    }
+    protected Book() { }
 
     public void removePhoto(long desiredVersion) {
         if (desiredVersion != this.version) {
@@ -102,7 +101,7 @@ public class Book extends EntityWithPhoto {
                            final String description,
                            final String photoURI,
                            final Genre genre,
-                           final List<Author> authors ) {
+                           final List<Author> authors) {
 
         if (!Objects.equals(this.version, desiredVersion))
             throw new StaleObjectStateException("Object was already modified by another user", this.pk);
