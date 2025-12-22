@@ -14,9 +14,6 @@
     <packaging>pom</packaging>
     <name>psoft-g1</name>
 	<description>Demo project for Spring Boot</description>
-    <modules>
-        <module>genres</module>
-    </modules>
 
     <properties>
 		<java.version>17</java.version>
