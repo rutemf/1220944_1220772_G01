@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import books.books.api.BookRabbitmqController;
-import books.books.services.BookService;
 import readers.shared.model.BookEvents;
 
 @Profile("!test")
@@ -59,11 +57,6 @@ public  class RabbitmqClientConfig {
             return BindingBuilder.bind(autoDeleteQueue_Book_Deleted)
                     .to(direct)
                     .with(BookEvents.BOOK_DELETED);
-        }
-
-        @Bean
-        public BookRabbitmqController receiver(BookService bookService, @Qualifier("autoDeleteQueue_Book_Created") Queue autoDeleteQueue_Book_Created) {
-            return new BookRabbitmqController(bookService);
         }
     }
 }
