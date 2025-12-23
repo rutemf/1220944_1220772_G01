@@ -67,7 +67,7 @@ public  class RabbitmqClientConfig {
 
         @Bean
         public GenreRabbitmqController receiver(GenreService genreService, @Qualifier("autoDeleteQueue_Genre_Created") Queue autoDeleteQueue_Genre_Created) {
-            return new GenreRabbitmqController();
+            return new GenreRabbitmqController(genreService);
         }
     }
 }

@@ -12,5 +12,5 @@ public interface GenreRepository {
     Genre save(Genre genre);
     void delete(Genre genre);
     List<Genre> searchGenres(Page page, SearchGenreQuery query);
-    List<Genre> findByGenreName(@Param("genre") String genreName);
+    Genre findByGenreName(@Param("genre") String genreName);
 }

@@ -11,7 +11,7 @@ public interface GenreService {
     Genre create(CreateGenreRequest request);
     Genre create(GenreViewAMQP genreViewAMQP);
 
-    Genre update(CreateGenreRequest request);
+    Genre update(UpdateGenreRequest request, Long currentVersion);
     Genre update(GenreViewAMQP genreViewAMQP);
 
     Genre findByGenre(String genre);
