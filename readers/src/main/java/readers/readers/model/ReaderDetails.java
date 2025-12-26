@@ -36,7 +36,7 @@ public class ReaderDetails {
     @Enumerated(EnumType.STRING)
     private ReaderStatus status;
 
-    @OneToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Genre> interestList;
 
     public ReaderDetails(int readerNumber, String readerId, String birthDate, String phoneNumber, boolean gdpr, boolean marketing, boolean thirdParty, List<Genre> interestList) {

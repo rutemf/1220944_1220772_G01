@@ -1,5 +1,6 @@
 package auth_users.users.services;
 
+import auth_users.users.api.UserAMQP;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -56,22 +57,55 @@ public class UserService implements UserDetailsService {
 
         User user;
         switch (request.getRole()) {
-        case Role.READER: {
-            user = Reader.newReader(request.getUsername(), request.getPassword(), request.getName());
-            break;
-        }
-        case Role.LIBRARIAN: {
-            user = Librarian.newLibrarian(request.getUsername(), request.getPassword(), request.getName());
-            break;
-        }
-        default: {
-            return null;
-        }
+            case Role.READER: {
+                user = Reader.newReader(request.getUsername(), request.getPassword(), request.getName());
+                break;
+            }
+            case Role.LIBRARIAN: {
+                user = Librarian.newLibrarian(request.getUsername(), request.getPassword(), request.getName());
+                break;
+            }
+            default: {
+                return null;
+            }
         }
 
         // final User user = userEditMapper.create(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         // user.addAuthority(new Role(request.getRole()));
+
+        return userRepo.save(user);
+    }
+
+    @Transactional
+    public User createFromAMQP(final UserAMQP request) {
+        if (userRepo.findByUsername(request.getUsername()).isPresent()) {
+            throw new ConflictException("Username already exists!");
+        }
+
+        Iterable<String> words = List.of(request.getFullName().split("\\s+"));
+        for (String word : words) {
+            if (!forbiddenNameRepository.findByForbiddenNameIsContained(word).isEmpty()) {
+                throw new IllegalArgumentException("Name contains a forbidden word");
+            }
+        }
+
+        User user;
+        switch (request.getRole()) {
+            case Role.READER: {
+                user = Reader.newReader(request.getUsername(), request.getPassword(), request.getFullName());
+                break;
+            }
+            case Role.LIBRARIAN: {
+                user = Librarian.newLibrarian(request.getUsername(), request.getPassword(), request.getFullName());
+                break;
+            }
+            default: {
+                return null;
+            }
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         return userRepo.save(user);
     }
@@ -123,7 +157,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User getAuthenticatedUser(Authentication authentication) {
-        if (authentication == null || !(authentication.getPrincipal()instanceof Jwt jwt)) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof Jwt jwt)) {
             throw new AccessDeniedException("User is not logged in");
         }
 

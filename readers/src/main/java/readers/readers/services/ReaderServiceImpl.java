@@ -1,8 +1,10 @@
 package readers.readers.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import readers.genres.model.Genre;
+import readers.genres.repositories.GenreRepository;
 import readers.readers.model.ReaderDetails;
 import readers.readers.publishers.ReaderEventsPublisher;
 import readers.readers.repositories.ReaderRepository;
@@ -15,17 +17,19 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ReaderServiceImpl implements ReaderService {
 
+    private final GenreRepository genreRepository;
     private final ReaderRepository repository;
     private final ReaderEventsPublisher publisher;
 
     @Override
+    @Transactional
     public ReaderDetails create(CreateReaderRequest request) {
         String generatedReaderId = UUID.randomUUID().toString();
 
         List<Genre> genres = new ArrayList<>();
 
         for (String genreName : request.getInterestList()) {
-            Genre genre = new Genre(genreName);
+            Genre genre = genreRepository.findByString(genreName).orElseGet(() -> genreRepository.save(new Genre(genreName)));
             genres.add(genre);
         }
 
