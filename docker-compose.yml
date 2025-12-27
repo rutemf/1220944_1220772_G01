@@ -1,0 +1,53 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - odsoft-network
+
+  auth-users-service:
+    build:
+      context: ./auth-users
+      dockerfile: Dockerfile
+    container_name: auth-users
+    ports:
+      - "4677:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Auth-Users
+    depends_on:
+      - rabbitmq
+    networks:
+      - odsoft-network
+
+  readers-service:
+    build:
+      context: ./readers
+    container_name: readers
+    ports:
+      - "4677:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Readers
+    depends_on:
+      - rabbitmq
+    networks:
+      - odsoft-network
+
+  books-service:
+    build:
+      context: ./books
+    container_name: books
+    ports:
+      - "4677:8083"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Books
+    depends_on:
+      - rabbitmq
+    networks:
+      - odsoft-network
+
+networks:
+  odsoft-network:
+    driver: bridge
