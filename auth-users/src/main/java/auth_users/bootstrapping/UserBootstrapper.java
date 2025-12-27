@@ -24,6 +24,7 @@ public class UserBootstrapper implements CommandLineRunner {
     @Override
     @Transactional
     public void run(final String... args) {
+        clearDatabase();
         loadForbiddenNames();
         createReaders();
         createLibrarians();
@@ -69,5 +70,9 @@ public class UserBootstrapper implements CommandLineRunner {
     private void loadForbiddenNames() {
         String fileName = "forbiddenNames.txt";
         forbiddenNameService.loadDataFromFile(fileName);
+    }
+
+    private void clearDatabase() {
+        userRepository.deleteAll();
     }
 }

@@ -44,10 +44,6 @@ import auth_users.shared.services.Page;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Based on https://github.com/Yoh0xFF/java-spring-security-example
- *
- */
 @Repository
 @CacheConfig(cacheNames = "users")
 public interface SpringDataUserRepository extends UserRepository, UserRepoCustom, CrudRepository<User, Long> {
@@ -61,20 +57,10 @@ public interface SpringDataUserRepository extends UserRepository, UserRepoCustom
             @CacheEvict(key = "#p0.username", condition = "#p0.username != null") })
     <S extends User> S save(S entity);
 
-    /**
-     * findById searches a specific user and returns an optional
-     */
     @Override
     @Cacheable
     Optional<User> findById(Long objectId);
 
-    /**
-     * getById explicitly loads a user or throws an exception if the user does not exist or the account is not enabled
-     *
-     * @param id
-     * 
-     * @return
-     */
     @Cacheable
     default User getById(final Long id) {
         final Optional<User> maybeUser = findById(id);
@@ -87,26 +73,17 @@ public interface SpringDataUserRepository extends UserRepository, UserRepoCustom
 
     @Cacheable
     List<User> findByNameName(String name);
+
+    @Override
+    @CacheEvict(allEntries = true)
+    void deleteAll();
 }
 
-/**
- * Custom interface to add custom methods to spring repository.
- *
- * @see https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.custom-implementations
- *
- *
- */
 interface UserRepoCustom {
 
     List<User> searchUsers(Page page, SearchUsersQuery query);
 }
 
-/**
- * use JPA Criteria API to build the custom query
- *
- * @see https://www.baeldung.com/hibernate-criteria-queries
- *
- */
 @RequiredArgsConstructor
 class UserRepoCustomImpl implements UserRepoCustom {
 
