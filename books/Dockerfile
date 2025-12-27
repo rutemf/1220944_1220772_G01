@@ -1,5 +1,16 @@
-FROM openjdk:17-jdk-slim
+FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /app
-ARG JAR_FILE=target/app.jar
-COPY ${JAR_FILE} /app/app.jar
+COPY pom.xml .
+RUN mvn -B dependency:go-offline
+COPY src ./src
+ARG SKIP_TESTS=true
+RUN if [ "$SKIP_TESTS" = "true" ]; then mvn -B clean package -DskipTests; else mvn -B clean package; fi
+
+FROM eclipse-temurin:17-jdk
+WORKDIR /app
+ARG JAR_FILE=target/*.jar
+COPY --from=build /app/${JAR_FILE} app.jar
+ENV SERVER_PORT=8080
+ENV JAVA_OPTS=""
+EXPOSE ${SERVER_PORT}
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=$SERVER_PORT -jar /app/app.jar"]
