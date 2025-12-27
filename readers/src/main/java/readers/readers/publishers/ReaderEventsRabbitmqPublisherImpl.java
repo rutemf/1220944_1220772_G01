@@ -25,7 +25,12 @@ public class ReaderEventsRabbitmqPublisherImpl implements ReaderEventsPublisher 
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            String readerAMQPinString = objectMapper.writeValueAsString(request);
+            com.fasterxml.jackson.databind.node.ObjectNode jsonNode = objectMapper.valueToTree(request);
+            jsonNode.put("role", "READER");
+            jsonNode.put("readerId", readerId);
+            jsonNode.put("username", request.getEmail());
+
+            String readerAMQPinString = objectMapper.writeValueAsString(jsonNode);
 
             this.template.convertAndSend(direct.getName(), ReaderEvents.READER_CREATED, readerAMQPinString);
 

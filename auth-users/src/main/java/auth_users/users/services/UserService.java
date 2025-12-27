@@ -101,7 +101,8 @@ public class UserService implements UserDetailsService {
                 break;
             }
             default: {
-                return null;
+                user = User.newUser(request.getUsername(), request.getPassword(), request.getFullName());
+                break;
             }
         }
 

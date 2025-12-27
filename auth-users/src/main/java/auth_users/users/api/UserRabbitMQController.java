@@ -26,13 +26,15 @@ public class UserRabbitMQController {
 
             ObjectMapper objectMapper = new ObjectMapper();
             UserAMQP userAMQP = objectMapper.readValue(jsonReceived, UserAMQP.class);
+            System.out.println(userAMQP);
 
             System.out.println(" [x] Received Reader Created by AMQP: " + msg + ".");
             try {
                 userService.createFromAMQP(userAMQP);
-                System.out.println(" [x] New User Inserted from AMQP: " + msg + ".");
+                System.out.println(" [x] Success: User inserted/processed.");
             } catch (Exception e) {
-                System.out.println(" [x] User already exists. No need to store it.");
+                System.err.println(" [!] Error in userService.createFromAMQP: " + e.getMessage());
+                e.printStackTrace();
             }
         }
         catch(Exception ex) {
