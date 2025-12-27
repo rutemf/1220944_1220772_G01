@@ -75,11 +75,26 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Docker Images') {
             steps {
-                echo 'Building Docker Image...'
-                sh 'docker build -t psoft-g1-app:latest .'
+                echo 'Building Docker Images...'
+                sh 'docker build -t miguel04cardoso/auth-users-service:latest ./auth-users'
+                sh 'docker build -t miguel04cardoso/readers-service:latest ./readers'
+                sh 'docker build -t miguel04cardoso/books-service:latest ./books'
+                sh 'docker build -t miguel04cardoso/genres-service:latest ./genres'
             }
+        }
+
+        stage('Push to Docker Registry') {
+          steps {
+            withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+              sh 'docker login -u $USER -p $PASS'
+              sh 'docker push miguel04cardoso/auth-users-service:latest'
+              sh 'docker push miguel04cardoso/readers-service:latest'
+              sh 'docker push miguel04cardoso/books-service:latest'
+              sh 'docker push miguel04cardoso/genres-service:latest'
+            }
+          }
         }
 
         stage('Deploy Locally') {

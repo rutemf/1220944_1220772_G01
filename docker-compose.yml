@@ -1,53 +1,81 @@
-services:
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    networks:
-      - odsoft-network
-
-  auth-users-service:
-    build:
-      context: ./auth-users
-      dockerfile: Dockerfile
-    container_name: auth-users
-    ports:
-      - "4677:8081"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Auth-Users
-    depends_on:
-      - rabbitmq
-    networks:
-      - odsoft-network
-
-  readers-service:
-    build:
-      context: ./readers
-    container_name: readers
-    ports:
-      - "4677:8082"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Readers
-    depends_on:
-      - rabbitmq
-    networks:
-      - odsoft-network
-
-  books-service:
-    build:
-      context: ./books
-    container_name: books
-    ports:
-      - "4677:8083"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Books
-    depends_on:
-      - rabbitmq
-    networks:
-      - odsoft-network
+version: "3.8"
 
 networks:
-  odsoft-network:
-    driver: bridge
+  traefik-public:
+    external: true
+
+services:
+  traefik:
+    image: traefik:v2.12
+    command:
+      - "--providers.docker.swarmmode=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--api.insecure=true"
+    ports:
+      - "80:80"     # HTTP
+      - "8080:8080" # Dashboard Traefik
+    networks:
+      - traefik-public
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.localhost`)"
+      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
+
+  auth-users-service:
+    image: auth-users-service:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Auth-Users
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=Host(`auth.localhost`)"
+      - "traefik.http.services.auth.loadbalancer.server.port=8081"
+
+  readers-service:
+    image: readers-service:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Readers
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.readers.rule=Host(`readers.localhost`)"
+      - "traefik.http.services.readers.loadbalancer.server.port=8082"
+
+  books-service:
+    image: books-service:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Books
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.books.rule=Host(`books.localhost`)"
+      - "traefik.http.services.books.loadbalancer.server.port=8083"
