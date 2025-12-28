@@ -21,7 +21,7 @@ pipeline {
                     echo 'Static Code Analysis...'
                     sh 'mvn -B spotbugs:spotbugs spotbugs:check -DskipTests'
                     publishHTML(target: [
-                        allowMissing: false,
+                        allowMissing: true,
                         alwaysLinkToLastBuild: true,
                         keepAll: true,
                         reportDir: 'target/site',
@@ -43,7 +43,7 @@ pipeline {
 
                     echo 'Reporting Results...'
                     publishHTML(target: [
-                        allowMissing: false,
+                        allowMissing: true,
                         alwaysLinkToLastBuild: true,
                         keepAll: true,
                         reportDir: 'target/pit-reports',
@@ -63,7 +63,7 @@ pipeline {
                     echo 'Code Coverage...'
                     sh 'mvn jacoco:report'
                     publishHTML(target: [
-                        allowMissing: false,
+                        allowMissing: true,
                         alwaysLinkToLastBuild: true,
                         keepAll: true,
                         reportDir: 'target/site/jacoco',
