@@ -9,44 +9,13 @@ pipeline {
             }
         }
 
-        stage('Build Microservices - Dev') {
-            when {
-                branch 'dev'
-            }
+        stage('Build Microservices') {
             steps {
                 parallel(
-                    "Auth Users": { build job: "books/dev", wait: true },
-                    "Books": { build job: 'books/dev', wait: true },
-                    "Genres": { build job: 'genres/dev', wait: true },
-                    "Readers": { build job: 'readers/dev', wait: true }
-                )
-            }
-        }
-
-        stage('Build Microservices - Staging') {
-            when {
-                branch 'staging'
-            }
-            steps {
-                parallel(
-                    "Auth Users": { build job: "books/staging", wait: true },
-                    "Books": { build job: 'books/staging', wait: true },
-                    "Genres": { build job: 'genres/staging', wait: true },
-                    "Readers": { build job: 'readers/staging', wait: true }
-                )
-            }
-        }
-
-        stage('Build Microservices - Prod') {
-            when {
-                branch 'prod'
-            }
-            steps {
-                parallel(
-                    "Auth Users": { build job: "books/prod", wait: true },
-                    "Books": { build job: 'books/prod', wait: true },
-                    "Genres": { build job: 'genres/prod', wait: true },
-                    "Readers": { build job: 'readers/prod', wait: true }
+                    "Auth Users": { build job: "books", wait: true },
+                    "Books": { build job: 'books', wait: true },
+                    "Genres": { build job: 'genres', wait: true },
+                    "Readers": { build job: 'readers', wait: true }
                 )
             }
         }
