@@ -12,9 +12,10 @@ pipeline {
         stage('Build Microservices') {
             steps {
                 parallel(
-                    "Auth Users": { build job: 'auth-users-build', wait: true },
-                    "Books": { build job: 'books-build', wait: true },
-                    "Readers": { build job: 'readers-build', wait: true }
+                    "Auth Users": { build job: 'auth-users', wait: true },
+                    "Books": { build job: 'books', wait: true },
+                    "Genres": { build job: 'genres', wait: true },
+                    "Readers": { build job: 'readers', wait: true }
                 )
             }
         }
