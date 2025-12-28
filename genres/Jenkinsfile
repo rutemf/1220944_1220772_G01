@@ -4,74 +4,82 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out Auth-Users Service...'
+                echo 'Checking out Genres Service...'
                 checkout scm
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Validating...'
-                sh 'mvn validate'
+                dir('genres') {
+                    echo 'Validating...'
+                    sh 'mvn validate'
 
-                echo 'Building...'
-                sh 'mvn clean compile'
+                    echo 'Building...'
+                    sh 'mvn clean compile'
 
-                echo 'Static Code Analysis...'
-                sh 'mvn -B spotbugs:spotbugs spotbugs:check -DskipTests'
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target/site',
-                    reportFiles: 'spotbugs.html',
-                    reportName: 'SpotBugs Report'
-                ])
+                    echo 'Static Code Analysis...'
+                    sh 'mvn -B spotbugs:spotbugs spotbugs:check -DskipTests'
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/site',
+                        reportFiles: 'spotbugs.html',
+                        reportName: 'SpotBugs Report'
+                    ])
+                }
             }
         }
 
         stage('Unit Test') {
             steps {
-                echo 'Unit Testing...'
-                sh 'mvn test'
+                dir('genres') {
+                    echo 'Unit Testing...'
+                    sh 'mvn test'
 
-                echo 'Mutation Testing...'
-                sh 'mvn org.pitest:pitest-maven:mutationCoverage'
+                    echo 'Mutation Testing...'
+                    sh 'mvn org.pitest:pitest-maven:mutationCoverage'
 
-                echo 'Reporting Results...'
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target/pit-reports',
-                    reportFiles: '**/index.html',
-                    reportName: 'PITest Mutation Report'
-                ])
+                    echo 'Reporting Results...'
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/pit-reports',
+                        reportFiles: '**/index.html',
+                        reportName: 'PITest Mutation Report'
+                    ])
+                }
             }
         }
 
         stage ('Integration Test') {
             steps {
-                echo 'Integration Testing...'
-                sh 'mvn verify -DskipUnitTests'
+                dir('genres') {
+                    echo 'Integration Testing...'
+                    sh 'mvn verify -DskipUnitTests'
 
-                echo 'Code Coverage...'
-                sh 'mvn jacoco:report'
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target/site/jacoco',
-                    reportFiles: 'index.html',
-                    reportName: 'JaCoCo Coverage Report'
-                ])
+                    echo 'Code Coverage...'
+                    sh 'mvn jacoco:report'
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/site/jacoco',
+                        reportFiles: 'index.html',
+                        reportName: 'JaCoCo Coverage Report'
+                    ])
+                }
             }
         }
 
         stage('Package') {
             steps {
-                echo 'Packaging...'
-                sh 'mvn package -DskipTests'
+                dir('genres') {
+                    echo 'Packaging...'
+                    sh 'mvn package -DskipTests'
+                }
             }
         }
     }
