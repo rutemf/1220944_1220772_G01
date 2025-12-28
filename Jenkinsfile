@@ -10,10 +10,10 @@ pipeline {
         }
 
         stage('Build Microservices - Dev') {
+            when {
+                branch 'dev'
+            }
             steps {
-                when {
-                    branch 'dev'
-                }
                 parallel(
                     "Auth Users": { build job: "books/dev", wait: true },
                     "Books": { build job: 'books/dev', wait: true },
@@ -24,10 +24,10 @@ pipeline {
         }
 
         stage('Build Microservices - Staging') {
+            when {
+                branch 'staging'
+            }
             steps {
-                when {
-                    branch 'staging'
-                }
                 parallel(
                     "Auth Users": { build job: "books/staging", wait: true },
                     "Books": { build job: 'books/staging', wait: true },
@@ -38,10 +38,10 @@ pipeline {
         }
 
         stage('Build Microservices - Prod') {
+            when {
+                branch 'prod'
+            }
             steps {
-                when {
-                    branch 'prod'
-                }
                 parallel(
                     "Auth Users": { build job: "books/prod", wait: true },
                     "Books": { build job: 'books/prod', wait: true },
