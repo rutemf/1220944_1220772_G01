@@ -79,9 +79,9 @@ pipeline {
             steps {
                 echo 'Building Docker Images...'
                 sh 'docker build -t miguel04cardoso/auth-users-service:latest ./auth-users'
-                sh 'docker build -t miguel04cardoso/readers-service:latest ./readers'
                 sh 'docker build -t miguel04cardoso/books-service:latest ./books'
-                sh 'docker build -t miguel04cardoso/genres-service:latest ./genres'
+                sh 'docker build -t miguel04cardoso/readers-service:${BUILD_NUMBER} ./readers'
+                sh 'docker tag miguel04cardoso/readers-service:${BUILD_NUMBER} miguel04cardoso/readers-service:canary'
             }
         }
 
@@ -90,73 +90,11 @@ pipeline {
             withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
               sh 'docker login -u $USER -p $PASS'
               sh 'docker push miguel04cardoso/auth-users-service:latest'
-              sh 'docker push miguel04cardoso/readers-service:latest'
               sh 'docker push miguel04cardoso/books-service:latest'
-              sh 'docker push miguel04cardoso/genres-service:latest'
+              sh 'docker push miguel04cardoso/readers-service:${BUILD_NUMBER}'
+              sh 'docker push miguel04cardoso/readers-service:canary'
             }
           }
-        }
-
-        stage('Deploy Locally') {
-            steps {
-                echo 'Deploying Dev Container...'
-                archiveArtifacts artifacts: 'target/*.jar'
-            }
-        }
-
-        stage('Deploy to Oracle - staging') {
-            when {
-                anyOf {
-                    branch 'staging'
-                    branch 'prod'
-                }
-            }
-            environment {
-                CONTAINER_NAME = "psoft-g1-staging"
-                HOST_PORT = "7746"
-                CONTAINER_PORT = "4677"
-            }
-            steps {
-                echo 'Deploying Staging Container...'
-
-                sh '''
-                    if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
-                        docker stop $CONTAINER_NAME || true
-                        docker rm $CONTAINER_NAME || true
-                    fi
-
-                    docker run -d \
-                        --name $CONTAINER_NAME \
-                        -p $HOST_PORT:$CONTAINER_PORT \
-                        psoft-g1-app:latest
-                '''
-            }
-        }
-
-        stage('Deploy to Oracle - prod') {
-            when {
-                branch 'prod'
-            }
-            environment {
-                CONTAINER_NAME = "psoft-g1-prod"
-                HOST_PORT = "4677"
-                CONTAINER_PORT = "4677"
-            }
-            steps {
-                echo 'Deploying Prod Container...'
-
-                sh '''
-                    if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
-                        docker stop $CONTAINER_NAME || true
-                        docker rm $CONTAINER_NAME || true
-                    fi
-
-                    docker run -d \
-                        --name $CONTAINER_NAME \
-                        -p $HOST_PORT:$CONTAINER_PORT \
-                        psoft-g1-app:latest
-                '''
-            }
         }
     }
 }

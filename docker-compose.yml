@@ -44,18 +44,27 @@ services:
       - traefik-public
     deploy:
       replicas: 1
-      update_config:
-        parallelism: 1
-        delay: 10s
-      restart_policy:
-        condition: on-failure
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=Host(`auth.localhost`)"
       - "traefik.http.services.auth.loadbalancer.server.port=8081"
 
-  readers-service:
-    image: readers-service:latest
+  readers-v1:
+    image: miguel04cardoso/readers-service:1.0
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Readers
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 2
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.readers.rule=Host(`readers.localhost`)"
+      - "traefik.http.services.readers-v1.loadbalancer.server.port=8082"
+      - "traefik.http.services.readers-v1.loadbalancer.weight=90"
+
+  readers-v2:
+    image: miguel04cardoso/readers-service:2.0
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Readers
     networks:
@@ -65,7 +74,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.readers.rule=Host(`readers.localhost`)"
-      - "traefik.http.services.readers.loadbalancer.server.port=8082"
+      - "traefik.http.services.readers-v2.loadbalancer.server.port=8082"
+      - "traefik.http.services.readers-v2.loadbalancer.weight=10"
 
   books-service:
     image: books-service:latest
