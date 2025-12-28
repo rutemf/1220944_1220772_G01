@@ -9,69 +9,13 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Microservices') {
             steps {
-                echo 'Validating...'
-                sh 'mvn validate'
-
-                echo 'Building...'
-                sh 'mvn clean compile'
-
-                echo 'Static Code Analysis...'
-                sh 'mvn -B spotbugs:spotbugs spotbugs:check -DskipTests'
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target/site',
-                    reportFiles: 'spotbugs.html',
-                    reportName: 'SpotBugs Report'
-                ])
-            }
-        }
-
-        stage('Unit Test') {
-            steps {
-                echo 'Unit Testing...'
-                sh 'mvn test'
-
-                echo 'Mutation Testing...'
-                sh 'mvn org.pitest:pitest-maven:mutationCoverage'
-
-                echo 'Reporting Results...'
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target/pit-reports',
-                    reportFiles: '**/index.html',
-                    reportName: 'PITest Mutation Report'
-                ])
-            }
-        }
-
-        stage ('Integration Test') {
-            steps {
-                echo 'Integration Testing...'
-                sh 'mvn verify -DskipUnitTests'
-
-                echo 'Code Coverage...'
-                sh 'mvn jacoco:report'
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target/site/jacoco',
-                    reportFiles: 'index.html',
-                    reportName: 'JaCoCo Coverage Report'
-                ])
-            }
-        }
-
-        stage('Package') {
-            steps {
-                echo 'Packaging...'
-                sh 'mvn package -DskipTests'
+                parallel(
+                    "Auth Users": { build job: 'auth-users-build', wait: true },
+                    "Books": { build job: 'books-build', wait: true },
+                    "Readers": { build job: 'readers-build', wait: true }
+                )
             }
         }
 
