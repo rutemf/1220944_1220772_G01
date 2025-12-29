@@ -49,7 +49,9 @@ pipeline {
             withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
               sh 'docker login -u $USER -p $PASS'
               sh 'docker push miguel04cardoso/auth-users-service:latest'
+              sh 'docker push miguel04cardoso/authors-service:latest'
               sh 'docker push miguel04cardoso/books-service:latest'
+              sh 'docker push miguel04cardoso/genres-service:latest'
               sh 'docker push miguel04cardoso/readers-service:${BUILD_NUMBER}'
               sh 'docker push miguel04cardoso/readers-service:canary'
             }
