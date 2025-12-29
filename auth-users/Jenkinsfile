@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out Auth-Users Service...'
+                echo 'Checking Out Auth-Users Service...'
                 checkout scm
             }
         }
@@ -87,7 +87,7 @@ pipeline {
             steps {
                 dir('auth-users') {
                     echo 'Building Docker Image...'
-                    sh 'docker build -t miguel04cardoso/auth-users-service:latest'
+                    sh 'docker build -t miguel04cardoso/auth-users-service:latest .'
                 }
             }
         }

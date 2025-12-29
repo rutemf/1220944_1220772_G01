@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out Readers Service...'
+                echo 'Checking Out Readers Service...'
                 checkout scm
             }
         }
@@ -87,7 +87,7 @@ pipeline {
             steps {
                 dir('readers') {
                     echo 'Building Docker Image...'
-                    sh 'docker build -t miguel04cardoso/readers-service:latest'
+                    sh 'docker build -t miguel04cardoso/readers-service:latest .'
                     sh 'docker tag miguel04cardoso/readers-service:latest miguel04cardoso/readers-service:canary'
                 }
             }

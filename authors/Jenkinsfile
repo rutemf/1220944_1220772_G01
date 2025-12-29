@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out Authors Service...'
+                echo 'Checking Out Authors Service...'
                 checkout scm
             }
         }
@@ -87,7 +87,7 @@ pipeline {
             steps {
                 dir('authors') {
                     echo 'Building Docker Image...'
-                    sh 'docker build -t miguel04cardoso/authors-service:latest'
+                    sh 'docker build -t miguel04cardoso/authors-service:latest .'
                 }
             }
         }

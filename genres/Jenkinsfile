@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out Genres Service...'
+                echo 'Checking Out Genres Service...'
                 checkout scm
             }
         }
@@ -87,7 +87,7 @@ pipeline {
             steps {
                 dir('genres') {
                     echo 'Building Docker Image...'
-                    sh 'docker build -t miguel04cardoso/genres-service:latest'
+                    sh 'docker build -t miguel04cardoso/genres-service:latest .'
                 }
             }
         }
