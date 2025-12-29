@@ -23,7 +23,6 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                echo 'Building Docker Images in parallel...'
                 parallel(
                     "Auth Users Image": {
                         sh 'docker build -t miguel04cardoso/auth-users-service:latest ./auth-users'
