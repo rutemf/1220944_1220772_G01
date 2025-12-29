@@ -6,7 +6,7 @@ COPY src ./src
 ARG SKIP_TESTS=true
 RUN if [ "$SKIP_TESTS" = "true" ]; then mvn -B clean package -DskipTests; else mvn -B clean package; fi
 
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 ARG JAR_FILE=target/*.jar
 COPY --from=build /app/${JAR_FILE} app.jar
