@@ -103,7 +103,7 @@ services:
       - "traefik.http.routers.readers.rule=Host(`readers.localhost`)"
       - "traefik.http.routers.readers.entrypoints=web"
       - "traefik.http.services.readers-v2.loadbalancer.server.port=8082"
-      - "traefik.http.services.readers-v1.loadbalancer.weight=90"
+      - "traefik.http.services.readers-v2.loadbalancer.weight=10"
 
   books-service:
     image: miguel04cardoso/books-service:latest
