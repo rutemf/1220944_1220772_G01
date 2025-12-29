@@ -41,8 +41,8 @@ pipeline {
                         sh 'docker build -t ${DOCKER_USER}/genres-service:latest ./genres'
                     },
                     "Readers Image": {
-                        sh 'docker build -t ${DOCKER_USER}/readers-service:${BUILD_NUMBER} ./readers'
-                        sh 'docker tag ${DOCKER_USER}/readers-service:${BUILD_NUMBER} ${DOCKER_USER}/readers-service:canary'
+                        sh 'docker build -t ${DOCKER_USER}/readers-service:latest ./readers'
+                        sh 'docker tag ${DOCKER_USER}/readers-service:latest ${DOCKER_USER}/readers-service:canary'
                     }
                 )
             }
@@ -56,10 +56,20 @@ pipeline {
               sh 'docker push ${DOCKER_USER}/authors-service:latest'
               sh 'docker push ${DOCKER_USER}/books-service:latest'
               sh 'docker push ${DOCKER_USER}/genres-service:latest'
-              sh 'docker push ${DOCKER_USER}/readers-service:${BUILD_NUMBER}'
+              sh 'docker push ${DOCKER_USER}/readers-service:latest'
               sh 'docker push ${DOCKER_USER}/readers-service:canary'
             }
           }
+        }
+
+        stage('Deploy Stack (Swarm)') {
+            steps {
+                sh '''
+                  docker stack deploy \
+                    -c docker-compose.yml \
+                    library-management-system
+                '''
+            }
         }
     }
 }

@@ -50,7 +50,7 @@ services:
       - "traefik.http.services.auth.loadbalancer.server.port=8081"
 
   readers-v1:
-    image: miguel04cardoso/readers-service:1.0
+    image: miguel04cardoso/readers-service:latest
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Readers
     networks:
@@ -60,11 +60,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.readers.rule=Host(`readers.localhost`)"
+      - "traefik.http.routers.readers.entrypoints=web"
       - "traefik.http.services.readers-v1.loadbalancer.server.port=8082"
       - "traefik.http.services.readers-v1.loadbalancer.weight=90"
 
   readers-v2:
-    image: miguel04cardoso/readers-service:2.0
+    image: miguel04cardoso/readers-service:canary
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Readers
     networks:
@@ -74,8 +75,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.readers.rule=Host(`readers.localhost`)"
+      - "traefik.http.routers.readers.entrypoints=web"
       - "traefik.http.services.readers-v2.loadbalancer.server.port=8082"
-      - "traefik.http.services.readers-v2.loadbalancer.weight=10"
+      - "traefik.http.services.readers-v1.loadbalancer.weight=90"
 
   books-service:
     image: books-service:latest
