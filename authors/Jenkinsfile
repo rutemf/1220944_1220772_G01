@@ -11,7 +11,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                dir('books') {
+                dir('authors') {
                     echo 'Validating...'
                     sh 'mvn validate'
 
@@ -34,7 +34,7 @@ pipeline {
 
         stage('Unit Test') {
             steps {
-                dir('books') {
+                dir('authors') {
                     echo 'Unit Testing...'
                     sh 'mvn test'
 
@@ -56,7 +56,7 @@ pipeline {
 
         stage ('Integration Test') {
             steps {
-                dir('books') {
+                dir('authors') {
                     echo 'Integration Testing...'
                     sh 'mvn verify -DskipUnitTests'
 
@@ -76,9 +76,18 @@ pipeline {
 
         stage('Package') {
             steps {
-                dir('books') {
+                dir('authors') {
                     echo 'Packaging...'
                     sh 'mvn package -DskipTests'
+                }
+            }
+        }
+
+        stage ('Containerize') {
+            steps {
+                dir('authors') {
+                    echo 'Building Docker Image...'
+                    sh 'docker build -t miguel04cardoso/authors-service:latest'
                 }
             }
         }

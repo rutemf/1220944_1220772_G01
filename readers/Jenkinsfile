@@ -82,5 +82,15 @@ pipeline {
                 }
             }
         }
+
+        stage ('Containerize') {
+            steps {
+                dir('readers') {
+                    echo 'Building Docker Image...'
+                    sh 'docker build -t miguel04cardoso/readers-service:latest'
+                    sh 'docker tag miguel04cardoso/readers-service:latest miguel04cardoso/readers-service:canary'
+                }
+            }
+        }
     }
 }

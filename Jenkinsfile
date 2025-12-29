@@ -13,7 +13,7 @@ pipeline {
             }
         }
 
-        stage('Build Microservices') {
+        stage('Execute Microservices Pipelines') {
             steps {
                 parallel(
                     "Auth Users": { build job: "auth-users", wait: true },
@@ -21,29 +21,6 @@ pipeline {
                     "Books": { build job: 'books', wait: true },
                     "Genres": { build job: 'genres', wait: true },
                     "Readers": { build job: 'readers', wait: true }
-                )
-            }
-        }
-
-        stage('Build Docker Images') {
-            steps {
-                parallel(
-                    "Auth Users Image": {
-                        sh 'docker build -t ${DOCKER_USER}/auth-users-service:latest ./auth-users'
-                    },
-                    "Authors Image": {
-                        sh 'docker build -t ${DOCKER_USER}/authors-service:latest ./authors'
-                    },
-                    "Books Image": {
-                        sh 'docker build -t ${DOCKER_USER}/books-service:latest ./books'
-                    },
-                    "Genres Image": {
-                        sh 'docker build -t ${DOCKER_USER}/genres-service:latest ./genres'
-                    },
-                    "Readers Image": {
-                        sh 'docker build -t ${DOCKER_USER}/readers-service:latest ./readers'
-                        sh 'docker tag ${DOCKER_USER}/readers-service:latest ${DOCKER_USER}/readers-service:canary'
-                    }
                 )
             }
         }
@@ -62,7 +39,7 @@ pipeline {
           }
         }
 
-        stage('Deploy Stack (Swarm)') {
+        stage('Deploy Stack (Docker Swarm)') {
             steps {
                 sh '''
                   docker stack deploy \

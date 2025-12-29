@@ -82,5 +82,14 @@ pipeline {
                 }
             }
         }
+
+        stage ('Containerize') {
+            steps {
+                dir('books') {
+                    echo 'Building Docker Image...'
+                    sh 'docker build -t miguel04cardoso/books-service:latest'
+                }
+            }
+        }
     }
 }

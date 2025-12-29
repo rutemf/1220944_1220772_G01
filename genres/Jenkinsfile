@@ -82,5 +82,14 @@ pipeline {
                 }
             }
         }
+
+        stage ('Containerize') {
+            steps {
+                dir('genres') {
+                    echo 'Building Docker Image...'
+                    sh 'docker build -t miguel04cardoso/genres-service:latest'
+                }
+            }
+        }
     }
 }
