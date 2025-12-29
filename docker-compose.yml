@@ -44,6 +44,9 @@ services:
       - traefik-public
     deploy:
       replicas: 1
+      resources:
+        limits:
+          memory: 512M
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=Host(`users.localhost`)"
@@ -57,6 +60,9 @@ services:
       - traefik-public
     deploy:
       replicas: 1
+      resources:
+        limits:
+          memory: 512M
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=Host(`authors.localhost`)"
@@ -70,6 +76,9 @@ services:
       - traefik-public
     deploy:
       replicas: 1
+      resources:
+        limits:
+          memory: 512M
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=Host(`genres.localhost`)"
@@ -83,6 +92,9 @@ services:
       - traefik-public
     deploy:
       replicas: 2
+      resources:
+        limits:
+          memory: 512M
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.readers.rule=Host(`readers.localhost`)"
@@ -98,6 +110,9 @@ services:
       - traefik-public
     deploy:
       replicas: 1
+      resources:
+        limits:
+          memory: 512M
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.readers.rule=Host(`readers.localhost`)"
@@ -113,6 +128,9 @@ services:
       - traefik-public
     deploy:
       replicas: 1
+      resources:
+        limits:
+          memory: 512M
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.books.rule=Host(`books.localhost`)"

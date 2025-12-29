@@ -15,14 +15,12 @@ pipeline {
 
         stage('Execute Microservices Pipelines') {
             steps {
-                parallel(
-                    "Auth Users": { build job: "auth-users", wait: true },
-                    "Authors": { build job: "authors", wait: true },
-                    "Books": { build job: 'books', wait: true },
-                    "Genres": { build job: 'genres', wait: true },
-                    "Readers": { build job: 'readers', wait: true }
-                )
-            }
+               build job: "auth-users", wait: true
+               build job: "authors", wait: true
+               build job: "books", wait: true
+               build job: "genres", wait: true
+               build job: "readers", wait: true
+           }
         }
 
         stage('Push to Docker Registry') {
