@@ -13,6 +13,7 @@ pipeline {
             steps {
                 parallel(
                     "Auth Users": { build job: "auth-users", wait: true },
+                    "Authors": { build job: "authors", wait: true },
                     "Books": { build job: 'books', wait: true },
                     "Genres": { build job: 'genres', wait: true },
                     "Readers": { build job: 'readers', wait: true }
@@ -22,11 +23,25 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                echo 'Building Docker Images...'
-                sh 'docker build -t miguel04cardoso/auth-users-service:latest ./auth-users'
-                sh 'docker build -t miguel04cardoso/books-service:latest ./books'
-                sh 'docker build -t miguel04cardoso/readers-service:${BUILD_NUMBER} ./readers'
-                sh 'docker tag miguel04cardoso/readers-service:${BUILD_NUMBER} miguel04cardoso/readers-service:canary'
+                echo 'Building Docker Images in parallel...'
+                parallel(
+                    "Auth Users Image": {
+                        sh 'docker build -t miguel04cardoso/auth-users-service:latest ./auth-users'
+                    },
+                    "Authors Image": {
+                        sh 'docker build -t miguel04cardoso/authors-service:latest ./authors'
+                    },
+                    "Books Image": {
+                        sh 'docker build -t miguel04cardoso/books-service:latest ./books'
+                    },
+                    "Genres Image": {
+                        sh 'docker build -t miguel04cardoso/genres-service:latest ./genres'
+                    },
+                    "Readers Image": {
+                        sh 'docker build -t miguel04cardoso/readers-service:${BUILD_NUMBER} ./readers'
+                        sh 'docker tag miguel04cardoso/readers-service:${BUILD_NUMBER} miguel04cardoso/readers-service:canary'
+                    }
+                )
             }
         }
 
