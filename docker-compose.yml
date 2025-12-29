@@ -13,8 +13,8 @@ services:
       - "--entrypoints.web.address=:80"
       - "--api.insecure=true"
     ports:
-      - "80:80"     # HTTP
-      - "8080:8080" # Dashboard Traefik
+      - "80:80"
+      - "8080:8080"
     networks:
       - traefik-public
     volumes:
@@ -37,7 +37,7 @@ services:
       - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
 
   auth-users-service:
-    image: auth-users-service:latest
+    image: miguel04cardoso/auth-users-service:latest
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Auth-Users
     networks:
@@ -46,8 +46,34 @@ services:
       replicas: 1
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.auth.rule=Host(`auth.localhost`)"
+      - "traefik.http.routers.auth.rule=Host(`users.localhost`)"
       - "traefik.http.services.auth.loadbalancer.server.port=8081"
+
+  authors-service:
+    image: miguel04cardoso/authors-service:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Authors
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=Host(`authors.localhost`)"
+      - "traefik.http.services.auth.loadbalancer.server.port=8084"
+
+  genres-service:
+    image: miguel04cardoso/genres-service:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Authors
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=Host(`genres.localhost`)"
+      - "traefik.http.services.auth.loadbalancer.server.port=8085"
 
   readers-v1:
     image: miguel04cardoso/readers-service:latest
@@ -80,7 +106,7 @@ services:
       - "traefik.http.services.readers-v1.loadbalancer.weight=90"
 
   books-service:
-    image: books-service:latest
+    image: miguel04cardoso/books-service:latest
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Books
     networks:
