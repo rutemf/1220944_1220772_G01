@@ -3,7 +3,7 @@ package genres.genres.repositories;
 import genres.genres.model.Genre;
 import genres.genres.services.SearchGenreQuery;
 import genres.shared.services.Page;
-import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

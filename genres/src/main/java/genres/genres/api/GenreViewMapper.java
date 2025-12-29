@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class GenreViewMapper extends MapperInterface {
-    @Mapping(target = "genre", source = "genre")
+    @Mapping(target = "genreName", source = "genre")
 
     public abstract GenreView toGenreView(Genre book);
 
