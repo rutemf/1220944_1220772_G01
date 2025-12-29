@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_USER = "miguel04cardoso"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -25,20 +29,20 @@ pipeline {
             steps {
                 parallel(
                     "Auth Users Image": {
-                        sh 'docker build -t miguel04cardoso/auth-users-service:latest ./auth-users'
+                        sh 'docker build -t ${DOCKER_USER}/auth-users-service:latest ./auth-users'
                     },
                     "Authors Image": {
-                        sh 'docker build -t miguel04cardoso/authors-service:latest ./authors'
+                        sh 'docker build -t ${DOCKER_USER}/authors-service:latest ./authors'
                     },
                     "Books Image": {
-                        sh 'docker build -t miguel04cardoso/books-service:latest ./books'
+                        sh 'docker build -t ${DOCKER_USER}/books-service:latest ./books'
                     },
                     "Genres Image": {
-                        sh 'docker build -t miguel04cardoso/genres-service:latest ./genres'
+                        sh 'docker build -t ${DOCKER_USER}/genres-service:latest ./genres'
                     },
                     "Readers Image": {
-                        sh 'docker build -t miguel04cardoso/readers-service:${BUILD_NUMBER} ./readers'
-                        sh 'docker tag miguel04cardoso/readers-service:${BUILD_NUMBER} miguel04cardoso/readers-service:canary'
+                        sh 'docker build -t ${DOCKER_USER}/readers-service:${BUILD_NUMBER} ./readers'
+                        sh 'docker tag ${DOCKER_USER}/readers-service:${BUILD_NUMBER} ${DOCKER_USER}/readers-service:canary'
                     }
                 )
             }
@@ -48,12 +52,12 @@ pipeline {
           steps {
             withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
               sh 'docker login -u $USER -p $PASS'
-              sh 'docker push miguel04cardoso/auth-users-service:latest'
-              sh 'docker push miguel04cardoso/authors-service:latest'
-              sh 'docker push miguel04cardoso/books-service:latest'
-              sh 'docker push miguel04cardoso/genres-service:latest'
-              sh 'docker push miguel04cardoso/readers-service:${BUILD_NUMBER}'
-              sh 'docker push miguel04cardoso/readers-service:canary'
+              sh 'docker push ${DOCKER_USER}/auth-users-service:latest'
+              sh 'docker push ${DOCKER_USER}/authors-service:latest'
+              sh 'docker push ${DOCKER_USER}/books-service:latest'
+              sh 'docker push ${DOCKER_USER}/genres-service:latest'
+              sh 'docker push ${DOCKER_USER}/readers-service:${BUILD_NUMBER}'
+              sh 'docker push ${DOCKER_USER}/readers-service:canary'
             }
           }
         }
