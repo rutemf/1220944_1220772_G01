@@ -92,6 +92,36 @@ pipeline {
             }
         }
 
+        stage('Request Approval') {
+            steps {
+                script {
+                    def userInput = input(
+                        id: 'ApproveDeployment', message: 'Deploy The Service?',
+                        parameters: [
+                            string(defaultValue: 'Deployed URL: http://staging-genres.localhost', description: 'Check the deployed service link before approving', name: 'ServiceLink')
+                        ]
+                    )
+                }
+                script {
+                    emailext(
+                        subject: "Authors Service Deployment Approval Needed",
+                        body: """
+                        Hi,
+
+                        Please review the deployed service at:
+                        http://staging-genres.localhost
+
+                        Approve or reject the deployment in Jenkins.
+
+                        Regards,
+                        LMS Team
+                        """,
+                        to: "migueli04cardoso@gmail.com"
+                    )
+                }
+            }
+        }
+
         stage('Push to Docker Registry') {
           steps {
             withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
