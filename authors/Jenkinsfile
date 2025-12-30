@@ -95,28 +95,29 @@ pipeline {
         stage('Request Approval') {
             steps {
                 script {
+                    emailext(
+                        subject: "Authors Service Deployment Approval Needed",
+                        body: """
+                        <html>
+                        <body>
+                            <p>Hi,</p>
+                            <p>Please review the deployed service at:<br>
+                            <a href="http://staging-genres.localhost">http://staging-genres.localhost</a></p>
+                            <p>Approve or reject the deployment in Jenkins.</p>
+                            <p>Regards,<br>LMS Team</p>
+                        </body>
+                        </html>
+                        """,
+                        mimeType: 'text/html',
+                        to: "migueli04cardoso@gmail.com"
+                    )
+                }
+                script {
                     def userInput = input(
                         id: 'ApproveDeployment', message: 'Deploy The Service?',
                         parameters: [
                             string(defaultValue: 'Deployed URL: http://staging-genres.localhost', description: 'Check the deployed service link before approving', name: 'ServiceLink')
                         ]
-                    )
-                }
-                script {
-                    emailext(
-                        subject: "Authors Service Deployment Approval Needed",
-                        body: """
-                        Hi,
-
-                        Please review the deployed service at:
-                        http://staging-genres.localhost
-
-                        Approve or reject the deployment in Jenkins.
-
-                        Regards,
-                        LMS Team
-                        """,
-                        to: "migueli04cardoso@gmail.com"
                     )
                 }
             }
