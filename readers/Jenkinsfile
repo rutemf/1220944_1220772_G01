@@ -97,8 +97,8 @@ pipeline {
           steps {
             withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
               sh 'docker login -u $USER -p $PASS'
-              sh 'docker push ${DOCKER_USER}/readers-service:latest'
-              sh 'docker push ${DOCKER_USER}/readers-service:canary'
+              sh 'docker push miguel04cardoso/readers-service:latest'
+              sh 'docker push miguel04cardoso/readers-service:canary'
             }
           }
         }

@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_USER = "miguel04cardoso"
-    }
-
     stages {
         stage('Checkout') {
             steps {
