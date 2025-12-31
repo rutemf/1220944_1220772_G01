@@ -10,7 +10,7 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 ARG JAR_FILE=target/*.jar
 COPY --from=build /app/${JAR_FILE} app.jar
-ENV SERVER_PORT=8080
+ENV SERVER_PORT=8083
 ENV JAVA_OPTS=""
 EXPOSE ${SERVER_PORT}
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=$SERVER_PORT -jar /app/app.jar"]
