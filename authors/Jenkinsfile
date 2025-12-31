@@ -104,7 +104,7 @@ pipeline {
         stage('Deploy Locally') {
             steps {
                 echo 'Deploying Dev Container...'
-                archiveArtifacts artifacts: 'target/*.jar'
+                archiveArtifacts artifacts: 'authors/target/*.jar'
             }
         }
 
