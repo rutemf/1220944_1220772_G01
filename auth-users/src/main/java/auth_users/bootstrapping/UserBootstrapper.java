@@ -1,0 +1,78 @@
+package auth_users.bootstrapping;
+
+import auth_users.shared.services.ForbiddenNameService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import auth_users.users.model.Librarian;
+import auth_users.users.model.Reader;
+import auth_users.users.model.User;
+import auth_users.users.repositories.UserRepository;
+
+@Component
+@RequiredArgsConstructor
+@Profile("bootstrap")
+@Order(1)
+public class UserBootstrapper implements CommandLineRunner {
+
+    private final ForbiddenNameService forbiddenNameService;
+    private final UserRepository userRepository;
+
+    @Override
+    @Transactional
+    public void run(final String... args) {
+        clearDatabase();
+        loadForbiddenNames();
+        createReaders();
+        createLibrarians();
+        createAdmins();
+    }
+
+    private void createReaders() {
+        if (userRepository.findByUsername("rute@gmail.com").isEmpty()) {
+            final Reader rute = Reader.newReader("rute@gmail.com", "Rute!123", "Rute Ferreira");
+            userRepository.save(rute);
+        }
+
+        if (userRepository.findByUsername("pedro@gmail.com").isEmpty()) {
+            final Reader pedro = Reader.newReader("pedro@gmail.com", "Pedro!123", "Pedro Tabau");
+            userRepository.save(pedro);
+        }
+
+        if (userRepository.findByUsername("marcelo@gmail.com").isEmpty()) {
+            final Reader marcelo = Reader.newReader("marcelo@gmail.com", "Marcelo!123", "Marcelo Sousa");
+            userRepository.save(marcelo);
+        }
+    }
+
+    private void createLibrarians() {
+        if (userRepository.findByUsername("maria@gmail.com").isEmpty()) {
+            final User maria = Librarian.newLibrarian("maria@gmail.com", "Maria!123", "Maria Roberta");
+            userRepository.save(maria);
+        }
+
+        if (userRepository.findByUsername("miguel@gmail.com").isEmpty()) {
+            final User miguel = Librarian.newLibrarian("miguel@gmail.com", "Miguel!123", "Miguel Angelo");
+            userRepository.save(miguel);
+        }
+    }
+
+    private void createAdmins() {
+        if (userRepository.findByUsername("admin@gmail.com").isEmpty()) {
+            final User admin = User.newUser("admin@gmail.com", "Admin!123", "Super Admin", "ADMIN");
+            userRepository.save(admin);
+        }
+    }
+
+    private void loadForbiddenNames() {
+        String fileName = "forbiddenNames.txt";
+        forbiddenNameService.loadDataFromFile(fileName);
+    }
+
+    private void clearDatabase() {
+        userRepository.deleteAll();
+    }
+}
