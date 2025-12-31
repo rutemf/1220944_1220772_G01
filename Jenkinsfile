@@ -9,14 +9,35 @@ pipeline {
             }
         }
 
-        stage('Execute Microservices Pipelines') {
+        stage('Detect Changes On Microservices') {
             steps {
-               build job: "auth-users", wait: true
-               build job: "authors", wait: true
-               build job: "books", wait: true
-               build job: "genres", wait: true
-               build job: "readers", wait: true
-           }
+                script {
+                    def services = [
+                        'auth-users',
+                        'authors',
+                        'books',
+                        'genres',
+                        'readers'
+                    ]
+
+                    for (service in services) {
+
+                        def changed = sh(
+                            script: """
+                                git diff --name-only HEAD~1...HEAD | grep "^${service}/"
+                            """,
+                            returnStatus: true
+                        ) == 0
+
+                        if (changed) {
+                            echo "Changes Detected In ${service}, Triggering Pipeline..."
+                            build job: service, wait: true
+                        } else {
+                            echo "No Changes Detected In ${service}."
+                        }
+                    }
+                }
+            }
         }
 
         stage('Deploy Stack (Docker Swarm)') {
