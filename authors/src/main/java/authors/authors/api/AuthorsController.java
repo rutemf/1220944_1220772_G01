@@ -74,7 +74,7 @@ public class AuthorsController {
     }
 
     @Operation(summary = "Gets a specific Author by Name")
-    @GetMapping(value = "/{name}")
+    @GetMapping(value = "/{authorName}")
     public ResponseEntity<AuthorsView> findByAuthorName(@PathVariable final String authorName) {
 
         final var author = authorService.findByName(authorName);

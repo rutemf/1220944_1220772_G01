@@ -155,6 +155,20 @@ pipeline {
             }
         }
 
+        stage('Performance Tests') {
+            when {
+                branch 'staging'
+            }
+            steps {
+                dir('authors/load-tests') {
+                    echo 'Running Performance Tests...'
+                    sh '''
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-authors.js
+                    '''
+                }
+            }
+        }
+
         stage('Health Check - Production') {
             when {
                 branch 'prod'
