@@ -6,7 +6,7 @@ networks:
 
 services:
   traefik:
-    image: traefik:v2.12
+    image: traefik:2
     command:
       - "--providers.docker.swarmmode=true"
       - "--providers.docker.exposedbydefault=false"
