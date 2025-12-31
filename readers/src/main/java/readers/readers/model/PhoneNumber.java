@@ -1,0 +1,36 @@
+package readers.readers.model;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
+import java.io.Serializable;
+
+@Getter
+@EqualsAndHashCode
+public class PhoneNumber implements Serializable {
+
+    private String phoneNumber;
+
+    public PhoneNumber(String phoneNumber) {
+        setPhoneNumber(phoneNumber);
+    }
+
+    protected PhoneNumber() {}
+
+    private void setPhoneNumber(String number) {
+        if (number == null || !number.matches("\\d{9}")) {
+            throw new IllegalArgumentException("Phone number is not valid: " + number);
+        }
+
+        if (!(number.startsWith("9") || number.startsWith("2")) || number.length() != 9) {
+            throw new IllegalArgumentException("Phone number is not valid: " + number);
+        }
+
+        this.phoneNumber = number;
+    }
+
+    @Override
+    public String toString() {
+        return this.phoneNumber;
+    }
+}

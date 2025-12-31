@@ -1,0 +1,136 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking Out Books Service...'
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('books') {
+                    echo 'Validating...'
+                    sh 'mvn validate'
+
+                    echo 'Building...'
+                    sh 'mvn clean compile'
+
+                    echo 'Static Code Analysis...'
+                    sh 'mvn -B spotbugs:spotbugs spotbugs:check -DskipTests'
+                    publishHTML(target: [
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/site',
+                        reportFiles: 'spotbugs.html',
+                        reportName: 'SpotBugs Report'
+                    ])
+                }
+            }
+        }
+
+        stage('Unit Test') {
+            steps {
+                dir('books') {
+                    echo 'Unit Testing...'
+                    sh 'mvn test'
+
+                    echo 'Mutation Testing...'
+                    sh 'mvn org.pitest:pitest-maven:mutationCoverage'
+
+                    echo 'Reporting Results...'
+                    publishHTML(target: [
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/pit-reports',
+                        reportFiles: '**/index.html',
+                        reportName: 'PITest Mutation Report'
+                    ])
+                }
+            }
+        }
+
+        stage ('Integration Test') {
+            steps {
+                dir('books') {
+                    echo 'Integration Testing...'
+                    sh 'mvn verify -DskipUnitTests'
+
+                    echo 'Code Coverage...'
+                    sh 'mvn jacoco:report'
+                    publishHTML(target: [
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/site/jacoco',
+                        reportFiles: 'index.html',
+                        reportName: 'JaCoCo Coverage Report'
+                    ])
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                dir('books') {
+                    echo 'Packaging...'
+                    sh 'mvn package -DskipTests'
+                }
+            }
+        }
+
+        stage ('Containerize') {
+            steps {
+                dir('books') {
+                    echo 'Building Docker Image...'
+                    sh 'docker build -t miguel04cardoso/books-service:latest .'
+                }
+            }
+        }
+
+        stage('Push to Docker Registry') {
+          steps {
+            withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+              sh 'docker login -u $USER -p $PASS'
+              sh 'docker push miguel04cardoso/books-service:latest'
+            }
+          }
+        }
+
+        stage('Smoke Test - Staging') {
+            when {
+                branch 'staging'
+            }
+            steps {
+                script {
+                    retry(5) {
+                        sleep 10
+                        sh '''
+                          curl -f http://143.47.57.150:8081/actuator/health
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Health Check - Production') {
+            when {
+                branch 'prod'
+            }
+            steps {
+                script {
+                    retry(5) {
+                        sleep 10
+                        sh '''
+                          curl -f http://143.47.57.150:8081/actuator/health
+                        '''
+                    }
+                }
+            }
+        }
+    }
+}

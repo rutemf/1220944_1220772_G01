@@ -1,0 +1,188 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking Out Authors Service...'
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('authors') {
+                    echo 'Validating...'
+                    sh 'mvn validate'
+
+                    echo 'Building...'
+                    sh 'mvn clean compile'
+
+                    echo 'Static Code Analysis...'
+                    sh 'mvn -B spotbugs:spotbugs spotbugs:check -DskipTests'
+                    publishHTML(target: [
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/site',
+                        reportFiles: 'spotbugs.html',
+                        reportName: 'SpotBugs Report'
+                    ])
+                }
+            }
+        }
+
+        stage('Unit Test') {
+            steps {
+                dir('authors') {
+                    echo 'Unit Testing...'
+                    sh 'mvn test'
+
+                    echo 'Mutation Testing...'
+                    sh 'mvn org.pitest:pitest-maven:mutationCoverage'
+
+                    echo 'Reporting Results...'
+                    publishHTML(target: [
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/pit-reports',
+                        reportFiles: '**/index.html',
+                        reportName: 'PITest Mutation Report'
+                    ])
+                }
+            }
+        }
+
+        stage ('Integration Test') {
+            steps {
+                dir('authors') {
+                    echo 'Integration Testing...'
+                    sh 'mvn verify -DskipUnitTests'
+
+                    echo 'Code Coverage...'
+                    sh 'mvn jacoco:report'
+                    publishHTML(target: [
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'target/site/jacoco',
+                        reportFiles: 'index.html',
+                        reportName: 'JaCoCo Coverage Report'
+                    ])
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                dir('authors') {
+                    echo 'Packaging...'
+                    sh 'mvn package -DskipTests'
+                }
+            }
+        }
+
+        stage ('Containerize') {
+            steps {
+                dir('authors') {
+                    echo 'Building Docker Image...'
+                    sh 'docker build -t miguel04cardoso/authors-service:latest .'
+                }
+            }
+        }
+
+        stage('Push to Docker Registry') {
+          steps {
+            withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+              sh 'docker login -u $USER -p $PASS'
+              sh 'docker push miguel04cardoso/authors-service:latest'
+            }
+          }
+        }
+
+        stage('Deploy Locally') {
+            steps {
+                echo 'Deploying Dev Container...'
+                archiveArtifacts artifacts: 'authors/target/*.jar'
+            }
+        }
+
+        stage('Request Approval') {
+            steps {
+                script {
+                    emailext(
+                        subject: "Authors Service Deployment Approval Needed",
+                        body: """
+                        <html>
+                        <body>
+                            <p>Hi,</p>
+                            <p>Please review the deployed service at:<br>
+                            <a href="http://staging-genres.localhost">http://staging-genres.localhost</a></p>
+                            <p>Approve or reject the deployment in Jenkins.</p>
+                            <p>Regards,<br>LMS Team</p>
+                        </body>
+                        </html>
+                        """,
+                        mimeType: 'text/html',
+                        to: "migueli04cardoso@gmail.com"
+                    )
+                }
+                script {
+                    def userInput = input(
+                        id: 'ApproveDeployment', message: 'Deploy The Service?',
+                        parameters: [
+                            string(defaultValue: 'Deployed URL: http://staging-genres.localhost', description: 'Check the deployed service link before approving', name: 'ServiceLink')
+                        ]
+                    )
+                }
+            }
+        }
+
+        stage('Smoke Test - Staging') {
+            when {
+                branch 'staging'
+            }
+            steps {
+                script {
+                    retry(5) {
+                        sleep 10
+                        sh '''
+                          curl -f http://143.47.57.150:8081/actuator/health
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Performance Tests') {
+            when {
+                branch 'staging'
+            }
+            steps {
+                dir('authors/load-tests') {
+                    echo 'Running Performance Tests...'
+                    sh '''
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-authors.js
+                    '''
+                }
+            }
+        }
+
+        stage('Health Check - Production') {
+            when {
+                branch 'prod'
+            }
+            steps {
+                script {
+                    retry(5) {
+                        sleep 10
+                        sh '''
+                          curl -f http://143.47.57.150:8081/actuator/health
+                        '''
+                    }
+                }
+            }
+        }
+    }
+}

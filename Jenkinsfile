@@ -9,137 +9,43 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Detect Changes On Microservices') {
             steps {
-                echo 'Validating...'
-                sh 'mvn validate'
+                script {
+                    def services = [
+                        'auth-users',
+                        'authors',
+                        'books',
+                        'genres',
+                        'readers'
+                    ]
 
-                echo 'Building...'
-                sh 'mvn clean compile'
+                    for (service in services) {
 
-                echo 'Static Code Analysis...'
-                sh 'mvn -B spotbugs:spotbugs spotbugs:check -DskipTests'
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target/site',
-                    reportFiles: 'spotbugs.html',
-                    reportName: 'SpotBugs Report'
-                ])
-            }
-        }
+                        def changed = sh(
+                            script: """
+                                git diff --name-only HEAD~1...HEAD | grep "^${service}/"
+                            """,
+                            returnStatus: true
+                        ) == 0
 
-        stage('Unit Test') {
-            steps {
-                echo 'Unit Testing...'
-                sh 'mvn test'
-
-                echo 'Mutation Testing...'
-                sh 'mvn org.pitest:pitest-maven:mutationCoverage'
-
-                echo 'Reporting Results...'
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target/pit-reports',
-                    reportFiles: '**/index.html',
-                    reportName: 'PITest Mutation Report'
-                ])
-            }
-        }
-
-        stage ('Integration Test') {
-            steps {
-                echo 'Integration Testing...'
-                sh 'mvn verify -DskipUnitTests'
-
-                echo 'Code Coverage...'
-                sh 'mvn jacoco:report'
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'target/site/jacoco',
-                    reportFiles: 'index.html',
-                    reportName: 'JaCoCo Coverage Report'
-                ])
-            }
-        }
-
-        stage('Package') {
-            steps {
-                echo 'Packaging...'
-                sh 'mvn package -DskipTests'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                echo 'Building Docker Image...'
-                sh 'docker build -t psoft-g1-app:latest .'
-            }
-        }
-
-        stage('Deploy Locally') {
-            steps {
-                echo 'Deploying Dev Container...'
-                archiveArtifacts artifacts: 'target/*.jar'
-            }
-        }
-
-        stage('Deploy to Oracle - staging') {
-            when {
-                anyOf {
-                    branch 'staging'
-                    branch 'prod'
+                        if (changed) {
+                            echo "Changes Detected In ${service}, Triggering Pipeline..."
+                            build job: service, wait: true
+                        } else {
+                            echo "No Changes Detected In ${service}."
+                        }
+                    }
                 }
             }
-            environment {
-                CONTAINER_NAME = "psoft-g1-staging"
-                HOST_PORT = "7746"
-                CONTAINER_PORT = "4677"
-            }
-            steps {
-                echo 'Deploying Staging Container...'
-
-                sh '''
-                    if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
-                        docker stop $CONTAINER_NAME || true
-                        docker rm $CONTAINER_NAME || true
-                    fi
-
-                    docker run -d \
-                        --name $CONTAINER_NAME \
-                        -p $HOST_PORT:$CONTAINER_PORT \
-                        psoft-g1-app:latest
-                '''
-            }
         }
 
-        stage('Deploy to Oracle - prod') {
-            when {
-                branch 'prod'
-            }
-            environment {
-                CONTAINER_NAME = "psoft-g1-prod"
-                HOST_PORT = "4677"
-                CONTAINER_PORT = "4677"
-            }
+        stage('Deploy Stack (Docker Swarm)') {
             steps {
-                echo 'Deploying Prod Container...'
-
                 sh '''
-                    if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
-                        docker stop $CONTAINER_NAME || true
-                        docker rm $CONTAINER_NAME || true
-                    fi
-
-                    docker run -d \
-                        --name $CONTAINER_NAME \
-                        -p $HOST_PORT:$CONTAINER_PORT \
-                        psoft-g1-app:latest
+                  docker stack deploy \
+                    -c docker-compose.yml \
+                    library-management-system
                 '''
             }
         }
