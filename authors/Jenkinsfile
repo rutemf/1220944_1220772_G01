@@ -92,6 +92,22 @@ pipeline {
             }
         }
 
+        stage('Push to Docker Registry') {
+          steps {
+            withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+              sh 'docker login -u $USER -p $PASS'
+              sh 'docker push miguel04cardoso/authors-service:latest'
+            }
+          }
+        }
+
+        stage('Deploy Locally') {
+            steps {
+                echo 'Deploying Dev Container...'
+                archiveArtifacts artifacts: 'target/*.jar'
+            }
+        }
+
         stage('Request Approval') {
             steps {
                 script {
@@ -121,15 +137,6 @@ pipeline {
                     )
                 }
             }
-        }
-
-        stage('Push to Docker Registry') {
-          steps {
-            withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-              sh 'docker login -u $USER -p $PASS'
-              sh 'docker push miguel04cardoso/authors-service:latest'
-            }
-          }
         }
 
         stage('Smoke Test - Staging') {
