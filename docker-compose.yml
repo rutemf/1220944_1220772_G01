@@ -13,8 +13,8 @@ services:
       - "--entrypoints.web.address=:80"
       - "--api.insecure=true"
     ports:
-      - "80:80"
-      - "8080:8080"
+      - "4677:80"
+      - "8888:8080"
     networks:
       - traefik-public
     volumes:
