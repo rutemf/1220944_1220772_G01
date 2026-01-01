@@ -34,16 +34,20 @@ services:
       - traefik-public
     deploy:
       replicas: 1
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.rabbitmq.rule=PathPrefix(`/rabbitmq`)"
-      - "traefik.http.routers.rabbitmq.entrypoints=web"
-      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.rabbitmq.rule=PathPrefix(`/rabbitmq`)"
+        - "traefik.http.routers.rabbitmq.entrypoints=web"
+        - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
 
   auth-users-service:
     image: miguel04cardoso/auth-users-service:latest
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Auth-Users
+      - spring.datasource.url=jdbc:mysql://143.47.57.150:3306/Auth-Users
+      - spring.datasource.username=miguel
+      - spring.datasource.password=arqsoft25
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
     networks:
       - traefik-public
     deploy:
@@ -55,16 +59,18 @@ services:
         reservations:
           cpus: "0.05"
           memory: 128M
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.users.rule=PathPrefix(`/users`)"
-      - "traefik.http.routers.users.entrypoints=web"
-      - "traefik.http.services.users.loadbalancer.server.port=8081"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.users.rule=PathPrefix(`/users`)"
+        - "traefik.http.routers.users.entrypoints=web"
+        - "traefik.http.services.users.loadbalancer.server.port=8081"
 
   authors-service:
     image: miguel04cardoso/authors-service:latest
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Authors
+      - spring.datasource.url=jdbc:mysql://143.47.57.150:3306/Authors
+      - spring.datasource.username=miguel
+      - spring.datasource.password=arqsoft25
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_PORT=5672
     networks:
@@ -78,16 +84,18 @@ services:
         reservations:
           cpus: "0.05"
           memory: 128M
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.authors.rule=PathPrefix(`/authors`)"
-      - "traefik.http.routers.authors.entrypoints=web"
-      - "traefik.http.services.authors.loadbalancer.server.port=8084"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.authors.rule=PathPrefix(`/authors`)"
+        - "traefik.http.routers.authors.entrypoints=web"
+        - "traefik.http.services.authors.loadbalancer.server.port=8084"
 
   books-service:
     image: miguel04cardoso/books-service:latest
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Books
+      - spring.datasource.url=jdbc:mysql://143.47.57.150:3306/Books
+      - spring.datasource.username=miguel
+      - spring.datasource.password=arqsoft25
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_PORT=5672
     networks:
@@ -101,16 +109,18 @@ services:
         reservations:
           cpus: "0.05"
           memory: 128M
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.books.rule=PathPrefix(`/books`)"
-      - "traefik.http.routers.books.entrypoints=web"
-      - "traefik.http.services.books.loadbalancer.server.port=8083"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.books.rule=PathPrefix(`/books`)"
+        - "traefik.http.routers.books.entrypoints=web"
+        - "traefik.http.services.books.loadbalancer.server.port=8083"
 
   genres-service:
     image: miguel04cardoso/genres-service:latest
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Authors
+      - spring.datasource.url=jdbc:mysql://143.47.57.150:3306/Authors
+      - spring.datasource.username=miguel
+      - spring.datasource.password=arqsoft25
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_PORT=5672
     networks:
@@ -124,16 +134,18 @@ services:
         reservations:
           cpus: "0.05"
           memory: 128M
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.genres.rule=PathPrefix(`/genres`)"
-      - "traefik.http.routers.genres.entrypoints=web"
-      - "traefik.http.services.genres.loadbalancer.server.port=8085"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.genres.rule=PathPrefix(`/genres`)"
+        - "traefik.http.routers.genres.entrypoints=web"
+        - "traefik.http.services.genres.loadbalancer.server.port=8085"
 
   readers-v1:
     image: miguel04cardoso/readers-service:latest
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Readers
+      - spring.datasource.url=jdbc:mysql://143.47.57.150:3306/Readers
+      - spring.datasource.username=miguel
+      - spring.datasource.password=arqsoft25
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_PORT=5672
     networks:
@@ -147,17 +159,19 @@ services:
         reservations:
           cpus: "0.05"
           memory: 128M
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.readers.rule=PathPrefix(`/readers`)"
-      - "traefik.http.routers.readers.entrypoints=web"
-      - "traefik.http.services.readers-v1.loadbalancer.server.port=8082"
-      - "traefik.http.services.readers-v1.loadbalancer.weight=90"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.readers.rule=PathPrefix(`/readers`)"
+        - "traefik.http.routers.readers.entrypoints=web"
+        - "traefik.http.services.readers-v1.loadbalancer.server.port=8082"
+        - "traefik.http.services.readers-v1.loadbalancer.weight=90"
 
   readers-v2:
     image: miguel04cardoso/readers-service:canary
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Readers
+      - spring.datasource.url=jdbc:mysql://143.47.57.150:3306/Readers
+      - spring.datasource.username=miguel
+      - spring.datasource.password=arqsoft25
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_PORT=5672
     networks:
@@ -171,9 +185,9 @@ services:
         reservations:
           cpus: "0.05"
           memory: 128M
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.readers.rule=PathPrefix(`/readers`)"
-      - "traefik.http.routers.readers.entrypoints=web"
-      - "traefik.http.services.readers-v2.loadbalancer.server.port=8082"
-      - "traefik.http.services.readers-v2.loadbalancer.weight=10"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.readers.rule=PathPrefix(`/readers`)"
+        - "traefik.http.routers.readers.entrypoints=web"
+        - "traefik.http.services.readers-v2.loadbalancer.server.port=8082"
+        - "traefik.http.services.readers-v2.loadbalancer.weight=10"
