@@ -43,7 +43,7 @@ services:
   auth-users-service:
     image: miguel04cardoso/auth-users-service:latest
     environment:
-      - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_PROFILES_ACTIVE=bootstrap,prod
     networks:
       - traefik-public
     deploy:
@@ -66,7 +66,7 @@ services:
   authors-service:
     image: miguel04cardoso/authors-service:latest
     environment:
-      - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_PROFILES_ACTIVE=bootstrap,prod
     networks:
       - traefik-public
     deploy:
@@ -89,7 +89,7 @@ services:
   books-service:
     image: miguel04cardoso/books-service:latest
     environment:
-      - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_PROFILES_ACTIVE=bootstrap,prod
     networks:
       - traefik-public
     deploy:
@@ -112,7 +112,7 @@ services:
   genres-service:
     image: miguel04cardoso/genres-service:latest
     environment:
-      - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_PROFILES_ACTIVE=bootstrap,prod
     networks:
       - traefik-public
     deploy:
@@ -135,7 +135,7 @@ services:
   readers-v1:
     image: miguel04cardoso/readers-service:latest
     environment:
-      - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_PROFILES_ACTIVE=bootstrap,prod
     networks:
       - traefik-public
     deploy:
@@ -159,7 +159,7 @@ services:
   readers-v2:
     image: miguel04cardoso/readers-service:canary
     environment:
-      - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_PROFILES_ACTIVE=bootstrap,prod
     networks:
       - traefik-public
     deploy:
