@@ -137,9 +137,9 @@ pipeline {
                 }
                 script {
                     def userInput = input(
-                        id: 'ApproveDeployment', message: 'Deploy The Service?',
+                        id: 'ApproveDeployment', message: 'Deploy Authors Service?',
                         parameters: [
-                            string(defaultValue: 'Deployed URL: http://staging-genres.localhost', description: 'Check the deployed service link before approving', name: 'ServiceLink')
+                            string(defaultValue: 'Deployed URL: http://143.47.57.150:4677/authors/api/docs', description: 'Check the deployed service link before approving', name: 'ServiceLink')
                         ]
                     )
                 }
@@ -155,7 +155,7 @@ pipeline {
                     retry(3) {
                         sleep 5
                         sh '''
-                          curl -f http://143.47.57.150:8081/authors/actuator/health
+                          curl -f http://143.47.57.150:4677/authors/actuator/health
                         '''
                     }
                 }
@@ -185,7 +185,7 @@ pipeline {
                     retry(3) {
                         sleep 5
                         sh '''
-                          curl -f http://143.47.57.150:8081/actuator/health
+                          curl -f http://143.47.57.150:4677/authors/actuator/health
                         '''
                     }
                 }
