@@ -1,6 +1,13 @@
 pipeline {
     agent any
 
+    parameters {
+        string(
+            name: 'BRANCH',
+            defaultValue: 'dev'
+        )
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -141,7 +148,7 @@ pipeline {
 
         stage('Smoke Test - Staging') {
             when {
-                branch 'staging'
+                expression { params.BRANCH == 'staging' }
             }
             steps {
                 script {
@@ -157,7 +164,7 @@ pipeline {
 
         stage('Performance Tests') {
             when {
-                branch 'staging'
+                expression { params.BRANCH == 'staging' }
             }
             steps {
                 dir('authors/load-tests') {
@@ -171,7 +178,7 @@ pipeline {
 
         stage('Health Check - Production') {
             when {
-                branch 'prod'
+                expression { params.BRANCH == 'prod' }
             }
             steps {
                 script {
