@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { check } from 'k6';
 
 export const options = {
     stages: [
@@ -12,7 +12,7 @@ export const options = {
     },
 };
 
-const BASE_URL = 'http://143.47.57.150:8081/api/authors';
+const BASE_URL = 'http://143.47.57.150:8081/authors/api/authors';
 
 export default function () {
     const authorName = 'Miguel';

@@ -116,10 +116,10 @@ pipeline {
             }
             steps {
                 script {
-                    retry(5) {
-                        sleep 10
+                    retry(3) {
+                        sleep 5
                         sh '''
-                          curl -f http://143.47.57.150:8081/actuator/health
+                          curl -f http://143.47.57.150:8081/readers/actuator/health
                         '''
                     }
                 }
@@ -132,8 +132,8 @@ pipeline {
             }
             steps {
                 script {
-                    retry(5) {
-                        sleep 10
+                    retry(3) {
+                        sleep 5
                         sh '''
                           curl -f http://143.47.57.150:8081/actuator/health
                         '''
