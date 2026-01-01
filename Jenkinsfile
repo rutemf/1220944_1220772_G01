@@ -42,11 +42,19 @@ pipeline {
 
         stage('Deploy Stack (Docker Swarm)') {
             steps {
-                sh '''
-                  docker stack deploy \
-                    -c docker-compose.yml \
-                    library-management-system
-                '''
+                script {
+                    def composeFile = "docker-compose.yml"
+
+                    if (env.BRANCH_NAME == 'prod') {
+                        composeFile = "docker-compose-prod.yml"
+                    }
+
+                    sh """
+                        docker stack deploy \
+                          -c ${composeFile} \
+                          library-management-system
+                    """
+                }
             }
         }
     }
