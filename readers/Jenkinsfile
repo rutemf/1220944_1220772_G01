@@ -132,11 +132,14 @@ pipeline {
             }
             steps {
                 script {
-                    retry(3) {
-                        sleep 5
-                        sh '''
-                          curl -f http://143.47.57.150:4677/readers/actuator/health
-                        '''
+                    try {
+                        retry(3) {
+                            sleep 5
+                            sh 'curl -fsS http://143.47.57.150:4677/readers/actuator/health'
+                        }
+                    } catch (e) {
+                        sh 'docker service rollback library-management-system_readers-service'
+                        error("Health Check Failed -> Rolled Back")
                     }
                 }
             }
