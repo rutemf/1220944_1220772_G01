@@ -32,9 +32,11 @@
 
 ## QAS
 
-[QAS.md](QAS.md)
+[QAS.md](QAS/QAS.md)
 
 ## Technical Memos
+
+[TechnicalMemos.md](TechnicalMemos.md)
 
 ## Microservice Patterns
 

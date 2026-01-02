@@ -2,7 +2,7 @@
 
 ## 1. Polyglot Data Persistence
 
-The system adopts a polyglot data persistence with SQL and NoSQL, respectively, MySQL and MongoDB.
+The system must adopt a polyglot data persistence with SQL and NoSQL, respectively, MySQL and MongoDB.
 
 | Element            | Statement                                                                                        |
 |--------------------|--------------------------------------------------------------------------------------------------|
@@ -27,7 +27,7 @@ The system must automatically execute builds, tests, and deployments.
 | Response           | The pipeline compiles, runs tests, and successfully deploys the system |
 | Response measure   | Execution completed within acceptable time limits.                     |
 
-## 3. Continuous Integration and Testability
+## 3. Testability
 
 The system must support multiple testing approaches: static, unit, mutation, consumer-driven contract testing).
 
