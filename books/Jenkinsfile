@@ -137,6 +137,21 @@ pipeline {
             }
         }
 
+        stage('Auto Scale - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('books/load-tests') {
+                    echo 'Scaling Books Service Based On Load Test Results...'
+                    sh '''
+                        chmod +x scale-books.sh
+                        ./scale-books.sh
+                    '''
+                }
+            }
+        }
+
         stage('Health Check - Production') {
             when {
                 expression { params.BRANCH == 'prod' }
