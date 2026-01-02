@@ -20,8 +20,8 @@ function extractAuthHeader(res) {
 }
 
 export function setup() {
-    const username = "admin@gmail.com";
-    const password = "Admin!123";
+    const username = "maria@gmail.com";
+    const password = "Maria!123";
 
     const payload = JSON.stringify({ username, password });
     const params = { headers: { "Content-Type": "application/json" } };
@@ -49,7 +49,7 @@ export function setup() {
 }
 
 export default function (data) {
-    const authorName = 'Miguel';
+    const authorName = 'Rute Maia';
     const url = `${BASE_URL}/${encodeURIComponent(authorName)}`;
 
     const res = http.get(url, {
