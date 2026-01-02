@@ -46,8 +46,7 @@ services:
     image: miguel04cardoso/auth-users-service:latest
     environment:
       - SPRING_PROFILES_ACTIVE=bootstrap,dev
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
     networks:
@@ -73,8 +72,7 @@ services:
     image: miguel04cardoso/authors-service:latest
     environment:
       - SPRING_PROFILES_ACTIVE=bootstrap,dev
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
     networks:
@@ -100,8 +98,7 @@ services:
     image: miguel04cardoso/books-service:latest
     environment:
       - SPRING_PROFILES_ACTIVE=bootstrap,dev
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
     networks:
@@ -127,8 +124,7 @@ services:
     image: miguel04cardoso/genres-service:latest
     environment:
       - SPRING_PROFILES_ACTIVE=bootstrap,dev
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
     networks:
@@ -154,8 +150,7 @@ services:
     image: miguel04cardoso/readers-service:latest
     environment:
       - SPRING_PROFILES_ACTIVE=bootstrap,dev
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
     networks:
@@ -182,8 +177,7 @@ services:
     image: miguel04cardoso/readers-service:canary
     environment:
       - SPRING_PROFILES_ACTIVE=bootstrap,dev
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
     networks:
