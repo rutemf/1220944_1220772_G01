@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,9 @@ public class BookController {
     private final ConcurrencyService concurrencyService;
     private final FileStorageService fileStorageService;
     private final BookViewMapper bookViewMapper;
+
+    @Value("${feature.bookPhotoDelete.enabled:true}")
+    private boolean bookPhotoDeleteEnabled;
 
     @Operation(summary = "Register a new Book")
     @PutMapping(value = "/{isbn}")
@@ -175,6 +179,9 @@ public class BookController {
     @Operation(summary = "Deletes a book photo")
     @DeleteMapping("/{isbn}/photo")
     public ResponseEntity<Void> deleteBookPhoto(@PathVariable("isbn") final String isbn) {
+        if (!bookPhotoDeleteEnabled) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        }
 
         var book = bookService.findByIsbn(isbn);
         if (book.getPhoto() == null) {
