@@ -45,6 +45,9 @@ public class BookController {
     @Value("${feature.bookPhotoDelete.enabled:true}")
     private boolean bookPhotoDeleteEnabled;
 
+    @Value("${feature.bookGetPhoto.enabled:true}")
+    private boolean bookGetPhotoEnabled;
+
     @Operation(summary = "Register a new Book")
     @PutMapping(value = "/{isbn}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -155,9 +158,12 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<byte[]> getSpecificBookPhoto(@PathVariable("isbn") final String isbn) {
 
+        if (!bookGetPhotoEnabled) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        }
+
         Book book = bookService.findByIsbn(isbn);
 
-        // In case the user has no photo, just return a 200 OK without body
         if (book.getPhoto() == null) {
             return ResponseEntity.ok().build();
         }
@@ -171,9 +177,7 @@ public class BookController {
             return ResponseEntity.ok().build();
         }
 
-        return ResponseEntity.ok().contentType(fileFormat.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG)
-                .body(image);
-
+        return ResponseEntity.ok().contentType(fileFormat.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG).body(image);
     }
 
     @Operation(summary = "Deletes a book photo")
