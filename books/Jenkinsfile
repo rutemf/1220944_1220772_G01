@@ -113,13 +113,25 @@ pipeline {
                 expression { params.BRANCH == 'staging' }
             }
             steps {
-                script {
-                    retry(3) {
-                        sleep 5
-                        sh '''
-                          curl -f http://143.47.57.150:4677/books/actuator/health
-                        '''
-                    }
+                dir('books/load-tests') {
+                    echo 'Running Smoke Test...'
+                    sh '''
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/smoke-test.js
+                    '''
+                }
+            }
+        }
+
+        stage('Performance Tests - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('books/load-tests') {
+                    echo 'Running Performance Tests...'
+                    sh '''
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-books.js --summary-export=/k6/k6-summary.json
+                    '''
                 }
             }
         }
