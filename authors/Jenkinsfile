@@ -177,6 +177,21 @@ pipeline {
             }
         }
 
+        stage('Auto Scale - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('authors/load-tests') {
+                    echo 'Scaling Authors Service Based On Load Test Results...'
+                    sh '''
+                        chmod +x scale-authors.sh
+                        ./scale-authors.sh
+                    '''
+                }
+            }
+        }
+
         stage('Health Check - Production') {
             when {
                 expression { params.BRANCH == 'prod' }
