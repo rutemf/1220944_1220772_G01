@@ -113,13 +113,41 @@ pipeline {
                 expression { params.BRANCH == 'staging' }
             }
             steps {
-                script {
-                    retry(3) {
-                        sleep 5
-                        sh '''
-                          curl -f http://143.47.57.150:4677/users/actuator/health
-                        '''
-                    }
+                dir('auth-users/load-tests') {
+                    echo 'Running Smoke Test...'
+                    sh '''
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/smoke-test.js
+                    '''
+                }
+            }
+        }
+
+        stage('Performance Tests - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('auth-users/load-tests') {
+                    echo 'Running Performance Tests...'
+                    sh '''
+                        chmod 777 .
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-users.js --summary-export=/k6/k6-summary.json
+                    '''
+                }
+            }
+        }
+
+        stage('Auto Scale - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('auth-users/load-tests') {
+                    echo 'Scaling Auth-Users Service Based On Load Test Results...'
+                    sh '''
+                        chmod +x scale-users.sh
+                        ./scale-users.sh
+                    '''
                 }
             }
         }
