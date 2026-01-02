@@ -196,4 +196,13 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            echo 'Cleaning Old Docker Images...'
+            sh '''
+                docker image prune -a -f --filter "label=service=authors" --filter "until=48h"
+            '''
+        }
+    }
 }

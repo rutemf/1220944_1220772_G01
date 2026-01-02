@@ -155,4 +155,13 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            echo 'Cleaning Old Docker Images...'
+            sh '''
+                docker image prune -a -f --filter "label=service=books" --filter "until=48h"
+            '''
+        }
+    }
 }
