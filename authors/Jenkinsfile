@@ -116,6 +116,9 @@ pipeline {
         }
 
         stage('Request Approval') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
             steps {
                 script {
                     emailext(
@@ -139,7 +142,7 @@ pipeline {
                     def userInput = input(
                         id: 'ApproveDeployment', message: 'Deploy Authors Service?',
                         parameters: [
-                            string(defaultValue: 'Deployed URL: http://143.47.57.150:4677/authors/api/docs', description: 'Check the deployed service link before approving', name: 'ServiceLink')
+                            string(defaultValue: 'URL: http://143.47.57.150:4677/authors/api/docs', description: 'Check The Deployed Service Link', name: 'Authors Service')
                         ]
                     )
                 }
