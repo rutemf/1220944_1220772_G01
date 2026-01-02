@@ -38,6 +38,8 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.rabbitmq.rule=PathPrefix(`/rabbitmq`)"
         - "traefik.http.routers.rabbitmq.entrypoints=web"
+        - "traefik.http.middlewares.rabbitmq-strip.stripprefix.prefixes=/rabbitmq"
+        - "traefik.http.routers.rabbitmq.middlewares=rabbitmq-strip"
         - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
 
   auth-users-service:
