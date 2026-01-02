@@ -38,12 +38,17 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.rabbitmq.rule=PathPrefix(`/rabbitmq`)"
         - "traefik.http.routers.rabbitmq.entrypoints=web"
+        - "traefik.http.middlewares.rabbitmq-strip.stripprefix.prefixes=/rabbitmq"
+        - "traefik.http.routers.rabbitmq.middlewares=rabbitmq-strip"
         - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
 
   auth-users-service:
     image: miguel04cardoso/auth-users-service:latest
     environment:
       - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
     networks:
       - traefik-public
     deploy:
@@ -67,6 +72,9 @@ services:
     image: miguel04cardoso/authors-service:latest
     environment:
       - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
     networks:
       - traefik-public
     deploy:
@@ -90,6 +98,9 @@ services:
     image: miguel04cardoso/books-service:latest
     environment:
       - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
     networks:
       - traefik-public
     deploy:
@@ -113,6 +124,9 @@ services:
     image: miguel04cardoso/genres-service:latest
     environment:
       - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
     networks:
       - traefik-public
     deploy:
@@ -136,6 +150,9 @@ services:
     image: miguel04cardoso/readers-service:latest
     environment:
       - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
     networks:
       - traefik-public
     deploy:
@@ -160,6 +177,9 @@ services:
     image: miguel04cardoso/readers-service:canary
     environment:
       - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
     networks:
       - traefik-public
     deploy:
