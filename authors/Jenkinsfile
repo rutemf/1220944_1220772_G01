@@ -128,7 +128,7 @@ pipeline {
                         <body>
                             <p>Hi,</p>
                             <p>Please review the deployed service at:<br>
-                            <a href="http://staging-genres.localhost">http://staging-genres.localhost</a></p>
+                            <a href="http://143.47.57.150:8080/job/ODSOFT-Pipeline/job/staging/">http://143.47.57.150:8080/job/ODSOFT-Pipeline/job/staging/</a></p>
                             <p>Approve or reject the deployment in Jenkins.</p>
                             <p>Regards,<br>LMS Team</p>
                         </body>
