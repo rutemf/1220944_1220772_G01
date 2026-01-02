@@ -158,7 +158,7 @@ services:
     networks:
       - traefik-public
     deploy:
-      replicas: 2
+      replicas: 1
       resources:
         limits:
           cpus: "0.40"
