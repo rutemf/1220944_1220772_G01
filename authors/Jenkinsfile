@@ -115,7 +115,7 @@ pipeline {
             }
         }
 
-        stage('Request Approval') {
+        stage('Request Approval - Staging') {
             when {
                 expression { params.BRANCH == 'staging' }
             }
@@ -154,18 +154,16 @@ pipeline {
                 expression { params.BRANCH == 'staging' }
             }
             steps {
-                script {
-                    retry(3) {
-                        sleep 5
-                        sh '''
-                          curl -f http://143.47.57.150:4677/authors/actuator/health
-                        '''
-                    }
+                dir('authors/load-tests') {
+                    echo 'Running Smoke Test...'
+                    sh '''
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/smoke-test.js
+                    '''
                 }
             }
         }
 
-        stage('Performance Tests') {
+        stage('Performance Tests - Staging') {
             when {
                 expression { params.BRANCH == 'staging' }
             }
@@ -173,7 +171,7 @@ pipeline {
                 dir('authors/load-tests') {
                     echo 'Running Performance Tests...'
                     sh '''
-                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-authors.js
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-authors.js --summary-export=/k6/k6-summary.json
                     '''
                 }
             }
@@ -185,11 +183,14 @@ pipeline {
             }
             steps {
                 script {
-                    retry(3) {
-                        sleep 5
-                        sh '''
-                          curl -f http://143.47.57.150:4677/authors/actuator/health
-                        '''
+                    try {
+                        retry(3) {
+                            sleep 5
+                            sh 'curl -fsS http://143.47.57.150:4677/authors/actuator/health'
+                        }
+                    } catch (e) {
+                        sh 'docker service rollback library-management-system_authors-service'
+                        error("Health Check Failed -> Rolled Back")
                     }
                 }
             }

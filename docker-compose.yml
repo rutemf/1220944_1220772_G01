@@ -101,6 +101,8 @@ services:
       - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
+      - FEATURE_BOOK_PHOTO_DELETE_ENABLED=false
+      - FEATURE_BOOK_GET_PHOTO_ENABLED=true
     networks:
       - traefik-public
     deploy:
