@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SUMMARY="k6-summary.json"
-SERVICE="library-management-system_authors-service"
+SERVICE="library-management-system_books-service"
 
 P95=$(jq '.metrics.http_req_duration["p(95)"]' $SUMMARY)
 
@@ -13,6 +13,6 @@ else
   REPLICAS=2
 fi
 
-echo "Scaling Authors Service To $REPLICAS Replicas..."
+echo "Scaling Books Service To $REPLICAS Replicas..."
 
 docker service scale ${SERVICE}=${REPLICAS}
