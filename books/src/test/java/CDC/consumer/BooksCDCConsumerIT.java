@@ -37,34 +37,51 @@ public class BooksCDCConsumerIT {
     @Autowired
     BookRabbitmqController listener;
 
-    @Test
-    void testMessageProcessing() throws Exception {
-
-        // Use PactReader to load the Pact file
-        File pactFile = new File("target/pacts/book_created-consumer-book_event-producer.json");
+    private void processPactMessages(String pactFilePath, MessageHandler handler) throws Exception {
+        File pactFile = new File(pactFilePath);
         PactReader pactReader = DefaultPactReader.INSTANCE;
 
         Pact pact = pactReader.loadPact(pactFile);
 
         List<Message> messagesGeneratedByPact = pact.asMessagePact().get().getMessages();
-        for (Message messageGeneratedByPact : messagesGeneratedByPact) {
-            // Convert the Pact message to a String (JSON payload)
-            String jsonReceived = messageGeneratedByPact.contentsAsString();
+        for (Message message : messagesGeneratedByPact) {
+            String json = message.contentsAsString();
 
-            // prepare message properties
-            MessageProperties messageProperties = new MessageProperties();
-            messageProperties.setContentType("application/json");
+            MessageProperties props = new MessageProperties();
+            props.setContentType("application/json");
 
-            // Create a Spring AMQP Message with the JSON payload and optional headers
-            org.springframework.amqp.core.Message messageToBeSentByRabbit = new org.springframework.amqp.core.Message(jsonReceived.getBytes(StandardCharsets.UTF_8), messageProperties);
+            org.springframework.amqp.core.Message springMsg =
+                    new org.springframework.amqp.core.Message(json.getBytes(StandardCharsets.UTF_8), props);
 
-            // Simulate receiving the message in the RabbitMQ listener
-            assertDoesNotThrow(() -> {
-                listener.receiveBookCreatedMsg(messageToBeSentByRabbit);
-            });
-
-            // somehow optional: verify interactions with the mocked service
-            verify(bookService, times(1)).create(any(BookViewAMQP.class));
+            assertDoesNotThrow(() -> handler.handle(springMsg));
         }
     }
+
+    @FunctionalInterface
+    interface MessageHandler {
+        void handle(org.springframework.amqp.core.Message message) throws Exception;
+    }
+
+    @Test
+    void testBookCreatedMessage() throws Exception {
+        processPactMessages(
+                "target/pacts/book_created-consumer-book_event-producer.json",
+                message -> {
+                    listener.receiveBookCreatedMsg(message);
+                    verify(bookService, times(1)).create(any(BookViewAMQP.class));
+                }
+        );
+    }
+
+    @Test
+    void testBookUpdatedMessage() throws Exception {
+        processPactMessages(
+                "target/pacts/book_updated-consumer-book_event-producer.json",
+                message -> {
+                    listener.receiveBookUpdated(message);
+                    verify(bookService, times(1)).update(any(BookViewAMQP.class));
+                }
+        );
+    }
+
 }
