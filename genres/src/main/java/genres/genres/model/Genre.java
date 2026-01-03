@@ -4,16 +4,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import org.hibernate.StaleObjectStateException;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Objects;
 
-@Entity
-@Table(name = "Genre")
+@Document(collection = "genres")
 public class Genre {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    long pk;
+    private String id;
 
     @Version
     @Getter
@@ -21,6 +21,7 @@ public class Genre {
 
     @Getter
     @NotBlank
+    @Field("genre")
     private String genre;
 
     private final int GENRE_MAX_LENGTH = 100;
@@ -45,7 +46,7 @@ public class Genre {
                            final String genre) {
 
         if (!Objects.equals(this.version, desiredVersion))
-            throw new StaleObjectStateException("Object was already modified by another user", this.pk);
+            throw new StaleObjectStateException("Object was already modified by another user", this.id);
 
         if (genre != null) {
             setGenre(genre);
