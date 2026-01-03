@@ -31,7 +31,9 @@ pipeline {
 
                         if (changed) {
                             echo "Changes Detected In ${service}, Triggering Pipeline..."
-                            build job: service, wait: true, parameters: [string(name: 'BRANCH', value: env.BRANCH_NAME)]
+                            catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                                build job: service, wait: true, parameters: [string(name: 'BRANCH', value: env.BRANCH_NAME)]
+                            }
                         } else {
                             echo "No Changes Detected In ${service}."
                         }

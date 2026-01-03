@@ -135,13 +135,11 @@ pipeline {
                 expression { params.BRANCH == 'staging' }
             }
             steps {
-                script {
-                    retry(3) {
-                        sleep 5
-                        sh '''
-                          curl -f http://143.47.57.150:4677/genres/actuator/health
-                        '''
-                    }
+                dir('genres/load-tests') {
+                    echo 'Running Smoke Test...'
+                    sh '''
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/smoke-test.js
+                    '''
                 }
             }
         }
