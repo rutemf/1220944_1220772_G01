@@ -31,7 +31,6 @@ services:
                 - "traefik.http.routers.readers.middlewares=readers-strip"
                 - "traefik.http.middlewares.readers-strip.stripprefix.prefixes=/readers"
                 - "traefik.http.services.readers.loadbalancer.server.port=8082"
-                - "traefik.http.services.readers.loadbalancer.weight=90"
 
     readers-v2:
         image: miguel04cardoso/readers-service:canary
@@ -54,4 +53,3 @@ services:
             labels:
                 - "traefik.enable=true"
                 - "traefik.http.services.readers.loadbalancer.server.port=8082"
-                - "traefik.http.services.readers.loadbalancer.weight=10"
