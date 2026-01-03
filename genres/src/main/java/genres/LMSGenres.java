@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LSMGenres {
+public class LMSGenres {
 
 
     public static void main(String[] args) {
-        SpringApplication.run(LSMGenres.class, args);
+        SpringApplication.run(LMSGenres.class, args);
     }
 }
