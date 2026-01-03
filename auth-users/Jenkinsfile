@@ -108,6 +108,28 @@ pipeline {
           }
         }
 
+        stage('Deploy - Users Service') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('auth-users') {
+                    script {
+                        def composeFile = 'docker-compose.yml'
+                        def stackName = 'auth-users'
+
+                        if (params.BRANCH == 'prod') {
+                            composeFile = 'docker-compose-prod.yml'
+                        }
+
+                        sh """
+                            docker stack deploy -c ${composeFile} ${stackName}
+                        """
+                    }
+                }
+            }
+        }
+
         stage('Smoke Test - Staging') {
             when {
                 expression { params.BRANCH == 'staging' }
