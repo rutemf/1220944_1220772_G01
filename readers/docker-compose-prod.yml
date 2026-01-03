@@ -15,7 +15,7 @@ services:
     networks:
       - traefik-public
     deploy:
-      replicas: 1
+      replicas: 2
       resources:
         limits:
           cpus: "0.40"
@@ -27,10 +27,10 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.readers.rule=PathPrefix(`/readers`)"
         - "traefik.http.routers.readers.entrypoints=web"
-        - "traefik.http.middlewares.readers-strip.stripprefix.prefixes=/readers"
+        - "traefik.http.routers.readers.service=readers"
         - "traefik.http.routers.readers.middlewares=readers-strip"
-        - "traefik.http.services.readers-v1.loadbalancer.server.port=8082"
-        - "traefik.http.services.readers-v1.loadbalancer.weight=90"
+        - "traefik.http.middlewares.readers-strip.stripprefix.prefixes=/readers"
+        - "traefik.http.services.readers.loadbalancer.server.port=8082"
 
   readers-v2:
     image: miguel04cardoso/readers-service:canary
@@ -52,5 +52,5 @@ services:
           memory: 128M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.services.readers-v2.loadbalancer.server.port=8082"
-        - "traefik.http.services.readers-v2.loadbalancer.weight=10"
+        - "traefik.http.routers.readers.service=readers"
+        - "traefik.http.services.readers.loadbalancer.server.port=8082"

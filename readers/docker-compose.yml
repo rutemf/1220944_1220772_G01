@@ -15,7 +15,7 @@ services:
         networks:
             - traefik-public
         deploy:
-            replicas: 1
+            replicas: 2
             resources:
                 limits:
                     cpus: "0.40"
@@ -52,4 +52,5 @@ services:
                     memory: 128M
             labels:
                 - "traefik.enable=true"
+                - "traefik.http.routers.readers.service=readers"
                 - "traefik.http.services.readers.loadbalancer.server.port=8082"
