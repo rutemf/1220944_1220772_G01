@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SUMMARY="k6-summary.json"
-SERVICE="library-management-system_books-service"
+SERVICE="books_books-service"
 
 P95=$(jq '.metrics.http_req_duration["p(95)"]' $SUMMARY)
 

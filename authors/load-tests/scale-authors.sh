@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SUMMARY="k6-summary.json"
-SERVICE="library-management-system_authors-service"
+SERVICE="authors_authors-service"
 
 P95=$(jq '.metrics.http_req_duration["p(95)"]' $SUMMARY)
 
