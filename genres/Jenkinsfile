@@ -144,6 +144,36 @@ pipeline {
             }
         }
 
+        stage('Performance Tests - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('genres/load-tests') {
+                    echo 'Running Performance Tests...'
+                    sh '''
+                        chmod 777 .
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-genres.js --summary-export=/k6/k6-summary.json
+                    '''
+                }
+            }
+        }
+
+        stage('Auto Scale - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('genres/load-tests') {
+                    echo 'Scaling Genres Service Based On Load Test Results...'
+                    sh '''
+                        chmod +x scale-genres.sh
+                        ./scale-genres.sh
+                    '''
+                }
+            }
+        }
+
         stage('Health Check - Production') {
             when {
                 expression { params.BRANCH == 'prod' }
