@@ -126,7 +126,6 @@ pipeline {
           steps {
             withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
               sh 'docker login -u $USER -p $PASS'
-              sh 'docker push miguel04cardoso/readers-service:latest'
               sh 'docker push miguel04cardoso/readers-service:canary'
             }
           }
@@ -166,6 +165,22 @@ pipeline {
                           curl -f http://143.47.57.150:4677/readers/actuator/health
                         '''
                     }
+                }
+            }
+        }
+
+        stage('Canary Rollout - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                script {
+                    sh '''
+                        docker service update --replicas 3 readers_readers-v2
+                        docker service update --replicas 0 readers_readers-v1
+                        docker tag miguel04cardoso/readers-service:canary miguel04cardoso/readers-service:latest
+                        docker push miguel04cardoso/readers-service:latest
+                    '''
                 }
             }
         }
