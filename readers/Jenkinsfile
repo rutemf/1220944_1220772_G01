@@ -89,6 +89,7 @@ pipeline {
         stage('Publish Pact') {
             steps {
                 dir('readers') {
+                    echo 'Publishing Pact...'
                     withCredentials([string(credentialsId: 'pact-broker-token',variable: 'PACT_BROKER_TOKEN')]) {
                         sh """
                           mvn pact:publish \
