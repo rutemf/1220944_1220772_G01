@@ -95,7 +95,8 @@ pipeline {
                           mvn pact:publish \
                             -Dpact.broker.url=${PACT_BROKER_URL} \
                             -Dpact.broker.token=$PACT_BROKER_TOKEN \
-                            -Dpact.consumer.version=${VERSION}
+                            -Dpact.consumer.version=${VERSION} \
+                            -Dpact.git.branch=${params.BRANCH}
                         """
                     }
                 }
