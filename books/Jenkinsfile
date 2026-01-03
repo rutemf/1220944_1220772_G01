@@ -8,6 +8,10 @@ pipeline {
         )
     }
 
+    environment {
+        PACT_BROKER_URL = 'https://isep-fd4645c7.pactflow.io'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -77,6 +81,21 @@ pipeline {
                         reportFiles: 'index.html',
                         reportName: 'JaCoCo Coverage Report'
                     ])
+                }
+            }
+        }
+
+        stage('Publish Pact') {
+            steps {
+                dir('books') {
+                    withCredentials([string(credentialsId: 'pact-broker-token',variable: 'PACT_BROKER_TOKEN')]) {
+                        sh """
+                          mvn pact:publish \
+                            -Dpact.broker.url=${PACT_BROKER_URL} \
+                            -Dpact.broker.token=$PACT_BROKER_TOKEN \
+                            -Dpact.consumer.version=${env.GIT_COMMIT}
+                        """
+                    }
                 }
             }
         }
