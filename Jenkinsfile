@@ -50,7 +50,7 @@ pipeline {
                     }
 
                     sh """
-                        docker stack deploy -c ${composeFile} LMS
+                        docker stack deploy -c ${composeFile} library-management-system
                     """
                 }
             }
