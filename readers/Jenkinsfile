@@ -175,12 +175,10 @@ pipeline {
             }
             steps {
                 script {
-                    sh '''
-                        docker service update --replicas 3 readers_readers-v2
-                        docker service update --replicas 0 readers_readers-v1
-                        docker tag miguel04cardoso/readers-service:canary miguel04cardoso/readers-service:latest
-                        docker push miguel04cardoso/readers-service:latest
-                    '''
+                     sh '''
+                         chmod +x rollout-canary.sh
+                         ./rollout-canary.sh
+                     '''
                 }
             }
         }
