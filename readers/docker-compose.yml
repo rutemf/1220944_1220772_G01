@@ -1,39 +1,60 @@
-
-services:
-    lmsbooks_1:
-        image: lmsbooks:latest
-        container_name: books1_in_lms_network
-        build:
-            context: ..
-            dockerfile: Dockerfile
-        ports:
-            - "8087:8080"
-        environment:
-            SPRING_PROFILES_ACTIVE: instance1,bootstrap
-        networks:
-            - lms_network
-        volumes:
-            - "uploaded_files_volume_1:/tmp"
-
-    lmsbooks_2:
-        image: lmsbooks:latest
-        container_name: books2_in_lms_network
-        build:
-            context: ..
-            dockerfile: Dockerfile
-        ports:
-            - "8088:8080"
-        environment:
-            SPRING_PROFILES_ACTIVE: instance2,bootstrap
-        networks:
-            - lms_network
-        volumes:
-            - "uploaded_files_volume_2:/tmp"
+version: "3.8"
 
 networks:
-    lms_network:
+    traefik-public:
         external: true
 
-volumes:
-    uploaded_files_volume_1:
-    uploaded_files_volume_2:
+services:
+    readers-v1:
+        image: miguel04cardoso/readers-service:latest
+        environment:
+            - SPRING_PROFILES_ACTIVE=bootstrap,dev
+            - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+            - SPRING_RABBITMQ_USERNAME=guest
+            - SPRING_RABBITMQ_PASSWORD=guest
+        networks:
+            - traefik-public
+        deploy:
+            replicas: 1
+            resources:
+                limits:
+                    cpus: "0.40"
+                    memory: 512M
+                reservations:
+                    cpus: "0.05"
+                    memory: 128M
+            labels:
+                - "traefik.enable=true"
+                - "traefik.http.routers.readers.rule=PathPrefix(`/readers`)"
+                - "traefik.http.routers.readers.entrypoints=web"
+                - "traefik.http.middlewares.readers-strip.stripprefix.prefixes=/readers"
+                - "traefik.http.routers.readers.middlewares=readers-strip"
+                - "traefik.http.services.readers-v1.loadbalancer.server.port=8082"
+                - "traefik.http.services.readers-v1.loadbalancer.weight=90"
+
+    readers-v2:
+        image: miguel04cardoso/readers-service:canary
+        environment:
+            - SPRING_PROFILES_ACTIVE=bootstrap,dev
+            - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+            - SPRING_RABBITMQ_USERNAME=guest
+            - SPRING_RABBITMQ_PASSWORD=guest
+        networks:
+            - traefik-public
+        deploy:
+            replicas: 1
+            resources:
+                limits:
+                    cpus: "0.40"
+                    memory: 512M
+                reservations:
+                    cpus: "0.05"
+                    memory: 128M
+            labels:
+                - "traefik.enable=true"
+                - "traefik.http.routers.readers.rule=PathPrefix(`/readers`)"
+                - "traefik.http.routers.readers.entrypoints=web"
+                - "traefik.http.middlewares.readers-strip.stripprefix.prefixes=/readers"
+                - "traefik.http.routers.readers.middlewares=readers-strip"
+                - "traefik.http.services.readers-v2.loadbalancer.server.port=8082"
+                - "traefik.http.services.readers-v2.loadbalancer.weight=10"

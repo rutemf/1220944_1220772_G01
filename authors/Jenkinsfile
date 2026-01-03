@@ -115,6 +115,28 @@ pipeline {
             }
         }
 
+        stage('Deploy - Authors Service') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('authors') {
+                    script {
+                        def composeFile = 'docker-compose.yml'
+                        def stackName = 'authors'
+
+                        if (params.BRANCH == 'prod') {
+                            composeFile = 'docker-compose-prod.yml'
+                        }
+
+                        sh """
+                            docker stack deploy -c ${composeFile} ${stackName}
+                        """
+                    }
+                }
+            }
+        }
+
         stage('Request Approval - Staging') {
             when {
                 expression { params.BRANCH == 'staging' }

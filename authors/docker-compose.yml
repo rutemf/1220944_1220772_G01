@@ -1,0 +1,32 @@
+version: "3.8"
+
+networks:
+  traefik-public:
+    external: true
+
+services:
+  authors-service:
+    image: miguel04cardoso/authors-service:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.40"
+          memory: 512M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.authors.rule=PathPrefix(`/authors`)"
+        - "traefik.http.routers.authors.entrypoints=web"
+        - "traefik.http.middlewares.authors-strip.stripprefix.prefixes=/authors"
+        - "traefik.http.routers.authors.middlewares=authors-strip"
+        - "traefik.http.services.authors.loadbalancer.server.port=8084"
