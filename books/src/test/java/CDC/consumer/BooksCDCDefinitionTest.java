@@ -57,7 +57,8 @@ public class BooksCDCDefinitionTest {
         body.stringType("description", "description");
         body.stringType("genre", "Infantil");
         body.array("authors")            // ⚡ mudou de authorIds para authors
-                .stringType("1")
+                .stringType("Joana")
+                .stringType("great writer")
                 .closeArray();
         body.stringMatcher("version", "[0-9]+", "1");
 
@@ -77,8 +78,9 @@ public class BooksCDCDefinitionTest {
                 .stringType("title", "updated title")
                 .stringType("description", "description")
                 .stringType("genre", "Infantil");
-        body.array("authors")            // ⚡ mudou de authorIds para authors
-                .stringType("1")
+        body.array("authors")
+                .stringType("Joana")
+                .stringType("great writer")
                 .closeArray();
 
         Map<String, Object> metadata = new HashMap<>();
