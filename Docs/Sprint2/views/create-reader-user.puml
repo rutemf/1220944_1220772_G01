@@ -1,0 +1,61 @@
+@startuml
+
+autonumber
+
+title Create Reader and User
+
+actor "User" as USER
+participant "LMS\n:System" as System
+participant "Readers Service" as READERS
+participant "RabbitMQ" as RABBIT
+participant "Users Service" as USERS
+database "Readers SQL DataBase" as MYSQL_READERS
+database "Users SQL DataBase" as MYSQL_USERS
+
+activate USER
+
+    USER -> System: /POST /readers/api/readers
+    activate System
+
+        System -> READERS: /POST api/readers
+        activate READERS
+
+            READERS -> MYSQL_READERS: INSERT reader;
+            activate MYSQL_READERS
+
+                MYSQL_READERS --> READERS: reader created
+            deactivate MYSQL_READERS
+
+            READERS -> RABBIT: publish reader.created event
+            activate RABBIT
+
+                RABBIT -> USERS: send reader.created event
+                activate USERS
+
+                    USERS -> MYSQL_USERS: INSERT user;
+                    activate MYSQL_USERS
+
+                        MYSQL_USERS --> USERS: user created
+                    deactivate MYSQL_USERS
+
+                    USERS --> RABBIT: publish user.created event
+                deactivate USERS
+
+                RABBIT --> READERS: send user.created event
+            deactivate RABBIT
+
+            READERS --> MYSQL_READERS: UPDATE status = active
+            activate MYSQL_READERS
+
+                MYSQL_READERS --> READERS: reader updated
+            deactivate MYSQL_READERS
+
+            READERS --> System: returns created reader
+        deactivate READERS
+
+        System --> USER: returns all data
+    deactivate System
+
+deactivate USER
+
+@enduml
