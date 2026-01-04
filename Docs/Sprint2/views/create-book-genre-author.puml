@@ -1,0 +1,79 @@
+@startuml
+
+autonumber
+title Create Book and Genre and Authors
+
+actor "Client" as CLIENT
+participant "LMS\n:System" as SYSTEM
+participant "Books Service" as BOOKS
+participant "RabbitMQ" as RABBIT
+participant "Genres Service" as GENRES
+participant "Authors Service" as AUTHORS
+
+database "Books SQL DB" as MYSQL_BOOKS
+database "Genres MongoDB" as MONGO_GENRES
+database "Authors SQL DB" as MYSQL_AUTHORS
+
+activate CLIENT
+
+CLIENT -> SYSTEM: POST api/books
+activate SYSTEM
+
+SYSTEM -> BOOKS: POST /api/books
+activate BOOKS
+
+' ---------------- CREATE BOOK ----------------
+BOOKS -> MYSQL_BOOKS: INSERT book
+activate MYSQL_BOOKS
+MYSQL_BOOKS --> BOOKS: book created
+deactivate MYSQL_BOOKS
+
+' ---------------- PUBLISH EVENT ----------------
+BOOKS -> RABBIT: publish book.created event
+activate RABBIT
+
+    ' -------- GENRE CREATION --------
+    RABBIT -> GENRES: send book.created event
+    activate GENRES
+
+        GENRES -> MONGO_GENRES: insert genre document
+        activate MONGO_GENRES
+        MONGO_GENRES --> GENRES: genre created
+        deactivate MONGO_GENRES
+
+        GENRES -> RABBIT: publish genre.created event
+    deactivate GENRES
+
+    ' -------- AUTHOR CREATION --------
+    RABBIT -> AUTHORS: send book.created event
+    activate AUTHORS
+
+        AUTHORS -> MYSQL_AUTHORS: INSERT author (name, bio)
+        activate MYSQL_AUTHORS
+        MYSQL_AUTHORS --> AUTHORS: author created
+        deactivate MYSQL_AUTHORS
+
+        AUTHORS -> RABBIT: publish author.created event
+    deactivate AUTHORS
+
+    ' -------- RETURN EVENTS --------
+    RABBIT --> BOOKS: send genre.created event
+    RABBIT --> BOOKS: send author.created event
+
+deactivate RABBIT
+
+' ---------------- UPDATE BOOK ----------------
+BOOKS -> MYSQL_BOOKS: UPDATE book
+activate MYSQL_BOOKS
+MYSQL_BOOKS --> BOOKS: book updated
+deactivate MYSQL_BOOKS
+
+BOOKS --> SYSTEM: return created book
+deactivate BOOKS
+
+SYSTEM --> CLIENT: returns book data
+deactivate SYSTEM
+
+deactivate CLIENT
+
+@enduml
