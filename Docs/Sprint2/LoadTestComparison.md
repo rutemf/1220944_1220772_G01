@@ -1,5 +1,8 @@
 # HTTP Request Duration Metrics: Monolith vs Microservices
 
+The performance test was designed to measure the HTTP request duration when fetching a book by its ISBN. We ran the same 
+test on both architectures — the monolith and the microservices — to compare their response times and efficiency.
+
 ## Monolith Architecture
 ```json
 "http_req_duration": {
@@ -14,6 +17,9 @@
     }
 },
 ```
+
+In the monolith architecture, the median request duration was around 12ms, with a 95th percentile of ~33ms. The maximum 
+request took ~240ms, showing some outliers under high load.
 
 ## Microservices Architecture
 ```json
