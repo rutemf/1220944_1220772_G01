@@ -12,7 +12,7 @@ export const options = {
     },
 };
 
-const BASE_URL = 'http://143.47.57.150:4677/books/api/books';
+const BASE_URL = 'http://143.47.57.150:4677/genres/api/genres';
 const LOGIN_URL = "http://143.47.57.150:4677/users/api/public/login";
 
 function extractAuthHeader(res) {

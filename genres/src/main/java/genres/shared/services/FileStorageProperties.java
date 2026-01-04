@@ -4,12 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-/**
- * <p>
- * code based on https://github.com/callicoder/spring-boot-file-upload-download-rest-api-example
- *
- *
- */
+
 @ConfigurationProperties(prefix = "file")
 @Component
 @Data
