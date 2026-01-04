@@ -1,0 +1,34 @@
+version: "3.8"
+
+networks:
+  traefik-public:
+    external: true
+
+services:
+  books-service:
+    image: miguel04cardoso/books-service:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=bootstrap,prod
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - FEATURE_BOOK_PHOTO_DELETE_ENABLED=false
+      - FEATURE_BOOK_GET_PHOTO_ENABLED=true
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.40"
+          memory: 512M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.books.rule=PathPrefix(`/books`)"
+        - "traefik.http.routers.books.entrypoints=web"
+        - "traefik.http.middlewares.books-strip.stripprefix.prefixes=/books"
+        - "traefik.http.routers.books.middlewares=books-strip"
+        - "traefik.http.services.books.loadbalancer.server.port=8083"

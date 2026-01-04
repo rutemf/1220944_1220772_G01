@@ -5,6 +5,7 @@ import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import readers.readers.model.ReaderDetails;
+import readers.readers.model.ReaderStatus;
 
 import java.util.Optional;
 
@@ -38,6 +39,30 @@ public class SpringDataReaderRepository implements ReaderRepository {
         } else {
             readerDetails = entityManager.merge(readerDetails);
         }
+
+        return readerDetails;
+    }
+
+    @Override
+    public ReaderDetails markAsActive(String readerNumber) {
+        ReaderDetails readerDetails = entityManager.createQuery(
+            "SELECT rd FROM ReaderDetails rd WHERE rd.readerNumber.readerNumber = :rn", ReaderDetails.class)
+            .setParameter("rn", readerNumber).getSingleResult();
+
+        readerDetails.setStatus(ReaderStatus.ACTIVE);
+        entityManager.merge(readerDetails);
+
+        return readerDetails;
+    }
+
+    @Override
+    public ReaderDetails markAsRejected(String readerNumber) {
+        ReaderDetails readerDetails = entityManager.createQuery(
+            "SELECT rd FROM ReaderDetails rd WHERE rd.readerNumber.readerNumber = :rn", ReaderDetails.class)
+            .setParameter("rn", readerNumber).getSingleResult();
+
+        readerDetails.setStatus(ReaderStatus.REJECTED);
+        entityManager.merge(readerDetails);
 
         return readerDetails;
     }

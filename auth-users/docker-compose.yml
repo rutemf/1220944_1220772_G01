@@ -1,44 +1,58 @@
-
-services:
-    users:
-        image: lmsusers:latest
-        container_name: users_in_lms_network
-        build:
-            context: ../../../Downloads
-            dockerfile: Dockerfile
-        ports:
-            - "8084:8080"
-#        depends_on:    # adopting database per-service, this might not be a common service
-#            postgres_in_lms_network:
-#                condition: service_healthy
-        environment:
-            SPRING_PROFILES_ACTIVE: instance1,bootstrap
-        networks:
-            - lms_network
-
-#    postgres_in_lms_network:   # if the database is not a common service, this would be necessary
-#        container_name: postgres_in_lms_network
-#        image: postgres:latest
-#        restart: always
-#        ports:
-#            - "5432:5432"
-#        environment:
-#            POSTGRES_DB: users_1
-#            POSTGRES_USER: postgres
-#            POSTGRES_PASSWORD: password
-#        volumes:
-#            - "postgres_volume:/var/lib/postgresql/data"
-#        networks:
-#            - lms_network
-#        healthcheck:
-#            test: [ "CMD", "pg_isready", "-U", "postgres" ]
-#            interval: 10s
-#            retries: 5
-#            timeout: 5s
+version: "3.8"
 
 networks:
-    lms_network:
-        external: true
+  traefik-public:
+    external: true
 
-volumes:
-    postgres_volume:
+services:
+  auth-users-service:
+    image: miguel04cardoso/auth-users-service:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "0.40"
+          memory: 512M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.users.rule=PathPrefix(`/users`)"
+        - "traefik.http.routers.users.entrypoints=web"
+        - "traefik.http.middlewares.users-strip.stripprefix.prefixes=/users"
+        - "traefik.http.routers.users.middlewares=users-strip"
+        - "traefik.http.services.users.loadbalancer.server.port=8081"
+
+  auth-users-green:
+    image: miguel04cardoso/auth-users-service:green
+    environment:
+      - SPRING_PROFILES_ACTIVE=bootstrap,dev
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 0
+      resources:
+        limits:
+          cpus: "0.40"
+          memory: 512M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.users.rule=PathPrefix(`/users`)"
+        - "traefik.http.routers.users.entrypoints=web"
+        - "traefik.http.middlewares.users-strip.stripprefix.prefixes=/users"
+        - "traefik.http.routers.users.middlewares=users-strip"
+        - "traefik.http.services.users.loadbalancer.server.port=8081"

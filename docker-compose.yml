@@ -6,15 +6,15 @@ networks:
 
 services:
   traefik:
-    image: traefik:v2.12
+    image: traefik:2
     command:
       - "--providers.docker.swarmmode=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.address=:4677"
       - "--api.insecure=true"
     ports:
-      - "80:80"
-      - "8080:8080"
+      - "4677:4677"
+      - "8888:8080"
     networks:
       - traefik-public
     volumes:
@@ -27,135 +27,17 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - traefik-public
     deploy:
       replicas: 1
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.localhost`)"
-      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
-
-  auth-users-service:
-    image: miguel04cardoso/auth-users-service:latest
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Auth-Users
-    networks:
-      - traefik-public
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: "0.40"
-          memory: 512M
-        reservations:
-          cpus: "0.05"
-          memory: 128M
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.auth.rule=Host(`users.localhost`)"
-      - "traefik.http.services.auth.loadbalancer.server.port=8081"
-
-  authors-service:
-    image: miguel04cardoso/authors-service:latest
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Authors
-    networks:
-      - traefik-public
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: "0.40"
-          memory: 512M
-        reservations:
-          cpus: "0.05"
-          memory: 128M
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.auth.rule=Host(`authors.localhost`)"
-      - "traefik.http.services.auth.loadbalancer.server.port=8084"
-
-  genres-service:
-    image: miguel04cardoso/genres-service:latest
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Authors
-    networks:
-      - traefik-public
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: "0.40"
-          memory: 512M
-        reservations:
-          cpus: "0.05"
-          memory: 128M
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.auth.rule=Host(`genres.localhost`)"
-      - "traefik.http.services.auth.loadbalancer.server.port=8085"
-
-  readers-v1:
-    image: miguel04cardoso/readers-service:latest
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Readers
-    networks:
-      - traefik-public
-    deploy:
-      replicas: 2
-      resources:
-        limits:
-          cpus: "0.40"
-          memory: 512M
-        reservations:
-          cpus: "0.05"
-          memory: 128M
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.readers.rule=Host(`readers.localhost`)"
-      - "traefik.http.routers.readers.entrypoints=web"
-      - "traefik.http.services.readers-v1.loadbalancer.server.port=8082"
-      - "traefik.http.services.readers-v1.loadbalancer.weight=90"
-
-  readers-v2:
-    image: miguel04cardoso/readers-service:canary
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Readers
-    networks:
-      - traefik-public
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: "0.40"
-          memory: 512M
-        reservations:
-          cpus: "0.05"
-          memory: 128M
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.readers.rule=Host(`readers.localhost`)"
-      - "traefik.http.routers.readers.entrypoints=web"
-      - "traefik.http.services.readers-v2.loadbalancer.server.port=8082"
-      - "traefik.http.services.readers-v2.loadbalancer.weight=10"
-
-  books-service:
-    image: miguel04cardoso/books-service:latest
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://143.47.57.150:3306/Books
-    networks:
-      - traefik-public
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          cpus: "0.40"
-          memory: 512M
-        reservations:
-          cpus: "0.05"
-          memory: 128M
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.books.rule=Host(`books.localhost`)"
-      - "traefik.http.services.books.loadbalancer.server.port=8083"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.rabbitmq.rule=PathPrefix(`/rabbitmq`)"
+        - "traefik.http.routers.rabbitmq.entrypoints=web"
+        - "traefik.http.middlewares.rabbitmq-strip.stripprefix.prefixes=/rabbitmq"
+        - "traefik.http.routers.rabbitmq.middlewares=rabbitmq-strip"
+        - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"

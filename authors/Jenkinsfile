@@ -1,6 +1,13 @@
 pipeline {
     agent any
 
+    parameters {
+        string(
+            name: 'BRANCH',
+            defaultValue: 'dev'
+        )
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -108,7 +115,32 @@ pipeline {
             }
         }
 
-        stage('Request Approval') {
+        stage('Deploy - Authors Service') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('authors') {
+                    script {
+                        def composeFile = 'docker-compose.yml'
+                        def stackName = 'authors'
+
+                        if (params.BRANCH == 'prod') {
+                            composeFile = 'docker-compose-prod.yml'
+                        }
+
+                        sh """
+                            docker stack deploy -c ${composeFile} ${stackName}
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Request Approval - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
             steps {
                 script {
                     emailext(
@@ -118,7 +150,7 @@ pipeline {
                         <body>
                             <p>Hi,</p>
                             <p>Please review the deployed service at:<br>
-                            <a href="http://staging-genres.localhost">http://staging-genres.localhost</a></p>
+                            <a href="http://143.47.57.150:8080/job/ODSOFT-Pipeline/job/staging/">http://143.47.57.150:8080/job/ODSOFT-Pipeline/job/staging/</a></p>
                             <p>Approve or reject the deployment in Jenkins.</p>
                             <p>Regards,<br>LMS Team</p>
                         </body>
@@ -130,9 +162,9 @@ pipeline {
                 }
                 script {
                     def userInput = input(
-                        id: 'ApproveDeployment', message: 'Deploy The Service?',
+                        id: 'ApproveDeployment', message: 'Deploy Authors Service?',
                         parameters: [
-                            string(defaultValue: 'Deployed URL: http://staging-genres.localhost', description: 'Check the deployed service link before approving', name: 'ServiceLink')
+                            string(defaultValue: 'URL: http://143.47.57.150:4677/authors/api/docs', description: 'Check The Deployed Service Link', name: 'Authors Service')
                         ]
                     )
                 }
@@ -141,29 +173,43 @@ pipeline {
 
         stage('Smoke Test - Staging') {
             when {
-                branch 'staging'
+                expression { params.BRANCH == 'staging' }
             }
             steps {
-                script {
-                    retry(5) {
-                        sleep 10
-                        sh '''
-                          curl -f http://143.47.57.150:8081/actuator/health
-                        '''
-                    }
+                dir('authors/load-tests') {
+                    echo 'Running Smoke Test...'
+                    sh '''
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/smoke-test.js
+                    '''
                 }
             }
         }
 
-        stage('Performance Tests') {
+        stage('Performance Tests - Staging') {
             when {
-                branch 'staging'
+                expression { params.BRANCH == 'staging' }
             }
             steps {
                 dir('authors/load-tests') {
                     echo 'Running Performance Tests...'
                     sh '''
-                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-authors.js
+                        chmod 777 .
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-authors.js --summary-export=/k6/k6-summary.json
+                    '''
+                }
+            }
+        }
+
+        stage('Auto Scale - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('authors/load-tests') {
+                    echo 'Scaling Authors Service Based On Load Test Results...'
+                    sh '''
+                        chmod +x scale-authors.sh
+                        ./scale-authors.sh
                     '''
                 }
             }
@@ -171,18 +217,30 @@ pipeline {
 
         stage('Health Check - Production') {
             when {
-                branch 'prod'
+                expression { params.BRANCH == 'prod' }
             }
             steps {
                 script {
-                    retry(5) {
-                        sleep 10
-                        sh '''
-                          curl -f http://143.47.57.150:8081/actuator/health
-                        '''
+                    try {
+                        retry(3) {
+                            sleep 5
+                            sh 'curl -fsS http://143.47.57.150:4677/authors/actuator/health'
+                        }
+                    } catch (e) {
+                        sh 'docker service rollback library-management-system_authors-service'
+                        error("Health Check Failed -> Rolled Back")
                     }
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Cleaning Old Docker Images...'
+            sh '''
+                docker image prune -a -f --filter "label=service=authors" --filter "until=48h"
+            '''
         }
     }
 }

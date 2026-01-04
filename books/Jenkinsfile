@@ -1,6 +1,18 @@
 pipeline {
     agent any
 
+    parameters {
+        string(
+            name: 'BRANCH',
+            defaultValue: 'dev'
+        )
+    }
+
+    environment {
+        PACT_BROKER_URL = 'https://isep-fd4645c7.pactflow.io'
+        VERSION = "${env.BUILD_NUMBER}"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -54,7 +66,7 @@ pipeline {
             }
         }
 
-        stage ('Integration Test') {
+        stage('Integration Test') {
             steps {
                 dir('books') {
                     echo 'Integration Testing...'
@@ -70,6 +82,23 @@ pipeline {
                         reportFiles: 'index.html',
                         reportName: 'JaCoCo Coverage Report'
                     ])
+                }
+            }
+        }
+
+        stage('Publish Pact') {
+            steps {
+                dir('books') {
+                    echo 'Publishing Pact...'
+                    withCredentials([string(credentialsId: 'pact-broker-token',variable: 'PACT_BROKER_TOKEN')]) {
+                        sh """
+                          mvn pact:publish \
+                            -Dpact.broker.url=${PACT_BROKER_URL} \
+                            -Dpact.broker.token=$PACT_BROKER_TOKEN \
+                            -Dpact.consumer.version=${VERSION} \
+                            -Dpact.git.branch=${params.BRANCH}
+                        """
+                    }
                 }
             }
         }
@@ -101,36 +130,98 @@ pipeline {
           }
         }
 
-        stage('Smoke Test - Staging') {
+        stage('Deploy - Books Service') {
             when {
-                branch 'staging'
+                expression { params.BRANCH == 'staging' }
             }
             steps {
-                script {
-                    retry(5) {
-                        sleep 10
-                        sh '''
-                          curl -f http://143.47.57.150:8081/actuator/health
-                        '''
+                dir('books') {
+                    script {
+                        def composeFile = 'docker-compose.yml'
+                        def stackName = 'books'
+
+                        if (params.BRANCH == 'prod') {
+                            composeFile = 'docker-compose-prod.yml'
+                        }
+
+                        sh """
+                            docker stack deploy -c ${composeFile} ${stackName}
+                        """
                     }
+                }
+            }
+        }
+
+        stage('Smoke Test - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('books/load-tests') {
+                    echo 'Running Smoke Test...'
+                    sh '''
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/smoke-test.js
+                    '''
+                }
+            }
+        }
+
+        stage('Performance Tests - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('books/load-tests') {
+                    echo 'Running Performance Tests...'
+                    sh '''
+                        chmod 777 .
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-books.js --summary-export=/k6/k6-summary.json
+                    '''
+                }
+            }
+        }
+
+        stage('Auto Scale - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('books/load-tests') {
+                    echo 'Scaling Books Service Based On Load Test Results...'
+                    sh '''
+                        chmod +x scale-books.sh
+                        ./scale-books.sh
+                    '''
                 }
             }
         }
 
         stage('Health Check - Production') {
             when {
-                branch 'prod'
+                expression { params.BRANCH == 'prod' }
             }
             steps {
                 script {
-                    retry(5) {
-                        sleep 10
-                        sh '''
-                          curl -f http://143.47.57.150:8081/actuator/health
-                        '''
+                    try {
+                        retry(3) {
+                            sleep 5
+                            sh 'curl -fsS http://143.47.57.150:4677/books/actuator/health'
+                        }
+                    } catch (e) {
+                        sh 'docker service rollback library-management-system_books-service'
+                        error("Health Check Failed -> Rolled Back")
                     }
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Cleaning Old Docker Images...'
+            sh '''
+                docker image prune -a -f --filter "label=service=books" --filter "until=48h"
+            '''
         }
     }
 }

@@ -8,9 +8,10 @@ RUN if [ "$SKIP_TESTS" = "true" ]; then mvn -B clean package -DskipTests; else m
 
 FROM eclipse-temurin:21-jdk
 WORKDIR /app
+LABEL service="genres"
 ARG JAR_FILE=target/*.jar
 COPY --from=build /app/${JAR_FILE} app.jar
-ENV SERVER_PORT=8080
+ENV SERVER_PORT=8085
 ENV JAVA_OPTS=""
 EXPOSE ${SERVER_PORT}
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=$SERVER_PORT -jar /app/app.jar"]

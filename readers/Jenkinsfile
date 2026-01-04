@@ -1,6 +1,18 @@
 pipeline {
     agent any
 
+    parameters {
+        string(
+            name: 'BRANCH',
+            defaultValue: 'dev'
+        )
+    }
+
+    environment {
+        PACT_BROKER_URL = 'https://isep-fd4645c7.pactflow.io'
+        VERSION = "${env.BUILD_NUMBER}"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -54,7 +66,7 @@ pipeline {
             }
         }
 
-        stage ('Integration Test') {
+        stage('Integration Test') {
             steps {
                 dir('readers') {
                     echo 'Integration Testing...'
@@ -70,6 +82,23 @@ pipeline {
                         reportFiles: 'index.html',
                         reportName: 'JaCoCo Coverage Report'
                     ])
+                }
+            }
+        }
+
+        stage('Publish Pact') {
+            steps {
+                dir('readers') {
+                    echo 'Publishing Pact...'
+                    withCredentials([string(credentialsId: 'pact-broker-token',variable: 'PACT_BROKER_TOKEN')]) {
+                        sh """
+                          mvn pact:publish \
+                            -Dpact.broker.url=${PACT_BROKER_URL} \
+                            -Dpact.broker.token=$PACT_BROKER_TOKEN \
+                            -Dpact.consumer.version=${VERSION} \
+                            -Dpact.git.branch=${params.BRANCH}
+                        """
+                    }
                 }
             }
         }
@@ -97,22 +126,96 @@ pipeline {
           steps {
             withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
               sh 'docker login -u $USER -p $PASS'
-              sh 'docker push miguel04cardoso/readers-service:latest'
               sh 'docker push miguel04cardoso/readers-service:canary'
             }
           }
         }
 
+        stage('Deploy - Readers Service') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('readers') {
+                    script {
+                        def composeFile = 'docker-compose.yml'
+                        def stackName = 'readers'
+
+                        if (params.BRANCH == 'prod') {
+                            composeFile = 'docker-compose-prod.yml'
+                        }
+
+                        sh """
+                            docker stack deploy -c ${composeFile} ${stackName}
+                        """
+                    }
+                }
+            }
+        }
+
         stage('Smoke Test - Staging') {
             when {
-                branch 'staging'
+                expression { params.BRANCH == 'staging' }
             }
             steps {
                 script {
-                    retry(5) {
-                        sleep 10
+                    try {
+                        dir('readers/load-tests') {
+                            echo 'Running Smoke Test...'
+                            sh '''
+                                docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/smoke-test.js
+                            '''
+                        }
+                    } catch (e) {
+                        dir('readers/rollout') {
+                            sh '''
+                              chmod +x rollout-canary.sh
+                              ./cancel-update.sh
+                            '''
+                            error("Smoke Test Failed -> Rolled Back")
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Performance Tests - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                script {
+                    try {
+                        dir('readers/load-tests') {
+                            echo 'Running Performance Tests...'
+                            sh '''
+                                chmod 777 .
+                                docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-readers.js --summary-export=/k6/k6-summary.json
+                            '''
+                        }
+                    } catch (e) {
+                        dir('readers/rollout') {
+                            sh '''
+                              chmod +x rollout-canary.sh
+                              ./cancel-update.sh
+                            '''
+                            error("Performance Tests Failed -> Rolled Back")
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Canary Rollout - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                script {
+                    dir('readers/rollout') {
                         sh '''
-                          curl -f http://143.47.57.150:8081/actuator/health
+                            chmod +x rollout-canary.sh
+                            ./rollout-canary.sh
                         '''
                     }
                 }
@@ -121,18 +224,30 @@ pipeline {
 
         stage('Health Check - Production') {
             when {
-                branch 'prod'
+                expression { params.BRANCH == 'prod' }
             }
             steps {
                 script {
-                    retry(5) {
-                        sleep 10
-                        sh '''
-                          curl -f http://143.47.57.150:8081/actuator/health
-                        '''
+                    try {
+                        retry(3) {
+                            sleep 5
+                            sh 'curl -fsS http://143.47.57.150:4677/readers/actuator/health'
+                        }
+                    } catch (e) {
+                        sh 'docker service rollback library-management-system_readers-service'
+                        error("Health Check Failed -> Rolled Back")
                     }
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Cleaning Old Docker Images...'
+            sh '''
+                docker image prune -a -f --filter "label=service=readers" --filter "until=48h"
+            '''
         }
     }
 }

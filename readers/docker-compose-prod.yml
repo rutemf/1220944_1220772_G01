@@ -1,0 +1,60 @@
+version: "3.8"
+
+networks:
+  traefik-public:
+    external: true
+
+services:
+  readers-v1:
+    image: miguel04cardoso/readers-service:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=bootstrap,prod
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "0.40"
+          memory: 512M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.readers.rule=PathPrefix(`/readers`)"
+        - "traefik.http.routers.readers.entrypoints=web"
+        - "traefik.http.routers.readers.service=readers"
+        - "traefik.http.routers.readers.middlewares=readers-strip"
+        - "traefik.http.middlewares.readers-strip.stripprefix.prefixes=/readers"
+        - "traefik.http.services.readers.loadbalancer.server.port=8082"
+
+  readers-v2:
+    image: miguel04cardoso/readers-service:canary
+    environment:
+      - SPRING_PROFILES_ACTIVE=bootstrap,prod
+      - SPRING_RABBITMQ_ADDRESSES=143.47.57.150:5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.40"
+          memory: 512M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.readers.rule=PathPrefix(`/readers`)"
+        - "traefik.http.routers.readers.entrypoints=web"
+        - "traefik.http.routers.readers.service=readers"
+        - "traefik.http.routers.readers.middlewares=readers-strip"
+        - "traefik.http.middlewares.readers-strip.stripprefix.prefixes=/readers"
+        - "traefik.http.services.readers.loadbalancer.server.port=8082"

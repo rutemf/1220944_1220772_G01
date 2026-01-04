@@ -1,5 +1,7 @@
 package books.books.api;
 
+import books.books.services.CreateAuthor;
+import jakarta.validation.constraints.NotNull;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import books.authors.model.Author;
@@ -15,15 +17,19 @@ public abstract class BookViewAMQPMapper extends MapperInterface {
     @Mapping(target = "isbn", source = "isbn")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "title", source = "title")
-    @Mapping(target = "genre", source = "genre")
-    @Mapping(target = "authorIds", expression = "java(mapAuthors(book.getAuthors()))")
+    @Mapping(target = "genre", source = "genre.genre") // assume que Book tem Genre com getName()
+    @Mapping(target = "authors", expression = "java(mapAuthors(book.getAuthors()))")
     @Mapping(target = "version", source = "version")
+    @Mapping(target = "_links", ignore = true)
 
     public abstract BookViewAMQP toBookViewAMQP(Book book);
 
     public abstract List<BookViewAMQP> toBookViewAMQP(List<Book> bookList);
 
-    protected List<Long> mapAuthors(List<Author> authors) {
-        return authors.stream().map(Author::getAuthorNumber).collect(Collectors.toList());
+    protected @NotNull List<String> mapAuthors(List<Author> authors) {
+        if (authors == null) return null;
+        return authors.stream()
+                .map(Author::getName) // pega só o nome
+                .collect(Collectors.toList());
     }
 }

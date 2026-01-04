@@ -1,6 +1,13 @@
 pipeline {
     agent any
 
+    parameters {
+        string(
+            name: 'BRANCH',
+            defaultValue: 'dev'
+        )
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -101,36 +108,98 @@ pipeline {
           }
         }
 
-        stage('Smoke Test - Staging') {
+        stage('Deploy - Genres Service') {
             when {
-                branch 'staging'
+                expression { params.BRANCH == 'staging' }
             }
             steps {
-                script {
-                    retry(5) {
-                        sleep 10
-                        sh '''
-                          curl -f http://143.47.57.150:8081/actuator/health
-                        '''
+                dir('genres') {
+                    script {
+                        def composeFile = 'docker-compose.yml'
+                        def stackName = 'genres'
+
+                        if (params.BRANCH == 'prod') {
+                            composeFile = 'docker-compose-prod.yml'
+                        }
+
+                        sh """
+                            docker stack deploy -c ${composeFile} ${stackName}
+                        """
                     }
+                }
+            }
+        }
+
+        stage('Smoke Test - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('genres/load-tests') {
+                    echo 'Running Smoke Test...'
+                    sh '''
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/smoke-test.js
+                    '''
+                }
+            }
+        }
+
+        stage('Performance Tests - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('genres/load-tests') {
+                    echo 'Running Performance Tests...'
+                    sh '''
+                        chmod 777 .
+                        docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-genres.js --summary-export=/k6/k6-summary.json
+                    '''
+                }
+            }
+        }
+
+        stage('Auto Scale - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                dir('genres/load-tests') {
+                    echo 'Scaling Genres Service Based On Load Test Results...'
+                    sh '''
+                        chmod +x scale-genres.sh
+                        ./scale-genres.sh
+                    '''
                 }
             }
         }
 
         stage('Health Check - Production') {
             when {
-                branch 'prod'
+                expression { params.BRANCH == 'prod' }
             }
             steps {
                 script {
-                    retry(5) {
-                        sleep 10
-                        sh '''
-                          curl -f http://143.47.57.150:8081/actuator/health
-                        '''
+                    try {
+                        retry(3) {
+                            sleep 5
+                            sh 'curl -fsS http://143.47.57.150:4677/genres/actuator/health'
+                        }
+                    } catch (e) {
+                        sh 'docker service rollback library-management-system_genres-service'
+                        error("Health Check Failed -> Rolled Back")
                     }
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Cleaning Old Docker Images...'
+            sh '''
+                docker image prune -a -f --filter "label=service=genres" --filter "until=48h"
+            '''
         }
     }
 }
