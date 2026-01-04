@@ -15,7 +15,6 @@ at a time with their own microservice.
 This way, it was possible to implement the new system, while the old one still ran, once the new system was working as expected, the legacy system was safely decommissioned.
 This allowed no downtime while gradually migrating from a monolith system to a microservices one.
 
-
 ---
 
 ## 2. Database-per-Service
@@ -65,7 +64,9 @@ and communicate the significant state changes in the domain as discrete events s
 ## 7. Outbox Pattern
 
 This consistency pattern ensures atomicity between database changes and messages/events sent to other services.
-The Outbox Pattern stores the events in a table in the same database as the local transaction and then publishes it reliably in case some trouble happens.
+A new column named "status" was added to the database tables to track the state of each event ("active", "pending" or "rejected").
+When an entity is created the status is initially set to "pending" and after the event is successfully published to the message broker,
+the status is updated to "active".
 
 ---
 
