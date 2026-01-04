@@ -35,17 +35,35 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book create(CreateBookRequest request, String isbn) {
 
-        final String title = request.getTitle();
-        final String description = request.getDescription();
-        final String photoURI = request.getPhotoURI();
-        final String genre = request.getGenre();
-        final List<Long> authorIds = request.getAuthors();
-
-        Book savedBook = create(isbn, title, description, photoURI, genre, authorIds);
-
-        if (savedBook != null) {
-            bookEventsPublisher.sendBookCreated(savedBook);
+        if (bookRepository.findByIsbn(isbn).isPresent()) {
+            throw new ConflictException("Book with ISBN " + isbn + " already exists");
         }
+
+        Genre genre = genreRepository.findByString(request.getGenre())
+                .orElseGet(() -> {
+                    Genre newGenre = new Genre(request.getGenre());
+                    return genreRepository.save(newGenre);
+                });
+
+        List<Author> authors = request.getAuthors().stream()
+                .map(authorDTO -> authorRepository.findByName(authorDTO.getName())
+                        .orElseGet(() -> {
+                            Author newAuthor = new Author(authorDTO.getName(), authorDTO.getBio(), null);
+                            return authorRepository.save(newAuthor);
+                        }))
+                .toList();
+
+        Book newBook = new Book(
+                isbn,
+                request.getTitle(),
+                request.getDescription(),
+                genre,
+                authors,
+                null
+        );
+
+        Book savedBook = bookRepository.save(newBook);
+        bookEventsPublisher.sendBookCreated(savedBook);
 
         return savedBook;
     }
@@ -54,35 +72,27 @@ public class BookServiceImpl implements BookService {
     public Book create(BookViewAMQP bookViewAMQP) {
 
         final String isbn = bookViewAMQP.getIsbn();
-        final String description = bookViewAMQP.getDescription();
         final String title = bookViewAMQP.getTitle();
+        final String description = bookViewAMQP.getDescription();
+        final String genreName = bookViewAMQP.getGenre();
         final String photoURI = null;
-        final String genre = bookViewAMQP.getGenre();
-        final List<Long> authorIds = bookViewAMQP.getAuthorIds();
+        final List<String> authorNames = bookViewAMQP.getAuthors();
 
-        Book bookCreated = create(isbn, title, description, photoURI, genre, authorIds);
+        Genre genre = genreRepository.findByString(genreName)
+                .orElseGet(() -> {
+                    Genre newGenre = new Genre(genreName);
+                    return genreRepository.save(newGenre);
+                });
 
-        return bookCreated;
-    }
-
-    private Book create(String isbn,
-                        String title,
-                        String description,
-                        String photoURI,
-                        String genreName,
-                        List<Long> authorIds) {
-
-        if (bookRepository.findByIsbn(isbn).isPresent()) {
-            throw new ConflictException("Book with ISBN " + isbn + " already exists");
-        }
-
-        List<Author> authors = getAuthors(authorIds);
-
-        final Genre genre = genreRepository.findByString(String.valueOf(genreName))
-                .orElseThrow(() -> new NotFoundException("Genre not found"));
+        List<Author> authors = authorNames.stream()
+                .map(name -> authorRepository.findByName(name)
+                        .orElseGet(() -> {
+                            Author newAuthor = new Author(name, null, null);
+                            return authorRepository.save(newAuthor);
+                        }))
+                .toList();
 
         Book newBook = new Book(isbn, title, description, genre, authors, photoURI);
-
         Book savedBook = bookRepository.save(newBook);
 
         return savedBook;
@@ -93,11 +103,21 @@ public class BookServiceImpl implements BookService {
 
         var book = findByIsbn(request.getIsbn());
 
-        List<Long> authorsId = request.getAuthors();
+        List<CreateAuthor> authors = null;
+        if (request.getAuthors() != null) {
+            authors = request.getAuthors().stream()
+                    .map(name -> {
+                        CreateAuthor dto = new CreateAuthor();
+                        dto.setName(name);
+                        dto.setBio(null);
+                        return dto;
+                    })
+                    .toList();
+        }
 
         MultipartFile photo = request.getPhoto();
         String photoURI = request.getPhotoURI();
-        if (photo == null && photoURI != null || photo != null && photoURI == null) {
+        if ((photo == null && photoURI != null) || (photo != null && photoURI == null)) {
             photoURI = null;
         }
 
@@ -105,7 +125,8 @@ public class BookServiceImpl implements BookService {
         String title = request.getTitle();
         String description = request.getDescription();
 
-        Book updatedBook = update(book, currentVersion, title, description, photoURI, genreId, authorsId);
+        Book updatedBook = update(book, currentVersion, title, description, photoURI, genreId, authors);
+
         if (updatedBook != null) {
             bookEventsPublisher.sendBookUpdated(updatedBook, currentVersion);
         }
@@ -122,11 +143,20 @@ public class BookServiceImpl implements BookService {
         final String title = bookViewAMQP.getTitle();
         final String photoURI = null;
         final String genre = bookViewAMQP.getGenre();
-        final List<Long> authorIds = bookViewAMQP.getAuthorIds();
+        final List<String> authorNames = bookViewAMQP.getAuthors();
 
         var book = findByIsbn(isbn);
 
-        Book bookUpdated = update(book, version, title, description, photoURI, genre, authorIds);
+        List<CreateAuthor> authors = authorNames.stream()
+                .map(name -> {
+                    CreateAuthor dto = new CreateAuthor();
+                    dto.setName(name);
+                    dto.setBio(null);
+                    return dto;
+                })
+                .toList();
+
+        Book bookUpdated = update(book, version, title, description, photoURI, genre, authors);
 
         return bookUpdated;
     }
@@ -136,37 +166,36 @@ public class BookServiceImpl implements BookService {
                         String title,
                         String description,
                         String photoURI,
-                        String genreId,
-                        List<Long> authorsId) {
+                        String genreName,
+                        List<CreateAuthor> authors) {
 
         Genre genreObj = null;
-        if (genreId != null) {
-            Optional<Genre> genre = genreRepository.findByString(genreId);
-            if (genre.isEmpty()) {
-                throw new NotFoundException("Genre not found");
-            }
-            genreObj = genre.get();
+        if (genreName != null) {
+            genreObj = genreRepository.findByString(genreName)
+                    .orElseGet(() -> {
+                        Genre newGenre = new Genre(genreName);
+                        return genreRepository.save(newGenre);
+                    });
         }
 
-        List<Author> authors = new ArrayList<>();
-        if (authorsId != null) {
-            for (Long authorNumber : authorsId) {
-                Optional<Author> temp = authorRepository.findByAuthorNumber(authorNumber);
-                if (temp.isEmpty()) {
-                    continue;
-                }
-                Author author = temp.get();
-                authors.add(author);
-            }
-        } else
-            authors = null;
+        List<Author> authorsList = null;
+        if (authors != null) {
+            authorsList = authors.stream()
+                    .map(authorDTO -> authorRepository.findByName(authorDTO.getName())
+                            .orElseGet(() -> {
+                                Author newAuthor = new Author(authorDTO.getName(), authorDTO.getBio(), null);
+                                return authorRepository.save(newAuthor);
+                            }))
+                    .toList();
+        }
 
-        book.applyPatch(currentVersion, title, description, photoURI, genreObj, authors);
+        book.applyPatch(currentVersion, title, description, photoURI, genreObj, authorsList);
 
         Book updatedBook = bookRepository.save(book);
 
         return updatedBook;
     }
+
 
     @Override
     public Book removeBookPhoto(String isbn, long desiredVersion) {
