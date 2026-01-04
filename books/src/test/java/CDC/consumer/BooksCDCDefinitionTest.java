@@ -56,15 +56,18 @@ public class BooksCDCDefinitionTest {
         body.stringType("title", "title");
         body.stringType("description", "description");
         body.stringType("genre", "Infantil");
-        body.array("authorIds")
-                .integerType(1)
+        body.array("authors")            // ⚡ mudou de authorIds para authors
+                .stringType("1")
                 .closeArray();
         body.stringMatcher("version", "[0-9]+", "1");
 
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("Content-Type", "application/json");
 
-        return builder.expectsToReceive("a book created event").withMetadata(metadata).withContent(body).toPact();
+        return builder.expectsToReceive("a book created event")
+                .withMetadata(metadata)
+                .withContent(body)
+                .toPact();
     }
 
     @Pact(consumer = "book_updated-consumer")
@@ -74,8 +77,8 @@ public class BooksCDCDefinitionTest {
                 .stringType("title", "updated title")
                 .stringType("description", "description")
                 .stringType("genre", "Infantil");
-        body.array("authorIds")
-                .integerType(1)
+        body.array("authors")            // ⚡ mudou de authorIds para authors
+                .stringType("1")
                 .closeArray();
 
         Map<String, Object> metadata = new HashMap<>();
