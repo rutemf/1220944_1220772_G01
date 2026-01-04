@@ -88,7 +88,7 @@ pipeline {
 
         stage('Publish Pact') {
             steps {
-                dir('books') {
+                dir('readers') {
                     echo 'Publishing Pact...'
                     withCredentials([string(credentialsId: 'pact-broker-token',variable: 'PACT_BROKER_TOKEN')]) {
                         sh """
@@ -160,18 +160,47 @@ pipeline {
             steps {
                 script {
                     try {
-                        retry(3) {
-                            sleep 5
+                        dir('readers/load-tests') {
+                            echo 'Running Smoke Test...'
                             sh '''
-                              curl -f http://143.47.57.150:4677/readers/actuator/health
+                                docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/smoke-test.js
                             '''
                         }
                     } catch (e) {
-                        sh '''
-                          chmod +x rollout-canary.sh
-                          ./cancel-update.sh
-                        '''
-                        error("Smoke Test Failed -> Rolled Back")
+                        dir('readers/rollout') {
+                            sh '''
+                              chmod +x rollout-canary.sh
+                              ./cancel-update.sh
+                            '''
+                            error("Smoke Test Failed -> Rolled Back")
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Performance Tests - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                script {
+                    try {
+                        dir('readers/load-tests') {
+                            echo 'Running Performance Tests...'
+                            sh '''
+                                chmod 777 .
+                                docker run --rm -i -v $PWD:/k6 grafana/k6 run /k6/k6-readers.js --summary-export=/k6/k6-summary.json
+                            '''
+                        }
+                    } catch (e) {
+                        dir('readers/rollout') {
+                            sh '''
+                              chmod +x rollout-canary.sh
+                              ./cancel-update.sh
+                            '''
+                            error("Performance Tests Failed -> Rolled Back")
+                        }
                     }
                 }
             }
@@ -183,10 +212,12 @@ pipeline {
             }
             steps {
                 script {
-                     sh '''
-                         chmod +x rollout-canary.sh
-                         ./rollout-canary.sh
-                     '''
+                    dir('readers/rollout') {
+                        sh '''
+                            chmod +x rollout-canary.sh
+                            ./rollout-canary.sh
+                        '''
+                    }
                 }
             }
         }
