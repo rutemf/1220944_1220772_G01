@@ -16,7 +16,6 @@ docker service update --replicas 0 ${V1_SERVICE}
 echo "Tagging ${IMAGE_REPO}:${CANARY_TAG} As ${LATEST_TAG}..."
 docker tag ${IMAGE_REPO}:${CANARY_TAG} ${IMAGE_REPO}:${LATEST_TAG}
 
-# Push da latest para o registry
 echo "Pushing ${IMAGE_REPO}:${LATEST_TAG} To Docker Hub..."
 docker push ${IMAGE_REPO}:${LATEST_TAG}
 

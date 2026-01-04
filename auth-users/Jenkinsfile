@@ -95,6 +95,7 @@ pipeline {
                 dir('auth-users') {
                     echo 'Building Docker Image...'
                     sh 'docker build -t miguel04cardoso/auth-users-service:latest .'
+                    sh 'docker tag miguel04cardoso/auth-users-service:latest miguel04cardoso/auth-users-service:green'
                 }
             }
         }
@@ -103,7 +104,7 @@ pipeline {
           steps {
             withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
               sh 'docker login -u $USER -p $PASS'
-              sh 'docker push miguel04cardoso/auth-users-service:latest'
+              sh 'docker push miguel04cardoso/auth-users-service:green'
             }
           }
         }
@@ -170,6 +171,22 @@ pipeline {
                         chmod +x scale-users.sh
                         ./scale-users.sh
                     '''
+                }
+            }
+        }
+
+        stage('Blue/Green Rollout - Staging') {
+            when {
+                expression { params.BRANCH == 'staging' }
+            }
+            steps {
+                script {
+                    dir('auth-users/rollout') {
+                        sh '''
+                            chmod +x switch-green.sh
+                            ./switch-green.sh
+                        '''
+                    }
                 }
             }
         }
