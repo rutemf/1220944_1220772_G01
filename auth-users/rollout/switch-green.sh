@@ -1,9 +1,9 @@
 #!/bin/bash
 
-V1_SERVICE="auth-users_auth-service"
-V2_SERVICE="auth-users_auth-users--green"
+V1_SERVICE="auth-users_auth-users-service"
+V2_SERVICE="auth-users_auth-users-green"
 
-IMAGE_REPO="miguel04cardoso/readers-service"
+IMAGE_REPO="miguel04cardoso/auth-users-service"
 LATEST_TAG="latest"
 GREEN_TAG="green"
 
