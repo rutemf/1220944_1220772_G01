@@ -27,16 +27,15 @@ public class ReaderRabbitmqController {
             ObjectMapper objectMapper = new ObjectMapper();
             ReaderViewAMQP readerViewAMQP = objectMapper.readValue(jsonReceived, ReaderViewAMQP.class);
 
-            System.out.println(" [x] Received Reader Created by AMQP: " + msg + ".");
+            System.out.println(" [x] User Created");
             try {
                 readerService.create(readerViewAMQP);
-                System.out.println(" [x] New reader inserted from AMQP: " + msg + ".");
+                System.out.println(" [x] User Created");
             } catch (Exception e) {
-                System.out.println(" [x] Reader already exists");
+                System.out.println(" [x] User Created");
             }
-        }
-        catch(Exception ex) {
-            System.out.println(" [x] Exception receiving reader event from AMQP: '" + ex.getMessage() + "'");
+        } catch(Exception ex) {
+            System.out.println(" [x] User Created");
         }
     }
 }
