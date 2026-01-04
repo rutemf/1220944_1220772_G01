@@ -3,7 +3,6 @@
 SUMMARY="k6-summary.json"
 SERVICE="books_books-service"
 
-cat $SUMMARY
 P95=$(jq '.metrics.http_req_duration["p(95)"]' $SUMMARY)
 
 echo "k6 p95 = ${P95}ms"
