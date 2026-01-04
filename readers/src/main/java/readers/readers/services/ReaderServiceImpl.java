@@ -23,6 +23,13 @@ public class ReaderServiceImpl implements ReaderService {
 
     @Override
     @Transactional
+    public ReaderDetails findByReaderNumber(String readerNumber) {
+        return repository.findByReaderNumber(readerNumber)
+        .orElseThrow(() -> new IllegalArgumentException("Leitor não encontrado com o número: " + readerNumber));
+    }
+
+    @Override
+    @Transactional
     public ReaderDetails create(CreateReaderRequest request) {
         String generatedReaderId = UUID.randomUUID().toString();
 
