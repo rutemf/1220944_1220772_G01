@@ -56,7 +56,7 @@ public class BooksCDCDefinitionTest {
         body.stringType("title", "title");
         body.stringType("description", "description");
         body.stringType("genre", "Infantil");
-        body.array("authors")            // ⚡ mudou de authorIds para authors
+        body.array("authors")            //
                 .stringType("Joana")
                 .closeArray();
         body.stringMatcher("version", "[0-9]+", "1");
