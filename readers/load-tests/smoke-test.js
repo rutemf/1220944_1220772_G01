@@ -44,7 +44,7 @@ export function setup() {
 }
 
 export default function (data) {
-    const readerNumber = '2025/1';
+    const readerNumber = '1';
     const url = `${BASE_URL}/${encodeURIComponent(readerNumber)}`;
 
     const res = http.get(url, {
