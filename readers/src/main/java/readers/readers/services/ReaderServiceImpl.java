@@ -63,4 +63,25 @@ public class ReaderServiceImpl implements ReaderService {
 
         return savedReader;
     }
+
+    @Override
+    public ReaderDetails create(ReaderViewAMQP request) {
+        List<Genre> genres = new ArrayList<>();
+        String generatedReaderId = UUID.randomUUID().toString();
+
+        int nextReaderNumber = (int) (repository.count() + 1);
+
+        ReaderDetails readerDetails = new ReaderDetails(
+                nextReaderNumber,
+                generatedReaderId,
+                request.getBirthDate(),
+                request.getPhoneNumber(),
+                request.getGdpr(),
+                true,
+                true,
+                genres
+        );
+
+        return repository.save(readerDetails);
+    }
 }
