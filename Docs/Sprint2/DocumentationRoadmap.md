@@ -16,7 +16,7 @@
 
 ### Physical View
 
-### Implementation View
+![physical-view.png](views/physical-view.png)
 
 ### Generic System Sequence Diagrams
 
@@ -24,11 +24,7 @@
 
 ### Logical View
 
-### Physical View
-
-### Implementation View
-
-### Mapping Between Logical and Implementation Views
+![logical-view-level3.png](views/logical-view-level3.png)
 
 ## QAS
 
@@ -43,5 +39,7 @@
 [MicroServicePatterns.md](MicroServicePatterns.md)
 
 ## Monolith vs. Microservices: System Under Load
+
+[LoadTestComparison.md](LoadTestComparison.md)
 
 
