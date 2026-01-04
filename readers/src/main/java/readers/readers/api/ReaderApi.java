@@ -10,7 +10,7 @@ import readers.readers.services.ReaderView;
 
 @Tag(name = "Reader")
 @RestController
-@RequestMapping(path = "api/readers")
+@RequestMapping(path = "/api/readers")
 @RequiredArgsConstructor
 public class ReaderApi {
     private final ReaderService readerService;
@@ -24,7 +24,8 @@ public class ReaderApi {
 
     @GetMapping("/{readerNumber}")
     public ReaderView getByReaderNumber(@PathVariable String readerNumber) {
-        final var reader = readerService.findByReaderNumber(readerNumber);
+        final String getReaderNumber = "2025/" + readerNumber;
+        final var reader = readerService.findByReaderNumber(getReaderNumber);
         return readerViewMapper.toReaderView(reader, null, null);
     }
 }
