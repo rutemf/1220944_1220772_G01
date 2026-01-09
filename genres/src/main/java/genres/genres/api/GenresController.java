@@ -80,11 +80,11 @@ public class GenresController {
 
         GenreView bookView = genreViewMapper.toGenreView(genre);
 
-        return ResponseEntity.ok().eTag(Long.toString(genre.getVersion())).body(bookView);
+        return ResponseEntity.ok().eTag("1L").body(bookView);
     }
 
     @Operation(summary = "Search all genders")
-    @PostMapping("/search") //nao devia ser get?
+    @PostMapping("/search")
     public ListResponse<GenreView> searchGenres(@RequestBody final SearchRequest<SearchGenreQuery> request) {
         final var genreList = genreService.searchGenres(request.getPage(), request.getQuery());
         return new ListResponse<>(genreViewMapper.toGenreView(genreList));
